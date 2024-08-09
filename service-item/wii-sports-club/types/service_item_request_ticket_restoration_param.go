@@ -11,12 +11,12 @@ import (
 // ServiceItemRequestTicketRestorationParam is a type within the ServiceItem protocol
 type ServiceItemRequestTicketRestorationParam struct {
 	types.Structure
-	TicketType *types.PrimitiveU32
-	NumTicket  *types.PrimitiveU32
+	TicketType types.UInt32
+	NumTicket  types.UInt32
 }
 
 // WriteTo writes the ServiceItemRequestTicketRestorationParam to the given writable
-func (sirtrp *ServiceItemRequestTicketRestorationParam) WriteTo(writable types.Writable) {
+func (sirtrp ServiceItemRequestTicketRestorationParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sirtrp.TicketType.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (sirtrp *ServiceItemRequestTicketRestorationParam) ExtractFrom(readable typ
 }
 
 // Copy returns a new copied instance of ServiceItemRequestTicketRestorationParam
-func (sirtrp *ServiceItemRequestTicketRestorationParam) Copy() types.RVType {
+func (sirtrp ServiceItemRequestTicketRestorationParam) Copy() types.RVType {
 	copied := NewServiceItemRequestTicketRestorationParam()
 
 	copied.StructureVersion = sirtrp.StructureVersion
-	copied.TicketType = sirtrp.TicketType.Copy().(*types.PrimitiveU32)
-	copied.NumTicket = sirtrp.NumTicket.Copy().(*types.PrimitiveU32)
+	copied.TicketType = sirtrp.TicketType.Copy().(types.UInt32)
+	copied.NumTicket = sirtrp.NumTicket.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemRequestTicketRestorationParam contains the same data as the current ServiceItemRequestTicketRestorationParam
-func (sirtrp *ServiceItemRequestTicketRestorationParam) Equals(o types.RVType) bool {
+func (sirtrp ServiceItemRequestTicketRestorationParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemRequestTicketRestorationParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (sirtrp *ServiceItemRequestTicketRestorationParam) Equals(o types.RVType) b
 }
 
 // String returns the string representation of the ServiceItemRequestTicketRestorationParam
-func (sirtrp *ServiceItemRequestTicketRestorationParam) String() string {
+func (sirtrp ServiceItemRequestTicketRestorationParam) String() string {
 	return sirtrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemRequestTicketRestorationParam using the provided indentation level
-func (sirtrp *ServiceItemRequestTicketRestorationParam) FormatToString(indentationLevel int) string {
+func (sirtrp ServiceItemRequestTicketRestorationParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (sirtrp *ServiceItemRequestTicketRestorationParam) FormatToString(indentati
 }
 
 // NewServiceItemRequestTicketRestorationParam returns a new ServiceItemRequestTicketRestorationParam
-func NewServiceItemRequestTicketRestorationParam() *ServiceItemRequestTicketRestorationParam {
-	sirtrp := &ServiceItemRequestTicketRestorationParam{
-		TicketType: types.NewPrimitiveU32(0),
-		NumTicket:  types.NewPrimitiveU32(0),
+func NewServiceItemRequestTicketRestorationParam() ServiceItemRequestTicketRestorationParam {
+	return ServiceItemRequestTicketRestorationParam{
+		TicketType: types.NewUInt32(0),
+		NumTicket:  types.NewUInt32(0),
 	}
 
-	return sirtrp
 }

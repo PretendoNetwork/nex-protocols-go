@@ -11,16 +11,16 @@ import (
 // Ranking2RankData is a type within the Ranking2 protocol
 type Ranking2RankData struct {
 	types.Structure
-	Misc        *types.PrimitiveU64
-	NexUniqueID *types.PrimitiveU64
-	PrincipalID *types.PID
-	Rank        *types.PrimitiveU32
-	Score       *types.PrimitiveU32
-	CommonData  *Ranking2CommonData
+	Misc        types.UInt64
+	NexUniqueID types.UInt64
+	PrincipalID types.PID
+	Rank        types.UInt32
+	Score       types.UInt32
+	CommonData  Ranking2CommonData
 }
 
 // WriteTo writes the Ranking2RankData to the given writable
-func (rrd *Ranking2RankData) WriteTo(writable types.Writable) {
+func (rrd Ranking2RankData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rrd.Misc.WriteTo(contentWritable)
@@ -80,22 +80,22 @@ func (rrd *Ranking2RankData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Ranking2RankData
-func (rrd *Ranking2RankData) Copy() types.RVType {
+func (rrd Ranking2RankData) Copy() types.RVType {
 	copied := NewRanking2RankData()
 
 	copied.StructureVersion = rrd.StructureVersion
-	copied.Misc = rrd.Misc.Copy().(*types.PrimitiveU64)
-	copied.NexUniqueID = rrd.NexUniqueID.Copy().(*types.PrimitiveU64)
-	copied.PrincipalID = rrd.PrincipalID.Copy().(*types.PID)
-	copied.Rank = rrd.Rank.Copy().(*types.PrimitiveU32)
-	copied.Score = rrd.Score.Copy().(*types.PrimitiveU32)
-	copied.CommonData = rrd.CommonData.Copy().(*Ranking2CommonData)
+	copied.Misc = rrd.Misc.Copy().(types.UInt64)
+	copied.NexUniqueID = rrd.NexUniqueID.Copy().(types.UInt64)
+	copied.PrincipalID = rrd.PrincipalID.Copy().(types.PID)
+	copied.Rank = rrd.Rank.Copy().(types.UInt32)
+	copied.Score = rrd.Score.Copy().(types.UInt32)
+	copied.CommonData = rrd.CommonData.Copy().(Ranking2CommonData)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2RankData contains the same data as the current Ranking2RankData
-func (rrd *Ranking2RankData) Equals(o types.RVType) bool {
+func (rrd Ranking2RankData) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2RankData); !ok {
 		return false
 	}
@@ -130,12 +130,12 @@ func (rrd *Ranking2RankData) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the Ranking2RankData
-func (rrd *Ranking2RankData) String() string {
+func (rrd Ranking2RankData) String() string {
 	return rrd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2RankData using the provided indentation level
-func (rrd *Ranking2RankData) FormatToString(indentationLevel int) string {
+func (rrd Ranking2RankData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,15 +154,14 @@ func (rrd *Ranking2RankData) FormatToString(indentationLevel int) string {
 }
 
 // NewRanking2RankData returns a new Ranking2RankData
-func NewRanking2RankData() *Ranking2RankData {
-	rrd := &Ranking2RankData{
-		Misc:        types.NewPrimitiveU64(0),
-		NexUniqueID: types.NewPrimitiveU64(0),
+func NewRanking2RankData() Ranking2RankData {
+	return Ranking2RankData{
+		Misc:        types.NewUInt64(0),
+		NexUniqueID: types.NewUInt64(0),
 		PrincipalID: types.NewPID(0),
-		Rank:        types.NewPrimitiveU32(0),
-		Score:       types.NewPrimitiveU32(0),
+		Rank:        types.NewUInt32(0),
+		Score:       types.NewUInt32(0),
 		CommonData:  NewRanking2CommonData(),
 	}
 
-	return rrd
 }

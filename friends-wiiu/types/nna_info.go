@@ -11,14 +11,14 @@ import (
 // NNAInfo is a type within the FriendsWiiU protocol
 type NNAInfo struct {
 	types.Structure
-	*types.Data
-	PrincipalBasicInfo *PrincipalBasicInfo
-	Unknown1           *types.PrimitiveU8
-	Unknown2           *types.PrimitiveU8
+	types.Data
+	PrincipalBasicInfo PrincipalBasicInfo
+	Unknown1           types.UInt8
+	Unknown2           types.UInt8
 }
 
 // WriteTo writes the NNAInfo to the given writable
-func (nnai *NNAInfo) WriteTo(writable types.Writable) {
+func (nnai NNAInfo) WriteTo(writable types.Writable) {
 	nnai.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,20 +67,20 @@ func (nnai *NNAInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of NNAInfo
-func (nnai *NNAInfo) Copy() types.RVType {
+func (nnai NNAInfo) Copy() types.RVType {
 	copied := NewNNAInfo()
 
 	copied.StructureVersion = nnai.StructureVersion
-	copied.Data = nnai.Data.Copy().(*types.Data)
-	copied.PrincipalBasicInfo = nnai.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
-	copied.Unknown1 = nnai.Unknown1.Copy().(*types.PrimitiveU8)
-	copied.Unknown2 = nnai.Unknown2.Copy().(*types.PrimitiveU8)
+	copied.Data = nnai.Data.Copy().(types.Data)
+	copied.PrincipalBasicInfo = nnai.PrincipalBasicInfo.Copy().(PrincipalBasicInfo)
+	copied.Unknown1 = nnai.Unknown1.Copy().(types.UInt8)
+	copied.Unknown2 = nnai.Unknown2.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given NNAInfo contains the same data as the current NNAInfo
-func (nnai *NNAInfo) Equals(o types.RVType) bool {
+func (nnai NNAInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*NNAInfo); !ok {
 		return false
 	}
@@ -107,12 +107,12 @@ func (nnai *NNAInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the NNAInfo
-func (nnai *NNAInfo) String() string {
+func (nnai NNAInfo) String() string {
 	return nnai.FormatToString(0)
 }
 
 // FormatToString pretty-prints the NNAInfo using the provided indentation level
-func (nnai *NNAInfo) FormatToString(indentationLevel int) string {
+func (nnai NNAInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +129,12 @@ func (nnai *NNAInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewNNAInfo returns a new NNAInfo
-func NewNNAInfo() *NNAInfo {
-	nnai := &NNAInfo{
+func NewNNAInfo() NNAInfo {
+	return NNAInfo{
 		Data:               types.NewData(),
 		PrincipalBasicInfo: NewPrincipalBasicInfo(),
-		Unknown1:           types.NewPrimitiveU8(0),
-		Unknown2:           types.NewPrimitiveU8(0),
+		Unknown1:           types.NewUInt8(0),
+		Unknown2:           types.NewUInt8(0),
 	}
 
-	return nnai
 }

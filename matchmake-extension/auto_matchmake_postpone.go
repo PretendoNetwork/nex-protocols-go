@@ -25,14 +25,14 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	anyGathering := types.NewAnyDataHolder()
-	strMessage := types.NewString("")
+	var anyGathering types.AnyDataHolder
+	var strMessage types.String
 
 	var err error
 
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

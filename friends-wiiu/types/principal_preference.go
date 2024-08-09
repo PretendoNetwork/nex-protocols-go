@@ -11,14 +11,14 @@ import (
 // PrincipalPreference is a type within the FriendsWiiU protocol
 type PrincipalPreference struct {
 	types.Structure
-	*types.Data
-	ShowOnlinePresence  *types.PrimitiveBool
-	ShowCurrentTitle    *types.PrimitiveBool
-	BlockFriendRequests *types.PrimitiveBool
+	types.Data
+	ShowOnlinePresence  types.Bool
+	ShowCurrentTitle    types.Bool
+	BlockFriendRequests types.Bool
 }
 
 // WriteTo writes the PrincipalPreference to the given writable
-func (pp *PrincipalPreference) WriteTo(writable types.Writable) {
+func (pp PrincipalPreference) WriteTo(writable types.Writable) {
 	pp.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,20 +67,20 @@ func (pp *PrincipalPreference) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of PrincipalPreference
-func (pp *PrincipalPreference) Copy() types.RVType {
+func (pp PrincipalPreference) Copy() types.RVType {
 	copied := NewPrincipalPreference()
 
 	copied.StructureVersion = pp.StructureVersion
-	copied.Data = pp.Data.Copy().(*types.Data)
-	copied.ShowOnlinePresence = pp.ShowOnlinePresence.Copy().(*types.PrimitiveBool)
-	copied.ShowCurrentTitle = pp.ShowCurrentTitle.Copy().(*types.PrimitiveBool)
-	copied.BlockFriendRequests = pp.BlockFriendRequests.Copy().(*types.PrimitiveBool)
+	copied.Data = pp.Data.Copy().(types.Data)
+	copied.ShowOnlinePresence = pp.ShowOnlinePresence.Copy().(types.Bool)
+	copied.ShowCurrentTitle = pp.ShowCurrentTitle.Copy().(types.Bool)
+	copied.BlockFriendRequests = pp.BlockFriendRequests.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given PrincipalPreference contains the same data as the current PrincipalPreference
-func (pp *PrincipalPreference) Equals(o types.RVType) bool {
+func (pp PrincipalPreference) Equals(o types.RVType) bool {
 	if _, ok := o.(*PrincipalPreference); !ok {
 		return false
 	}
@@ -107,12 +107,12 @@ func (pp *PrincipalPreference) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the PrincipalPreference
-func (pp *PrincipalPreference) String() string {
+func (pp PrincipalPreference) String() string {
 	return pp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PrincipalPreference using the provided indentation level
-func (pp *PrincipalPreference) FormatToString(indentationLevel int) string {
+func (pp PrincipalPreference) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +129,12 @@ func (pp *PrincipalPreference) FormatToString(indentationLevel int) string {
 }
 
 // NewPrincipalPreference returns a new PrincipalPreference
-func NewPrincipalPreference() *PrincipalPreference {
-	pp := &PrincipalPreference{
+func NewPrincipalPreference() PrincipalPreference {
+	return PrincipalPreference{
 		Data:                types.NewData(),
-		ShowOnlinePresence:  types.NewPrimitiveBool(false),
-		ShowCurrentTitle:    types.NewPrimitiveBool(false),
-		BlockFriendRequests: types.NewPrimitiveBool(false),
+		ShowOnlinePresence:  types.NewBool(false),
+		ShowCurrentTitle:    types.NewBool(false),
+		BlockFriendRequests: types.NewBool(false),
 	}
 
-	return pp
 }

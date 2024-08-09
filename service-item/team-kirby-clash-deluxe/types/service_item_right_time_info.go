@@ -11,12 +11,12 @@ import (
 // ServiceItemRightTimeInfo is a type within the ServiceItem protocol
 type ServiceItemRightTimeInfo struct {
 	types.Structure
-	*ServiceItemRightInfo
-	AccountRights *types.List[*ServiceItemAccountRightTime]
+	ServiceItemRightInfo
+	AccountRights types.List[ServiceItemAccountRightTime]
 }
 
 // WriteTo writes the ServiceItemRightTimeInfo to the given writable
-func (sirti *ServiceItemRightTimeInfo) WriteTo(writable types.Writable) {
+func (sirti ServiceItemRightTimeInfo) WriteTo(writable types.Writable) {
 	sirti.ServiceItemRightInfo.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,18 +53,18 @@ func (sirti *ServiceItemRightTimeInfo) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of ServiceItemRightTimeInfo
-func (sirti *ServiceItemRightTimeInfo) Copy() types.RVType {
+func (sirti ServiceItemRightTimeInfo) Copy() types.RVType {
 	copied := NewServiceItemRightTimeInfo()
 
 	copied.StructureVersion = sirti.StructureVersion
-	copied.ServiceItemRightInfo = sirti.ServiceItemRightInfo.Copy().(*ServiceItemRightInfo)
-	copied.AccountRights = sirti.AccountRights.Copy().(*types.List[*ServiceItemAccountRightTime])
+	copied.ServiceItemRightInfo = sirti.ServiceItemRightInfo.Copy().(ServiceItemRightInfo)
+	copied.AccountRights = sirti.AccountRights.Copy().(types.List[ServiceItemAccountRightTime])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemRightTimeInfo contains the same data as the current ServiceItemRightTimeInfo
-func (sirti *ServiceItemRightTimeInfo) Equals(o types.RVType) bool {
+func (sirti ServiceItemRightTimeInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemRightTimeInfo); !ok {
 		return false
 	}
@@ -83,12 +83,12 @@ func (sirti *ServiceItemRightTimeInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemRightTimeInfo
-func (sirti *ServiceItemRightTimeInfo) String() string {
+func (sirti ServiceItemRightTimeInfo) String() string {
 	return sirti.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemRightTimeInfo using the provided indentation level
-func (sirti *ServiceItemRightTimeInfo) FormatToString(indentationLevel int) string {
+func (sirti ServiceItemRightTimeInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +103,10 @@ func (sirti *ServiceItemRightTimeInfo) FormatToString(indentationLevel int) stri
 }
 
 // NewServiceItemRightTimeInfo returns a new ServiceItemRightTimeInfo
-func NewServiceItemRightTimeInfo() *ServiceItemRightTimeInfo {
-	sirti := &ServiceItemRightTimeInfo{
+func NewServiceItemRightTimeInfo() ServiceItemRightTimeInfo {
+	return ServiceItemRightTimeInfo{
 		ServiceItemRightInfo: NewServiceItemRightInfo(),
-		AccountRights:        types.NewList[*ServiceItemAccountRightTime](),
+		AccountRights:        types.NewList[ServiceItemAccountRightTime](),
 	}
 
-	sirti.AccountRights.Type = NewServiceItemAccountRightTime()
-
-	return sirti
 }

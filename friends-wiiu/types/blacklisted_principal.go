@@ -11,14 +11,14 @@ import (
 // BlacklistedPrincipal is a type within the FriendsWiiU protocol
 type BlacklistedPrincipal struct {
 	types.Structure
-	*types.Data
-	PrincipalBasicInfo *PrincipalBasicInfo
-	GameKey            *GameKey
-	BlackListedSince   *types.DateTime
+	types.Data
+	PrincipalBasicInfo PrincipalBasicInfo
+	GameKey            GameKey
+	BlackListedSince   types.DateTime
 }
 
 // WriteTo writes the BlacklistedPrincipal to the given writable
-func (bp *BlacklistedPrincipal) WriteTo(writable types.Writable) {
+func (bp BlacklistedPrincipal) WriteTo(writable types.Writable) {
 	bp.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,20 +67,20 @@ func (bp *BlacklistedPrincipal) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of BlacklistedPrincipal
-func (bp *BlacklistedPrincipal) Copy() types.RVType {
+func (bp BlacklistedPrincipal) Copy() types.RVType {
 	copied := NewBlacklistedPrincipal()
 
 	copied.StructureVersion = bp.StructureVersion
-	copied.Data = bp.Data.Copy().(*types.Data)
-	copied.PrincipalBasicInfo = bp.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
-	copied.GameKey = bp.GameKey.Copy().(*GameKey)
-	copied.BlackListedSince = bp.BlackListedSince.Copy().(*types.DateTime)
+	copied.Data = bp.Data.Copy().(types.Data)
+	copied.PrincipalBasicInfo = bp.PrincipalBasicInfo.Copy().(PrincipalBasicInfo)
+	copied.GameKey = bp.GameKey.Copy().(GameKey)
+	copied.BlackListedSince = bp.BlackListedSince.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given BlacklistedPrincipal contains the same data as the current BlacklistedPrincipal
-func (bp *BlacklistedPrincipal) Equals(o types.RVType) bool {
+func (bp BlacklistedPrincipal) Equals(o types.RVType) bool {
 	if _, ok := o.(*BlacklistedPrincipal); !ok {
 		return false
 	}
@@ -107,12 +107,12 @@ func (bp *BlacklistedPrincipal) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the BlacklistedPrincipal
-func (bp *BlacklistedPrincipal) String() string {
+func (bp BlacklistedPrincipal) String() string {
 	return bp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the BlacklistedPrincipal using the provided indentation level
-func (bp *BlacklistedPrincipal) FormatToString(indentationLevel int) string {
+func (bp BlacklistedPrincipal) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +129,12 @@ func (bp *BlacklistedPrincipal) FormatToString(indentationLevel int) string {
 }
 
 // NewBlacklistedPrincipal returns a new BlacklistedPrincipal
-func NewBlacklistedPrincipal() *BlacklistedPrincipal {
-	bp := &BlacklistedPrincipal{
+func NewBlacklistedPrincipal() BlacklistedPrincipal {
+	return BlacklistedPrincipal{
 		Data:               types.NewData(),
 		PrincipalBasicInfo: NewPrincipalBasicInfo(),
 		GameKey:            NewGameKey(),
 		BlackListedSince:   types.NewDateTime(0),
 	}
 
-	return bp
 }

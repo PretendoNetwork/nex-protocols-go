@@ -11,13 +11,13 @@ import (
 // DataStorePostFightingPowerScoreParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStorePostFightingPowerScoreParam struct {
 	types.Structure
-	Mode             *types.PrimitiveU8
-	Score            *types.PrimitiveU32
-	IsWorldHighScore *types.PrimitiveBool
+	Mode             types.UInt8
+	Score            types.UInt32
+	IsWorldHighScore types.Bool
 }
 
 // WriteTo writes the DataStorePostFightingPowerScoreParam to the given writable
-func (dspfpsp *DataStorePostFightingPowerScoreParam) WriteTo(writable types.Writable) {
+func (dspfpsp DataStorePostFightingPowerScoreParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspfpsp.Mode.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (dspfpsp *DataStorePostFightingPowerScoreParam) ExtractFrom(readable types.
 }
 
 // Copy returns a new copied instance of DataStorePostFightingPowerScoreParam
-func (dspfpsp *DataStorePostFightingPowerScoreParam) Copy() types.RVType {
+func (dspfpsp DataStorePostFightingPowerScoreParam) Copy() types.RVType {
 	copied := NewDataStorePostFightingPowerScoreParam()
 
 	copied.StructureVersion = dspfpsp.StructureVersion
-	copied.Mode = dspfpsp.Mode.Copy().(*types.PrimitiveU8)
-	copied.Score = dspfpsp.Score.Copy().(*types.PrimitiveU32)
-	copied.IsWorldHighScore = dspfpsp.IsWorldHighScore.Copy().(*types.PrimitiveBool)
+	copied.Mode = dspfpsp.Mode.Copy().(types.UInt8)
+	copied.Score = dspfpsp.Score.Copy().(types.UInt32)
+	copied.IsWorldHighScore = dspfpsp.IsWorldHighScore.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given DataStorePostFightingPowerScoreParam contains the same data as the current DataStorePostFightingPowerScoreParam
-func (dspfpsp *DataStorePostFightingPowerScoreParam) Equals(o types.RVType) bool {
+func (dspfpsp DataStorePostFightingPowerScoreParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePostFightingPowerScoreParam); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (dspfpsp *DataStorePostFightingPowerScoreParam) Equals(o types.RVType) bool
 }
 
 // String returns the string representation of the DataStorePostFightingPowerScoreParam
-func (dspfpsp *DataStorePostFightingPowerScoreParam) String() string {
+func (dspfpsp DataStorePostFightingPowerScoreParam) String() string {
 	return dspfpsp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePostFightingPowerScoreParam using the provided indentation level
-func (dspfpsp *DataStorePostFightingPowerScoreParam) FormatToString(indentationLevel int) string {
+func (dspfpsp DataStorePostFightingPowerScoreParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (dspfpsp *DataStorePostFightingPowerScoreParam) FormatToString(indentationL
 }
 
 // NewDataStorePostFightingPowerScoreParam returns a new DataStorePostFightingPowerScoreParam
-func NewDataStorePostFightingPowerScoreParam() *DataStorePostFightingPowerScoreParam {
-	dspfpsp := &DataStorePostFightingPowerScoreParam{
-		Mode:             types.NewPrimitiveU8(0),
-		Score:            types.NewPrimitiveU32(0),
-		IsWorldHighScore: types.NewPrimitiveBool(false),
+func NewDataStorePostFightingPowerScoreParam() DataStorePostFightingPowerScoreParam {
+	return DataStorePostFightingPowerScoreParam{
+		Mode:             types.NewUInt8(0),
+		Score:            types.NewUInt32(0),
+		IsWorldHighScore: types.NewBool(false),
 	}
 
-	return dspfpsp
 }

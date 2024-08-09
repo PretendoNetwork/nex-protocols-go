@@ -11,12 +11,12 @@ import (
 // DataStoreRatingInfoWithSlot is a type within the DataStore protocol
 type DataStoreRatingInfoWithSlot struct {
 	types.Structure
-	Slot   *types.PrimitiveS8
-	Rating *DataStoreRatingInfo
+	Slot   types.Int8
+	Rating DataStoreRatingInfo
 }
 
 // WriteTo writes the DataStoreRatingInfoWithSlot to the given writable
-func (dsriws *DataStoreRatingInfoWithSlot) WriteTo(writable types.Writable) {
+func (dsriws DataStoreRatingInfoWithSlot) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsriws.Slot.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dsriws *DataStoreRatingInfoWithSlot) ExtractFrom(readable types.Readable) 
 }
 
 // Copy returns a new copied instance of DataStoreRatingInfoWithSlot
-func (dsriws *DataStoreRatingInfoWithSlot) Copy() types.RVType {
+func (dsriws DataStoreRatingInfoWithSlot) Copy() types.RVType {
 	copied := NewDataStoreRatingInfoWithSlot()
 
 	copied.StructureVersion = dsriws.StructureVersion
-	copied.Slot = dsriws.Slot.Copy().(*types.PrimitiveS8)
-	copied.Rating = dsriws.Rating.Copy().(*DataStoreRatingInfo)
+	copied.Slot = dsriws.Slot.Copy().(types.Int8)
+	copied.Rating = dsriws.Rating.Copy().(DataStoreRatingInfo)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreRatingInfoWithSlot contains the same data as the current DataStoreRatingInfoWithSlot
-func (dsriws *DataStoreRatingInfoWithSlot) Equals(o types.RVType) bool {
+func (dsriws DataStoreRatingInfoWithSlot) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreRatingInfoWithSlot); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dsriws *DataStoreRatingInfoWithSlot) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreRatingInfoWithSlot
-func (dsriws *DataStoreRatingInfoWithSlot) String() string {
+func (dsriws DataStoreRatingInfoWithSlot) String() string {
 	return dsriws.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreRatingInfoWithSlot using the provided indentation level
-func (dsriws *DataStoreRatingInfoWithSlot) FormatToString(indentationLevel int) string {
+func (dsriws DataStoreRatingInfoWithSlot) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dsriws *DataStoreRatingInfoWithSlot) FormatToString(indentationLevel int) 
 }
 
 // NewDataStoreRatingInfoWithSlot returns a new DataStoreRatingInfoWithSlot
-func NewDataStoreRatingInfoWithSlot() *DataStoreRatingInfoWithSlot {
-	dsriws := &DataStoreRatingInfoWithSlot{
-		Slot:   types.NewPrimitiveS8(0),
+func NewDataStoreRatingInfoWithSlot() DataStoreRatingInfoWithSlot {
+	return DataStoreRatingInfoWithSlot{
+		Slot:   types.NewInt8(0),
 		Rating: NewDataStoreRatingInfo(),
 	}
 
-	return dsriws
 }

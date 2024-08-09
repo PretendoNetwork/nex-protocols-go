@@ -25,14 +25,14 @@ func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	commonData := types.NewBuffer(nil)
-	uniqueID := types.NewPrimitiveU64(0)
+	var commonData types.Buffer
+	var uniqueID types.UInt64
 
 	var err error
 
 	err = commonData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UploadCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, commonData, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadCommonData(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UploadCommonData(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, commonData, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

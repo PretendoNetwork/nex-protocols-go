@@ -26,14 +26,14 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	ownerID := types.NewPrimitiveU32(0)
+	var ownerID types.UInt32
 	param := datastore_types.NewDataStoreCompletePostParam()
 
 	var err error
 
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, ownerID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, ownerID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

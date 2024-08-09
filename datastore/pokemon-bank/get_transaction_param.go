@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	slotID := types.NewPrimitiveU16(0)
+	var slotID types.UInt16
 
 	err := slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetTransactionParam(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetTransactionParam(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, slotID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

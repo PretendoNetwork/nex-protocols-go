@@ -11,13 +11,13 @@ import (
 // Ranking2CommonData is a type within the Ranking2 protocol
 type Ranking2CommonData struct {
 	types.Structure
-	UserName   *types.String
-	Mii        *types.QBuffer
-	BinaryData *types.QBuffer
+	UserName   types.String
+	Mii        types.QBuffer
+	BinaryData types.QBuffer
 }
 
 // WriteTo writes the Ranking2CommonData to the given writable
-func (rcd *Ranking2CommonData) WriteTo(writable types.Writable) {
+func (rcd Ranking2CommonData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rcd.UserName.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (rcd *Ranking2CommonData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Ranking2CommonData
-func (rcd *Ranking2CommonData) Copy() types.RVType {
+func (rcd Ranking2CommonData) Copy() types.RVType {
 	copied := NewRanking2CommonData()
 
 	copied.StructureVersion = rcd.StructureVersion
-	copied.UserName = rcd.UserName.Copy().(*types.String)
-	copied.Mii = rcd.Mii.Copy().(*types.QBuffer)
-	copied.BinaryData = rcd.BinaryData.Copy().(*types.QBuffer)
+	copied.UserName = rcd.UserName.Copy().(types.String)
+	copied.Mii = rcd.Mii.Copy().(types.QBuffer)
+	copied.BinaryData = rcd.BinaryData.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2CommonData contains the same data as the current Ranking2CommonData
-func (rcd *Ranking2CommonData) Equals(o types.RVType) bool {
+func (rcd Ranking2CommonData) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2CommonData); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (rcd *Ranking2CommonData) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the Ranking2CommonData
-func (rcd *Ranking2CommonData) String() string {
+func (rcd Ranking2CommonData) String() string {
 	return rcd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2CommonData using the provided indentation level
-func (rcd *Ranking2CommonData) FormatToString(indentationLevel int) string {
+func (rcd Ranking2CommonData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (rcd *Ranking2CommonData) FormatToString(indentationLevel int) string {
 }
 
 // NewRanking2CommonData returns a new Ranking2CommonData
-func NewRanking2CommonData() *Ranking2CommonData {
-	rcd := &Ranking2CommonData{
+func NewRanking2CommonData() Ranking2CommonData {
+	return Ranking2CommonData{
 		UserName:   types.NewString(""),
 		Mii:        types.NewQBuffer(nil),
 		BinaryData: types.NewQBuffer(nil),
 	}
 
-	return rcd
 }

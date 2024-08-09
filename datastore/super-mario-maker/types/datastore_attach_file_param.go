@@ -12,13 +12,13 @@ import (
 // DataStoreAttachFileParam is a type within the DataStore protocol
 type DataStoreAttachFileParam struct {
 	types.Structure
-	PostParam   *datastore_types.DataStorePreparePostParam
-	ReferDataID *types.PrimitiveU64
-	ContentType *types.String
+	PostParam   datastore_types.DataStorePreparePostParam
+	ReferDataID types.UInt64
+	ContentType types.String
 }
 
 // WriteTo writes the DataStoreAttachFileParam to the given writable
-func (dsafp *DataStoreAttachFileParam) WriteTo(writable types.Writable) {
+func (dsafp DataStoreAttachFileParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsafp.PostParam.WriteTo(contentWritable)
@@ -60,19 +60,19 @@ func (dsafp *DataStoreAttachFileParam) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of DataStoreAttachFileParam
-func (dsafp *DataStoreAttachFileParam) Copy() types.RVType {
+func (dsafp DataStoreAttachFileParam) Copy() types.RVType {
 	copied := NewDataStoreAttachFileParam()
 
 	copied.StructureVersion = dsafp.StructureVersion
-	copied.PostParam = dsafp.PostParam.Copy().(*datastore_types.DataStorePreparePostParam)
-	copied.ReferDataID = dsafp.ReferDataID.Copy().(*types.PrimitiveU64)
-	copied.ContentType = dsafp.ContentType.Copy().(*types.String)
+	copied.PostParam = dsafp.PostParam.Copy().(datastore_types.DataStorePreparePostParam)
+	copied.ReferDataID = dsafp.ReferDataID.Copy().(types.UInt64)
+	copied.ContentType = dsafp.ContentType.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreAttachFileParam contains the same data as the current DataStoreAttachFileParam
-func (dsafp *DataStoreAttachFileParam) Equals(o types.RVType) bool {
+func (dsafp DataStoreAttachFileParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreAttachFileParam); !ok {
 		return false
 	}
@@ -95,12 +95,12 @@ func (dsafp *DataStoreAttachFileParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreAttachFileParam
-func (dsafp *DataStoreAttachFileParam) String() string {
+func (dsafp DataStoreAttachFileParam) String() string {
 	return dsafp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreAttachFileParam using the provided indentation level
-func (dsafp *DataStoreAttachFileParam) FormatToString(indentationLevel int) string {
+func (dsafp DataStoreAttachFileParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,12 +116,11 @@ func (dsafp *DataStoreAttachFileParam) FormatToString(indentationLevel int) stri
 }
 
 // NewDataStoreAttachFileParam returns a new DataStoreAttachFileParam
-func NewDataStoreAttachFileParam() *DataStoreAttachFileParam {
-	dsafp := &DataStoreAttachFileParam{
+func NewDataStoreAttachFileParam() DataStoreAttachFileParam {
+	return DataStoreAttachFileParam{
 		PostParam:   datastore_types.NewDataStorePreparePostParam(),
-		ReferDataID: types.NewPrimitiveU64(0),
+		ReferDataID: types.NewUInt64(0),
 		ContentType: types.NewString(""),
 	}
 
-	return dsafp
 }

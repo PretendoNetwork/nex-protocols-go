@@ -25,14 +25,14 @@ func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strDescriptionLike := types.NewString("")
-	resultRange := types.NewResultRange()
+	var strDescriptionLike types.String
+	var resultRange types.ResultRange
 
 	var err error
 
 	err = strDescriptionLike.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("Failed to read strDescriptionLike from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("Failed to read strDescriptionLike from parameters. %s", err.Error()), packet, callID, strDescriptionLike, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, strDescriptionLike, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

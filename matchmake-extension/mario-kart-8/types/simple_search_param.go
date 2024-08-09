@@ -11,16 +11,16 @@ import (
 // SimpleSearchParam is a type within the MatchmakeExtension protocol
 type SimpleSearchParam struct {
 	types.Structure
-	Unknown     *types.PrimitiveU32
-	Unknown2    *types.PID
-	Conditions  *types.List[*SimpleSearchCondition]
-	Unknown3    *types.String
-	ResultRange *types.ResultRange
-	Unknown4    *types.DateTime
+	Unknown     types.UInt32
+	Unknown2    types.PID
+	Conditions  types.List[SimpleSearchCondition]
+	Unknown3    types.String
+	ResultRange types.ResultRange
+	Unknown4    types.DateTime
 }
 
 // WriteTo writes the SimpleSearchParam to the given writable
-func (ssp *SimpleSearchParam) WriteTo(writable types.Writable) {
+func (ssp SimpleSearchParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	ssp.Unknown.WriteTo(contentWritable)
@@ -80,22 +80,22 @@ func (ssp *SimpleSearchParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of SimpleSearchParam
-func (ssp *SimpleSearchParam) Copy() types.RVType {
+func (ssp SimpleSearchParam) Copy() types.RVType {
 	copied := NewSimpleSearchParam()
 
 	copied.StructureVersion = ssp.StructureVersion
-	copied.Unknown = ssp.Unknown.Copy().(*types.PrimitiveU32)
-	copied.Unknown2 = ssp.Unknown2.Copy().(*types.PID)
-	copied.Conditions = ssp.Conditions.Copy().(*types.List[*SimpleSearchCondition])
-	copied.Unknown3 = ssp.Unknown3.Copy().(*types.String)
-	copied.ResultRange = ssp.ResultRange.Copy().(*types.ResultRange)
-	copied.Unknown4 = ssp.Unknown4.Copy().(*types.DateTime)
+	copied.Unknown = ssp.Unknown.Copy().(types.UInt32)
+	copied.Unknown2 = ssp.Unknown2.Copy().(types.PID)
+	copied.Conditions = ssp.Conditions.Copy().(types.List[SimpleSearchCondition])
+	copied.Unknown3 = ssp.Unknown3.Copy().(types.String)
+	copied.ResultRange = ssp.ResultRange.Copy().(types.ResultRange)
+	copied.Unknown4 = ssp.Unknown4.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given SimpleSearchParam contains the same data as the current SimpleSearchParam
-func (ssp *SimpleSearchParam) Equals(o types.RVType) bool {
+func (ssp SimpleSearchParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*SimpleSearchParam); !ok {
 		return false
 	}
@@ -130,12 +130,12 @@ func (ssp *SimpleSearchParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the SimpleSearchParam
-func (ssp *SimpleSearchParam) String() string {
+func (ssp SimpleSearchParam) String() string {
 	return ssp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SimpleSearchParam using the provided indentation level
-func (ssp *SimpleSearchParam) FormatToString(indentationLevel int) string {
+func (ssp SimpleSearchParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,17 +154,14 @@ func (ssp *SimpleSearchParam) FormatToString(indentationLevel int) string {
 }
 
 // NewSimpleSearchParam returns a new SimpleSearchParam
-func NewSimpleSearchParam() *SimpleSearchParam {
-	ssp := &SimpleSearchParam{
-		Unknown:     types.NewPrimitiveU32(0),
+func NewSimpleSearchParam() SimpleSearchParam {
+	return SimpleSearchParam{
+		Unknown:     types.NewUInt32(0),
 		Unknown2:    types.NewPID(0),
-		Conditions:  types.NewList[*SimpleSearchCondition](),
+		Conditions:  types.NewList[SimpleSearchCondition](),
 		Unknown3:    types.NewString(""),
 		ResultRange: types.NewResultRange(),
 		Unknown4:    types.NewDateTime(0),
 	}
 
-	ssp.Conditions.Type = NewSimpleSearchCondition()
-
-	return ssp
 }

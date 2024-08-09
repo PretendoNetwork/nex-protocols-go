@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInte
 
 	err := updateMatchmakeSessionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateMatchmakeSessionPart(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateMatchmakeSessionPart(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, updateMatchmakeSessionParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

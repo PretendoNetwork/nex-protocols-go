@@ -25,15 +25,15 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	optionFlags := types.NewPrimitiveU32(0)
-	principalID := types.NewPID(0)
-	nexUniqueID := types.NewPrimitiveU64(0)
+	var optionFlags types.UInt32
+	var principalID types.PID
+	var nexUniqueID types.UInt64
 
 	var err error
 
 	err = optionFlags.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	err = principalID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

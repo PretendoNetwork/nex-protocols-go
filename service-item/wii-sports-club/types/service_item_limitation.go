@@ -11,12 +11,12 @@ import (
 // ServiceItemLimitation is a type within the ServiceItem protocol
 type ServiceItemLimitation struct {
 	types.Structure
-	LimitationType  *types.PrimitiveU32
-	LimitationValue *types.PrimitiveU32
+	LimitationType  types.UInt32
+	LimitationValue types.UInt32
 }
 
 // WriteTo writes the ServiceItemLimitation to the given writable
-func (sil *ServiceItemLimitation) WriteTo(writable types.Writable) {
+func (sil ServiceItemLimitation) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sil.LimitationType.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (sil *ServiceItemLimitation) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemLimitation
-func (sil *ServiceItemLimitation) Copy() types.RVType {
+func (sil ServiceItemLimitation) Copy() types.RVType {
 	copied := NewServiceItemLimitation()
 
 	copied.StructureVersion = sil.StructureVersion
-	copied.LimitationType = sil.LimitationType.Copy().(*types.PrimitiveU32)
-	copied.LimitationValue = sil.LimitationValue.Copy().(*types.PrimitiveU32)
+	copied.LimitationType = sil.LimitationType.Copy().(types.UInt32)
+	copied.LimitationValue = sil.LimitationValue.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemLimitation contains the same data as the current ServiceItemLimitation
-func (sil *ServiceItemLimitation) Equals(o types.RVType) bool {
+func (sil ServiceItemLimitation) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemLimitation); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (sil *ServiceItemLimitation) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemLimitation
-func (sil *ServiceItemLimitation) String() string {
+func (sil ServiceItemLimitation) String() string {
 	return sil.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemLimitation using the provided indentation level
-func (sil *ServiceItemLimitation) FormatToString(indentationLevel int) string {
+func (sil ServiceItemLimitation) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (sil *ServiceItemLimitation) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemLimitation returns a new ServiceItemLimitation
-func NewServiceItemLimitation() *ServiceItemLimitation {
-	sil := &ServiceItemLimitation{
-		LimitationType:  types.NewPrimitiveU32(0),
-		LimitationValue: types.NewPrimitiveU32(0),
+func NewServiceItemLimitation() ServiceItemLimitation {
+	return ServiceItemLimitation{
+		LimitationType:  types.NewUInt32(0),
+		LimitationValue: types.NewUInt32(0),
 	}
 
-	return sil
 }

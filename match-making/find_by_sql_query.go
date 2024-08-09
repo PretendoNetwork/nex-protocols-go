@@ -25,14 +25,14 @@ func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strQuery := types.NewString("")
-	resultRange := types.NewResultRange()
+	var strQuery types.String
+	var resultRange types.ResultRange
 
 	var err error
 
 	err = strQuery.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, strQuery, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, strQuery, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -12,15 +12,15 @@ import (
 // AuthenticationInfo is a type within the TicketGranting protocol
 type AuthenticationInfo struct {
 	types.Structure
-	*types.Data
-	Token         *types.String
-	NGSVersion    *types.PrimitiveU32
-	TokenType     *types.PrimitiveU8
-	ServerVersion *types.PrimitiveU32
+	types.Data
+	Token         types.String
+	NGSVersion    types.UInt32
+	TokenType     types.UInt8
+	ServerVersion types.UInt32
 }
 
 // WriteTo writes the AuthenticationInfo to the given writable
-func (ai *AuthenticationInfo) WriteTo(writable types.Writable) {
+func (ai AuthenticationInfo) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.Main
 
@@ -86,21 +86,21 @@ func (ai *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of AuthenticationInfo
-func (ai *AuthenticationInfo) Copy() types.RVType {
+func (ai AuthenticationInfo) Copy() types.RVType {
 	copied := NewAuthenticationInfo()
 
 	copied.StructureVersion = ai.StructureVersion
-	copied.Data = ai.Data.Copy().(*types.Data)
-	copied.Token = ai.Token.Copy().(*types.String)
-	copied.NGSVersion = ai.NGSVersion.Copy().(*types.PrimitiveU32)
-	copied.TokenType = ai.TokenType.Copy().(*types.PrimitiveU8)
-	copied.ServerVersion = ai.ServerVersion.Copy().(*types.PrimitiveU32)
+	copied.Data = ai.Data.Copy().(types.Data)
+	copied.Token = ai.Token.Copy().(types.String)
+	copied.NGSVersion = ai.NGSVersion.Copy().(types.UInt32)
+	copied.TokenType = ai.TokenType.Copy().(types.UInt8)
+	copied.ServerVersion = ai.ServerVersion.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given AuthenticationInfo contains the same data as the current AuthenticationInfo
-func (ai *AuthenticationInfo) Equals(o types.RVType) bool {
+func (ai AuthenticationInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*AuthenticationInfo); !ok {
 		return false
 	}
@@ -131,12 +131,12 @@ func (ai *AuthenticationInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the AuthenticationInfo
-func (ai *AuthenticationInfo) String() string {
+func (ai AuthenticationInfo) String() string {
 	return ai.FormatToString(0)
 }
 
 // FormatToString pretty-prints the AuthenticationInfo using the provided indentation level
-func (ai *AuthenticationInfo) FormatToString(indentationLevel int) string {
+func (ai AuthenticationInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,14 +154,13 @@ func (ai *AuthenticationInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewAuthenticationInfo returns a new AuthenticationInfo
-func NewAuthenticationInfo() *AuthenticationInfo {
-	ai := &AuthenticationInfo{
+func NewAuthenticationInfo() AuthenticationInfo {
+	return AuthenticationInfo{
 		Data:          types.NewData(),
 		Token:         types.NewString(""),
-		NGSVersion:    types.NewPrimitiveU32(0),
-		TokenType:     types.NewPrimitiveU8(0),
-		ServerVersion: types.NewPrimitiveU32(0),
+		NGSVersion:    types.NewUInt32(0),
+		TokenType:     types.NewUInt8(0),
+		ServerVersion: types.NewUInt32(0),
 	}
 
-	return ai
 }

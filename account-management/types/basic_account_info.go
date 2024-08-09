@@ -11,12 +11,12 @@ import (
 // BasicAccountInfo is a type within the AccountManagement protocol
 type BasicAccountInfo struct {
 	types.Structure
-	PIDOwner *types.PID
-	StrName  *types.String
+	PIDOwner types.PID
+	StrName  types.String
 }
 
 // WriteTo writes the BasicAccountInfo to the given writable
-func (bai *BasicAccountInfo) WriteTo(writable types.Writable) {
+func (bai BasicAccountInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	bai.PIDOwner.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (bai *BasicAccountInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of BasicAccountInfo
-func (bai *BasicAccountInfo) Copy() types.RVType {
+func (bai BasicAccountInfo) Copy() types.RVType {
 	copied := NewBasicAccountInfo()
 
 	copied.StructureVersion = bai.StructureVersion
-	copied.PIDOwner = bai.PIDOwner.Copy().(*types.PID)
-	copied.StrName = bai.StrName.Copy().(*types.String)
+	copied.PIDOwner = bai.PIDOwner.Copy().(types.PID)
+	copied.StrName = bai.StrName.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given BasicAccountInfo contains the same data as the current BasicAccountInfo
-func (bai *BasicAccountInfo) Equals(o types.RVType) bool {
+func (bai BasicAccountInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*BasicAccountInfo); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (bai *BasicAccountInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the BasicAccountInfo
-func (bai *BasicAccountInfo) String() string {
+func (bai BasicAccountInfo) String() string {
 	return bai.FormatToString(0)
 }
 
 // FormatToString pretty-prints the BasicAccountInfo using the provided indentation level
-func (bai *BasicAccountInfo) FormatToString(indentationLevel int) string {
+func (bai BasicAccountInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (bai *BasicAccountInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewBasicAccountInfo returns a new BasicAccountInfo
-func NewBasicAccountInfo() *BasicAccountInfo {
-	bai := &BasicAccountInfo{
+func NewBasicAccountInfo() BasicAccountInfo {
+	return BasicAccountInfo{
 		PIDOwner: types.NewPID(0),
 		StrName:  types.NewString(""),
 	}
 
-	return bai
 }

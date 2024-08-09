@@ -11,16 +11,16 @@ import (
 // MiiV2 is a type within the FriendsWiiU protocol
 type MiiV2 struct {
 	types.Structure
-	*types.Data
-	Name     *types.String
-	Unknown1 *types.PrimitiveU8
-	Unknown2 *types.PrimitiveU8
-	MiiData  *types.Buffer
-	Datetime *types.DateTime
+	types.Data
+	Name     types.String
+	Unknown1 types.UInt8
+	Unknown2 types.UInt8
+	MiiData  types.Buffer
+	Datetime types.DateTime
 }
 
 // WriteTo writes the MiiV2 to the given writable
-func (mv *MiiV2) WriteTo(writable types.Writable) {
+func (mv MiiV2) WriteTo(writable types.Writable) {
 	mv.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -81,22 +81,22 @@ func (mv *MiiV2) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MiiV2
-func (mv *MiiV2) Copy() types.RVType {
+func (mv MiiV2) Copy() types.RVType {
 	copied := NewMiiV2()
 
 	copied.StructureVersion = mv.StructureVersion
-	copied.Data = mv.Data.Copy().(*types.Data)
-	copied.Name = mv.Name.Copy().(*types.String)
-	copied.Unknown1 = mv.Unknown1.Copy().(*types.PrimitiveU8)
-	copied.Unknown2 = mv.Unknown2.Copy().(*types.PrimitiveU8)
-	copied.MiiData = mv.MiiData.Copy().(*types.Buffer)
-	copied.Datetime = mv.Datetime.Copy().(*types.DateTime)
+	copied.Data = mv.Data.Copy().(types.Data)
+	copied.Name = mv.Name.Copy().(types.String)
+	copied.Unknown1 = mv.Unknown1.Copy().(types.UInt8)
+	copied.Unknown2 = mv.Unknown2.Copy().(types.UInt8)
+	copied.MiiData = mv.MiiData.Copy().(types.Buffer)
+	copied.Datetime = mv.Datetime.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given MiiV2 contains the same data as the current MiiV2
-func (mv *MiiV2) Equals(o types.RVType) bool {
+func (mv MiiV2) Equals(o types.RVType) bool {
 	if _, ok := o.(*MiiV2); !ok {
 		return false
 	}
@@ -131,12 +131,12 @@ func (mv *MiiV2) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MiiV2
-func (mv *MiiV2) String() string {
+func (mv MiiV2) String() string {
 	return mv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MiiV2 using the provided indentation level
-func (mv *MiiV2) FormatToString(indentationLevel int) string {
+func (mv MiiV2) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -155,15 +155,14 @@ func (mv *MiiV2) FormatToString(indentationLevel int) string {
 }
 
 // NewMiiV2 returns a new MiiV2
-func NewMiiV2() *MiiV2 {
-	mv := &MiiV2{
+func NewMiiV2() MiiV2 {
+	return MiiV2{
 		Data:     types.NewData(),
 		Name:     types.NewString(""),
-		Unknown1: types.NewPrimitiveU8(0),
-		Unknown2: types.NewPrimitiveU8(0),
+		Unknown1: types.NewUInt8(0),
+		Unknown2: types.NewUInt8(0),
 		MiiData:  types.NewBuffer(nil),
 		Datetime: types.NewDateTime(0),
 	}
 
-	return mv
 }

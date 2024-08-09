@@ -11,12 +11,12 @@ import (
 // BinaryMessage is a type within the MessageDelivery protocol
 type BinaryMessage struct {
 	types.Structure
-	*UserMessage
-	BinaryBody *types.QBuffer
+	UserMessage
+	BinaryBody types.QBuffer
 }
 
 // WriteTo writes the BinaryMessage to the given writable
-func (bm *BinaryMessage) WriteTo(writable types.Writable) {
+func (bm BinaryMessage) WriteTo(writable types.Writable) {
 	bm.UserMessage.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,18 +53,18 @@ func (bm *BinaryMessage) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of BinaryMessage
-func (bm *BinaryMessage) Copy() types.RVType {
+func (bm BinaryMessage) Copy() types.RVType {
 	copied := NewBinaryMessage()
 
 	copied.StructureVersion = bm.StructureVersion
-	copied.UserMessage = bm.UserMessage.Copy().(*UserMessage)
-	copied.BinaryBody = bm.BinaryBody.Copy().(*types.QBuffer)
+	copied.UserMessage = bm.UserMessage.Copy().(UserMessage)
+	copied.BinaryBody = bm.BinaryBody.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given BinaryMessage contains the same data as the current BinaryMessage
-func (bm *BinaryMessage) Equals(o types.RVType) bool {
+func (bm BinaryMessage) Equals(o types.RVType) bool {
 	if _, ok := o.(*BinaryMessage); !ok {
 		return false
 	}
@@ -83,12 +83,12 @@ func (bm *BinaryMessage) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the BinaryMessage
-func (bm *BinaryMessage) String() string {
+func (bm BinaryMessage) String() string {
 	return bm.FormatToString(0)
 }
 
 // FormatToString pretty-prints the BinaryMessage using the provided indentation level
-func (bm *BinaryMessage) FormatToString(indentationLevel int) string {
+func (bm BinaryMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,11 +103,10 @@ func (bm *BinaryMessage) FormatToString(indentationLevel int) string {
 }
 
 // NewBinaryMessage returns a new BinaryMessage
-func NewBinaryMessage() *BinaryMessage {
-	bm := &BinaryMessage{
+func NewBinaryMessage() BinaryMessage {
+	return BinaryMessage{
 		UserMessage: NewUserMessage(),
 		BinaryBody:  types.NewQBuffer(nil),
 	}
 
-	return bm
 }

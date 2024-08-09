@@ -11,16 +11,16 @@ import (
 // RankingScoreData is a type within the Ranking protocol
 type RankingScoreData struct {
 	types.Structure
-	Category   *types.PrimitiveU32
-	Score      *types.PrimitiveU32
-	OrderBy    *types.PrimitiveU8
-	UpdateMode *types.PrimitiveU8
-	Groups     *types.Buffer
-	Param      *types.PrimitiveU64
+	Category   types.UInt32
+	Score      types.UInt32
+	OrderBy    types.UInt8
+	UpdateMode types.UInt8
+	Groups     types.Buffer
+	Param      types.UInt64
 }
 
 // WriteTo writes the RankingScoreData to the given writable
-func (rsd *RankingScoreData) WriteTo(writable types.Writable) {
+func (rsd RankingScoreData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rsd.Category.WriteTo(contentWritable)
@@ -80,22 +80,22 @@ func (rsd *RankingScoreData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of RankingScoreData
-func (rsd *RankingScoreData) Copy() types.RVType {
+func (rsd RankingScoreData) Copy() types.RVType {
 	copied := NewRankingScoreData()
 
 	copied.StructureVersion = rsd.StructureVersion
-	copied.Category = rsd.Category.Copy().(*types.PrimitiveU32)
-	copied.Score = rsd.Score.Copy().(*types.PrimitiveU32)
-	copied.OrderBy = rsd.OrderBy.Copy().(*types.PrimitiveU8)
-	copied.UpdateMode = rsd.UpdateMode.Copy().(*types.PrimitiveU8)
-	copied.Groups = rsd.Groups.Copy().(*types.Buffer)
-	copied.Param = rsd.Param.Copy().(*types.PrimitiveU64)
+	copied.Category = rsd.Category.Copy().(types.UInt32)
+	copied.Score = rsd.Score.Copy().(types.UInt32)
+	copied.OrderBy = rsd.OrderBy.Copy().(types.UInt8)
+	copied.UpdateMode = rsd.UpdateMode.Copy().(types.UInt8)
+	copied.Groups = rsd.Groups.Copy().(types.Buffer)
+	copied.Param = rsd.Param.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given RankingScoreData contains the same data as the current RankingScoreData
-func (rsd *RankingScoreData) Equals(o types.RVType) bool {
+func (rsd RankingScoreData) Equals(o types.RVType) bool {
 	if _, ok := o.(*RankingScoreData); !ok {
 		return false
 	}
@@ -130,12 +130,12 @@ func (rsd *RankingScoreData) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the RankingScoreData
-func (rsd *RankingScoreData) String() string {
+func (rsd RankingScoreData) String() string {
 	return rsd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the RankingScoreData using the provided indentation level
-func (rsd *RankingScoreData) FormatToString(indentationLevel int) string {
+func (rsd RankingScoreData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,15 +154,14 @@ func (rsd *RankingScoreData) FormatToString(indentationLevel int) string {
 }
 
 // NewRankingScoreData returns a new RankingScoreData
-func NewRankingScoreData() *RankingScoreData {
-	rsd := &RankingScoreData{
-		Category:   types.NewPrimitiveU32(0),
-		Score:      types.NewPrimitiveU32(0),
-		OrderBy:    types.NewPrimitiveU8(0),
-		UpdateMode: types.NewPrimitiveU8(0),
+func NewRankingScoreData() RankingScoreData {
+	return RankingScoreData{
+		Category:   types.NewUInt32(0),
+		Score:      types.NewUInt32(0),
+		OrderBy:    types.NewUInt8(0),
+		UpdateMode: types.NewUInt8(0),
 		Groups:     types.NewBuffer(nil),
-		Param:      types.NewPrimitiveU64(0),
+		Param:      types.NewUInt64(0),
 	}
 
-	return rsd
 }

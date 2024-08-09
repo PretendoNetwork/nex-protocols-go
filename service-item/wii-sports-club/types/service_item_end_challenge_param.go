@@ -11,12 +11,12 @@ import (
 // ServiceItemEndChallengeParam is a type within the ServiceItem protocol
 type ServiceItemEndChallengeParam struct {
 	types.Structure
-	ChallengeScheduleID *types.PrimitiveU32
-	UserInfo            *ServiceItemUserInfo
+	ChallengeScheduleID types.UInt32
+	UserInfo            ServiceItemUserInfo
 }
 
 // WriteTo writes the ServiceItemEndChallengeParam to the given writable
-func (siecp *ServiceItemEndChallengeParam) WriteTo(writable types.Writable) {
+func (siecp ServiceItemEndChallengeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siecp.ChallengeScheduleID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (siecp *ServiceItemEndChallengeParam) ExtractFrom(readable types.Readable) 
 }
 
 // Copy returns a new copied instance of ServiceItemEndChallengeParam
-func (siecp *ServiceItemEndChallengeParam) Copy() types.RVType {
+func (siecp ServiceItemEndChallengeParam) Copy() types.RVType {
 	copied := NewServiceItemEndChallengeParam()
 
 	copied.StructureVersion = siecp.StructureVersion
-	copied.ChallengeScheduleID = siecp.ChallengeScheduleID.Copy().(*types.PrimitiveU32)
-	copied.UserInfo = siecp.UserInfo.Copy().(*ServiceItemUserInfo)
+	copied.ChallengeScheduleID = siecp.ChallengeScheduleID.Copy().(types.UInt32)
+	copied.UserInfo = siecp.UserInfo.Copy().(ServiceItemUserInfo)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemEndChallengeParam contains the same data as the current ServiceItemEndChallengeParam
-func (siecp *ServiceItemEndChallengeParam) Equals(o types.RVType) bool {
+func (siecp ServiceItemEndChallengeParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemEndChallengeParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (siecp *ServiceItemEndChallengeParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemEndChallengeParam
-func (siecp *ServiceItemEndChallengeParam) String() string {
+func (siecp ServiceItemEndChallengeParam) String() string {
 	return siecp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemEndChallengeParam using the provided indentation level
-func (siecp *ServiceItemEndChallengeParam) FormatToString(indentationLevel int) string {
+func (siecp ServiceItemEndChallengeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (siecp *ServiceItemEndChallengeParam) FormatToString(indentationLevel int) 
 }
 
 // NewServiceItemEndChallengeParam returns a new ServiceItemEndChallengeParam
-func NewServiceItemEndChallengeParam() *ServiceItemEndChallengeParam {
-	siecp := &ServiceItemEndChallengeParam{
-		ChallengeScheduleID: types.NewPrimitiveU32(0),
+func NewServiceItemEndChallengeParam() ServiceItemEndChallengeParam {
+	return ServiceItemEndChallengeParam{
+		ChallengeScheduleID: types.NewUInt32(0),
 		UserInfo:            NewServiceItemUserInfo(),
 	}
 
-	return siecp
 }

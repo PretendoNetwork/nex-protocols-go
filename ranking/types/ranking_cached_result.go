@@ -11,14 +11,14 @@ import (
 // RankingCachedResult is a type within the Ranking protocol
 type RankingCachedResult struct {
 	types.Structure
-	*RankingResult
-	CreatedTime *types.DateTime
-	ExpiredTime *types.DateTime
-	MaxLength   *types.PrimitiveU8
+	RankingResult
+	CreatedTime types.DateTime
+	ExpiredTime types.DateTime
+	MaxLength   types.UInt8
 }
 
 // WriteTo writes the RankingCachedResult to the given writable
-func (rcr *RankingCachedResult) WriteTo(writable types.Writable) {
+func (rcr RankingCachedResult) WriteTo(writable types.Writable) {
 	rcr.RankingResult.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,20 +67,20 @@ func (rcr *RankingCachedResult) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of RankingCachedResult
-func (rcr *RankingCachedResult) Copy() types.RVType {
+func (rcr RankingCachedResult) Copy() types.RVType {
 	copied := NewRankingCachedResult()
 
 	copied.StructureVersion = rcr.StructureVersion
-	copied.RankingResult = rcr.RankingResult.Copy().(*RankingResult)
-	copied.CreatedTime = rcr.CreatedTime.Copy().(*types.DateTime)
-	copied.ExpiredTime = rcr.ExpiredTime.Copy().(*types.DateTime)
-	copied.MaxLength = rcr.MaxLength.Copy().(*types.PrimitiveU8)
+	copied.RankingResult = rcr.RankingResult.Copy().(RankingResult)
+	copied.CreatedTime = rcr.CreatedTime.Copy().(types.DateTime)
+	copied.ExpiredTime = rcr.ExpiredTime.Copy().(types.DateTime)
+	copied.MaxLength = rcr.MaxLength.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given RankingCachedResult contains the same data as the current RankingCachedResult
-func (rcr *RankingCachedResult) Equals(o types.RVType) bool {
+func (rcr RankingCachedResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*RankingCachedResult); !ok {
 		return false
 	}
@@ -107,12 +107,12 @@ func (rcr *RankingCachedResult) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the RankingCachedResult
-func (rcr *RankingCachedResult) String() string {
+func (rcr RankingCachedResult) String() string {
 	return rcr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the RankingCachedResult using the provided indentation level
-func (rcr *RankingCachedResult) FormatToString(indentationLevel int) string {
+func (rcr RankingCachedResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +129,12 @@ func (rcr *RankingCachedResult) FormatToString(indentationLevel int) string {
 }
 
 // NewRankingCachedResult returns a new RankingCachedResult
-func NewRankingCachedResult() *RankingCachedResult {
-	rcr := &RankingCachedResult{
+func NewRankingCachedResult() RankingCachedResult {
+	return RankingCachedResult{
 		RankingResult: NewRankingResult(),
 		CreatedTime:   types.NewDateTime(0),
 		ExpiredTime:   types.NewDateTime(0),
-		MaxLength:     types.NewPrimitiveU8(0),
+		MaxLength:     types.NewUInt8(0),
 	}
 
-	return rcr
 }

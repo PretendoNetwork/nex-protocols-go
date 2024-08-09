@@ -11,14 +11,14 @@ import (
 // ServiceItemListServiceItemParam is a type within the ServiceItem protocol
 type ServiceItemListServiceItemParam struct {
 	types.Structure
-	Language *types.String
-	Offset   *types.PrimitiveU32
-	Size     *types.PrimitiveU32
-	TitleID  *types.String
+	Language types.String
+	Offset   types.UInt32
+	Size     types.UInt32
+	TitleID  types.String
 }
 
 // WriteTo writes the ServiceItemListServiceItemParam to the given writable
-func (silsip *ServiceItemListServiceItemParam) WriteTo(writable types.Writable) {
+func (silsip ServiceItemListServiceItemParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	silsip.Language.WriteTo(contentWritable)
@@ -66,20 +66,20 @@ func (silsip *ServiceItemListServiceItemParam) ExtractFrom(readable types.Readab
 }
 
 // Copy returns a new copied instance of ServiceItemListServiceItemParam
-func (silsip *ServiceItemListServiceItemParam) Copy() types.RVType {
+func (silsip ServiceItemListServiceItemParam) Copy() types.RVType {
 	copied := NewServiceItemListServiceItemParam()
 
 	copied.StructureVersion = silsip.StructureVersion
-	copied.Language = silsip.Language.Copy().(*types.String)
-	copied.Offset = silsip.Offset.Copy().(*types.PrimitiveU32)
-	copied.Size = silsip.Size.Copy().(*types.PrimitiveU32)
-	copied.TitleID = silsip.TitleID.Copy().(*types.String)
+	copied.Language = silsip.Language.Copy().(types.String)
+	copied.Offset = silsip.Offset.Copy().(types.UInt32)
+	copied.Size = silsip.Size.Copy().(types.UInt32)
+	copied.TitleID = silsip.TitleID.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemListServiceItemParam contains the same data as the current ServiceItemListServiceItemParam
-func (silsip *ServiceItemListServiceItemParam) Equals(o types.RVType) bool {
+func (silsip ServiceItemListServiceItemParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemListServiceItemParam); !ok {
 		return false
 	}
@@ -106,12 +106,12 @@ func (silsip *ServiceItemListServiceItemParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemListServiceItemParam
-func (silsip *ServiceItemListServiceItemParam) String() string {
+func (silsip ServiceItemListServiceItemParam) String() string {
 	return silsip.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemListServiceItemParam using the provided indentation level
-func (silsip *ServiceItemListServiceItemParam) FormatToString(indentationLevel int) string {
+func (silsip ServiceItemListServiceItemParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +128,12 @@ func (silsip *ServiceItemListServiceItemParam) FormatToString(indentationLevel i
 }
 
 // NewServiceItemListServiceItemParam returns a new ServiceItemListServiceItemParam
-func NewServiceItemListServiceItemParam() *ServiceItemListServiceItemParam {
-	silsip := &ServiceItemListServiceItemParam{
+func NewServiceItemListServiceItemParam() ServiceItemListServiceItemParam {
+	return ServiceItemListServiceItemParam{
 		Language: types.NewString(""),
-		Offset:   types.NewPrimitiveU32(0),
-		Size:     types.NewPrimitiveU32(0),
+		Offset:   types.NewUInt32(0),
+		Size:     types.NewUInt32(0),
 		TitleID:  types.NewString(""),
 	}
 
-	return silsip
 }

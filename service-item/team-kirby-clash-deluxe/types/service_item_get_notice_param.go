@@ -11,11 +11,11 @@ import (
 // ServiceItemGetNoticeParam is a type within the ServiceItem protocol
 type ServiceItemGetNoticeParam struct {
 	types.Structure
-	ScheduleType *types.PrimitiveU32
+	ScheduleType types.UInt32
 }
 
 // WriteTo writes the ServiceItemGetNoticeParam to the given writable
-func (signp *ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
+func (signp ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	signp.ScheduleType.WriteTo(contentWritable)
@@ -45,17 +45,17 @@ func (signp *ServiceItemGetNoticeParam) ExtractFrom(readable types.Readable) err
 }
 
 // Copy returns a new copied instance of ServiceItemGetNoticeParam
-func (signp *ServiceItemGetNoticeParam) Copy() types.RVType {
+func (signp ServiceItemGetNoticeParam) Copy() types.RVType {
 	copied := NewServiceItemGetNoticeParam()
 
 	copied.StructureVersion = signp.StructureVersion
-	copied.ScheduleType = signp.ScheduleType.Copy().(*types.PrimitiveU32)
+	copied.ScheduleType = signp.ScheduleType.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetNoticeParam contains the same data as the current ServiceItemGetNoticeParam
-func (signp *ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
+func (signp ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetNoticeParam); !ok {
 		return false
 	}
@@ -70,12 +70,12 @@ func (signp *ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemGetNoticeParam
-func (signp *ServiceItemGetNoticeParam) String() string {
+func (signp ServiceItemGetNoticeParam) String() string {
 	return signp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetNoticeParam using the provided indentation level
-func (signp *ServiceItemGetNoticeParam) FormatToString(indentationLevel int) string {
+func (signp ServiceItemGetNoticeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +89,9 @@ func (signp *ServiceItemGetNoticeParam) FormatToString(indentationLevel int) str
 }
 
 // NewServiceItemGetNoticeParam returns a new ServiceItemGetNoticeParam
-func NewServiceItemGetNoticeParam() *ServiceItemGetNoticeParam {
-	signp := &ServiceItemGetNoticeParam{
-		ScheduleType: types.NewPrimitiveU32(0),
+func NewServiceItemGetNoticeParam() ServiceItemGetNoticeParam {
+	return ServiceItemGetNoticeParam{
+		ScheduleType: types.NewUInt32(0),
 	}
 
-	return signp
 }

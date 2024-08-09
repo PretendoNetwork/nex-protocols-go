@@ -11,12 +11,12 @@ import (
 // ServiceItemUsedInfo is a type within the ServiceItem protocol
 type ServiceItemUsedInfo struct {
 	types.Structure
-	AcquiredCount *types.PrimitiveU32
-	UsedCount     *types.PrimitiveU32
+	AcquiredCount types.UInt32
+	UsedCount     types.UInt32
 }
 
 // WriteTo writes the ServiceItemUsedInfo to the given writable
-func (siui *ServiceItemUsedInfo) WriteTo(writable types.Writable) {
+func (siui ServiceItemUsedInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siui.AcquiredCount.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (siui *ServiceItemUsedInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemUsedInfo
-func (siui *ServiceItemUsedInfo) Copy() types.RVType {
+func (siui ServiceItemUsedInfo) Copy() types.RVType {
 	copied := NewServiceItemUsedInfo()
 
 	copied.StructureVersion = siui.StructureVersion
-	copied.AcquiredCount = siui.AcquiredCount.Copy().(*types.PrimitiveU32)
-	copied.UsedCount = siui.UsedCount.Copy().(*types.PrimitiveU32)
+	copied.AcquiredCount = siui.AcquiredCount.Copy().(types.UInt32)
+	copied.UsedCount = siui.UsedCount.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemUsedInfo contains the same data as the current ServiceItemUsedInfo
-func (siui *ServiceItemUsedInfo) Equals(o types.RVType) bool {
+func (siui ServiceItemUsedInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemUsedInfo); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (siui *ServiceItemUsedInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemUsedInfo
-func (siui *ServiceItemUsedInfo) String() string {
+func (siui ServiceItemUsedInfo) String() string {
 	return siui.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemUsedInfo using the provided indentation level
-func (siui *ServiceItemUsedInfo) FormatToString(indentationLevel int) string {
+func (siui ServiceItemUsedInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (siui *ServiceItemUsedInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemUsedInfo returns a new ServiceItemUsedInfo
-func NewServiceItemUsedInfo() *ServiceItemUsedInfo {
-	siui := &ServiceItemUsedInfo{
-		AcquiredCount: types.NewPrimitiveU32(0),
-		UsedCount:     types.NewPrimitiveU32(0),
+func NewServiceItemUsedInfo() ServiceItemUsedInfo {
+	return ServiceItemUsedInfo{
+		AcquiredCount: types.NewUInt32(0),
+		UsedCount:     types.NewUInt32(0),
 	}
 
-	return siui
 }

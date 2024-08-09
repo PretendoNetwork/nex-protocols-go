@@ -11,13 +11,13 @@ import (
 // DataStorePersistenceInfo is a type within the DataStore protocol
 type DataStorePersistenceInfo struct {
 	types.Structure
-	OwnerID           *types.PID
-	PersistenceSlotID *types.PrimitiveU16
-	DataID            *types.PrimitiveU64
+	OwnerID           types.PID
+	PersistenceSlotID types.UInt16
+	DataID            types.UInt64
 }
 
 // WriteTo writes the DataStorePersistenceInfo to the given writable
-func (dspi *DataStorePersistenceInfo) WriteTo(writable types.Writable) {
+func (dspi DataStorePersistenceInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspi.OwnerID.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (dspi *DataStorePersistenceInfo) ExtractFrom(readable types.Readable) error
 }
 
 // Copy returns a new copied instance of DataStorePersistenceInfo
-func (dspi *DataStorePersistenceInfo) Copy() types.RVType {
+func (dspi DataStorePersistenceInfo) Copy() types.RVType {
 	copied := NewDataStorePersistenceInfo()
 
 	copied.StructureVersion = dspi.StructureVersion
-	copied.OwnerID = dspi.OwnerID.Copy().(*types.PID)
-	copied.PersistenceSlotID = dspi.PersistenceSlotID.Copy().(*types.PrimitiveU16)
-	copied.DataID = dspi.DataID.Copy().(*types.PrimitiveU64)
+	copied.OwnerID = dspi.OwnerID.Copy().(types.PID)
+	copied.PersistenceSlotID = dspi.PersistenceSlotID.Copy().(types.UInt16)
+	copied.DataID = dspi.DataID.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given DataStorePersistenceInfo contains the same data as the current DataStorePersistenceInfo
-func (dspi *DataStorePersistenceInfo) Equals(o types.RVType) bool {
+func (dspi DataStorePersistenceInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePersistenceInfo); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (dspi *DataStorePersistenceInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStorePersistenceInfo
-func (dspi *DataStorePersistenceInfo) String() string {
+func (dspi DataStorePersistenceInfo) String() string {
 	return dspi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePersistenceInfo using the provided indentation level
-func (dspi *DataStorePersistenceInfo) FormatToString(indentationLevel int) string {
+func (dspi DataStorePersistenceInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (dspi *DataStorePersistenceInfo) FormatToString(indentationLevel int) strin
 }
 
 // NewDataStorePersistenceInfo returns a new DataStorePersistenceInfo
-func NewDataStorePersistenceInfo() *DataStorePersistenceInfo {
-	dspi := &DataStorePersistenceInfo{
+func NewDataStorePersistenceInfo() DataStorePersistenceInfo {
+	return DataStorePersistenceInfo{
 		OwnerID:           types.NewPID(0),
-		PersistenceSlotID: types.NewPrimitiveU16(0),
-		DataID:            types.NewPrimitiveU64(0),
+		PersistenceSlotID: types.NewUInt16(0),
+		DataID:            types.NewUInt64(0),
 	}
 
-	return dspi
 }

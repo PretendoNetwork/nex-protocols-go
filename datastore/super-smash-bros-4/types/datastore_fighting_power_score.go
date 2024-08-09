@@ -11,12 +11,12 @@ import (
 // DataStoreFightingPowerScore is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreFightingPowerScore struct {
 	types.Structure
-	Score *types.PrimitiveU32
-	Rank  *types.PrimitiveU32
+	Score types.UInt32
+	Rank  types.UInt32
 }
 
 // WriteTo writes the DataStoreFightingPowerScore to the given writable
-func (dsfps *DataStoreFightingPowerScore) WriteTo(writable types.Writable) {
+func (dsfps DataStoreFightingPowerScore) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsfps.Score.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dsfps *DataStoreFightingPowerScore) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of DataStoreFightingPowerScore
-func (dsfps *DataStoreFightingPowerScore) Copy() types.RVType {
+func (dsfps DataStoreFightingPowerScore) Copy() types.RVType {
 	copied := NewDataStoreFightingPowerScore()
 
 	copied.StructureVersion = dsfps.StructureVersion
-	copied.Score = dsfps.Score.Copy().(*types.PrimitiveU32)
-	copied.Rank = dsfps.Rank.Copy().(*types.PrimitiveU32)
+	copied.Score = dsfps.Score.Copy().(types.UInt32)
+	copied.Rank = dsfps.Rank.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreFightingPowerScore contains the same data as the current DataStoreFightingPowerScore
-func (dsfps *DataStoreFightingPowerScore) Equals(o types.RVType) bool {
+func (dsfps DataStoreFightingPowerScore) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreFightingPowerScore); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dsfps *DataStoreFightingPowerScore) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreFightingPowerScore
-func (dsfps *DataStoreFightingPowerScore) String() string {
+func (dsfps DataStoreFightingPowerScore) String() string {
 	return dsfps.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreFightingPowerScore using the provided indentation level
-func (dsfps *DataStoreFightingPowerScore) FormatToString(indentationLevel int) string {
+func (dsfps DataStoreFightingPowerScore) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dsfps *DataStoreFightingPowerScore) FormatToString(indentationLevel int) s
 }
 
 // NewDataStoreFightingPowerScore returns a new DataStoreFightingPowerScore
-func NewDataStoreFightingPowerScore() *DataStoreFightingPowerScore {
-	dsfps := &DataStoreFightingPowerScore{
-		Score: types.NewPrimitiveU32(0),
-		Rank:  types.NewPrimitiveU32(0),
+func NewDataStoreFightingPowerScore() DataStoreFightingPowerScore {
+	return DataStoreFightingPowerScore{
+		Score: types.NewUInt32(0),
+		Rank:  types.NewUInt32(0),
 	}
 
-	return dsfps
 }

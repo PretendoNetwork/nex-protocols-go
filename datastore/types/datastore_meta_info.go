@@ -11,29 +11,29 @@ import (
 // DataStoreMetaInfo is a type within the DataStore protocol
 type DataStoreMetaInfo struct {
 	types.Structure
-	DataID        *types.PrimitiveU64
-	OwnerID       *types.PID
-	Size          *types.PrimitiveU32
-	Name          *types.String
-	DataType      *types.PrimitiveU16
-	MetaBinary    *types.QBuffer
-	Permission    *DataStorePermission
-	DelPermission *DataStorePermission
-	CreatedTime   *types.DateTime
-	UpdatedTime   *types.DateTime
-	Period        *types.PrimitiveU16
-	Status        *types.PrimitiveU8
-	ReferredCnt   *types.PrimitiveU32
-	ReferDataID   *types.PrimitiveU32
-	Flag          *types.PrimitiveU32
-	ReferredTime  *types.DateTime
-	ExpireTime    *types.DateTime
-	Tags          *types.List[*types.String]
-	Ratings       *types.List[*DataStoreRatingInfoWithSlot]
+	DataID        types.UInt64
+	OwnerID       types.PID
+	Size          types.UInt32
+	Name          types.String
+	DataType      types.UInt16
+	MetaBinary    types.QBuffer
+	Permission    DataStorePermission
+	DelPermission DataStorePermission
+	CreatedTime   types.DateTime
+	UpdatedTime   types.DateTime
+	Period        types.UInt16
+	Status        types.UInt8
+	ReferredCnt   types.UInt32
+	ReferDataID   types.UInt32
+	Flag          types.UInt32
+	ReferredTime  types.DateTime
+	ExpireTime    types.DateTime
+	Tags          types.List[types.String]
+	Ratings       types.List[DataStoreRatingInfoWithSlot]
 }
 
 // WriteTo writes the DataStoreMetaInfo to the given writable
-func (dsmi *DataStoreMetaInfo) WriteTo(writable types.Writable) {
+func (dsmi DataStoreMetaInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsmi.DataID.WriteTo(contentWritable)
@@ -171,35 +171,35 @@ func (dsmi *DataStoreMetaInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreMetaInfo
-func (dsmi *DataStoreMetaInfo) Copy() types.RVType {
+func (dsmi DataStoreMetaInfo) Copy() types.RVType {
 	copied := NewDataStoreMetaInfo()
 
 	copied.StructureVersion = dsmi.StructureVersion
-	copied.DataID = dsmi.DataID.Copy().(*types.PrimitiveU64)
-	copied.OwnerID = dsmi.OwnerID.Copy().(*types.PID)
-	copied.Size = dsmi.Size.Copy().(*types.PrimitiveU32)
-	copied.Name = dsmi.Name.Copy().(*types.String)
-	copied.DataType = dsmi.DataType.Copy().(*types.PrimitiveU16)
-	copied.MetaBinary = dsmi.MetaBinary.Copy().(*types.QBuffer)
-	copied.Permission = dsmi.Permission.Copy().(*DataStorePermission)
-	copied.DelPermission = dsmi.DelPermission.Copy().(*DataStorePermission)
-	copied.CreatedTime = dsmi.CreatedTime.Copy().(*types.DateTime)
-	copied.UpdatedTime = dsmi.UpdatedTime.Copy().(*types.DateTime)
-	copied.Period = dsmi.Period.Copy().(*types.PrimitiveU16)
-	copied.Status = dsmi.Status.Copy().(*types.PrimitiveU8)
-	copied.ReferredCnt = dsmi.ReferredCnt.Copy().(*types.PrimitiveU32)
-	copied.ReferDataID = dsmi.ReferDataID.Copy().(*types.PrimitiveU32)
-	copied.Flag = dsmi.Flag.Copy().(*types.PrimitiveU32)
-	copied.ReferredTime = dsmi.ReferredTime.Copy().(*types.DateTime)
-	copied.ExpireTime = dsmi.ExpireTime.Copy().(*types.DateTime)
-	copied.Tags = dsmi.Tags.Copy().(*types.List[*types.String])
-	copied.Ratings = dsmi.Ratings.Copy().(*types.List[*DataStoreRatingInfoWithSlot])
+	copied.DataID = dsmi.DataID.Copy().(types.UInt64)
+	copied.OwnerID = dsmi.OwnerID.Copy().(types.PID)
+	copied.Size = dsmi.Size.Copy().(types.UInt32)
+	copied.Name = dsmi.Name.Copy().(types.String)
+	copied.DataType = dsmi.DataType.Copy().(types.UInt16)
+	copied.MetaBinary = dsmi.MetaBinary.Copy().(types.QBuffer)
+	copied.Permission = dsmi.Permission.Copy().(DataStorePermission)
+	copied.DelPermission = dsmi.DelPermission.Copy().(DataStorePermission)
+	copied.CreatedTime = dsmi.CreatedTime.Copy().(types.DateTime)
+	copied.UpdatedTime = dsmi.UpdatedTime.Copy().(types.DateTime)
+	copied.Period = dsmi.Period.Copy().(types.UInt16)
+	copied.Status = dsmi.Status.Copy().(types.UInt8)
+	copied.ReferredCnt = dsmi.ReferredCnt.Copy().(types.UInt32)
+	copied.ReferDataID = dsmi.ReferDataID.Copy().(types.UInt32)
+	copied.Flag = dsmi.Flag.Copy().(types.UInt32)
+	copied.ReferredTime = dsmi.ReferredTime.Copy().(types.DateTime)
+	copied.ExpireTime = dsmi.ExpireTime.Copy().(types.DateTime)
+	copied.Tags = dsmi.Tags.Copy().(types.List[types.String])
+	copied.Ratings = dsmi.Ratings.Copy().(types.List[DataStoreRatingInfoWithSlot])
 
 	return copied
 }
 
 // Equals checks if the given DataStoreMetaInfo contains the same data as the current DataStoreMetaInfo
-func (dsmi *DataStoreMetaInfo) Equals(o types.RVType) bool {
+func (dsmi DataStoreMetaInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreMetaInfo); !ok {
 		return false
 	}
@@ -286,12 +286,12 @@ func (dsmi *DataStoreMetaInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreMetaInfo
-func (dsmi *DataStoreMetaInfo) String() string {
+func (dsmi DataStoreMetaInfo) String() string {
 	return dsmi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreMetaInfo using the provided indentation level
-func (dsmi *DataStoreMetaInfo) FormatToString(indentationLevel int) string {
+func (dsmi DataStoreMetaInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -323,7 +323,7 @@ func (dsmi *DataStoreMetaInfo) FormatToString(indentationLevel int) string {
 }
 
 // FilterPropertiesByResultOption zeroes out certain struct properties based on the input flags
-func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption *types.PrimitiveU8) {
+func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption types.UInt8) {
 	// * This is kind of backwards
 	// *
 	// * This method assumes all struct data exists
@@ -333,47 +333,43 @@ func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption *type
 	// * flags being used to conditionally ADD properties,
 	// * it's used to conditionally REMOVE them
 
-	if resultOption.PAND(0x1) == 0 {
-		dsmi.Tags = types.NewList[*types.String]()
-		dsmi.Tags.Type = types.NewString("")
+	if resultOption&0x1 == 0 {
+		dsmi.Tags = types.NewList[types.String]()
+
 	}
 
-	if resultOption.PAND(0x2) == 0 {
-		dsmi.Ratings = types.NewList[*DataStoreRatingInfoWithSlot]()
-		dsmi.Ratings.Type = NewDataStoreRatingInfoWithSlot()
+	if resultOption&0x2 == 0 {
+		dsmi.Ratings = types.NewList[DataStoreRatingInfoWithSlot]()
+
 	}
 
-	if resultOption.PAND(0x4) == 0 {
+	if resultOption&0x4 == 0 {
 		dsmi.MetaBinary = types.NewQBuffer(nil)
 	}
 }
 
 // NewDataStoreMetaInfo returns a new DataStoreMetaInfo
-func NewDataStoreMetaInfo() *DataStoreMetaInfo {
-	dsmi := &DataStoreMetaInfo{
-		DataID:        types.NewPrimitiveU64(0),
+func NewDataStoreMetaInfo() DataStoreMetaInfo {
+	return DataStoreMetaInfo{
+		DataID:        types.NewUInt64(0),
 		OwnerID:       types.NewPID(0),
-		Size:          types.NewPrimitiveU32(0),
+		Size:          types.NewUInt32(0),
 		Name:          types.NewString(""),
-		DataType:      types.NewPrimitiveU16(0),
+		DataType:      types.NewUInt16(0),
 		MetaBinary:    types.NewQBuffer(nil),
 		Permission:    NewDataStorePermission(),
 		DelPermission: NewDataStorePermission(),
 		CreatedTime:   types.NewDateTime(0),
 		UpdatedTime:   types.NewDateTime(0),
-		Period:        types.NewPrimitiveU16(0),
-		Status:        types.NewPrimitiveU8(0),
-		ReferredCnt:   types.NewPrimitiveU32(0),
-		ReferDataID:   types.NewPrimitiveU32(0),
-		Flag:          types.NewPrimitiveU32(0),
+		Period:        types.NewUInt16(0),
+		Status:        types.NewUInt8(0),
+		ReferredCnt:   types.NewUInt32(0),
+		ReferDataID:   types.NewUInt32(0),
+		Flag:          types.NewUInt32(0),
 		ReferredTime:  types.NewDateTime(0),
 		ExpireTime:    types.NewDateTime(0),
-		Tags:          types.NewList[*types.String](),
-		Ratings:       types.NewList[*DataStoreRatingInfoWithSlot](),
+		Tags:          types.NewList[types.String](),
+		Ratings:       types.NewList[DataStoreRatingInfoWithSlot](),
 	}
 
-	dsmi.Tags.Type = types.NewString("")
-	dsmi.Ratings.Type = NewDataStoreRatingInfoWithSlot()
-
-	return dsmi
 }

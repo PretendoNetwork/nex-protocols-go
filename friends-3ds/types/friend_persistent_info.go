@@ -11,22 +11,22 @@ import (
 // FriendPersistentInfo is a type within the Friends3DS protocol
 type FriendPersistentInfo struct {
 	types.Structure
-	*types.Data
-	PID              *types.PID
-	Region           *types.PrimitiveU8
-	Country          *types.PrimitiveU8
-	Area             *types.PrimitiveU8
-	Language         *types.PrimitiveU8
-	Platform         *types.PrimitiveU8
-	GameKey          *GameKey
-	Message          *types.String
-	MessageUpdatedAt *types.DateTime
-	MiiModifiedAt    *types.DateTime
-	LastOnline       *types.DateTime
+	types.Data
+	PID              types.PID
+	Region           types.UInt8
+	Country          types.UInt8
+	Area             types.UInt8
+	Language         types.UInt8
+	Platform         types.UInt8
+	GameKey          GameKey
+	Message          types.String
+	MessageUpdatedAt types.DateTime
+	MiiModifiedAt    types.DateTime
+	LastOnline       types.DateTime
 }
 
 // WriteTo writes the FriendPersistentInfo to the given writable
-func (fpi *FriendPersistentInfo) WriteTo(writable types.Writable) {
+func (fpi FriendPersistentInfo) WriteTo(writable types.Writable) {
 	fpi.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -123,28 +123,28 @@ func (fpi *FriendPersistentInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendPersistentInfo
-func (fpi *FriendPersistentInfo) Copy() types.RVType {
+func (fpi FriendPersistentInfo) Copy() types.RVType {
 	copied := NewFriendPersistentInfo()
 
 	copied.StructureVersion = fpi.StructureVersion
-	copied.Data = fpi.Data.Copy().(*types.Data)
-	copied.PID = fpi.PID.Copy().(*types.PID)
-	copied.Region = fpi.Region.Copy().(*types.PrimitiveU8)
-	copied.Country = fpi.Country.Copy().(*types.PrimitiveU8)
-	copied.Area = fpi.Area.Copy().(*types.PrimitiveU8)
-	copied.Language = fpi.Language.Copy().(*types.PrimitiveU8)
-	copied.Platform = fpi.Platform.Copy().(*types.PrimitiveU8)
-	copied.GameKey = fpi.GameKey.Copy().(*GameKey)
-	copied.Message = fpi.Message.Copy().(*types.String)
-	copied.MessageUpdatedAt = fpi.MessageUpdatedAt.Copy().(*types.DateTime)
-	copied.MiiModifiedAt = fpi.MiiModifiedAt.Copy().(*types.DateTime)
-	copied.LastOnline = fpi.LastOnline.Copy().(*types.DateTime)
+	copied.Data = fpi.Data.Copy().(types.Data)
+	copied.PID = fpi.PID.Copy().(types.PID)
+	copied.Region = fpi.Region.Copy().(types.UInt8)
+	copied.Country = fpi.Country.Copy().(types.UInt8)
+	copied.Area = fpi.Area.Copy().(types.UInt8)
+	copied.Language = fpi.Language.Copy().(types.UInt8)
+	copied.Platform = fpi.Platform.Copy().(types.UInt8)
+	copied.GameKey = fpi.GameKey.Copy().(GameKey)
+	copied.Message = fpi.Message.Copy().(types.String)
+	copied.MessageUpdatedAt = fpi.MessageUpdatedAt.Copy().(types.DateTime)
+	copied.MiiModifiedAt = fpi.MiiModifiedAt.Copy().(types.DateTime)
+	copied.LastOnline = fpi.LastOnline.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given FriendPersistentInfo contains the same data as the current FriendPersistentInfo
-func (fpi *FriendPersistentInfo) Equals(o types.RVType) bool {
+func (fpi FriendPersistentInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendPersistentInfo); !ok {
 		return false
 	}
@@ -203,12 +203,12 @@ func (fpi *FriendPersistentInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the FriendPersistentInfo
-func (fpi *FriendPersistentInfo) String() string {
+func (fpi FriendPersistentInfo) String() string {
 	return fpi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendPersistentInfo using the provided indentation level
-func (fpi *FriendPersistentInfo) FormatToString(indentationLevel int) string {
+func (fpi FriendPersistentInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -233,15 +233,15 @@ func (fpi *FriendPersistentInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendPersistentInfo returns a new FriendPersistentInfo
-func NewFriendPersistentInfo() *FriendPersistentInfo {
-	fpi := &FriendPersistentInfo{
+func NewFriendPersistentInfo() FriendPersistentInfo {
+	return FriendPersistentInfo{
 		Data:             types.NewData(),
 		PID:              types.NewPID(0),
-		Region:           types.NewPrimitiveU8(0),
-		Country:          types.NewPrimitiveU8(0),
-		Area:             types.NewPrimitiveU8(0),
-		Language:         types.NewPrimitiveU8(0),
-		Platform:         types.NewPrimitiveU8(0),
+		Region:           types.NewUInt8(0),
+		Country:          types.NewUInt8(0),
+		Area:             types.NewUInt8(0),
+		Language:         types.NewUInt8(0),
+		Platform:         types.NewUInt8(0),
 		GameKey:          NewGameKey(),
 		Message:          types.NewString(""),
 		MessageUpdatedAt: types.NewDateTime(0),
@@ -249,5 +249,4 @@ func NewFriendPersistentInfo() *FriendPersistentInfo {
 		LastOnline:       types.NewDateTime(0),
 	}
 
-	return fpi
 }

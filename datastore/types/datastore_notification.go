@@ -11,12 +11,12 @@ import (
 // DataStoreNotification is a type within the DataStore protocol
 type DataStoreNotification struct {
 	types.Structure
-	NotificationID *types.PrimitiveU64
-	DataID         *types.PrimitiveU64
+	NotificationID types.UInt64
+	DataID         types.UInt64
 }
 
 // WriteTo writes the DataStoreNotification to the given writable
-func (dsn *DataStoreNotification) WriteTo(writable types.Writable) {
+func (dsn DataStoreNotification) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsn.NotificationID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dsn *DataStoreNotification) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreNotification
-func (dsn *DataStoreNotification) Copy() types.RVType {
+func (dsn DataStoreNotification) Copy() types.RVType {
 	copied := NewDataStoreNotification()
 
 	copied.StructureVersion = dsn.StructureVersion
-	copied.NotificationID = dsn.NotificationID.Copy().(*types.PrimitiveU64)
-	copied.DataID = dsn.DataID.Copy().(*types.PrimitiveU64)
+	copied.NotificationID = dsn.NotificationID.Copy().(types.UInt64)
+	copied.DataID = dsn.DataID.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreNotification contains the same data as the current DataStoreNotification
-func (dsn *DataStoreNotification) Equals(o types.RVType) bool {
+func (dsn DataStoreNotification) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreNotification); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dsn *DataStoreNotification) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreNotification
-func (dsn *DataStoreNotification) String() string {
+func (dsn DataStoreNotification) String() string {
 	return dsn.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreNotification using the provided indentation level
-func (dsn *DataStoreNotification) FormatToString(indentationLevel int) string {
+func (dsn DataStoreNotification) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dsn *DataStoreNotification) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreNotification returns a new DataStoreNotification
-func NewDataStoreNotification() *DataStoreNotification {
-	dsn := &DataStoreNotification{
-		NotificationID: types.NewPrimitiveU64(0),
-		DataID:         types.NewPrimitiveU64(0),
+func NewDataStoreNotification() DataStoreNotification {
+	return DataStoreNotification{
+		NotificationID: types.NewUInt64(0),
+		DataID:         types.NewUInt64(0),
 	}
 
-	return dsn
 }

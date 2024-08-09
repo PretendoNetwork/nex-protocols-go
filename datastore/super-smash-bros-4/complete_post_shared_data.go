@@ -29,7 +29,7 @@ func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterfac
 
 	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CompletePostSharedData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.CompletePostSharedData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

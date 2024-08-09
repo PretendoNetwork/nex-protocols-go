@@ -11,12 +11,12 @@ import (
 // GlobalTradeStationDeletePokemonParam is a type within the DataStore protocol
 type GlobalTradeStationDeletePokemonParam struct {
 	types.Structure
-	PrepareUploadKey *GlobalTradeStationRecordKey
-	DeleteFlag       *types.PrimitiveU8
+	PrepareUploadKey GlobalTradeStationRecordKey
+	DeleteFlag       types.UInt8
 }
 
 // WriteTo writes the GlobalTradeStationDeletePokemonParam to the given writable
-func (gtsdpp *GlobalTradeStationDeletePokemonParam) WriteTo(writable types.Writable) {
+func (gtsdpp GlobalTradeStationDeletePokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsdpp.PrepareUploadKey.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (gtsdpp *GlobalTradeStationDeletePokemonParam) ExtractFrom(readable types.R
 }
 
 // Copy returns a new copied instance of GlobalTradeStationDeletePokemonParam
-func (gtsdpp *GlobalTradeStationDeletePokemonParam) Copy() types.RVType {
+func (gtsdpp GlobalTradeStationDeletePokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationDeletePokemonParam()
 
 	copied.StructureVersion = gtsdpp.StructureVersion
-	copied.PrepareUploadKey = gtsdpp.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
-	copied.DeleteFlag = gtsdpp.DeleteFlag.Copy().(*types.PrimitiveU8)
+	copied.PrepareUploadKey = gtsdpp.PrepareUploadKey.Copy().(GlobalTradeStationRecordKey)
+	copied.DeleteFlag = gtsdpp.DeleteFlag.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationDeletePokemonParam contains the same data as the current GlobalTradeStationDeletePokemonParam
-func (gtsdpp *GlobalTradeStationDeletePokemonParam) Equals(o types.RVType) bool {
+func (gtsdpp GlobalTradeStationDeletePokemonParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationDeletePokemonParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (gtsdpp *GlobalTradeStationDeletePokemonParam) Equals(o types.RVType) bool 
 }
 
 // String returns the string representation of the GlobalTradeStationDeletePokemonParam
-func (gtsdpp *GlobalTradeStationDeletePokemonParam) String() string {
+func (gtsdpp GlobalTradeStationDeletePokemonParam) String() string {
 	return gtsdpp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationDeletePokemonParam using the provided indentation level
-func (gtsdpp *GlobalTradeStationDeletePokemonParam) FormatToString(indentationLevel int) string {
+func (gtsdpp GlobalTradeStationDeletePokemonParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (gtsdpp *GlobalTradeStationDeletePokemonParam) FormatToString(indentationLe
 }
 
 // NewGlobalTradeStationDeletePokemonParam returns a new GlobalTradeStationDeletePokemonParam
-func NewGlobalTradeStationDeletePokemonParam() *GlobalTradeStationDeletePokemonParam {
-	gtsdpp := &GlobalTradeStationDeletePokemonParam{
+func NewGlobalTradeStationDeletePokemonParam() GlobalTradeStationDeletePokemonParam {
+	return GlobalTradeStationDeletePokemonParam{
 		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
-		DeleteFlag:       types.NewPrimitiveU8(0),
+		DeleteFlag:       types.NewUInt8(0),
 	}
 
-	return gtsdpp
 }

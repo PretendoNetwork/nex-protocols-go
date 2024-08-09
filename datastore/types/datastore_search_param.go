@@ -12,29 +12,29 @@ import (
 // DataStoreSearchParam is a type within the DataStore protocol
 type DataStoreSearchParam struct {
 	types.Structure
-	SearchTarget           *types.PrimitiveU8
-	OwnerIDs               *types.List[*types.PID]
-	OwnerType              *types.PrimitiveU8
-	DestinationIDs         *types.List[*types.PID]
-	DataType               *types.PrimitiveU16
-	CreatedAfter           *types.DateTime
-	CreatedBefore          *types.DateTime
-	UpdatedAfter           *types.DateTime
-	UpdatedBefore          *types.DateTime
-	ReferDataID            *types.PrimitiveU32
-	Tags                   *types.List[*types.String]
-	ResultOrderColumn      *types.PrimitiveU8
-	ResultOrder            *types.PrimitiveU8
-	ResultRange            *types.ResultRange
-	ResultOption           *types.PrimitiveU8
-	MinimalRatingFrequency *types.PrimitiveU32
-	UseCache               *types.PrimitiveBool // * Revision 1 or NEX 4.0
-	TotalCountEnabled      *types.PrimitiveBool // * Revision 3 or NEX 4.0
-	DataTypes              *types.List[*types.PrimitiveU16] // * Revision 2 or NEX 4.0
+	SearchTarget           types.UInt8
+	OwnerIDs               types.List[types.PID]
+	OwnerType              types.UInt8
+	DestinationIDs         types.List[types.PID]
+	DataType               types.UInt16
+	CreatedAfter           types.DateTime
+	CreatedBefore          types.DateTime
+	UpdatedAfter           types.DateTime
+	UpdatedBefore          types.DateTime
+	ReferDataID            types.UInt32
+	Tags                   types.List[types.String]
+	ResultOrderColumn      types.UInt8
+	ResultOrder            types.UInt8
+	ResultRange            types.ResultRange
+	ResultOption           types.UInt8
+	MinimalRatingFrequency types.UInt32
+	UseCache               types.Bool               // * Revision 1 or NEX 4.0
+	TotalCountEnabled      types.Bool               // * Revision 3 or NEX 4.0
+	DataTypes              types.List[types.UInt16] // * Revision 2 or NEX 4.0
 }
 
 // WriteTo writes the DataStoreSearchParam to the given writable
-func (dssp *DataStoreSearchParam) WriteTo(writable types.Writable) {
+func (dssp DataStoreSearchParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.DataStore
 
@@ -193,35 +193,35 @@ func (dssp *DataStoreSearchParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreSearchParam
-func (dssp *DataStoreSearchParam) Copy() types.RVType {
+func (dssp DataStoreSearchParam) Copy() types.RVType {
 	copied := NewDataStoreSearchParam()
 
 	copied.StructureVersion = dssp.StructureVersion
-	copied.SearchTarget = dssp.SearchTarget.Copy().(*types.PrimitiveU8)
-	copied.OwnerIDs = dssp.OwnerIDs.Copy().(*types.List[*types.PID])
-	copied.OwnerType = dssp.OwnerType.Copy().(*types.PrimitiveU8)
-	copied.DestinationIDs = dssp.DestinationIDs.Copy().(*types.List[*types.PID])
-	copied.DataType = dssp.DataType.Copy().(*types.PrimitiveU16)
-	copied.CreatedAfter = dssp.CreatedAfter.Copy().(*types.DateTime)
-	copied.CreatedBefore = dssp.CreatedBefore.Copy().(*types.DateTime)
-	copied.UpdatedAfter = dssp.UpdatedAfter.Copy().(*types.DateTime)
-	copied.UpdatedBefore = dssp.UpdatedBefore.Copy().(*types.DateTime)
-	copied.ReferDataID = dssp.ReferDataID.Copy().(*types.PrimitiveU32)
-	copied.Tags = dssp.Tags.Copy().(*types.List[*types.String])
-	copied.ResultOrderColumn = dssp.ResultOrderColumn.Copy().(*types.PrimitiveU8)
-	copied.ResultOrder = dssp.ResultOrder.Copy().(*types.PrimitiveU8)
-	copied.ResultRange = dssp.ResultRange.Copy().(*types.ResultRange)
-	copied.ResultOption = dssp.ResultOption.Copy().(*types.PrimitiveU8)
-	copied.MinimalRatingFrequency = dssp.MinimalRatingFrequency.Copy().(*types.PrimitiveU32)
-	copied.UseCache = dssp.UseCache.Copy().(*types.PrimitiveBool)
-	copied.TotalCountEnabled = dssp.TotalCountEnabled.Copy().(*types.PrimitiveBool)
-	copied.DataTypes = dssp.DataTypes.Copy().(*types.List[*types.PrimitiveU16])
+	copied.SearchTarget = dssp.SearchTarget.Copy().(types.UInt8)
+	copied.OwnerIDs = dssp.OwnerIDs.Copy().(types.List[types.PID])
+	copied.OwnerType = dssp.OwnerType.Copy().(types.UInt8)
+	copied.DestinationIDs = dssp.DestinationIDs.Copy().(types.List[types.PID])
+	copied.DataType = dssp.DataType.Copy().(types.UInt16)
+	copied.CreatedAfter = dssp.CreatedAfter.Copy().(types.DateTime)
+	copied.CreatedBefore = dssp.CreatedBefore.Copy().(types.DateTime)
+	copied.UpdatedAfter = dssp.UpdatedAfter.Copy().(types.DateTime)
+	copied.UpdatedBefore = dssp.UpdatedBefore.Copy().(types.DateTime)
+	copied.ReferDataID = dssp.ReferDataID.Copy().(types.UInt32)
+	copied.Tags = dssp.Tags.Copy().(types.List[types.String])
+	copied.ResultOrderColumn = dssp.ResultOrderColumn.Copy().(types.UInt8)
+	copied.ResultOrder = dssp.ResultOrder.Copy().(types.UInt8)
+	copied.ResultRange = dssp.ResultRange.Copy().(types.ResultRange)
+	copied.ResultOption = dssp.ResultOption.Copy().(types.UInt8)
+	copied.MinimalRatingFrequency = dssp.MinimalRatingFrequency.Copy().(types.UInt32)
+	copied.UseCache = dssp.UseCache.Copy().(types.Bool)
+	copied.TotalCountEnabled = dssp.TotalCountEnabled.Copy().(types.Bool)
+	copied.DataTypes = dssp.DataTypes.Copy().(types.List[types.UInt16])
 
 	return copied
 }
 
 // Equals checks if the given DataStoreSearchParam contains the same data as the current DataStoreSearchParam
-func (dssp *DataStoreSearchParam) Equals(o types.RVType) bool {
+func (dssp DataStoreSearchParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreSearchParam); !ok {
 		return false
 	}
@@ -308,12 +308,12 @@ func (dssp *DataStoreSearchParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreSearchParam
-func (dssp *DataStoreSearchParam) String() string {
+func (dssp DataStoreSearchParam) String() string {
 	return dssp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreSearchParam using the provided indentation level
-func (dssp *DataStoreSearchParam) FormatToString(indentationLevel int) string {
+func (dssp DataStoreSearchParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -345,33 +345,27 @@ func (dssp *DataStoreSearchParam) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreSearchParam returns a new DataStoreSearchParam
-func NewDataStoreSearchParam() *DataStoreSearchParam {
-	dssp := &DataStoreSearchParam{
-		SearchTarget:           types.NewPrimitiveU8(0),
-		OwnerIDs:               types.NewList[*types.PID](),
-		OwnerType:              types.NewPrimitiveU8(0),
-		DestinationIDs:         types.NewList[*types.PID](),
-		DataType:               types.NewPrimitiveU16(0),
+func NewDataStoreSearchParam() DataStoreSearchParam {
+	return DataStoreSearchParam{
+		SearchTarget:           types.NewUInt8(0),
+		OwnerIDs:               types.NewList[types.PID](),
+		OwnerType:              types.NewUInt8(0),
+		DestinationIDs:         types.NewList[types.PID](),
+		DataType:               types.NewUInt16(0),
 		CreatedAfter:           types.NewDateTime(0),
 		CreatedBefore:          types.NewDateTime(0),
 		UpdatedAfter:           types.NewDateTime(0),
 		UpdatedBefore:          types.NewDateTime(0),
-		ReferDataID:            types.NewPrimitiveU32(0),
-		Tags:                   types.NewList[*types.String](),
-		ResultOrderColumn:      types.NewPrimitiveU8(0),
-		ResultOrder:            types.NewPrimitiveU8(0),
+		ReferDataID:            types.NewUInt32(0),
+		Tags:                   types.NewList[types.String](),
+		ResultOrderColumn:      types.NewUInt8(0),
+		ResultOrder:            types.NewUInt8(0),
 		ResultRange:            types.NewResultRange(),
-		ResultOption:           types.NewPrimitiveU8(0),
-		MinimalRatingFrequency: types.NewPrimitiveU32(0),
-		UseCache:               types.NewPrimitiveBool(false),
-		TotalCountEnabled:      types.NewPrimitiveBool(false),
-		DataTypes:              types.NewList[*types.PrimitiveU16](),
+		ResultOption:           types.NewUInt8(0),
+		MinimalRatingFrequency: types.NewUInt32(0),
+		UseCache:               types.NewBool(false),
+		TotalCountEnabled:      types.NewBool(false),
+		DataTypes:              types.NewList[types.UInt16](),
 	}
 
-	dssp.OwnerIDs.Type = types.NewPID(0)
-	dssp.DestinationIDs.Type = types.NewPID(0)
-	dssp.Tags.Type = types.NewString("")
-	dssp.DataTypes.Type = types.NewPrimitiveU16(0)
-
-	return dssp
 }

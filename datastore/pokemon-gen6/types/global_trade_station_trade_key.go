@@ -11,12 +11,12 @@ import (
 // GlobalTradeStationTradeKey is a type within the DataStore protocol
 type GlobalTradeStationTradeKey struct {
 	types.Structure
-	DataID  *types.PrimitiveU64
-	Version *types.PrimitiveU32
+	DataID  types.UInt64
+	Version types.UInt32
 }
 
 // WriteTo writes the GlobalTradeStationTradeKey to the given writable
-func (gtstk *GlobalTradeStationTradeKey) WriteTo(writable types.Writable) {
+func (gtstk GlobalTradeStationTradeKey) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtstk.DataID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (gtstk *GlobalTradeStationTradeKey) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of GlobalTradeStationTradeKey
-func (gtstk *GlobalTradeStationTradeKey) Copy() types.RVType {
+func (gtstk GlobalTradeStationTradeKey) Copy() types.RVType {
 	copied := NewGlobalTradeStationTradeKey()
 
 	copied.StructureVersion = gtstk.StructureVersion
-	copied.DataID = gtstk.DataID.Copy().(*types.PrimitiveU64)
-	copied.Version = gtstk.Version.Copy().(*types.PrimitiveU32)
+	copied.DataID = gtstk.DataID.Copy().(types.UInt64)
+	copied.Version = gtstk.Version.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationTradeKey contains the same data as the current GlobalTradeStationTradeKey
-func (gtstk *GlobalTradeStationTradeKey) Equals(o types.RVType) bool {
+func (gtstk GlobalTradeStationTradeKey) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationTradeKey); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (gtstk *GlobalTradeStationTradeKey) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the GlobalTradeStationTradeKey
-func (gtstk *GlobalTradeStationTradeKey) String() string {
+func (gtstk GlobalTradeStationTradeKey) String() string {
 	return gtstk.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationTradeKey using the provided indentation level
-func (gtstk *GlobalTradeStationTradeKey) FormatToString(indentationLevel int) string {
+func (gtstk GlobalTradeStationTradeKey) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (gtstk *GlobalTradeStationTradeKey) FormatToString(indentationLevel int) st
 }
 
 // NewGlobalTradeStationTradeKey returns a new GlobalTradeStationTradeKey
-func NewGlobalTradeStationTradeKey() *GlobalTradeStationTradeKey {
-	gtstk := &GlobalTradeStationTradeKey{
-		DataID:  types.NewPrimitiveU64(0),
-		Version: types.NewPrimitiveU32(0),
+func NewGlobalTradeStationTradeKey() GlobalTradeStationTradeKey {
+	return GlobalTradeStationTradeKey{
+		DataID:  types.NewUInt64(0),
+		Version: types.NewUInt32(0),
 	}
 
-	return gtstk
 }

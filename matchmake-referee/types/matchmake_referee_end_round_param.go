@@ -11,13 +11,13 @@ import (
 // MatchmakeRefereeEndRoundParam is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeEndRoundParam struct {
 	types.Structure
-	*types.Data
-	RoundID              *types.PrimitiveU64
-	PersonalRoundResults *types.List[*MatchmakeRefereePersonalRoundResult]
+	types.Data
+	RoundID              types.UInt64
+	PersonalRoundResults types.List[MatchmakeRefereePersonalRoundResult]
 }
 
 // WriteTo writes the MatchmakeRefereeEndRoundParam to the given writable
-func (mrerp *MatchmakeRefereeEndRoundParam) WriteTo(writable types.Writable) {
+func (mrerp MatchmakeRefereeEndRoundParam) WriteTo(writable types.Writable) {
 	mrerp.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -60,19 +60,19 @@ func (mrerp *MatchmakeRefereeEndRoundParam) ExtractFrom(readable types.Readable)
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeEndRoundParam
-func (mrerp *MatchmakeRefereeEndRoundParam) Copy() types.RVType {
+func (mrerp MatchmakeRefereeEndRoundParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeEndRoundParam()
 
 	copied.StructureVersion = mrerp.StructureVersion
-	copied.Data = mrerp.Data.Copy().(*types.Data)
-	copied.RoundID = mrerp.RoundID.Copy().(*types.PrimitiveU64)
-	copied.PersonalRoundResults = mrerp.PersonalRoundResults.Copy().(*types.List[*MatchmakeRefereePersonalRoundResult])
+	copied.Data = mrerp.Data.Copy().(types.Data)
+	copied.RoundID = mrerp.RoundID.Copy().(types.UInt64)
+	copied.PersonalRoundResults = mrerp.PersonalRoundResults.Copy().(types.List[MatchmakeRefereePersonalRoundResult])
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeRefereeEndRoundParam contains the same data as the current MatchmakeRefereeEndRoundParam
-func (mrerp *MatchmakeRefereeEndRoundParam) Equals(o types.RVType) bool {
+func (mrerp MatchmakeRefereeEndRoundParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*MatchmakeRefereeEndRoundParam); !ok {
 		return false
 	}
@@ -95,12 +95,12 @@ func (mrerp *MatchmakeRefereeEndRoundParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MatchmakeRefereeEndRoundParam
-func (mrerp *MatchmakeRefereeEndRoundParam) String() string {
+func (mrerp MatchmakeRefereeEndRoundParam) String() string {
 	return mrerp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeRefereeEndRoundParam using the provided indentation level
-func (mrerp *MatchmakeRefereeEndRoundParam) FormatToString(indentationLevel int) string {
+func (mrerp MatchmakeRefereeEndRoundParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,14 +116,11 @@ func (mrerp *MatchmakeRefereeEndRoundParam) FormatToString(indentationLevel int)
 }
 
 // NewMatchmakeRefereeEndRoundParam returns a new MatchmakeRefereeEndRoundParam
-func NewMatchmakeRefereeEndRoundParam() *MatchmakeRefereeEndRoundParam {
-	mrerp := &MatchmakeRefereeEndRoundParam{
+func NewMatchmakeRefereeEndRoundParam() MatchmakeRefereeEndRoundParam {
+	return MatchmakeRefereeEndRoundParam{
 		Data:                 types.NewData(),
-		RoundID:              types.NewPrimitiveU64(0),
-		PersonalRoundResults: types.NewList[*MatchmakeRefereePersonalRoundResult](),
+		RoundID:              types.NewUInt64(0),
+		PersonalRoundResults: types.NewList[MatchmakeRefereePersonalRoundResult](),
 	}
 
-	mrerp.PersonalRoundResults.Type = NewMatchmakeRefereePersonalRoundResult()
-
-	return mrerp
 }

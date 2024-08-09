@@ -11,13 +11,13 @@ import (
 // Ranking2ScoreData is a type within the Ranking2 protocol
 type Ranking2ScoreData struct {
 	types.Structure
-	Misc     *types.PrimitiveU64
-	Category *types.PrimitiveU32
-	Score    *types.PrimitiveU32
+	Misc     types.UInt64
+	Category types.UInt32
+	Score    types.UInt32
 }
 
 // WriteTo writes the Ranking2ScoreData to the given writable
-func (rsd *Ranking2ScoreData) WriteTo(writable types.Writable) {
+func (rsd Ranking2ScoreData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rsd.Misc.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (rsd *Ranking2ScoreData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Ranking2ScoreData
-func (rsd *Ranking2ScoreData) Copy() types.RVType {
+func (rsd Ranking2ScoreData) Copy() types.RVType {
 	copied := NewRanking2ScoreData()
 
 	copied.StructureVersion = rsd.StructureVersion
-	copied.Misc = rsd.Misc.Copy().(*types.PrimitiveU64)
-	copied.Category = rsd.Category.Copy().(*types.PrimitiveU32)
-	copied.Score = rsd.Score.Copy().(*types.PrimitiveU32)
+	copied.Misc = rsd.Misc.Copy().(types.UInt64)
+	copied.Category = rsd.Category.Copy().(types.UInt32)
+	copied.Score = rsd.Score.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2ScoreData contains the same data as the current Ranking2ScoreData
-func (rsd *Ranking2ScoreData) Equals(o types.RVType) bool {
+func (rsd Ranking2ScoreData) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2ScoreData); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (rsd *Ranking2ScoreData) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the Ranking2ScoreData
-func (rsd *Ranking2ScoreData) String() string {
+func (rsd Ranking2ScoreData) String() string {
 	return rsd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2ScoreData using the provided indentation level
-func (rsd *Ranking2ScoreData) FormatToString(indentationLevel int) string {
+func (rsd Ranking2ScoreData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (rsd *Ranking2ScoreData) FormatToString(indentationLevel int) string {
 }
 
 // NewRanking2ScoreData returns a new Ranking2ScoreData
-func NewRanking2ScoreData() *Ranking2ScoreData {
-	rsd := &Ranking2ScoreData{
-		Misc:     types.NewPrimitiveU64(0),
-		Category: types.NewPrimitiveU32(0),
-		Score:    types.NewPrimitiveU32(0),
+func NewRanking2ScoreData() Ranking2ScoreData {
+	return Ranking2ScoreData{
+		Misc:     types.NewUInt64(0),
+		Category: types.NewUInt32(0),
+		Score:    types.NewUInt32(0),
 	}
 
-	return rsd
 }

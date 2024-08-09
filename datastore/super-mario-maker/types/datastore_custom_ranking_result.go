@@ -12,13 +12,13 @@ import (
 // DataStoreCustomRankingResult is a type within the DataStore protocol
 type DataStoreCustomRankingResult struct {
 	types.Structure
-	Order    *types.PrimitiveU32
-	Score    *types.PrimitiveU32
-	MetaInfo *datastore_types.DataStoreMetaInfo
+	Order    types.UInt32
+	Score    types.UInt32
+	MetaInfo datastore_types.DataStoreMetaInfo
 }
 
 // WriteTo writes the DataStoreCustomRankingResult to the given writable
-func (dscrr *DataStoreCustomRankingResult) WriteTo(writable types.Writable) {
+func (dscrr DataStoreCustomRankingResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dscrr.Order.WriteTo(contentWritable)
@@ -60,19 +60,19 @@ func (dscrr *DataStoreCustomRankingResult) ExtractFrom(readable types.Readable) 
 }
 
 // Copy returns a new copied instance of DataStoreCustomRankingResult
-func (dscrr *DataStoreCustomRankingResult) Copy() types.RVType {
+func (dscrr DataStoreCustomRankingResult) Copy() types.RVType {
 	copied := NewDataStoreCustomRankingResult()
 
 	copied.StructureVersion = dscrr.StructureVersion
-	copied.Order = dscrr.Order.Copy().(*types.PrimitiveU32)
-	copied.Score = dscrr.Score.Copy().(*types.PrimitiveU32)
-	copied.MetaInfo = dscrr.MetaInfo.Copy().(*datastore_types.DataStoreMetaInfo)
+	copied.Order = dscrr.Order.Copy().(types.UInt32)
+	copied.Score = dscrr.Score.Copy().(types.UInt32)
+	copied.MetaInfo = dscrr.MetaInfo.Copy().(datastore_types.DataStoreMetaInfo)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreCustomRankingResult contains the same data as the current DataStoreCustomRankingResult
-func (dscrr *DataStoreCustomRankingResult) Equals(o types.RVType) bool {
+func (dscrr DataStoreCustomRankingResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreCustomRankingResult); !ok {
 		return false
 	}
@@ -95,12 +95,12 @@ func (dscrr *DataStoreCustomRankingResult) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreCustomRankingResult
-func (dscrr *DataStoreCustomRankingResult) String() string {
+func (dscrr DataStoreCustomRankingResult) String() string {
 	return dscrr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreCustomRankingResult using the provided indentation level
-func (dscrr *DataStoreCustomRankingResult) FormatToString(indentationLevel int) string {
+func (dscrr DataStoreCustomRankingResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,12 +116,11 @@ func (dscrr *DataStoreCustomRankingResult) FormatToString(indentationLevel int) 
 }
 
 // NewDataStoreCustomRankingResult returns a new DataStoreCustomRankingResult
-func NewDataStoreCustomRankingResult() *DataStoreCustomRankingResult {
-	dscrr := &DataStoreCustomRankingResult{
-		Order:    types.NewPrimitiveU32(0),
-		Score:    types.NewPrimitiveU32(0),
+func NewDataStoreCustomRankingResult() DataStoreCustomRankingResult {
+	return DataStoreCustomRankingResult{
+		Order:    types.NewUInt32(0),
+		Score:    types.NewUInt32(0),
 		MetaInfo: datastore_types.NewDataStoreMetaInfo(),
 	}
 
-	return dscrr
 }

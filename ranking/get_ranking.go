@@ -26,17 +26,17 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	rankingMode := types.NewPrimitiveU8(0)
-	category := types.NewPrimitiveU32(0)
+	var rankingMode types.UInt8
+	var category types.UInt32
 	orderParam := ranking_types.NewRankingOrderParam()
-	uniqueID := types.NewPrimitiveU64(0)
-	principalID := types.NewPID(0)
+	var uniqueID types.UInt64
+	var principalID types.PID
 
 	var err error
 
 	err = rankingMode.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read rankingMode from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read rankingMode from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, uniqueID, principalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, uniqueID, principalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -56,7 +56,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, uniqueID, principalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -66,7 +66,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, uniqueID, principalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -76,7 +76,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	err = principalID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, uniqueID, principalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

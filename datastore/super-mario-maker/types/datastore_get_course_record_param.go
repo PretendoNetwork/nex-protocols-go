@@ -11,12 +11,12 @@ import (
 // DataStoreGetCourseRecordParam is a type within the DataStore protocol
 type DataStoreGetCourseRecordParam struct {
 	types.Structure
-	DataID *types.PrimitiveU64
-	Slot   *types.PrimitiveU8
+	DataID types.UInt64
+	Slot   types.UInt8
 }
 
 // WriteTo writes the DataStoreGetCourseRecordParam to the given writable
-func (dsgcrp *DataStoreGetCourseRecordParam) WriteTo(writable types.Writable) {
+func (dsgcrp DataStoreGetCourseRecordParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsgcrp.DataID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dsgcrp *DataStoreGetCourseRecordParam) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of DataStoreGetCourseRecordParam
-func (dsgcrp *DataStoreGetCourseRecordParam) Copy() types.RVType {
+func (dsgcrp DataStoreGetCourseRecordParam) Copy() types.RVType {
 	copied := NewDataStoreGetCourseRecordParam()
 
 	copied.StructureVersion = dsgcrp.StructureVersion
-	copied.DataID = dsgcrp.DataID.Copy().(*types.PrimitiveU64)
-	copied.Slot = dsgcrp.Slot.Copy().(*types.PrimitiveU8)
+	copied.DataID = dsgcrp.DataID.Copy().(types.UInt64)
+	copied.Slot = dsgcrp.Slot.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreGetCourseRecordParam contains the same data as the current DataStoreGetCourseRecordParam
-func (dsgcrp *DataStoreGetCourseRecordParam) Equals(o types.RVType) bool {
+func (dsgcrp DataStoreGetCourseRecordParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreGetCourseRecordParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dsgcrp *DataStoreGetCourseRecordParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreGetCourseRecordParam
-func (dsgcrp *DataStoreGetCourseRecordParam) String() string {
+func (dsgcrp DataStoreGetCourseRecordParam) String() string {
 	return dsgcrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreGetCourseRecordParam using the provided indentation level
-func (dsgcrp *DataStoreGetCourseRecordParam) FormatToString(indentationLevel int) string {
+func (dsgcrp DataStoreGetCourseRecordParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dsgcrp *DataStoreGetCourseRecordParam) FormatToString(indentationLevel int
 }
 
 // NewDataStoreGetCourseRecordParam returns a new DataStoreGetCourseRecordParam
-func NewDataStoreGetCourseRecordParam() *DataStoreGetCourseRecordParam {
-	dsgcrp := &DataStoreGetCourseRecordParam{
-		DataID: types.NewPrimitiveU64(0),
-		Slot:   types.NewPrimitiveU8(0),
+func NewDataStoreGetCourseRecordParam() DataStoreGetCourseRecordParam {
+	return DataStoreGetCourseRecordParam{
+		DataID: types.NewUInt64(0),
+		Slot:   types.NewUInt8(0),
 	}
 
-	return dsgcrp
 }

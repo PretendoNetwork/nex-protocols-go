@@ -11,13 +11,13 @@ import (
 // Ranking2EstimateScoreRankInput is a type within the Ranking2 protocol
 type Ranking2EstimateScoreRankInput struct {
 	types.Structure
-	Category           *types.PrimitiveU32
-	NumSeasonsToGoBack *types.PrimitiveU8
-	Score              *types.PrimitiveU32
+	Category           types.UInt32
+	NumSeasonsToGoBack types.UInt8
+	Score              types.UInt32
 }
 
 // WriteTo writes the Ranking2EstimateScoreRankInput to the given writable
-func (resri *Ranking2EstimateScoreRankInput) WriteTo(writable types.Writable) {
+func (resri Ranking2EstimateScoreRankInput) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	resri.Category.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (resri *Ranking2EstimateScoreRankInput) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of Ranking2EstimateScoreRankInput
-func (resri *Ranking2EstimateScoreRankInput) Copy() types.RVType {
+func (resri Ranking2EstimateScoreRankInput) Copy() types.RVType {
 	copied := NewRanking2EstimateScoreRankInput()
 
 	copied.StructureVersion = resri.StructureVersion
-	copied.Category = resri.Category.Copy().(*types.PrimitiveU32)
-	copied.NumSeasonsToGoBack = resri.NumSeasonsToGoBack.Copy().(*types.PrimitiveU8)
-	copied.Score = resri.Score.Copy().(*types.PrimitiveU32)
+	copied.Category = resri.Category.Copy().(types.UInt32)
+	copied.NumSeasonsToGoBack = resri.NumSeasonsToGoBack.Copy().(types.UInt8)
+	copied.Score = resri.Score.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2EstimateScoreRankInput contains the same data as the current Ranking2EstimateScoreRankInput
-func (resri *Ranking2EstimateScoreRankInput) Equals(o types.RVType) bool {
+func (resri Ranking2EstimateScoreRankInput) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2EstimateScoreRankInput); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (resri *Ranking2EstimateScoreRankInput) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the Ranking2EstimateScoreRankInput
-func (resri *Ranking2EstimateScoreRankInput) String() string {
+func (resri Ranking2EstimateScoreRankInput) String() string {
 	return resri.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2EstimateScoreRankInput using the provided indentation level
-func (resri *Ranking2EstimateScoreRankInput) FormatToString(indentationLevel int) string {
+func (resri Ranking2EstimateScoreRankInput) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (resri *Ranking2EstimateScoreRankInput) FormatToString(indentationLevel int
 }
 
 // NewRanking2EstimateScoreRankInput returns a new Ranking2EstimateScoreRankInput
-func NewRanking2EstimateScoreRankInput() *Ranking2EstimateScoreRankInput {
-	resri := &Ranking2EstimateScoreRankInput{
-		Category:           types.NewPrimitiveU32(0),
-		NumSeasonsToGoBack: types.NewPrimitiveU8(0),
-		Score:              types.NewPrimitiveU32(0),
+func NewRanking2EstimateScoreRankInput() Ranking2EstimateScoreRankInput {
+	return Ranking2EstimateScoreRankInput{
+		Category:           types.NewUInt32(0),
+		NumSeasonsToGoBack: types.NewUInt8(0),
+		Score:              types.NewUInt32(0),
 	}
 
-	return resri
 }

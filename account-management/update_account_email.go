@@ -25,11 +25,11 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strName := types.NewString("")
+	var strName types.String
 
 	err := strName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountEmail(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateAccountEmail(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, strName)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

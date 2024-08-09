@@ -11,17 +11,17 @@ import (
 // DataStoreGetCourseRecordResult is a type within the DataStore protocol
 type DataStoreGetCourseRecordResult struct {
 	types.Structure
-	DataID      *types.PrimitiveU64
-	Slot        *types.PrimitiveU8
-	FirstPID    *types.PID
-	BestPID     *types.PID
-	BestScore   *types.PrimitiveS32
-	CreatedTime *types.DateTime
-	UpdatedTime *types.DateTime
+	DataID      types.UInt64
+	Slot        types.UInt8
+	FirstPID    types.PID
+	BestPID     types.PID
+	BestScore   types.Int32
+	CreatedTime types.DateTime
+	UpdatedTime types.DateTime
 }
 
 // WriteTo writes the DataStoreGetCourseRecordResult to the given writable
-func (dsgcrr *DataStoreGetCourseRecordResult) WriteTo(writable types.Writable) {
+func (dsgcrr DataStoreGetCourseRecordResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsgcrr.DataID.WriteTo(contentWritable)
@@ -87,23 +87,23 @@ func (dsgcrr *DataStoreGetCourseRecordResult) ExtractFrom(readable types.Readabl
 }
 
 // Copy returns a new copied instance of DataStoreGetCourseRecordResult
-func (dsgcrr *DataStoreGetCourseRecordResult) Copy() types.RVType {
+func (dsgcrr DataStoreGetCourseRecordResult) Copy() types.RVType {
 	copied := NewDataStoreGetCourseRecordResult()
 
 	copied.StructureVersion = dsgcrr.StructureVersion
-	copied.DataID = dsgcrr.DataID.Copy().(*types.PrimitiveU64)
-	copied.Slot = dsgcrr.Slot.Copy().(*types.PrimitiveU8)
-	copied.FirstPID = dsgcrr.FirstPID.Copy().(*types.PID)
-	copied.BestPID = dsgcrr.BestPID.Copy().(*types.PID)
-	copied.BestScore = dsgcrr.BestScore.Copy().(*types.PrimitiveS32)
-	copied.CreatedTime = dsgcrr.CreatedTime.Copy().(*types.DateTime)
-	copied.UpdatedTime = dsgcrr.UpdatedTime.Copy().(*types.DateTime)
+	copied.DataID = dsgcrr.DataID.Copy().(types.UInt64)
+	copied.Slot = dsgcrr.Slot.Copy().(types.UInt8)
+	copied.FirstPID = dsgcrr.FirstPID.Copy().(types.PID)
+	copied.BestPID = dsgcrr.BestPID.Copy().(types.PID)
+	copied.BestScore = dsgcrr.BestScore.Copy().(types.Int32)
+	copied.CreatedTime = dsgcrr.CreatedTime.Copy().(types.DateTime)
+	copied.UpdatedTime = dsgcrr.UpdatedTime.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreGetCourseRecordResult contains the same data as the current DataStoreGetCourseRecordResult
-func (dsgcrr *DataStoreGetCourseRecordResult) Equals(o types.RVType) bool {
+func (dsgcrr DataStoreGetCourseRecordResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreGetCourseRecordResult); !ok {
 		return false
 	}
@@ -142,12 +142,12 @@ func (dsgcrr *DataStoreGetCourseRecordResult) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreGetCourseRecordResult
-func (dsgcrr *DataStoreGetCourseRecordResult) String() string {
+func (dsgcrr DataStoreGetCourseRecordResult) String() string {
 	return dsgcrr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreGetCourseRecordResult using the provided indentation level
-func (dsgcrr *DataStoreGetCourseRecordResult) FormatToString(indentationLevel int) string {
+func (dsgcrr DataStoreGetCourseRecordResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -167,16 +167,15 @@ func (dsgcrr *DataStoreGetCourseRecordResult) FormatToString(indentationLevel in
 }
 
 // NewDataStoreGetCourseRecordResult returns a new DataStoreGetCourseRecordResult
-func NewDataStoreGetCourseRecordResult() *DataStoreGetCourseRecordResult {
-	dsgcrr := &DataStoreGetCourseRecordResult{
-		DataID:      types.NewPrimitiveU64(0),
-		Slot:        types.NewPrimitiveU8(0),
+func NewDataStoreGetCourseRecordResult() DataStoreGetCourseRecordResult {
+	return DataStoreGetCourseRecordResult{
+		DataID:      types.NewUInt64(0),
+		Slot:        types.NewUInt8(0),
 		FirstPID:    types.NewPID(0),
 		BestPID:     types.NewPID(0),
-		BestScore:   types.NewPrimitiveS32(0),
+		BestScore:   types.NewInt32(0),
 		CreatedTime: types.NewDateTime(0),
 		UpdatedTime: types.NewDateTime(0),
 	}
 
-	return dsgcrr
 }

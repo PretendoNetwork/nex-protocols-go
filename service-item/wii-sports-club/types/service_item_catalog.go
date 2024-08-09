@@ -11,13 +11,13 @@ import (
 // ServiceItemCatalog is a type within the ServiceItem protocol
 type ServiceItemCatalog struct {
 	types.Structure
-	TotalSize *types.PrimitiveU32
-	Offset    *types.PrimitiveU32
-	ListItems *types.List[*ServiceItemListItem]
+	TotalSize types.UInt32
+	Offset    types.UInt32
+	ListItems types.List[ServiceItemListItem]
 }
 
 // WriteTo writes the ServiceItemCatalog to the given writable
-func (sic *ServiceItemCatalog) WriteTo(writable types.Writable) {
+func (sic ServiceItemCatalog) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sic.TotalSize.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (sic *ServiceItemCatalog) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemCatalog
-func (sic *ServiceItemCatalog) Copy() types.RVType {
+func (sic ServiceItemCatalog) Copy() types.RVType {
 	copied := NewServiceItemCatalog()
 
 	copied.StructureVersion = sic.StructureVersion
-	copied.TotalSize = sic.TotalSize.Copy().(*types.PrimitiveU32)
-	copied.Offset = sic.Offset.Copy().(*types.PrimitiveU32)
-	copied.ListItems = sic.ListItems.Copy().(*types.List[*ServiceItemListItem])
+	copied.TotalSize = sic.TotalSize.Copy().(types.UInt32)
+	copied.Offset = sic.Offset.Copy().(types.UInt32)
+	copied.ListItems = sic.ListItems.Copy().(types.List[ServiceItemListItem])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemCatalog contains the same data as the current ServiceItemCatalog
-func (sic *ServiceItemCatalog) Equals(o types.RVType) bool {
+func (sic ServiceItemCatalog) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemCatalog); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (sic *ServiceItemCatalog) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemCatalog
-func (sic *ServiceItemCatalog) String() string {
+func (sic ServiceItemCatalog) String() string {
 	return sic.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemCatalog using the provided indentation level
-func (sic *ServiceItemCatalog) FormatToString(indentationLevel int) string {
+func (sic ServiceItemCatalog) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +115,11 @@ func (sic *ServiceItemCatalog) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemCatalog returns a new ServiceItemCatalog
-func NewServiceItemCatalog() *ServiceItemCatalog {
-	sic := &ServiceItemCatalog{
-		TotalSize: types.NewPrimitiveU32(0),
-		Offset:    types.NewPrimitiveU32(0),
-		ListItems: types.NewList[*ServiceItemListItem](),
+func NewServiceItemCatalog() ServiceItemCatalog {
+	return ServiceItemCatalog{
+		TotalSize: types.NewUInt32(0),
+		Offset:    types.NewUInt32(0),
+		ListItems: types.NewList[ServiceItemListItem](),
 	}
 
-	sic.ListItems.Type = NewServiceItemListItem()
-
-	return sic
 }

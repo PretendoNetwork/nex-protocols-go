@@ -11,12 +11,12 @@ import (
 // ServiceItemGetServiceItemRightParam is a type within the ServiceItem protocol
 type ServiceItemGetServiceItemRightParam struct {
 	types.Structure
-	ReferenceID *types.String
-	TitleID     *types.String
+	ReferenceID types.String
+	TitleID     types.String
 }
 
 // WriteTo writes the ServiceItemGetServiceItemRightParam to the given writable
-func (sigsirp *ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writable) {
+func (sigsirp ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sigsirp.ReferenceID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (sigsirp *ServiceItemGetServiceItemRightParam) ExtractFrom(readable types.R
 }
 
 // Copy returns a new copied instance of ServiceItemGetServiceItemRightParam
-func (sigsirp *ServiceItemGetServiceItemRightParam) Copy() types.RVType {
+func (sigsirp ServiceItemGetServiceItemRightParam) Copy() types.RVType {
 	copied := NewServiceItemGetServiceItemRightParam()
 
 	copied.StructureVersion = sigsirp.StructureVersion
-	copied.ReferenceID = sigsirp.ReferenceID.Copy().(*types.String)
-	copied.TitleID = sigsirp.TitleID.Copy().(*types.String)
+	copied.ReferenceID = sigsirp.ReferenceID.Copy().(types.String)
+	copied.TitleID = sigsirp.TitleID.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetServiceItemRightParam contains the same data as the current ServiceItemGetServiceItemRightParam
-func (sigsirp *ServiceItemGetServiceItemRightParam) Equals(o types.RVType) bool {
+func (sigsirp ServiceItemGetServiceItemRightParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetServiceItemRightParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (sigsirp *ServiceItemGetServiceItemRightParam) Equals(o types.RVType) bool 
 }
 
 // String returns the string representation of the ServiceItemGetServiceItemRightParam
-func (sigsirp *ServiceItemGetServiceItemRightParam) String() string {
+func (sigsirp ServiceItemGetServiceItemRightParam) String() string {
 	return sigsirp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetServiceItemRightParam using the provided indentation level
-func (sigsirp *ServiceItemGetServiceItemRightParam) FormatToString(indentationLevel int) string {
+func (sigsirp ServiceItemGetServiceItemRightParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (sigsirp *ServiceItemGetServiceItemRightParam) FormatToString(indentationLe
 }
 
 // NewServiceItemGetServiceItemRightParam returns a new ServiceItemGetServiceItemRightParam
-func NewServiceItemGetServiceItemRightParam() *ServiceItemGetServiceItemRightParam {
-	sigsirp := &ServiceItemGetServiceItemRightParam{
+func NewServiceItemGetServiceItemRightParam() ServiceItemGetServiceItemRightParam {
+	return ServiceItemGetServiceItemRightParam{
 		ReferenceID: types.NewString(""),
 		TitleID:     types.NewString(""),
 	}
 
-	return sigsirp
 }

@@ -25,16 +25,16 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strKey := types.NewString("")
-	strEmail := types.NewString("")
-	oPublicData := types.NewAnyDataHolder()
-	oPrivateData := types.NewAnyDataHolder()
+	var strKey types.String
+	var strEmail types.String
+	var oPublicData types.AnyDataHolder
+	var oPrivateData types.AnyDataHolder
 
 	var err error
 
 	err = strKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccount(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		_, rmcError := protocol.UpdateAccount(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, strKey, strEmail, oPublicData, oPrivateData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	err = strEmail.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccount(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		_, rmcError := protocol.UpdateAccount(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, strKey, strEmail, oPublicData, oPrivateData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	err = oPublicData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccount(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		_, rmcError := protocol.UpdateAccount(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, strKey, strEmail, oPublicData, oPrivateData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -64,7 +64,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	err = oPrivateData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccount(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		_, rmcError := protocol.UpdateAccount(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, strKey, strEmail, oPublicData, oPrivateData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

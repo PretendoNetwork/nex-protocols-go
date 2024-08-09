@@ -25,16 +25,15 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	gid := types.NewPrimitiveU32(0)
-	lstPotentialNewOwnersID := types.NewList[*types.PID]()
-	lstPotentialNewOwnersID.Type = types.NewPID(0)
-	participantsOnly := types.NewPrimitiveBool(false)
+	var gid types.UInt32
+	var lstPotentialNewOwnersID types.List[types.PID]
+	var participantsOnly types.Bool
 
 	var err error
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, lstPotentialNewOwnersID, participantsOnly)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	err = lstPotentialNewOwnersID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, gid, lstPotentialNewOwnersID, participantsOnly)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +53,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	err = participantsOnly.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, gid, lstPotentialNewOwnersID, participantsOnly)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

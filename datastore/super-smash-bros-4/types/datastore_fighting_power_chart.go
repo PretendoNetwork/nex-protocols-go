@@ -11,12 +11,12 @@ import (
 // DataStoreFightingPowerChart is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreFightingPowerChart struct {
 	types.Structure
-	UserNum *types.PrimitiveU32
-	Chart   *types.List[*DataStoreFightingPowerScore]
+	UserNum types.UInt32
+	Chart   types.List[DataStoreFightingPowerScore]
 }
 
 // WriteTo writes the DataStoreFightingPowerChart to the given writable
-func (dsfpc *DataStoreFightingPowerChart) WriteTo(writable types.Writable) {
+func (dsfpc DataStoreFightingPowerChart) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsfpc.UserNum.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dsfpc *DataStoreFightingPowerChart) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of DataStoreFightingPowerChart
-func (dsfpc *DataStoreFightingPowerChart) Copy() types.RVType {
+func (dsfpc DataStoreFightingPowerChart) Copy() types.RVType {
 	copied := NewDataStoreFightingPowerChart()
 
 	copied.StructureVersion = dsfpc.StructureVersion
-	copied.UserNum = dsfpc.UserNum.Copy().(*types.PrimitiveU32)
-	copied.Chart = dsfpc.Chart.Copy().(*types.List[*DataStoreFightingPowerScore])
+	copied.UserNum = dsfpc.UserNum.Copy().(types.UInt32)
+	copied.Chart = dsfpc.Chart.Copy().(types.List[DataStoreFightingPowerScore])
 
 	return copied
 }
 
 // Equals checks if the given DataStoreFightingPowerChart contains the same data as the current DataStoreFightingPowerChart
-func (dsfpc *DataStoreFightingPowerChart) Equals(o types.RVType) bool {
+func (dsfpc DataStoreFightingPowerChart) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreFightingPowerChart); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dsfpc *DataStoreFightingPowerChart) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreFightingPowerChart
-func (dsfpc *DataStoreFightingPowerChart) String() string {
+func (dsfpc DataStoreFightingPowerChart) String() string {
 	return dsfpc.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreFightingPowerChart using the provided indentation level
-func (dsfpc *DataStoreFightingPowerChart) FormatToString(indentationLevel int) string {
+func (dsfpc DataStoreFightingPowerChart) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,13 +102,10 @@ func (dsfpc *DataStoreFightingPowerChart) FormatToString(indentationLevel int) s
 }
 
 // NewDataStoreFightingPowerChart returns a new DataStoreFightingPowerChart
-func NewDataStoreFightingPowerChart() *DataStoreFightingPowerChart {
-	dsfpc := &DataStoreFightingPowerChart{
-		UserNum: types.NewPrimitiveU32(0),
-		Chart:   types.NewList[*DataStoreFightingPowerScore](),
+func NewDataStoreFightingPowerChart() DataStoreFightingPowerChart {
+	return DataStoreFightingPowerChart{
+		UserNum: types.NewUInt32(0),
+		Chart:   types.NewList[DataStoreFightingPowerScore](),
 	}
 
-	dsfpc.Chart.Type = NewDataStoreFightingPowerScore()
-
-	return dsfpc
 }

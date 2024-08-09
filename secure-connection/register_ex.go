@@ -25,15 +25,14 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	vecMyURLs := types.NewList[*types.StationURL]()
-	vecMyURLs.Type = types.NewStationURL("")
-	hCustomData := types.NewAnyDataHolder()
+	var vecMyURLs types.List[types.StationURL]
+	var hCustomData types.AnyDataHolder
 
 	var err error
 
 	err = vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, vecMyURLs, hCustomData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 
 	err = hCustomData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, vecMyURLs, hCustomData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

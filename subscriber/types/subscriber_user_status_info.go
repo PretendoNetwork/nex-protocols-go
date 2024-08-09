@@ -11,12 +11,12 @@ import (
 // SubscriberUserStatusInfo is a type within the Shop protocol
 type SubscriberUserStatusInfo struct {
 	types.Structure
-	PID     *types.PID
-	Unknown *types.List[*types.QBuffer]
+	PID     types.PID
+	Unknown types.List[types.QBuffer]
 }
 
 // WriteTo writes the SubscriberUserStatusInfo to the given writable
-func (susi *SubscriberUserStatusInfo) WriteTo(writable types.Writable) {
+func (susi SubscriberUserStatusInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	susi.PID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (susi *SubscriberUserStatusInfo) ExtractFrom(readable types.Readable) error
 }
 
 // Copy returns a new copied instance of SubscriberUserStatusInfo
-func (susi *SubscriberUserStatusInfo) Copy() types.RVType {
+func (susi SubscriberUserStatusInfo) Copy() types.RVType {
 	copied := NewSubscriberUserStatusInfo()
 
 	copied.StructureVersion = susi.StructureVersion
-	copied.PID = susi.PID.Copy().(*types.PID)
-	copied.Unknown = susi.Unknown.Copy().(*types.List[*types.QBuffer])
+	copied.PID = susi.PID.Copy().(types.PID)
+	copied.Unknown = susi.Unknown.Copy().(types.List[types.QBuffer])
 
 	return copied
 }
 
 // Equals checks if the given SubscriberUserStatusInfo contains the same data as the current SubscriberUserStatusInfo
-func (susi *SubscriberUserStatusInfo) Equals(o types.RVType) bool {
+func (susi SubscriberUserStatusInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*SubscriberUserStatusInfo); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (susi *SubscriberUserStatusInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the SubscriberUserStatusInfo
-func (susi *SubscriberUserStatusInfo) String() string {
+func (susi SubscriberUserStatusInfo) String() string {
 	return susi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SubscriberUserStatusInfo using the provided indentation level
-func (susi *SubscriberUserStatusInfo) FormatToString(indentationLevel int) string {
+func (susi SubscriberUserStatusInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,13 +102,10 @@ func (susi *SubscriberUserStatusInfo) FormatToString(indentationLevel int) strin
 }
 
 // NewSubscriberUserStatusInfo returns a new SubscriberUserStatusInfo
-func NewSubscriberUserStatusInfo() *SubscriberUserStatusInfo {
-	susi := &SubscriberUserStatusInfo{
+func NewSubscriberUserStatusInfo() SubscriberUserStatusInfo {
+	return SubscriberUserStatusInfo{
 		PID:     types.NewPID(0),
-		Unknown: types.NewList[*types.QBuffer](),
+		Unknown: types.NewList[types.QBuffer](),
 	}
 
-	susi.Unknown.Type = types.NewQBuffer(nil)
-
-	return susi
 }

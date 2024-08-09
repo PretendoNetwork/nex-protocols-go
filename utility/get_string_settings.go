@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	stringSettingIndex := types.NewPrimitiveU32(0)
+	var stringSettingIndex types.UInt32
 
 	err := stringSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStringSettings(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetStringSettings(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, stringSettingIndex)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

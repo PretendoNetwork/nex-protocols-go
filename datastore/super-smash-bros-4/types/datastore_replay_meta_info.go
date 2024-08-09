@@ -11,19 +11,19 @@ import (
 // DataStoreReplayMetaInfo is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreReplayMetaInfo struct {
 	types.Structure
-	ReplayID   *types.PrimitiveU64
-	Size       *types.PrimitiveU32
-	Mode       *types.PrimitiveU8
-	Style      *types.PrimitiveU8
-	Rule       *types.PrimitiveU8
-	Stage      *types.PrimitiveU8
-	ReplayType *types.PrimitiveU8
-	Players    *types.List[*DataStoreReplayPlayer]
-	Winners    *types.List[*types.PrimitiveU32]
+	ReplayID   types.UInt64
+	Size       types.UInt32
+	Mode       types.UInt8
+	Style      types.UInt8
+	Rule       types.UInt8
+	Stage      types.UInt8
+	ReplayType types.UInt8
+	Players    types.List[DataStoreReplayPlayer]
+	Winners    types.List[types.UInt32]
 }
 
 // WriteTo writes the DataStoreReplayMetaInfo to the given writable
-func (dsrmi *DataStoreReplayMetaInfo) WriteTo(writable types.Writable) {
+func (dsrmi DataStoreReplayMetaInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrmi.ReplayID.WriteTo(contentWritable)
@@ -101,25 +101,25 @@ func (dsrmi *DataStoreReplayMetaInfo) ExtractFrom(readable types.Readable) error
 }
 
 // Copy returns a new copied instance of DataStoreReplayMetaInfo
-func (dsrmi *DataStoreReplayMetaInfo) Copy() types.RVType {
+func (dsrmi DataStoreReplayMetaInfo) Copy() types.RVType {
 	copied := NewDataStoreReplayMetaInfo()
 
 	copied.StructureVersion = dsrmi.StructureVersion
-	copied.ReplayID = dsrmi.ReplayID.Copy().(*types.PrimitiveU64)
-	copied.Size = dsrmi.Size.Copy().(*types.PrimitiveU32)
-	copied.Mode = dsrmi.Mode.Copy().(*types.PrimitiveU8)
-	copied.Style = dsrmi.Style.Copy().(*types.PrimitiveU8)
-	copied.Rule = dsrmi.Rule.Copy().(*types.PrimitiveU8)
-	copied.Stage = dsrmi.Stage.Copy().(*types.PrimitiveU8)
-	copied.ReplayType = dsrmi.ReplayType.Copy().(*types.PrimitiveU8)
-	copied.Players = dsrmi.Players.Copy().(*types.List[*DataStoreReplayPlayer])
-	copied.Winners = dsrmi.Winners.Copy().(*types.List[*types.PrimitiveU32])
+	copied.ReplayID = dsrmi.ReplayID.Copy().(types.UInt64)
+	copied.Size = dsrmi.Size.Copy().(types.UInt32)
+	copied.Mode = dsrmi.Mode.Copy().(types.UInt8)
+	copied.Style = dsrmi.Style.Copy().(types.UInt8)
+	copied.Rule = dsrmi.Rule.Copy().(types.UInt8)
+	copied.Stage = dsrmi.Stage.Copy().(types.UInt8)
+	copied.ReplayType = dsrmi.ReplayType.Copy().(types.UInt8)
+	copied.Players = dsrmi.Players.Copy().(types.List[DataStoreReplayPlayer])
+	copied.Winners = dsrmi.Winners.Copy().(types.List[types.UInt32])
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReplayMetaInfo contains the same data as the current DataStoreReplayMetaInfo
-func (dsrmi *DataStoreReplayMetaInfo) Equals(o types.RVType) bool {
+func (dsrmi DataStoreReplayMetaInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreReplayMetaInfo); !ok {
 		return false
 	}
@@ -166,12 +166,12 @@ func (dsrmi *DataStoreReplayMetaInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreReplayMetaInfo
-func (dsrmi *DataStoreReplayMetaInfo) String() string {
+func (dsrmi DataStoreReplayMetaInfo) String() string {
 	return dsrmi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReplayMetaInfo using the provided indentation level
-func (dsrmi *DataStoreReplayMetaInfo) FormatToString(indentationLevel int) string {
+func (dsrmi DataStoreReplayMetaInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,21 +193,17 @@ func (dsrmi *DataStoreReplayMetaInfo) FormatToString(indentationLevel int) strin
 }
 
 // NewDataStoreReplayMetaInfo returns a new DataStoreReplayMetaInfo
-func NewDataStoreReplayMetaInfo() *DataStoreReplayMetaInfo {
-	dsrmi := &DataStoreReplayMetaInfo{
-		ReplayID:   types.NewPrimitiveU64(0),
-		Size:       types.NewPrimitiveU32(0),
-		Mode:       types.NewPrimitiveU8(0),
-		Style:      types.NewPrimitiveU8(0),
-		Rule:       types.NewPrimitiveU8(0),
-		Stage:      types.NewPrimitiveU8(0),
-		ReplayType: types.NewPrimitiveU8(0),
-		Players:    types.NewList[*DataStoreReplayPlayer](),
-		Winners:    types.NewList[*types.PrimitiveU32](),
+func NewDataStoreReplayMetaInfo() DataStoreReplayMetaInfo {
+	return DataStoreReplayMetaInfo{
+		ReplayID:   types.NewUInt64(0),
+		Size:       types.NewUInt32(0),
+		Mode:       types.NewUInt8(0),
+		Style:      types.NewUInt8(0),
+		Rule:       types.NewUInt8(0),
+		Stage:      types.NewUInt8(0),
+		ReplayType: types.NewUInt8(0),
+		Players:    types.NewList[DataStoreReplayPlayer](),
+		Winners:    types.NewList[types.UInt32](),
 	}
 
-	dsrmi.Players.Type = NewDataStoreReplayPlayer()
-	dsrmi.Winners.Type = types.NewPrimitiveU32(0)
-
-	return dsrmi
 }

@@ -29,7 +29,7 @@ func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInte
 
 	err := purchaseServiceItemParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PurchaseServiceItemRequest(fmt.Errorf("Failed to read purchaseServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.PurchaseServiceItemRequest(fmt.Errorf("Failed to read purchaseServiceItemParam from parameters. %s", err.Error()), packet, callID, purchaseServiceItemParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

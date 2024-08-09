@@ -59,13 +59,13 @@ type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
 	PrepareUploadPokemon func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
-	UploadPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, *nex.Error)
-	SearchPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, *nex.Error)
-	PrepareTradePokemon  func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam) (*nex.RMCMessage, *nex.Error)
-	TradePokemon         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationTradePokemonParam) (*nex.RMCMessage, *nex.Error)
-	DownloadOtherPokemon func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadOtherPokemonParam) (*nex.RMCMessage, *nex.Error)
-	DownloadMyPokemon    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam) (*nex.RMCMessage, *nex.Error)
-	DeletePokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDeletePokemonParam) (*nex.RMCMessage, *nex.Error)
+	UploadPokemon        func(err error, packet nex.PacketInterface, callID uint32, param datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, *nex.Error)
+	SearchPokemon        func(err error, packet nex.PacketInterface, callID uint32, param datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, *nex.Error)
+	PrepareTradePokemon  func(err error, packet nex.PacketInterface, callID uint32, param datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam) (*nex.RMCMessage, *nex.Error)
+	TradePokemon         func(err error, packet nex.PacketInterface, callID uint32, param datastore_pokemon_gen6_types.GlobalTradeStationTradePokemonParam) (*nex.RMCMessage, *nex.Error)
+	DownloadOtherPokemon func(err error, packet nex.PacketInterface, callID uint32, param datastore_pokemon_gen6_types.GlobalTradeStationDownloadOtherPokemonParam) (*nex.RMCMessage, *nex.Error)
+	DownloadMyPokemon    func(err error, packet nex.PacketInterface, callID uint32, param datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam) (*nex.RMCMessage, *nex.Error)
+	DeletePokemon        func(err error, packet nex.PacketInterface, callID uint32, param datastore_pokemon_gen6_types.GlobalTradeStationDeletePokemonParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler

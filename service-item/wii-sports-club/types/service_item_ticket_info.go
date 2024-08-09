@@ -11,12 +11,12 @@ import (
 // ServiceItemTicketInfo is a type within the ServiceItem protocol
 type ServiceItemTicketInfo struct {
 	types.Structure
-	TicketType *types.PrimitiveU32
-	NumTotal   *types.PrimitiveU32
+	TicketType types.UInt32
+	NumTotal   types.UInt32
 }
 
 // WriteTo writes the ServiceItemTicketInfo to the given writable
-func (siti *ServiceItemTicketInfo) WriteTo(writable types.Writable) {
+func (siti ServiceItemTicketInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siti.TicketType.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (siti *ServiceItemTicketInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemTicketInfo
-func (siti *ServiceItemTicketInfo) Copy() types.RVType {
+func (siti ServiceItemTicketInfo) Copy() types.RVType {
 	copied := NewServiceItemTicketInfo()
 
 	copied.StructureVersion = siti.StructureVersion
-	copied.TicketType = siti.TicketType.Copy().(*types.PrimitiveU32)
-	copied.NumTotal = siti.NumTotal.Copy().(*types.PrimitiveU32)
+	copied.TicketType = siti.TicketType.Copy().(types.UInt32)
+	copied.NumTotal = siti.NumTotal.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemTicketInfo contains the same data as the current ServiceItemTicketInfo
-func (siti *ServiceItemTicketInfo) Equals(o types.RVType) bool {
+func (siti ServiceItemTicketInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemTicketInfo); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (siti *ServiceItemTicketInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemTicketInfo
-func (siti *ServiceItemTicketInfo) String() string {
+func (siti ServiceItemTicketInfo) String() string {
 	return siti.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemTicketInfo using the provided indentation level
-func (siti *ServiceItemTicketInfo) FormatToString(indentationLevel int) string {
+func (siti ServiceItemTicketInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (siti *ServiceItemTicketInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemTicketInfo returns a new ServiceItemTicketInfo
-func NewServiceItemTicketInfo() *ServiceItemTicketInfo {
-	siti := &ServiceItemTicketInfo{
-		TicketType: types.NewPrimitiveU32(0),
-		NumTotal:   types.NewPrimitiveU32(0),
+func NewServiceItemTicketInfo() ServiceItemTicketInfo {
+	return ServiceItemTicketInfo{
+		TicketType: types.NewUInt32(0),
+		NumTotal:   types.NewUInt32(0),
 	}
 
-	return siti
 }

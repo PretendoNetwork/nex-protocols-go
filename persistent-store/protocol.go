@@ -39,13 +39,13 @@ const (
 // Protocol handles the Persistent Store protocol
 type Protocol struct {
 	endpoint            nex.EndpointInterface
-	FindByGroup         func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
-	InsertItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, bufData *types.Buffer, bReplace *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
-	RemoveItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error)
-	GetItem             func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error)
-	InsertCustomItem    func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, hData *types.AnyDataHolder, bReplace *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
-	GetCustomItem       func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error)
-	FindItemsBySQLQuery func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, strQuery *types.String) (*nex.RMCMessage, *nex.Error)
+	FindByGroup         func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32) (*nex.RMCMessage, *nex.Error)
+	InsertItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, bufData types.Buffer, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)
+	RemoveItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)
+	GetItem             func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)
+	InsertCustomItem    func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.AnyDataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)
+	GetCustomItem       func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)
+	FindItemsBySQLQuery func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, strQuery types.String) (*nex.RMCMessage, *nex.Error)
 	Patches             nex.ServiceProtocol
 	PatchedMethods      []uint32
 }
@@ -54,13 +54,13 @@ type Protocol struct {
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
-	SetHandlerFindByGroup(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerInsertItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, bufData *types.Buffer, bReplace *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
-	SetHandlerRemoveItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerInsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, hData *types.AnyDataHolder, bReplace *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerFindItemsBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, strQuery *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindByGroup(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerInsertItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, bufData types.Buffer, bReplace types.Bool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRemoveItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerInsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.AnyDataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindItemsBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, strQuery types.String) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -74,37 +74,37 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // SetHandlerFindByGroup sets the handler for the FindByGroup method
-func (protocol *Protocol) SetHandlerFindByGroup(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerFindByGroup(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.FindByGroup = handler
 }
 
 // SetHandlerInsertItem sets the handler for the InsertItem method
-func (protocol *Protocol) SetHandlerInsertItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, bufData *types.Buffer, bReplace *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerInsertItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, bufData types.Buffer, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)) {
 	protocol.InsertItem = handler
 }
 
 // SetHandlerRemoveItem sets the handler for the RemoveItem method
-func (protocol *Protocol) SetHandlerRemoveItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerRemoveItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RemoveItem = handler
 }
 
 // SetHandlerGetItem sets the handler for the GetItem method
-func (protocol *Protocol) SetHandlerGetItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetItem = handler
 }
 
 // SetHandlerInsertCustomItem sets the handler for the InsertCustomItem method
-func (protocol *Protocol) SetHandlerInsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, hData *types.AnyDataHolder, bReplace *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerInsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.AnyDataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)) {
 	protocol.InsertCustomItem = handler
 }
 
 // SetHandlerGetCustomItem sets the handler for the GetCustomItem method
-func (protocol *Protocol) SetHandlerGetCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetCustomItem = handler
 }
 
 // SetHandlerFindItemsBySQLQuery sets the handler for the FindItemsBySQLQuery method
-func (protocol *Protocol) SetHandlerFindItemsBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, strQuery *types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerFindItemsBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, strQuery types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.FindItemsBySQLQuery = handler
 }
 

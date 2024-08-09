@@ -11,13 +11,13 @@ import (
 // Invitation is a type within the Matchmaking protocol
 type Invitation struct {
 	types.Structure
-	IDGathering *types.PrimitiveU32
-	IDGuest     *types.PrimitiveU32
-	StrMessage  *types.String
+	IDGathering types.UInt32
+	IDGuest     types.UInt32
+	StrMessage  types.String
 }
 
 // WriteTo writes the Invitation to the given writable
-func (i *Invitation) WriteTo(writable types.Writable) {
+func (i Invitation) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	i.IDGathering.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (i *Invitation) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Invitation
-func (i *Invitation) Copy() types.RVType {
+func (i Invitation) Copy() types.RVType {
 	copied := NewInvitation()
 
 	copied.StructureVersion = i.StructureVersion
-	copied.IDGathering = i.IDGathering.Copy().(*types.PrimitiveU32)
-	copied.IDGuest = i.IDGuest.Copy().(*types.PrimitiveU32)
-	copied.StrMessage = i.StrMessage.Copy().(*types.String)
+	copied.IDGathering = i.IDGathering.Copy().(types.UInt32)
+	copied.IDGuest = i.IDGuest.Copy().(types.UInt32)
+	copied.StrMessage = i.StrMessage.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given Invitation contains the same data as the current Invitation
-func (i *Invitation) Equals(o types.RVType) bool {
+func (i Invitation) Equals(o types.RVType) bool {
 	if _, ok := o.(*Invitation); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (i *Invitation) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the Invitation
-func (i *Invitation) String() string {
+func (i Invitation) String() string {
 	return i.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Invitation using the provided indentation level
-func (i *Invitation) FormatToString(indentationLevel int) string {
+func (i Invitation) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (i *Invitation) FormatToString(indentationLevel int) string {
 }
 
 // NewInvitation returns a new Invitation
-func NewInvitation() *Invitation {
-	i := &Invitation{
-		IDGathering: types.NewPrimitiveU32(0),
-		IDGuest:     types.NewPrimitiveU32(0),
+func NewInvitation() Invitation {
+	return Invitation{
+		IDGathering: types.NewUInt32(0),
+		IDGuest:     types.NewUInt32(0),
 		StrMessage:  types.NewString(""),
 	}
 
-	return i
 }

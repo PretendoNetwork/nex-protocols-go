@@ -27,13 +27,13 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	getServiceItemRightParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemGetServiceItemRightParam()
-	withoutRightBinary := types.NewPrimitiveBool(false)
+	var withoutRightBinary types.Bool
 
 	var err error
 
 	err = getServiceItemRightParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, getServiceItemRightParam, withoutRightBinary)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 
 	err = withoutRightBinary.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read withoutRightBinary from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read withoutRightBinary from parameters. %s", err.Error()), packet, callID, getServiceItemRightParam, withoutRightBinary)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

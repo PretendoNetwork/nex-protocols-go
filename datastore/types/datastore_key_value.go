@@ -11,12 +11,12 @@ import (
 // DataStoreKeyValue is a type within the DataStore protocol
 type DataStoreKeyValue struct {
 	types.Structure
-	Key   *types.String
-	Value *types.String
+	Key   types.String
+	Value types.String
 }
 
 // WriteTo writes the DataStoreKeyValue to the given writable
-func (dskv *DataStoreKeyValue) WriteTo(writable types.Writable) {
+func (dskv DataStoreKeyValue) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dskv.Key.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dskv *DataStoreKeyValue) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreKeyValue
-func (dskv *DataStoreKeyValue) Copy() types.RVType {
+func (dskv DataStoreKeyValue) Copy() types.RVType {
 	copied := NewDataStoreKeyValue()
 
 	copied.StructureVersion = dskv.StructureVersion
-	copied.Key = dskv.Key.Copy().(*types.String)
-	copied.Value = dskv.Value.Copy().(*types.String)
+	copied.Key = dskv.Key.Copy().(types.String)
+	copied.Value = dskv.Value.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreKeyValue contains the same data as the current DataStoreKeyValue
-func (dskv *DataStoreKeyValue) Equals(o types.RVType) bool {
+func (dskv DataStoreKeyValue) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreKeyValue); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dskv *DataStoreKeyValue) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreKeyValue
-func (dskv *DataStoreKeyValue) String() string {
+func (dskv DataStoreKeyValue) String() string {
 	return dskv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreKeyValue using the provided indentation level
-func (dskv *DataStoreKeyValue) FormatToString(indentationLevel int) string {
+func (dskv DataStoreKeyValue) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dskv *DataStoreKeyValue) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreKeyValue returns a new DataStoreKeyValue
-func NewDataStoreKeyValue() *DataStoreKeyValue {
-	dskv := &DataStoreKeyValue{
+func NewDataStoreKeyValue() DataStoreKeyValue {
+	return DataStoreKeyValue{
 		Key:   types.NewString(""),
 		Value: types.NewString(""),
 	}
 
-	return dskv
 }

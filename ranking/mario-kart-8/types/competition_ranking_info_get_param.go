@@ -11,12 +11,12 @@ import (
 // CompetitionRankingInfoGetParam is a type within the Ranking protocol
 type CompetitionRankingInfoGetParam struct {
 	types.Structure
-	Unknown *types.PrimitiveU8
-	Result  *types.ResultRange
+	Unknown types.UInt8
+	Result  types.ResultRange
 }
 
 // WriteTo writes the CompetitionRankingInfoGetParam to the given writable
-func (crigp *CompetitionRankingInfoGetParam) WriteTo(writable types.Writable) {
+func (crigp CompetitionRankingInfoGetParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	crigp.Unknown.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (crigp *CompetitionRankingInfoGetParam) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of CompetitionRankingInfoGetParam
-func (crigp *CompetitionRankingInfoGetParam) Copy() types.RVType {
+func (crigp CompetitionRankingInfoGetParam) Copy() types.RVType {
 	copied := NewCompetitionRankingInfoGetParam()
 
 	copied.StructureVersion = crigp.StructureVersion
-	copied.Unknown = crigp.Unknown.Copy().(*types.PrimitiveU8)
-	copied.Result = crigp.Result.Copy().(*types.ResultRange)
+	copied.Unknown = crigp.Unknown.Copy().(types.UInt8)
+	copied.Result = crigp.Result.Copy().(types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the given CompetitionRankingInfoGetParam contains the same data as the current CompetitionRankingInfoGetParam
-func (crigp *CompetitionRankingInfoGetParam) Equals(o types.RVType) bool {
+func (crigp CompetitionRankingInfoGetParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*CompetitionRankingInfoGetParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (crigp *CompetitionRankingInfoGetParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the CompetitionRankingInfoGetParam
-func (crigp *CompetitionRankingInfoGetParam) String() string {
+func (crigp CompetitionRankingInfoGetParam) String() string {
 	return crigp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the CompetitionRankingInfoGetParam using the provided indentation level
-func (crigp *CompetitionRankingInfoGetParam) FormatToString(indentationLevel int) string {
+func (crigp CompetitionRankingInfoGetParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (crigp *CompetitionRankingInfoGetParam) FormatToString(indentationLevel int
 }
 
 // NewCompetitionRankingInfoGetParam returns a new CompetitionRankingInfoGetParam
-func NewCompetitionRankingInfoGetParam() *CompetitionRankingInfoGetParam {
-	crigp := &CompetitionRankingInfoGetParam{
-		Unknown: types.NewPrimitiveU8(0),
+func NewCompetitionRankingInfoGetParam() CompetitionRankingInfoGetParam {
+	return CompetitionRankingInfoGetParam{
+		Unknown: types.NewUInt8(0),
 		Result:  types.NewResultRange(),
 	}
 
-	return crigp
 }

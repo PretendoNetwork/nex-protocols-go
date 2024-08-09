@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 
 	err := getSuppordIDParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetSupportID(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetSupportID(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), packet, callID, getSuppordIDParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

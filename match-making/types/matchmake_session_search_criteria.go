@@ -12,26 +12,26 @@ import (
 // MatchmakeSessionSearchCriteria is a type within the Matchmaking protocol
 type MatchmakeSessionSearchCriteria struct {
 	types.Structure
-	Attribs                  *types.List[*types.String]
-	GameMode                 *types.String
-	MinParticipants          *types.String        // * NEX v2.0.0
-	MaxParticipants          *types.String        // * NEX v2.0.0
-	MatchmakeSystemType      *types.String
-	VacantOnly               *types.PrimitiveBool
-	ExcludeLocked            *types.PrimitiveBool
-	ExcludeNonHostPID        *types.PrimitiveBool
-	SelectionMethod          *types.PrimitiveU32  // * NEX v3.0.0
-	VacantParticipants       *types.PrimitiveU16  // * NEX v3.4.0
-	MatchmakeParam           *MatchmakeParam      // * NEX v3.6.0
-	ExcludeUserPasswordSet   *types.PrimitiveBool // * NEX v3.7.0
-	ExcludeSystemPasswordSet *types.PrimitiveBool // * NEX v3.7.0
-	ReferGID                 *types.PrimitiveU32  // * NEX v3.8.0
-	CodeWord                 *types.String        // * NEX v4.0.0
-	ResultRange              *types.ResultRange   // * NEX v4.0.0
+	Attribs                  types.List[types.String]
+	GameMode                 types.String
+	MinParticipants          types.String // * NEX v2.0.0
+	MaxParticipants          types.String // * NEX v2.0.0
+	MatchmakeSystemType      types.String
+	VacantOnly               types.Bool
+	ExcludeLocked            types.Bool
+	ExcludeNonHostPID        types.Bool
+	SelectionMethod          types.UInt32      // * NEX v3.0.0
+	VacantParticipants       types.UInt16      // * NEX v3.4.0
+	MatchmakeParam           MatchmakeParam    // * NEX v3.6.0
+	ExcludeUserPasswordSet   types.Bool        // * NEX v3.7.0
+	ExcludeSystemPasswordSet types.Bool        // * NEX v3.7.0
+	ReferGID                 types.UInt32      // * NEX v3.8.0
+	CodeWord                 types.String      // * NEX v4.0.0
+	ResultRange              types.ResultRange // * NEX v4.0.0
 }
 
 // WriteTo writes the MatchmakeSessionSearchCriteria to the given writable
-func (mssc *MatchmakeSessionSearchCriteria) WriteTo(writable types.Writable) {
+func (mssc MatchmakeSessionSearchCriteria) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
@@ -208,32 +208,32 @@ func (mssc *MatchmakeSessionSearchCriteria) ExtractFrom(readable types.Readable)
 }
 
 // Copy returns a new copied instance of MatchmakeSessionSearchCriteria
-func (mssc *MatchmakeSessionSearchCriteria) Copy() types.RVType {
+func (mssc MatchmakeSessionSearchCriteria) Copy() types.RVType {
 	copied := NewMatchmakeSessionSearchCriteria()
 
 	copied.StructureVersion = mssc.StructureVersion
-	copied.Attribs = mssc.Attribs.Copy().(*types.List[*types.String])
-	copied.GameMode = mssc.GameMode.Copy().(*types.String)
-	copied.MinParticipants = mssc.MinParticipants.Copy().(*types.String)
-	copied.MaxParticipants = mssc.MaxParticipants.Copy().(*types.String)
-	copied.MatchmakeSystemType = mssc.MatchmakeSystemType.Copy().(*types.String)
-	copied.VacantOnly = mssc.VacantOnly.Copy().(*types.PrimitiveBool)
-	copied.ExcludeLocked = mssc.ExcludeLocked.Copy().(*types.PrimitiveBool)
-	copied.ExcludeNonHostPID = mssc.ExcludeNonHostPID.Copy().(*types.PrimitiveBool)
-	copied.SelectionMethod = mssc.SelectionMethod.Copy().(*types.PrimitiveU32)
-	copied.VacantParticipants = mssc.VacantParticipants.Copy().(*types.PrimitiveU16)
-	copied.MatchmakeParam = mssc.MatchmakeParam.Copy().(*MatchmakeParam)
-	copied.ExcludeUserPasswordSet = mssc.ExcludeUserPasswordSet.Copy().(*types.PrimitiveBool)
-	copied.ExcludeSystemPasswordSet = mssc.ExcludeSystemPasswordSet.Copy().(*types.PrimitiveBool)
-	copied.ReferGID = mssc.ReferGID.Copy().(*types.PrimitiveU32)
-	copied.CodeWord = mssc.CodeWord.Copy().(*types.String)
-	copied.ResultRange = mssc.ResultRange.Copy().(*types.ResultRange)
+	copied.Attribs = mssc.Attribs.Copy().(types.List[types.String])
+	copied.GameMode = mssc.GameMode.Copy().(types.String)
+	copied.MinParticipants = mssc.MinParticipants.Copy().(types.String)
+	copied.MaxParticipants = mssc.MaxParticipants.Copy().(types.String)
+	copied.MatchmakeSystemType = mssc.MatchmakeSystemType.Copy().(types.String)
+	copied.VacantOnly = mssc.VacantOnly.Copy().(types.Bool)
+	copied.ExcludeLocked = mssc.ExcludeLocked.Copy().(types.Bool)
+	copied.ExcludeNonHostPID = mssc.ExcludeNonHostPID.Copy().(types.Bool)
+	copied.SelectionMethod = mssc.SelectionMethod.Copy().(types.UInt32)
+	copied.VacantParticipants = mssc.VacantParticipants.Copy().(types.UInt16)
+	copied.MatchmakeParam = mssc.MatchmakeParam.Copy().(MatchmakeParam)
+	copied.ExcludeUserPasswordSet = mssc.ExcludeUserPasswordSet.Copy().(types.Bool)
+	copied.ExcludeSystemPasswordSet = mssc.ExcludeSystemPasswordSet.Copy().(types.Bool)
+	copied.ReferGID = mssc.ReferGID.Copy().(types.UInt32)
+	copied.CodeWord = mssc.CodeWord.Copy().(types.String)
+	copied.ResultRange = mssc.ResultRange.Copy().(types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeSessionSearchCriteria contains the same data as the current MatchmakeSessionSearchCriteria
-func (mssc *MatchmakeSessionSearchCriteria) Equals(o types.RVType) bool {
+func (mssc MatchmakeSessionSearchCriteria) Equals(o types.RVType) bool {
 	if _, ok := o.(*MatchmakeSessionSearchCriteria); !ok {
 		return false
 	}
@@ -308,12 +308,12 @@ func (mssc *MatchmakeSessionSearchCriteria) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MatchmakeSessionSearchCriteria
-func (mssc *MatchmakeSessionSearchCriteria) String() string {
+func (mssc MatchmakeSessionSearchCriteria) String() string {
 	return mssc.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeSessionSearchCriteria using the provided indentation level
-func (mssc *MatchmakeSessionSearchCriteria) FormatToString(indentationLevel int) string {
+func (mssc MatchmakeSessionSearchCriteria) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -342,27 +342,24 @@ func (mssc *MatchmakeSessionSearchCriteria) FormatToString(indentationLevel int)
 }
 
 // NewMatchmakeSessionSearchCriteria returns a new MatchmakeSessionSearchCriteria
-func NewMatchmakeSessionSearchCriteria() *MatchmakeSessionSearchCriteria {
-	mssc := &MatchmakeSessionSearchCriteria{
-		Attribs:                  types.NewList[*types.String](),
+func NewMatchmakeSessionSearchCriteria() MatchmakeSessionSearchCriteria {
+	return MatchmakeSessionSearchCriteria{
+		Attribs:                  types.NewList[types.String](),
 		GameMode:                 types.NewString(""),
 		MinParticipants:          types.NewString(""),
 		MaxParticipants:          types.NewString(""),
 		MatchmakeSystemType:      types.NewString(""),
-		VacantOnly:               types.NewPrimitiveBool(false),
-		ExcludeLocked:            types.NewPrimitiveBool(false),
-		ExcludeNonHostPID:        types.NewPrimitiveBool(false),
-		SelectionMethod:          types.NewPrimitiveU32(0),
-		VacantParticipants:       types.NewPrimitiveU16(0),
+		VacantOnly:               types.NewBool(false),
+		ExcludeLocked:            types.NewBool(false),
+		ExcludeNonHostPID:        types.NewBool(false),
+		SelectionMethod:          types.NewUInt32(0),
+		VacantParticipants:       types.NewUInt16(0),
 		MatchmakeParam:           NewMatchmakeParam(),
-		ExcludeUserPasswordSet:   types.NewPrimitiveBool(false),
-		ExcludeSystemPasswordSet: types.NewPrimitiveBool(false),
-		ReferGID:                 types.NewPrimitiveU32(0),
+		ExcludeUserPasswordSet:   types.NewBool(false),
+		ExcludeSystemPasswordSet: types.NewBool(false),
+		ReferGID:                 types.NewUInt32(0),
 		CodeWord:                 types.NewString(""),
 		ResultRange:              types.NewResultRange(),
 	}
 
-	mssc.Attribs.Type = types.NewString("")
-
-	return mssc
 }

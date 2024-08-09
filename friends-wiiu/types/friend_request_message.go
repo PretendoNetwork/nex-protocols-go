@@ -11,20 +11,20 @@ import (
 // FriendRequestMessage is a type within the FriendsWiiU protocol
 type FriendRequestMessage struct {
 	types.Structure
-	*types.Data
-	FriendRequestID *types.PrimitiveU64
-	Received        *types.PrimitiveBool
-	Unknown2        *types.PrimitiveU8
-	Message         *types.String
-	Unknown3        *types.PrimitiveU8
-	Unknown4        *types.String
-	GameKey         *GameKey
-	Unknown5        *types.DateTime
-	ExpiresOn       *types.DateTime
+	types.Data
+	FriendRequestID types.UInt64
+	Received        types.Bool
+	Unknown2        types.UInt8
+	Message         types.String
+	Unknown3        types.UInt8
+	Unknown4        types.String
+	GameKey         GameKey
+	Unknown5        types.DateTime
+	ExpiresOn       types.DateTime
 }
 
 // WriteTo writes the FriendRequestMessage to the given writable
-func (frm *FriendRequestMessage) WriteTo(writable types.Writable) {
+func (frm FriendRequestMessage) WriteTo(writable types.Writable) {
 	frm.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -109,26 +109,26 @@ func (frm *FriendRequestMessage) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendRequestMessage
-func (frm *FriendRequestMessage) Copy() types.RVType {
+func (frm FriendRequestMessage) Copy() types.RVType {
 	copied := NewFriendRequestMessage()
 
 	copied.StructureVersion = frm.StructureVersion
-	copied.Data = frm.Data.Copy().(*types.Data)
-	copied.FriendRequestID = frm.FriendRequestID.Copy().(*types.PrimitiveU64)
-	copied.Received = frm.Received.Copy().(*types.PrimitiveBool)
-	copied.Unknown2 = frm.Unknown2.Copy().(*types.PrimitiveU8)
-	copied.Message = frm.Message.Copy().(*types.String)
-	copied.Unknown3 = frm.Unknown3.Copy().(*types.PrimitiveU8)
-	copied.Unknown4 = frm.Unknown4.Copy().(*types.String)
-	copied.GameKey = frm.GameKey.Copy().(*GameKey)
-	copied.Unknown5 = frm.Unknown5.Copy().(*types.DateTime)
-	copied.ExpiresOn = frm.ExpiresOn.Copy().(*types.DateTime)
+	copied.Data = frm.Data.Copy().(types.Data)
+	copied.FriendRequestID = frm.FriendRequestID.Copy().(types.UInt64)
+	copied.Received = frm.Received.Copy().(types.Bool)
+	copied.Unknown2 = frm.Unknown2.Copy().(types.UInt8)
+	copied.Message = frm.Message.Copy().(types.String)
+	copied.Unknown3 = frm.Unknown3.Copy().(types.UInt8)
+	copied.Unknown4 = frm.Unknown4.Copy().(types.String)
+	copied.GameKey = frm.GameKey.Copy().(GameKey)
+	copied.Unknown5 = frm.Unknown5.Copy().(types.DateTime)
+	copied.ExpiresOn = frm.ExpiresOn.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given FriendRequestMessage contains the same data as the current FriendRequestMessage
-func (frm *FriendRequestMessage) Equals(o types.RVType) bool {
+func (frm FriendRequestMessage) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendRequestMessage); !ok {
 		return false
 	}
@@ -179,12 +179,12 @@ func (frm *FriendRequestMessage) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the FriendRequestMessage
-func (frm *FriendRequestMessage) String() string {
+func (frm FriendRequestMessage) String() string {
 	return frm.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendRequestMessage using the provided indentation level
-func (frm *FriendRequestMessage) FormatToString(indentationLevel int) string {
+func (frm FriendRequestMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -207,19 +207,18 @@ func (frm *FriendRequestMessage) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendRequestMessage returns a new FriendRequestMessage
-func NewFriendRequestMessage() *FriendRequestMessage {
-	frm := &FriendRequestMessage{
+func NewFriendRequestMessage() FriendRequestMessage {
+	return FriendRequestMessage{
 		Data:            types.NewData(),
-		FriendRequestID: types.NewPrimitiveU64(0),
-		Received:        types.NewPrimitiveBool(false),
-		Unknown2:        types.NewPrimitiveU8(0),
+		FriendRequestID: types.NewUInt64(0),
+		Received:        types.NewBool(false),
+		Unknown2:        types.NewUInt8(0),
 		Message:         types.NewString(""),
-		Unknown3:        types.NewPrimitiveU8(0),
+		Unknown3:        types.NewUInt8(0),
 		Unknown4:        types.NewString(""),
 		GameKey:         NewGameKey(),
 		Unknown5:        types.NewDateTime(0),
 		ExpiresOn:       types.NewDateTime(0),
 	}
 
-	return frm
 }

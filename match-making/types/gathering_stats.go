@@ -11,13 +11,13 @@ import (
 // GatheringStats is a type within the Matchmaking protocol
 type GatheringStats struct {
 	types.Structure
-	PIDParticipant *types.PID
-	UIFlags        *types.PrimitiveU32
-	LstValues      *types.List[*types.PrimitiveF32]
+	PIDParticipant types.PID
+	UIFlags        types.UInt32
+	LstValues      types.List[types.Float]
 }
 
 // WriteTo writes the GatheringStats to the given writable
-func (gs *GatheringStats) WriteTo(writable types.Writable) {
+func (gs GatheringStats) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gs.PIDParticipant.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (gs *GatheringStats) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of GatheringStats
-func (gs *GatheringStats) Copy() types.RVType {
+func (gs GatheringStats) Copy() types.RVType {
 	copied := NewGatheringStats()
 
 	copied.StructureVersion = gs.StructureVersion
-	copied.PIDParticipant = gs.PIDParticipant.Copy().(*types.PID)
-	copied.UIFlags = gs.UIFlags.Copy().(*types.PrimitiveU32)
-	copied.LstValues = gs.LstValues.Copy().(*types.List[*types.PrimitiveF32])
+	copied.PIDParticipant = gs.PIDParticipant.Copy().(types.PID)
+	copied.UIFlags = gs.UIFlags.Copy().(types.UInt32)
+	copied.LstValues = gs.LstValues.Copy().(types.List[types.Float])
 
 	return copied
 }
 
 // Equals checks if the given GatheringStats contains the same data as the current GatheringStats
-func (gs *GatheringStats) Equals(o types.RVType) bool {
+func (gs GatheringStats) Equals(o types.RVType) bool {
 	if _, ok := o.(*GatheringStats); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (gs *GatheringStats) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the GatheringStats
-func (gs *GatheringStats) String() string {
+func (gs GatheringStats) String() string {
 	return gs.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GatheringStats using the provided indentation level
-func (gs *GatheringStats) FormatToString(indentationLevel int) string {
+func (gs GatheringStats) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +115,11 @@ func (gs *GatheringStats) FormatToString(indentationLevel int) string {
 }
 
 // NewGatheringStats returns a new GatheringStats
-func NewGatheringStats() *GatheringStats {
-	gs := &GatheringStats{
+func NewGatheringStats() GatheringStats {
+	return GatheringStats{
 		PIDParticipant: types.NewPID(0),
-		UIFlags:        types.NewPrimitiveU32(0),
-		LstValues:      types.NewList[*types.PrimitiveF32](),
+		UIFlags:        types.NewUInt32(0),
+		LstValues:      types.NewList[types.Float](),
 	}
 
-	gs.LstValues.Type = types.NewPrimitiveF32(0)
-
-	return gs
 }

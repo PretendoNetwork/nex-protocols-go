@@ -25,11 +25,11 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	unknown := types.NewString("")
+	var unknown types.String
 
 	err := unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Hello(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.Hello(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, unknown)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

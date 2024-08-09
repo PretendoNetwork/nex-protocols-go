@@ -29,7 +29,7 @@ func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterfa
 
 	err := transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PrepareUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.PrepareUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, transactionParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

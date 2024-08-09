@@ -11,13 +11,13 @@ import (
 // ServiceItemGetBalanceParam is a type within the ServiceItem protocol
 type ServiceItemGetBalanceParam struct {
 	types.Structure
-	Language *types.String
-	UniqueID *types.PrimitiveU32
-	Platform *types.PrimitiveU8 // * Revision 1
+	Language types.String
+	UniqueID types.UInt32
+	Platform types.UInt8 // * Revision 1
 }
 
 // WriteTo writes the ServiceItemGetBalanceParam to the given writable
-func (sigbp *ServiceItemGetBalanceParam) WriteTo(writable types.Writable) {
+func (sigbp ServiceItemGetBalanceParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sigbp.Language.WriteTo(contentWritable)
@@ -64,19 +64,19 @@ func (sigbp *ServiceItemGetBalanceParam) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of ServiceItemGetBalanceParam
-func (sigbp *ServiceItemGetBalanceParam) Copy() types.RVType {
+func (sigbp ServiceItemGetBalanceParam) Copy() types.RVType {
 	copied := NewServiceItemGetBalanceParam()
 
 	copied.StructureVersion = sigbp.StructureVersion
-	copied.Language = sigbp.Language.Copy().(*types.String)
-	copied.UniqueID = sigbp.UniqueID.Copy().(*types.PrimitiveU32)
-	copied.Platform = sigbp.Platform.Copy().(*types.PrimitiveU8)
+	copied.Language = sigbp.Language.Copy().(types.String)
+	copied.UniqueID = sigbp.UniqueID.Copy().(types.UInt32)
+	copied.Platform = sigbp.Platform.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetBalanceParam contains the same data as the current ServiceItemGetBalanceParam
-func (sigbp *ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
+func (sigbp ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetBalanceParam); !ok {
 		return false
 	}
@@ -99,12 +99,12 @@ func (sigbp *ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemGetBalanceParam
-func (sigbp *ServiceItemGetBalanceParam) String() string {
+func (sigbp ServiceItemGetBalanceParam) String() string {
 	return sigbp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetBalanceParam using the provided indentation level
-func (sigbp *ServiceItemGetBalanceParam) FormatToString(indentationLevel int) string {
+func (sigbp ServiceItemGetBalanceParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -120,12 +120,11 @@ func (sigbp *ServiceItemGetBalanceParam) FormatToString(indentationLevel int) st
 }
 
 // NewServiceItemGetBalanceParam returns a new ServiceItemGetBalanceParam
-func NewServiceItemGetBalanceParam() *ServiceItemGetBalanceParam {
-	sigbp := &ServiceItemGetBalanceParam{
+func NewServiceItemGetBalanceParam() ServiceItemGetBalanceParam {
+	return ServiceItemGetBalanceParam{
 		Language: types.NewString(""),
-		UniqueID: types.NewPrimitiveU32(0),
-		Platform: types.NewPrimitiveU8(0),
+		UniqueID: types.NewUInt32(0),
+		Platform: types.NewUInt8(0),
 	}
 
-	return sigbp
 }

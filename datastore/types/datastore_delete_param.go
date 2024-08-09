@@ -11,12 +11,12 @@ import (
 // DataStoreDeleteParam is a type within the DataStore protocol
 type DataStoreDeleteParam struct {
 	types.Structure
-	DataID         *types.PrimitiveU64
-	UpdatePassword *types.PrimitiveU64
+	DataID         types.UInt64
+	UpdatePassword types.UInt64
 }
 
 // WriteTo writes the DataStoreDeleteParam to the given writable
-func (dsdp *DataStoreDeleteParam) WriteTo(writable types.Writable) {
+func (dsdp DataStoreDeleteParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsdp.DataID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dsdp *DataStoreDeleteParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreDeleteParam
-func (dsdp *DataStoreDeleteParam) Copy() types.RVType {
+func (dsdp DataStoreDeleteParam) Copy() types.RVType {
 	copied := NewDataStoreDeleteParam()
 
 	copied.StructureVersion = dsdp.StructureVersion
-	copied.DataID = dsdp.DataID.Copy().(*types.PrimitiveU64)
-	copied.UpdatePassword = dsdp.UpdatePassword.Copy().(*types.PrimitiveU64)
+	copied.DataID = dsdp.DataID.Copy().(types.UInt64)
+	copied.UpdatePassword = dsdp.UpdatePassword.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreDeleteParam contains the same data as the current DataStoreDeleteParam
-func (dsdp *DataStoreDeleteParam) Equals(o types.RVType) bool {
+func (dsdp DataStoreDeleteParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreDeleteParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dsdp *DataStoreDeleteParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreDeleteParam
-func (dsdp *DataStoreDeleteParam) String() string {
+func (dsdp DataStoreDeleteParam) String() string {
 	return dsdp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreDeleteParam using the provided indentation level
-func (dsdp *DataStoreDeleteParam) FormatToString(indentationLevel int) string {
+func (dsdp DataStoreDeleteParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dsdp *DataStoreDeleteParam) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreDeleteParam returns a new DataStoreDeleteParam
-func NewDataStoreDeleteParam() *DataStoreDeleteParam {
-	dsdp := &DataStoreDeleteParam{
-		DataID:         types.NewPrimitiveU64(0),
-		UpdatePassword: types.NewPrimitiveU64(0),
+func NewDataStoreDeleteParam() DataStoreDeleteParam {
+	return DataStoreDeleteParam{
+		DataID:         types.NewUInt64(0),
+		UpdatePassword: types.NewUInt64(0),
 	}
 
-	return dsdp
 }

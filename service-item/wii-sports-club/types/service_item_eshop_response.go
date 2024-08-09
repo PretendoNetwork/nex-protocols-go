@@ -11,13 +11,13 @@ import (
 // ServiceItemEShopResponse is a type within the ServiceItem protocol
 type ServiceItemEShopResponse struct {
 	types.Structure
-	HTTPStatus    *types.PrimitiveU32
-	ErrorCode     *types.PrimitiveU32
-	CorrelationID *types.String
+	HTTPStatus    types.UInt32
+	ErrorCode     types.UInt32
+	CorrelationID types.String
 }
 
 // WriteTo writes the ServiceItemEShopResponse to the given writable
-func (siesr *ServiceItemEShopResponse) WriteTo(writable types.Writable) {
+func (siesr ServiceItemEShopResponse) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siesr.HTTPStatus.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (siesr *ServiceItemEShopResponse) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of ServiceItemEShopResponse
-func (siesr *ServiceItemEShopResponse) Copy() types.RVType {
+func (siesr ServiceItemEShopResponse) Copy() types.RVType {
 	copied := NewServiceItemEShopResponse()
 
 	copied.StructureVersion = siesr.StructureVersion
-	copied.HTTPStatus = siesr.HTTPStatus.Copy().(*types.PrimitiveU32)
-	copied.ErrorCode = siesr.ErrorCode.Copy().(*types.PrimitiveU32)
-	copied.CorrelationID = siesr.CorrelationID.Copy().(*types.String)
+	copied.HTTPStatus = siesr.HTTPStatus.Copy().(types.UInt32)
+	copied.ErrorCode = siesr.ErrorCode.Copy().(types.UInt32)
+	copied.CorrelationID = siesr.CorrelationID.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemEShopResponse contains the same data as the current ServiceItemEShopResponse
-func (siesr *ServiceItemEShopResponse) Equals(o types.RVType) bool {
+func (siesr ServiceItemEShopResponse) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemEShopResponse); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (siesr *ServiceItemEShopResponse) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemEShopResponse
-func (siesr *ServiceItemEShopResponse) String() string {
+func (siesr ServiceItemEShopResponse) String() string {
 	return siesr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemEShopResponse using the provided indentation level
-func (siesr *ServiceItemEShopResponse) FormatToString(indentationLevel int) string {
+func (siesr ServiceItemEShopResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (siesr *ServiceItemEShopResponse) FormatToString(indentationLevel int) stri
 }
 
 // NewServiceItemEShopResponse returns a new ServiceItemEShopResponse
-func NewServiceItemEShopResponse() *ServiceItemEShopResponse {
-	siesr := &ServiceItemEShopResponse{
-		HTTPStatus:    types.NewPrimitiveU32(0),
-		ErrorCode:     types.NewPrimitiveU32(0),
+func NewServiceItemEShopResponse() ServiceItemEShopResponse {
+	return ServiceItemEShopResponse{
+		HTTPStatus:    types.NewUInt32(0),
+		ErrorCode:     types.NewUInt32(0),
 		CorrelationID: types.NewString(""),
 	}
 
-	return siesr
 }

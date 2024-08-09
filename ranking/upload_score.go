@@ -27,13 +27,13 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	scoreData := ranking_types.NewRankingScoreData()
-	uniqueID := types.NewPrimitiveU64(0)
+	var uniqueID types.UInt64
 
 	var err error
 
 	err = scoreData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), packet, callID, scoreData, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, scoreData, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,15 +11,15 @@ import (
 // DataStoreReqPostInfo is a type within the DataStore protocol
 type DataStoreReqPostInfo struct {
 	types.Structure
-	DataID         *types.PrimitiveU64
-	URL            *types.String
-	RequestHeaders *types.List[*DataStoreKeyValue]
-	FormFields     *types.List[*DataStoreKeyValue]
-	RootCACert     *types.Buffer
+	DataID         types.UInt64
+	URL            types.String
+	RequestHeaders types.List[DataStoreKeyValue]
+	FormFields     types.List[DataStoreKeyValue]
+	RootCACert     types.Buffer
 }
 
 // WriteTo writes the DataStoreReqPostInfo to the given writable
-func (dsrpi *DataStoreReqPostInfo) WriteTo(writable types.Writable) {
+func (dsrpi DataStoreReqPostInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrpi.DataID.WriteTo(contentWritable)
@@ -73,21 +73,21 @@ func (dsrpi *DataStoreReqPostInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreReqPostInfo
-func (dsrpi *DataStoreReqPostInfo) Copy() types.RVType {
+func (dsrpi DataStoreReqPostInfo) Copy() types.RVType {
 	copied := NewDataStoreReqPostInfo()
 
 	copied.StructureVersion = dsrpi.StructureVersion
-	copied.DataID = dsrpi.DataID.Copy().(*types.PrimitiveU64)
-	copied.URL = dsrpi.URL.Copy().(*types.String)
-	copied.RequestHeaders = dsrpi.RequestHeaders.Copy().(*types.List[*DataStoreKeyValue])
-	copied.FormFields = dsrpi.FormFields.Copy().(*types.List[*DataStoreKeyValue])
-	copied.RootCACert = dsrpi.RootCACert.Copy().(*types.Buffer)
+	copied.DataID = dsrpi.DataID.Copy().(types.UInt64)
+	copied.URL = dsrpi.URL.Copy().(types.String)
+	copied.RequestHeaders = dsrpi.RequestHeaders.Copy().(types.List[DataStoreKeyValue])
+	copied.FormFields = dsrpi.FormFields.Copy().(types.List[DataStoreKeyValue])
+	copied.RootCACert = dsrpi.RootCACert.Copy().(types.Buffer)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReqPostInfo contains the same data as the current DataStoreReqPostInfo
-func (dsrpi *DataStoreReqPostInfo) Equals(o types.RVType) bool {
+func (dsrpi DataStoreReqPostInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreReqPostInfo); !ok {
 		return false
 	}
@@ -118,12 +118,12 @@ func (dsrpi *DataStoreReqPostInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreReqPostInfo
-func (dsrpi *DataStoreReqPostInfo) String() string {
+func (dsrpi DataStoreReqPostInfo) String() string {
 	return dsrpi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReqPostInfo using the provided indentation level
-func (dsrpi *DataStoreReqPostInfo) FormatToString(indentationLevel int) string {
+func (dsrpi DataStoreReqPostInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,17 +141,13 @@ func (dsrpi *DataStoreReqPostInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreReqPostInfo returns a new DataStoreReqPostInfo
-func NewDataStoreReqPostInfo() *DataStoreReqPostInfo {
-	dsrpi := &DataStoreReqPostInfo{
-		DataID:         types.NewPrimitiveU64(0),
+func NewDataStoreReqPostInfo() DataStoreReqPostInfo {
+	return DataStoreReqPostInfo{
+		DataID:         types.NewUInt64(0),
 		URL:            types.NewString(""),
-		RequestHeaders: types.NewList[*DataStoreKeyValue](),
-		FormFields:     types.NewList[*DataStoreKeyValue](),
+		RequestHeaders: types.NewList[DataStoreKeyValue](),
+		FormFields:     types.NewList[DataStoreKeyValue](),
 		RootCACert:     types.NewBuffer(nil),
 	}
 
-	dsrpi.RequestHeaders.Type = NewDataStoreKeyValue()
-	dsrpi.FormFields.Type = NewDataStoreKeyValue()
-
-	return dsrpi
 }

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
 
 	err := community.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, community)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

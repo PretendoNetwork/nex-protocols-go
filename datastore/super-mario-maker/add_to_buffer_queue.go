@@ -27,13 +27,13 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	param := datastore_super_mario_maker_types.NewBufferQueueParam()
-	buffer := types.NewQBuffer(nil)
+	var buffer types.QBuffer
 
 	var err error
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, param, buffer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 
 	err = buffer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("Failed to read buffer from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("Failed to read buffer from parameters. %s", err.Error()), packet, callID, param, buffer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

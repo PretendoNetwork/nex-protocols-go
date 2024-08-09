@@ -11,13 +11,13 @@ import (
 // FriendUserInfo is a type within the MatchmakeExtension protocol
 type FriendUserInfo struct {
 	types.Structure
-	PID      *types.PID
-	Name     *types.String
-	Presence *types.PrimitiveU32
+	PID      types.PID
+	Name     types.String
+	Presence types.UInt32
 }
 
 // WriteTo writes the FriendUserInfo to the given writable
-func (fui *FriendUserInfo) WriteTo(writable types.Writable) {
+func (fui FriendUserInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	fui.PID.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (fui *FriendUserInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendUserInfo
-func (fui *FriendUserInfo) Copy() types.RVType {
+func (fui FriendUserInfo) Copy() types.RVType {
 	copied := NewFriendUserInfo()
 
 	copied.StructureVersion = fui.StructureVersion
-	copied.PID = fui.PID.Copy().(*types.PID)
-	copied.Name = fui.Name.Copy().(*types.String)
-	copied.Presence = fui.Presence.Copy().(*types.PrimitiveU32)
+	copied.PID = fui.PID.Copy().(types.PID)
+	copied.Name = fui.Name.Copy().(types.String)
+	copied.Presence = fui.Presence.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given FriendUserInfo contains the same data as the current FriendUserInfo
-func (fui *FriendUserInfo) Equals(o types.RVType) bool {
+func (fui FriendUserInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendUserInfo); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (fui *FriendUserInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the FriendUserInfo
-func (fui *FriendUserInfo) String() string {
+func (fui FriendUserInfo) String() string {
 	return fui.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendUserInfo using the provided indentation level
-func (fui *FriendUserInfo) FormatToString(indentationLevel int) string {
+func (fui FriendUserInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (fui *FriendUserInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendUserInfo returns a new FriendUserInfo
-func NewFriendUserInfo() *FriendUserInfo {
-	fui := &FriendUserInfo{
+func NewFriendUserInfo() FriendUserInfo {
+	return FriendUserInfo{
 		PID:      types.NewPID(0),
 		Name:     types.NewString(""),
-		Presence: types.NewPrimitiveU32(0),
+		Presence: types.NewUInt32(0),
 	}
 
-	return fui
 }

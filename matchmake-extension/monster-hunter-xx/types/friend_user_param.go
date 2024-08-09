@@ -11,11 +11,11 @@ import (
 // FriendUserParam is a type within the MatchmakeExtension protocol
 type FriendUserParam struct {
 	types.Structure
-	Name *types.String
+	Name types.String
 }
 
 // WriteTo writes the FriendUserParam to the given writable
-func (fup *FriendUserParam) WriteTo(writable types.Writable) {
+func (fup FriendUserParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	fup.Name.WriteTo(contentWritable)
@@ -45,17 +45,17 @@ func (fup *FriendUserParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendUserParam
-func (fup *FriendUserParam) Copy() types.RVType {
+func (fup FriendUserParam) Copy() types.RVType {
 	copied := NewFriendUserParam()
 
 	copied.StructureVersion = fup.StructureVersion
-	copied.Name = fup.Name.Copy().(*types.String)
+	copied.Name = fup.Name.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given FriendUserParam contains the same data as the current FriendUserParam
-func (fup *FriendUserParam) Equals(o types.RVType) bool {
+func (fup FriendUserParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendUserParam); !ok {
 		return false
 	}
@@ -70,12 +70,12 @@ func (fup *FriendUserParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the FriendUserParam
-func (fup *FriendUserParam) String() string {
+func (fup FriendUserParam) String() string {
 	return fup.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendUserParam using the provided indentation level
-func (fup *FriendUserParam) FormatToString(indentationLevel int) string {
+func (fup FriendUserParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +89,9 @@ func (fup *FriendUserParam) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendUserParam returns a new FriendUserParam
-func NewFriendUserParam() *FriendUserParam {
-	fup := &FriendUserParam{
+func NewFriendUserParam() FriendUserParam {
+	return FriendUserParam{
 		Name: types.NewString(""),
 	}
 
-	return fup
 }

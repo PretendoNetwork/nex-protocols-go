@@ -26,14 +26,14 @@ func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface)
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	category := types.NewPrimitiveU32(0)
+	var category types.UInt32
 	orderParam := ranking_types.NewRankingOrderParam()
 
 	var err error
 
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, category, orderParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface)
 
 	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, category, orderParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

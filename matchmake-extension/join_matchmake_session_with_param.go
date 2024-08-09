@@ -29,7 +29,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketI
 
 	err := joinMatchmakeSessionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.JoinMatchmakeSessionWithParam(fmt.Errorf("Failed to read joinMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.JoinMatchmakeSessionWithParam(fmt.Errorf("Failed to read joinMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, joinMatchmakeSessionParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

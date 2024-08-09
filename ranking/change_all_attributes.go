@@ -27,13 +27,13 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	changeParam := ranking_types.NewRankingChangeAttributesParam()
-	uniqueID := types.NewPrimitiveU64(0)
+	var uniqueID types.UInt64
 
 	var err error
 
 	err = changeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, changeParam, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, changeParam, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

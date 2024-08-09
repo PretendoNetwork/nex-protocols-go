@@ -27,14 +27,13 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	getParam := ranking2_types.NewRanking2GetParam()
-	principalIDList := types.NewList[*types.PID]()
-	principalIDList.Type = types.NewPID(0)
+	var principalIDList types.List[types.PID]
 
 	var err error
 
 	err = getParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRankingByPrincipalID(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetRankingByPrincipalID(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), packet, callID, getParam, principalIDList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 
 	err = principalIDList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRankingByPrincipalID(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetRankingByPrincipalID(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), packet, callID, getParam, principalIDList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

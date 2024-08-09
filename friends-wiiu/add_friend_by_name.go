@@ -25,11 +25,11 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	username := types.NewString("")
+	var username types.String
 
 	err := username.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendByName(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.AddFriendByName(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, username)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

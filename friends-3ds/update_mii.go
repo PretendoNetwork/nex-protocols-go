@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 
 	err := mii.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateMii(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateMii(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), packet, callID, mii)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

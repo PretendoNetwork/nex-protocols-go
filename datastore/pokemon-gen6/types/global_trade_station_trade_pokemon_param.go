@@ -11,18 +11,18 @@ import (
 // GlobalTradeStationTradePokemonParam is a type within the DataStore protocol
 type GlobalTradeStationTradePokemonParam struct {
 	types.Structure
-	TradeKey         *GlobalTradeStationTradeKey
-	PrepareTradeKey  *GlobalTradeStationRecordKey
-	PrepareUploadKey *GlobalTradeStationRecordKey
-	Period           *types.PrimitiveU16
-	IndexData        *types.QBuffer
-	PokemonData      *types.QBuffer
-	Signature        *types.QBuffer
-	NeedData         *types.PrimitiveBool
+	TradeKey         GlobalTradeStationTradeKey
+	PrepareTradeKey  GlobalTradeStationRecordKey
+	PrepareUploadKey GlobalTradeStationRecordKey
+	Period           types.UInt16
+	IndexData        types.QBuffer
+	PokemonData      types.QBuffer
+	Signature        types.QBuffer
+	NeedData         types.Bool
 }
 
 // WriteTo writes the GlobalTradeStationTradePokemonParam to the given writable
-func (gtstpp *GlobalTradeStationTradePokemonParam) WriteTo(writable types.Writable) {
+func (gtstpp GlobalTradeStationTradePokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtstpp.TradeKey.WriteTo(contentWritable)
@@ -94,24 +94,24 @@ func (gtstpp *GlobalTradeStationTradePokemonParam) ExtractFrom(readable types.Re
 }
 
 // Copy returns a new copied instance of GlobalTradeStationTradePokemonParam
-func (gtstpp *GlobalTradeStationTradePokemonParam) Copy() types.RVType {
+func (gtstpp GlobalTradeStationTradePokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationTradePokemonParam()
 
 	copied.StructureVersion = gtstpp.StructureVersion
-	copied.TradeKey = gtstpp.TradeKey.Copy().(*GlobalTradeStationTradeKey)
-	copied.PrepareTradeKey = gtstpp.PrepareTradeKey.Copy().(*GlobalTradeStationRecordKey)
-	copied.PrepareUploadKey = gtstpp.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
-	copied.Period = gtstpp.Period.Copy().(*types.PrimitiveU16)
-	copied.IndexData = gtstpp.IndexData.Copy().(*types.QBuffer)
-	copied.PokemonData = gtstpp.PokemonData.Copy().(*types.QBuffer)
-	copied.Signature = gtstpp.Signature.Copy().(*types.QBuffer)
-	copied.NeedData = gtstpp.NeedData.Copy().(*types.PrimitiveBool)
+	copied.TradeKey = gtstpp.TradeKey.Copy().(GlobalTradeStationTradeKey)
+	copied.PrepareTradeKey = gtstpp.PrepareTradeKey.Copy().(GlobalTradeStationRecordKey)
+	copied.PrepareUploadKey = gtstpp.PrepareUploadKey.Copy().(GlobalTradeStationRecordKey)
+	copied.Period = gtstpp.Period.Copy().(types.UInt16)
+	copied.IndexData = gtstpp.IndexData.Copy().(types.QBuffer)
+	copied.PokemonData = gtstpp.PokemonData.Copy().(types.QBuffer)
+	copied.Signature = gtstpp.Signature.Copy().(types.QBuffer)
+	copied.NeedData = gtstpp.NeedData.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationTradePokemonParam contains the same data as the current GlobalTradeStationTradePokemonParam
-func (gtstpp *GlobalTradeStationTradePokemonParam) Equals(o types.RVType) bool {
+func (gtstpp GlobalTradeStationTradePokemonParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationTradePokemonParam); !ok {
 		return false
 	}
@@ -154,12 +154,12 @@ func (gtstpp *GlobalTradeStationTradePokemonParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the GlobalTradeStationTradePokemonParam
-func (gtstpp *GlobalTradeStationTradePokemonParam) String() string {
+func (gtstpp GlobalTradeStationTradePokemonParam) String() string {
 	return gtstpp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationTradePokemonParam using the provided indentation level
-func (gtstpp *GlobalTradeStationTradePokemonParam) FormatToString(indentationLevel int) string {
+func (gtstpp GlobalTradeStationTradePokemonParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -180,17 +180,16 @@ func (gtstpp *GlobalTradeStationTradePokemonParam) FormatToString(indentationLev
 }
 
 // NewGlobalTradeStationTradePokemonParam returns a new GlobalTradeStationTradePokemonParam
-func NewGlobalTradeStationTradePokemonParam() *GlobalTradeStationTradePokemonParam {
-	gtstpp := &GlobalTradeStationTradePokemonParam{
+func NewGlobalTradeStationTradePokemonParam() GlobalTradeStationTradePokemonParam {
+	return GlobalTradeStationTradePokemonParam{
 		TradeKey:         NewGlobalTradeStationTradeKey(),
 		PrepareTradeKey:  NewGlobalTradeStationRecordKey(),
 		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
-		Period:           types.NewPrimitiveU16(0),
+		Period:           types.NewUInt16(0),
 		IndexData:        types.NewQBuffer(nil),
 		PokemonData:      types.NewQBuffer(nil),
 		Signature:        types.NewQBuffer(nil),
-		NeedData:         types.NewPrimitiveBool(false),
+		NeedData:         types.NewBool(false),
 	}
 
-	return gtstpp
 }

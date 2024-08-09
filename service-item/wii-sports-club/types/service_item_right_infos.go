@@ -11,11 +11,11 @@ import (
 // ServiceItemRightInfos is a type within the ServiceItem protocol
 type ServiceItemRightInfos struct {
 	types.Structure
-	RightInfos *types.List[*ServiceItemRightInfo]
+	RightInfos types.List[ServiceItemRightInfo]
 }
 
 // WriteTo writes the ServiceItemRightInfos to the given writable
-func (siri *ServiceItemRightInfos) WriteTo(writable types.Writable) {
+func (siri ServiceItemRightInfos) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siri.RightInfos.WriteTo(contentWritable)
@@ -45,17 +45,17 @@ func (siri *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemRightInfos
-func (siri *ServiceItemRightInfos) Copy() types.RVType {
+func (siri ServiceItemRightInfos) Copy() types.RVType {
 	copied := NewServiceItemRightInfos()
 
 	copied.StructureVersion = siri.StructureVersion
-	copied.RightInfos = siri.RightInfos.Copy().(*types.List[*ServiceItemRightInfo])
+	copied.RightInfos = siri.RightInfos.Copy().(types.List[ServiceItemRightInfo])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemRightInfos contains the same data as the current ServiceItemRightInfos
-func (siri *ServiceItemRightInfos) Equals(o types.RVType) bool {
+func (siri ServiceItemRightInfos) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemRightInfos); !ok {
 		return false
 	}
@@ -70,12 +70,12 @@ func (siri *ServiceItemRightInfos) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemRightInfos
-func (siri *ServiceItemRightInfos) String() string {
+func (siri ServiceItemRightInfos) String() string {
 	return siri.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemRightInfos using the provided indentation level
-func (siri *ServiceItemRightInfos) FormatToString(indentationLevel int) string {
+func (siri ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,12 +89,9 @@ func (siri *ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemRightInfos returns a new ServiceItemRightInfos
-func NewServiceItemRightInfos() *ServiceItemRightInfos {
-	siri := &ServiceItemRightInfos{
-		RightInfos: types.NewList[*ServiceItemRightInfo](),
+func NewServiceItemRightInfos() ServiceItemRightInfos {
+	return ServiceItemRightInfos{
+		RightInfos: types.NewList[ServiceItemRightInfo](),
 	}
 
-	siri.RightInfos.Type = NewServiceItemRightInfo()
-
-	return siri
 }

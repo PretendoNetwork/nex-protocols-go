@@ -39,8 +39,8 @@ type Protocol struct {
 	endpoint nex.EndpointInterface
 	rankingProtocol
 	GetCompetitionRankingScore    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
-	UploadCompetitionRankingScore func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) (*nex.RMCMessage, *nex.Error)
-	GetCompetitionInfo            func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam) (*nex.RMCMessage, *nex.Error)
+	UploadCompetitionRankingScore func(err error, packet nex.PacketInterface, callID uint32, param ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) (*nex.RMCMessage, *nex.Error)
+	GetCompetitionInfo            func(err error, packet nex.PacketInterface, callID uint32, param ranking_mario_kart8_types.CompetitionRankingInfoGetParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler

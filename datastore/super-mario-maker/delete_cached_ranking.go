@@ -25,15 +25,14 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	rankingType := types.NewString("")
-	rankingArgs := types.NewList[*types.String]()
-	rankingArgs.Type = types.NewString("")
+	var rankingType types.String
+	var rankingArgs types.List[types.String]
 
 	var err error
 
 	err = rankingType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	err = rankingArgs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

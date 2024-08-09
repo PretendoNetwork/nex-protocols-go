@@ -29,7 +29,7 @@ func (protocol *Protocol) handleCreateSimpleSearchObject(packet nex.PacketInterf
 
 	err := object.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateSimpleSearchObject(fmt.Errorf("Failed to read object from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.CreateSimpleSearchObject(fmt.Errorf("Failed to read object from parameters. %s", err.Error()), packet, callID, object)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

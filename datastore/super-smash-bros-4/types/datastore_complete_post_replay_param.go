@@ -12,13 +12,13 @@ import (
 // DataStoreCompletePostReplayParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreCompletePostReplayParam struct {
 	types.Structure
-	ReplayID      *types.PrimitiveU64
-	CompleteParam *datastore_types.DataStoreCompletePostParam
-	PrepareParam  *DataStorePreparePostReplayParam
+	ReplayID      types.UInt64
+	CompleteParam datastore_types.DataStoreCompletePostParam
+	PrepareParam  DataStorePreparePostReplayParam
 }
 
 // WriteTo writes the DataStoreCompletePostReplayParam to the given writable
-func (dscprp *DataStoreCompletePostReplayParam) WriteTo(writable types.Writable) {
+func (dscprp DataStoreCompletePostReplayParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dscprp.ReplayID.WriteTo(contentWritable)
@@ -60,19 +60,19 @@ func (dscprp *DataStoreCompletePostReplayParam) ExtractFrom(readable types.Reada
 }
 
 // Copy returns a new copied instance of DataStoreCompletePostReplayParam
-func (dscprp *DataStoreCompletePostReplayParam) Copy() types.RVType {
+func (dscprp DataStoreCompletePostReplayParam) Copy() types.RVType {
 	copied := NewDataStoreCompletePostReplayParam()
 
 	copied.StructureVersion = dscprp.StructureVersion
-	copied.ReplayID = dscprp.ReplayID.Copy().(*types.PrimitiveU64)
-	copied.CompleteParam = dscprp.CompleteParam.Copy().(*datastore_types.DataStoreCompletePostParam)
-	copied.PrepareParam = dscprp.PrepareParam.Copy().(*DataStorePreparePostReplayParam)
+	copied.ReplayID = dscprp.ReplayID.Copy().(types.UInt64)
+	copied.CompleteParam = dscprp.CompleteParam.Copy().(datastore_types.DataStoreCompletePostParam)
+	copied.PrepareParam = dscprp.PrepareParam.Copy().(DataStorePreparePostReplayParam)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreCompletePostReplayParam contains the same data as the current DataStoreCompletePostReplayParam
-func (dscprp *DataStoreCompletePostReplayParam) Equals(o types.RVType) bool {
+func (dscprp DataStoreCompletePostReplayParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreCompletePostReplayParam); !ok {
 		return false
 	}
@@ -95,12 +95,12 @@ func (dscprp *DataStoreCompletePostReplayParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreCompletePostReplayParam
-func (dscprp *DataStoreCompletePostReplayParam) String() string {
+func (dscprp DataStoreCompletePostReplayParam) String() string {
 	return dscprp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreCompletePostReplayParam using the provided indentation level
-func (dscprp *DataStoreCompletePostReplayParam) FormatToString(indentationLevel int) string {
+func (dscprp DataStoreCompletePostReplayParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,12 +116,11 @@ func (dscprp *DataStoreCompletePostReplayParam) FormatToString(indentationLevel 
 }
 
 // NewDataStoreCompletePostReplayParam returns a new DataStoreCompletePostReplayParam
-func NewDataStoreCompletePostReplayParam() *DataStoreCompletePostReplayParam {
-	dscprp := &DataStoreCompletePostReplayParam{
-		ReplayID:      types.NewPrimitiveU64(0),
+func NewDataStoreCompletePostReplayParam() DataStoreCompletePostReplayParam {
+	return DataStoreCompletePostReplayParam{
+		ReplayID:      types.NewUInt64(0),
 		CompleteParam: datastore_types.NewDataStoreCompletePostParam(),
 		PrepareParam:  NewDataStorePreparePostReplayParam(),
 	}
 
-	return dscprp
 }

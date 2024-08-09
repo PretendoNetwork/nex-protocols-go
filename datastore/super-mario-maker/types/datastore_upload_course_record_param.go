@@ -11,13 +11,13 @@ import (
 // DataStoreUploadCourseRecordParam is a type within the DataStore protocol
 type DataStoreUploadCourseRecordParam struct {
 	types.Structure
-	DataID *types.PrimitiveU64
-	Slot   *types.PrimitiveU8
-	Score  *types.PrimitiveS32
+	DataID types.UInt64
+	Slot   types.UInt8
+	Score  types.Int32
 }
 
 // WriteTo writes the DataStoreUploadCourseRecordParam to the given writable
-func (dsucrp *DataStoreUploadCourseRecordParam) WriteTo(writable types.Writable) {
+func (dsucrp DataStoreUploadCourseRecordParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsucrp.DataID.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (dsucrp *DataStoreUploadCourseRecordParam) ExtractFrom(readable types.Reada
 }
 
 // Copy returns a new copied instance of DataStoreUploadCourseRecordParam
-func (dsucrp *DataStoreUploadCourseRecordParam) Copy() types.RVType {
+func (dsucrp DataStoreUploadCourseRecordParam) Copy() types.RVType {
 	copied := NewDataStoreUploadCourseRecordParam()
 
 	copied.StructureVersion = dsucrp.StructureVersion
-	copied.DataID = dsucrp.DataID.Copy().(*types.PrimitiveU64)
-	copied.Slot = dsucrp.Slot.Copy().(*types.PrimitiveU8)
-	copied.Score = dsucrp.Score.Copy().(*types.PrimitiveS32)
+	copied.DataID = dsucrp.DataID.Copy().(types.UInt64)
+	copied.Slot = dsucrp.Slot.Copy().(types.UInt8)
+	copied.Score = dsucrp.Score.Copy().(types.Int32)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreUploadCourseRecordParam contains the same data as the current DataStoreUploadCourseRecordParam
-func (dsucrp *DataStoreUploadCourseRecordParam) Equals(o types.RVType) bool {
+func (dsucrp DataStoreUploadCourseRecordParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreUploadCourseRecordParam); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (dsucrp *DataStoreUploadCourseRecordParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreUploadCourseRecordParam
-func (dsucrp *DataStoreUploadCourseRecordParam) String() string {
+func (dsucrp DataStoreUploadCourseRecordParam) String() string {
 	return dsucrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreUploadCourseRecordParam using the provided indentation level
-func (dsucrp *DataStoreUploadCourseRecordParam) FormatToString(indentationLevel int) string {
+func (dsucrp DataStoreUploadCourseRecordParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (dsucrp *DataStoreUploadCourseRecordParam) FormatToString(indentationLevel 
 }
 
 // NewDataStoreUploadCourseRecordParam returns a new DataStoreUploadCourseRecordParam
-func NewDataStoreUploadCourseRecordParam() *DataStoreUploadCourseRecordParam {
-	dsucrp := &DataStoreUploadCourseRecordParam{
-		DataID: types.NewPrimitiveU64(0),
-		Slot:   types.NewPrimitiveU8(0),
-		Score:  types.NewPrimitiveS32(0),
+func NewDataStoreUploadCourseRecordParam() DataStoreUploadCourseRecordParam {
+	return DataStoreUploadCourseRecordParam{
+		DataID: types.NewUInt64(0),
+		Slot:   types.NewUInt8(0),
+		Score:  types.NewInt32(0),
 	}
 
-	return dsucrp
 }

@@ -11,14 +11,14 @@ import (
 // NintendoNotificationEventGeneral is a type within the NintendoNotifications protocol
 type NintendoNotificationEventGeneral struct {
 	types.Structure
-	U32Param  *types.PrimitiveU32
-	U64Param1 *types.PrimitiveU64
-	U64Param2 *types.PrimitiveU64
-	StrParam  *types.String
+	U32Param  types.UInt32
+	U64Param1 types.UInt64
+	U64Param2 types.UInt64
+	StrParam  types.String
 }
 
 // WriteTo writes the NintendoNotificationEventGeneral to the given writable
-func (nneg *NintendoNotificationEventGeneral) WriteTo(writable types.Writable) {
+func (nneg NintendoNotificationEventGeneral) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	nneg.U32Param.WriteTo(contentWritable)
@@ -66,20 +66,20 @@ func (nneg *NintendoNotificationEventGeneral) ExtractFrom(readable types.Readabl
 }
 
 // Copy returns a new copied instance of NintendoNotificationEventGeneral
-func (nneg *NintendoNotificationEventGeneral) Copy() types.RVType {
+func (nneg NintendoNotificationEventGeneral) Copy() types.RVType {
 	copied := NewNintendoNotificationEventGeneral()
 
 	copied.StructureVersion = nneg.StructureVersion
-	copied.U32Param = nneg.U32Param.Copy().(*types.PrimitiveU32)
-	copied.U64Param1 = nneg.U64Param1.Copy().(*types.PrimitiveU64)
-	copied.U64Param2 = nneg.U64Param2.Copy().(*types.PrimitiveU64)
-	copied.StrParam = nneg.StrParam.Copy().(*types.String)
+	copied.U32Param = nneg.U32Param.Copy().(types.UInt32)
+	copied.U64Param1 = nneg.U64Param1.Copy().(types.UInt64)
+	copied.U64Param2 = nneg.U64Param2.Copy().(types.UInt64)
+	copied.StrParam = nneg.StrParam.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given NintendoNotificationEventGeneral contains the same data as the current NintendoNotificationEventGeneral
-func (nneg *NintendoNotificationEventGeneral) Equals(o types.RVType) bool {
+func (nneg NintendoNotificationEventGeneral) Equals(o types.RVType) bool {
 	if _, ok := o.(*NintendoNotificationEventGeneral); !ok {
 		return false
 	}
@@ -106,12 +106,12 @@ func (nneg *NintendoNotificationEventGeneral) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the NintendoNotificationEventGeneral
-func (nneg *NintendoNotificationEventGeneral) String() string {
+func (nneg NintendoNotificationEventGeneral) String() string {
 	return nneg.FormatToString(0)
 }
 
 // FormatToString pretty-prints the NintendoNotificationEventGeneral using the provided indentation level
-func (nneg *NintendoNotificationEventGeneral) FormatToString(indentationLevel int) string {
+func (nneg NintendoNotificationEventGeneral) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +128,12 @@ func (nneg *NintendoNotificationEventGeneral) FormatToString(indentationLevel in
 }
 
 // NewNintendoNotificationEventGeneral returns a new NintendoNotificationEventGeneral
-func NewNintendoNotificationEventGeneral() *NintendoNotificationEventGeneral {
-	nneg := &NintendoNotificationEventGeneral{
-		U32Param:  types.NewPrimitiveU32(0),
-		U64Param1: types.NewPrimitiveU64(0),
-		U64Param2: types.NewPrimitiveU64(0),
+func NewNintendoNotificationEventGeneral() NintendoNotificationEventGeneral {
+	return NintendoNotificationEventGeneral{
+		U32Param:  types.NewUInt32(0),
+		U64Param1: types.NewUInt64(0),
+		U64Param2: types.NewUInt64(0),
 		StrParam:  types.NewString(""),
 	}
 
-	return nneg
 }

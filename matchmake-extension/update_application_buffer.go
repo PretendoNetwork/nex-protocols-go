@@ -25,14 +25,14 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	gid := types.NewPrimitiveU32(0)
-	applicationBuffer := types.NewBuffer(nil)
+	var gid types.UInt32
+	var applicationBuffer types.Buffer
 
 	var err error
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, applicationBuffer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 
 	err = applicationBuffer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("Failed to read applicationBuffer from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("Failed to read applicationBuffer from parameters. %s", err.Error()), packet, callID, gid, applicationBuffer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

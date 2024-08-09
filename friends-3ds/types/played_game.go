@@ -11,12 +11,12 @@ import (
 // PlayedGame is a type within the Friends3DS protocol
 type PlayedGame struct {
 	types.Structure
-	GameKey *GameKey
-	Unknown *types.DateTime
+	GameKey GameKey
+	Unknown types.DateTime
 }
 
 // WriteTo writes the PlayedGame to the given writable
-func (pg *PlayedGame) WriteTo(writable types.Writable) {
+func (pg PlayedGame) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	pg.GameKey.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (pg *PlayedGame) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of PlayedGame
-func (pg *PlayedGame) Copy() types.RVType {
+func (pg PlayedGame) Copy() types.RVType {
 	copied := NewPlayedGame()
 
 	copied.StructureVersion = pg.StructureVersion
-	copied.GameKey = pg.GameKey.Copy().(*GameKey)
-	copied.Unknown = pg.Unknown.Copy().(*types.DateTime)
+	copied.GameKey = pg.GameKey.Copy().(GameKey)
+	copied.Unknown = pg.Unknown.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given PlayedGame contains the same data as the current PlayedGame
-func (pg *PlayedGame) Equals(o types.RVType) bool {
+func (pg PlayedGame) Equals(o types.RVType) bool {
 	if _, ok := o.(*PlayedGame); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (pg *PlayedGame) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the PlayedGame
-func (pg *PlayedGame) String() string {
+func (pg PlayedGame) String() string {
 	return pg.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PlayedGame using the provided indentation level
-func (pg *PlayedGame) FormatToString(indentationLevel int) string {
+func (pg PlayedGame) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (pg *PlayedGame) FormatToString(indentationLevel int) string {
 }
 
 // NewPlayedGame returns a new PlayedGame
-func NewPlayedGame() *PlayedGame {
-	pg := &PlayedGame{
+func NewPlayedGame() PlayedGame {
+	return PlayedGame{
 		GameKey: NewGameKey(),
 		Unknown: types.NewDateTime(0),
 	}
 
-	return pg
 }

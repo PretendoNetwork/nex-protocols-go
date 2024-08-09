@@ -11,12 +11,12 @@ import (
 // ServiceItemGetBalanceResponse is a type within the ServiceItem protocol
 type ServiceItemGetBalanceResponse struct {
 	types.Structure
-	*ServiceItemEShopResponse
-	NullableBalance *types.List[*ServiceItemAmount]
+	ServiceItemEShopResponse
+	NullableBalance types.List[ServiceItemAmount]
 }
 
 // WriteTo writes the ServiceItemGetBalanceResponse to the given writable
-func (sigbr *ServiceItemGetBalanceResponse) WriteTo(writable types.Writable) {
+func (sigbr ServiceItemGetBalanceResponse) WriteTo(writable types.Writable) {
 	sigbr.ServiceItemEShopResponse.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,18 +53,18 @@ func (sigbr *ServiceItemGetBalanceResponse) ExtractFrom(readable types.Readable)
 }
 
 // Copy returns a new copied instance of ServiceItemGetBalanceResponse
-func (sigbr *ServiceItemGetBalanceResponse) Copy() types.RVType {
+func (sigbr ServiceItemGetBalanceResponse) Copy() types.RVType {
 	copied := NewServiceItemGetBalanceResponse()
 
 	copied.StructureVersion = sigbr.StructureVersion
-	copied.ServiceItemEShopResponse = sigbr.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.NullableBalance = sigbr.NullableBalance.Copy().(*types.List[*ServiceItemAmount])
+	copied.ServiceItemEShopResponse = sigbr.ServiceItemEShopResponse.Copy().(ServiceItemEShopResponse)
+	copied.NullableBalance = sigbr.NullableBalance.Copy().(types.List[ServiceItemAmount])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetBalanceResponse contains the same data as the current ServiceItemGetBalanceResponse
-func (sigbr *ServiceItemGetBalanceResponse) Equals(o types.RVType) bool {
+func (sigbr ServiceItemGetBalanceResponse) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetBalanceResponse); !ok {
 		return false
 	}
@@ -83,12 +83,12 @@ func (sigbr *ServiceItemGetBalanceResponse) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemGetBalanceResponse
-func (sigbr *ServiceItemGetBalanceResponse) String() string {
+func (sigbr ServiceItemGetBalanceResponse) String() string {
 	return sigbr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetBalanceResponse using the provided indentation level
-func (sigbr *ServiceItemGetBalanceResponse) FormatToString(indentationLevel int) string {
+func (sigbr ServiceItemGetBalanceResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +103,10 @@ func (sigbr *ServiceItemGetBalanceResponse) FormatToString(indentationLevel int)
 }
 
 // NewServiceItemGetBalanceResponse returns a new ServiceItemGetBalanceResponse
-func NewServiceItemGetBalanceResponse() *ServiceItemGetBalanceResponse {
-	sigbr := &ServiceItemGetBalanceResponse{
+func NewServiceItemGetBalanceResponse() ServiceItemGetBalanceResponse {
+	return ServiceItemGetBalanceResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableBalance:          types.NewList[*ServiceItemAmount](),
+		NullableBalance:          types.NewList[ServiceItemAmount](),
 	}
 
-	sigbr.NullableBalance.Type = NewServiceItemAmount()
-
-	return sigbr
 }

@@ -11,14 +11,14 @@ import (
 // SubscriberGetContentParam is a type within the Shop protocol
 type SubscriberGetContentParam struct {
 	types.Structure
-	Unknown1 *types.String
-	Unknown2 *types.PrimitiveU32
-	Unknown3 *types.PrimitiveU32
-	Unknown4 *types.PrimitiveU64
+	Unknown1 types.String
+	Unknown2 types.UInt32
+	Unknown3 types.UInt32
+	Unknown4 types.UInt64
 }
 
 // WriteTo writes the SubscriberGetContentParam to the given writable
-func (sgcp *SubscriberGetContentParam) WriteTo(writable types.Writable) {
+func (sgcp SubscriberGetContentParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sgcp.Unknown1.WriteTo(contentWritable)
@@ -66,20 +66,20 @@ func (sgcp *SubscriberGetContentParam) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of SubscriberGetContentParam
-func (sgcp *SubscriberGetContentParam) Copy() types.RVType {
+func (sgcp SubscriberGetContentParam) Copy() types.RVType {
 	copied := NewSubscriberGetContentParam()
 
 	copied.StructureVersion = sgcp.StructureVersion
-	copied.Unknown1 = sgcp.Unknown1.Copy().(*types.String)
-	copied.Unknown2 = sgcp.Unknown2.Copy().(*types.PrimitiveU32)
-	copied.Unknown3 = sgcp.Unknown3.Copy().(*types.PrimitiveU32)
-	copied.Unknown4 = sgcp.Unknown4.Copy().(*types.PrimitiveU64)
+	copied.Unknown1 = sgcp.Unknown1.Copy().(types.String)
+	copied.Unknown2 = sgcp.Unknown2.Copy().(types.UInt32)
+	copied.Unknown3 = sgcp.Unknown3.Copy().(types.UInt32)
+	copied.Unknown4 = sgcp.Unknown4.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given SubscriberGetContentParam contains the same data as the current SubscriberGetContentParam
-func (sgcp *SubscriberGetContentParam) Equals(o types.RVType) bool {
+func (sgcp SubscriberGetContentParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*SubscriberGetContentParam); !ok {
 		return false
 	}
@@ -106,12 +106,12 @@ func (sgcp *SubscriberGetContentParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the SubscriberGetContentParam
-func (sgcp *SubscriberGetContentParam) String() string {
+func (sgcp SubscriberGetContentParam) String() string {
 	return sgcp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SubscriberGetContentParam using the provided indentation level
-func (sgcp *SubscriberGetContentParam) FormatToString(indentationLevel int) string {
+func (sgcp SubscriberGetContentParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +128,12 @@ func (sgcp *SubscriberGetContentParam) FormatToString(indentationLevel int) stri
 }
 
 // NewSubscriberGetContentParam returns a new SubscriberGetContentParam
-func NewSubscriberGetContentParam() *SubscriberGetContentParam {
-	sgcp := &SubscriberGetContentParam{
+func NewSubscriberGetContentParam() SubscriberGetContentParam {
+	return SubscriberGetContentParam{
 		Unknown1: types.NewString(""),
-		Unknown2: types.NewPrimitiveU32(0),
-		Unknown3: types.NewPrimitiveU32(0),
-		Unknown4: types.NewPrimitiveU64(0),
+		Unknown2: types.NewUInt32(0),
+		Unknown3: types.NewUInt32(0),
+		Unknown4: types.NewUInt64(0),
 	}
 
-	return sgcp
 }

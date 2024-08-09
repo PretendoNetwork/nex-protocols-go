@@ -25,11 +25,11 @@ func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	uiCapability := types.NewPrimitiveU32(0)
+	var uiCapability types.UInt32
 
 	err := uiCapability.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, uiCapability)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

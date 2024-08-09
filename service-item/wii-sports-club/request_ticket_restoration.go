@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterf
 
 	err := requestTicketRestorationParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestTicketRestoration(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.RequestTicketRestoration(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), packet, callID, requestTicketRestorationParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

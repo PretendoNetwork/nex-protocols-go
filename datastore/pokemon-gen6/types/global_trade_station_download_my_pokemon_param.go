@@ -11,11 +11,11 @@ import (
 // GlobalTradeStationDownloadMyPokemonParam is a type within the DataStore protocol
 type GlobalTradeStationDownloadMyPokemonParam struct {
 	types.Structure
-	PrepareUploadKey *GlobalTradeStationRecordKey
+	PrepareUploadKey GlobalTradeStationRecordKey
 }
 
 // WriteTo writes the GlobalTradeStationDownloadMyPokemonParam to the given writable
-func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) WriteTo(writable types.Writable) {
+func (gtsdmpp GlobalTradeStationDownloadMyPokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsdmpp.PrepareUploadKey.WriteTo(contentWritable)
@@ -45,17 +45,17 @@ func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) ExtractFrom(readable ty
 }
 
 // Copy returns a new copied instance of GlobalTradeStationDownloadMyPokemonParam
-func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) Copy() types.RVType {
+func (gtsdmpp GlobalTradeStationDownloadMyPokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationDownloadMyPokemonParam()
 
 	copied.StructureVersion = gtsdmpp.StructureVersion
-	copied.PrepareUploadKey = gtsdmpp.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
+	copied.PrepareUploadKey = gtsdmpp.PrepareUploadKey.Copy().(GlobalTradeStationRecordKey)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationDownloadMyPokemonParam contains the same data as the current GlobalTradeStationDownloadMyPokemonParam
-func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) Equals(o types.RVType) bool {
+func (gtsdmpp GlobalTradeStationDownloadMyPokemonParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationDownloadMyPokemonParam); !ok {
 		return false
 	}
@@ -70,12 +70,12 @@ func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) Equals(o types.RVType) 
 }
 
 // String returns the string representation of the GlobalTradeStationDownloadMyPokemonParam
-func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) String() string {
+func (gtsdmpp GlobalTradeStationDownloadMyPokemonParam) String() string {
 	return gtsdmpp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationDownloadMyPokemonParam using the provided indentation level
-func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) FormatToString(indentationLevel int) string {
+func (gtsdmpp GlobalTradeStationDownloadMyPokemonParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +89,9 @@ func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) FormatToString(indentat
 }
 
 // NewGlobalTradeStationDownloadMyPokemonParam returns a new GlobalTradeStationDownloadMyPokemonParam
-func NewGlobalTradeStationDownloadMyPokemonParam() *GlobalTradeStationDownloadMyPokemonParam {
-	gtsdmpp := &GlobalTradeStationDownloadMyPokemonParam{
+func NewGlobalTradeStationDownloadMyPokemonParam() GlobalTradeStationDownloadMyPokemonParam {
+	return GlobalTradeStationDownloadMyPokemonParam{
 		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
 	}
 
-	return gtsdmpp
 }

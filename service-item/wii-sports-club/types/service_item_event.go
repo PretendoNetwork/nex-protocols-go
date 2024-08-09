@@ -11,18 +11,18 @@ import (
 // ServiceItemEvent is a type within the ServiceItem protocol
 type ServiceItemEvent struct {
 	types.Structure
-	EventID           *types.PrimitiveU64
-	ParamInt          *types.PrimitiveS32
-	ParamString       *types.String
-	ParamBinary       *types.QBuffer
-	PresentTicketType *types.PrimitiveU32
-	PresentTicketNum  *types.PrimitiveU32
-	TimeBegin         *types.DateTime
-	TimeEnd           *types.DateTime
+	EventID           types.UInt64
+	ParamInt          types.Int32
+	ParamString       types.String
+	ParamBinary       types.QBuffer
+	PresentTicketType types.UInt32
+	PresentTicketNum  types.UInt32
+	TimeBegin         types.DateTime
+	TimeEnd           types.DateTime
 }
 
 // WriteTo writes the ServiceItemEvent to the given writable
-func (sie *ServiceItemEvent) WriteTo(writable types.Writable) {
+func (sie ServiceItemEvent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sie.EventID.WriteTo(contentWritable)
@@ -94,24 +94,24 @@ func (sie *ServiceItemEvent) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemEvent
-func (sie *ServiceItemEvent) Copy() types.RVType {
+func (sie ServiceItemEvent) Copy() types.RVType {
 	copied := NewServiceItemEvent()
 
 	copied.StructureVersion = sie.StructureVersion
-	copied.EventID = sie.EventID.Copy().(*types.PrimitiveU64)
-	copied.ParamInt = sie.ParamInt.Copy().(*types.PrimitiveS32)
-	copied.ParamString = sie.ParamString.Copy().(*types.String)
-	copied.ParamBinary = sie.ParamBinary.Copy().(*types.QBuffer)
-	copied.PresentTicketType = sie.PresentTicketType.Copy().(*types.PrimitiveU32)
-	copied.PresentTicketNum = sie.PresentTicketNum.Copy().(*types.PrimitiveU32)
-	copied.TimeBegin = sie.TimeBegin.Copy().(*types.DateTime)
-	copied.TimeEnd = sie.TimeEnd.Copy().(*types.DateTime)
+	copied.EventID = sie.EventID.Copy().(types.UInt64)
+	copied.ParamInt = sie.ParamInt.Copy().(types.Int32)
+	copied.ParamString = sie.ParamString.Copy().(types.String)
+	copied.ParamBinary = sie.ParamBinary.Copy().(types.QBuffer)
+	copied.PresentTicketType = sie.PresentTicketType.Copy().(types.UInt32)
+	copied.PresentTicketNum = sie.PresentTicketNum.Copy().(types.UInt32)
+	copied.TimeBegin = sie.TimeBegin.Copy().(types.DateTime)
+	copied.TimeEnd = sie.TimeEnd.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemEvent contains the same data as the current ServiceItemEvent
-func (sie *ServiceItemEvent) Equals(o types.RVType) bool {
+func (sie ServiceItemEvent) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemEvent); !ok {
 		return false
 	}
@@ -154,12 +154,12 @@ func (sie *ServiceItemEvent) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemEvent
-func (sie *ServiceItemEvent) String() string {
+func (sie ServiceItemEvent) String() string {
 	return sie.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemEvent using the provided indentation level
-func (sie *ServiceItemEvent) FormatToString(indentationLevel int) string {
+func (sie ServiceItemEvent) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -180,17 +180,16 @@ func (sie *ServiceItemEvent) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemEvent returns a new ServiceItemEvent
-func NewServiceItemEvent() *ServiceItemEvent {
-	sie := &ServiceItemEvent{
-		EventID:           types.NewPrimitiveU64(0),
-		ParamInt:          types.NewPrimitiveS32(0),
+func NewServiceItemEvent() ServiceItemEvent {
+	return ServiceItemEvent{
+		EventID:           types.NewUInt64(0),
+		ParamInt:          types.NewInt32(0),
 		ParamString:       types.NewString(""),
 		ParamBinary:       types.NewQBuffer(nil),
-		PresentTicketType: types.NewPrimitiveU32(0),
-		PresentTicketNum:  types.NewPrimitiveU32(0),
+		PresentTicketType: types.NewUInt32(0),
+		PresentTicketNum:  types.NewUInt32(0),
 		TimeBegin:         types.NewDateTime(0),
 		TimeEnd:           types.NewDateTime(0),
 	}
 
-	return sie
 }

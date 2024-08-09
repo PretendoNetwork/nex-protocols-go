@@ -25,14 +25,14 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	slotID := types.NewPrimitiveU16(0)
-	applicationID := types.NewPrimitiveU16(0)
+	var slotID types.UInt16
+	var applicationID types.UInt16
 
 	var err error
 
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, slotID, applicationID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, slotID, applicationID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

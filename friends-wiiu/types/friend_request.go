@@ -11,14 +11,14 @@ import (
 // FriendRequest is a type within the FriendsWiiU protocol
 type FriendRequest struct {
 	types.Structure
-	*types.Data
-	PrincipalInfo *PrincipalBasicInfo
-	Message       *FriendRequestMessage
-	SentOn        *types.DateTime
+	types.Data
+	PrincipalInfo PrincipalBasicInfo
+	Message       FriendRequestMessage
+	SentOn        types.DateTime
 }
 
 // WriteTo writes the FriendRequest to the given writable
-func (fr *FriendRequest) WriteTo(writable types.Writable) {
+func (fr FriendRequest) WriteTo(writable types.Writable) {
 	fr.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,20 +67,20 @@ func (fr *FriendRequest) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendRequest
-func (fr *FriendRequest) Copy() types.RVType {
+func (fr FriendRequest) Copy() types.RVType {
 	copied := NewFriendRequest()
 
 	copied.StructureVersion = fr.StructureVersion
-	copied.Data = fr.Data.Copy().(*types.Data)
-	copied.PrincipalInfo = fr.PrincipalInfo.Copy().(*PrincipalBasicInfo)
-	copied.Message = fr.Message.Copy().(*FriendRequestMessage)
-	copied.SentOn = fr.SentOn.Copy().(*types.DateTime)
+	copied.Data = fr.Data.Copy().(types.Data)
+	copied.PrincipalInfo = fr.PrincipalInfo.Copy().(PrincipalBasicInfo)
+	copied.Message = fr.Message.Copy().(FriendRequestMessage)
+	copied.SentOn = fr.SentOn.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given FriendRequest contains the same data as the current FriendRequest
-func (fr *FriendRequest) Equals(o types.RVType) bool {
+func (fr FriendRequest) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendRequest); !ok {
 		return false
 	}
@@ -107,12 +107,12 @@ func (fr *FriendRequest) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the FriendRequest
-func (fr *FriendRequest) String() string {
+func (fr FriendRequest) String() string {
 	return fr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendRequest using the provided indentation level
-func (fr *FriendRequest) FormatToString(indentationLevel int) string {
+func (fr FriendRequest) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +129,12 @@ func (fr *FriendRequest) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendRequest returns a new FriendRequest
-func NewFriendRequest() *FriendRequest {
-	fr := &FriendRequest{
+func NewFriendRequest() FriendRequest {
+	return FriendRequest{
 		Data:          types.NewData(),
 		PrincipalInfo: NewPrincipalBasicInfo(),
 		Message:       NewFriendRequestMessage(),
 		SentOn:        types.NewDateTime(0),
 	}
 
-	return fr
 }

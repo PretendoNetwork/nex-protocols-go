@@ -11,14 +11,14 @@ import (
 // DataStoreReqGetInfoV1 is a type within the DataStore protocol
 type DataStoreReqGetInfoV1 struct {
 	types.Structure
-	URL            *types.String
-	RequestHeaders *types.List[*DataStoreKeyValue]
-	Size           *types.PrimitiveU32
-	RootCACert     *types.Buffer
+	URL            types.String
+	RequestHeaders types.List[DataStoreKeyValue]
+	Size           types.UInt32
+	RootCACert     types.Buffer
 }
 
 // WriteTo writes the DataStoreReqGetInfoV1 to the given writable
-func (dsrgiv *DataStoreReqGetInfoV1) WriteTo(writable types.Writable) {
+func (dsrgiv DataStoreReqGetInfoV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrgiv.URL.WriteTo(contentWritable)
@@ -66,20 +66,20 @@ func (dsrgiv *DataStoreReqGetInfoV1) ExtractFrom(readable types.Readable) error 
 }
 
 // Copy returns a new copied instance of DataStoreReqGetInfoV1
-func (dsrgiv *DataStoreReqGetInfoV1) Copy() types.RVType {
+func (dsrgiv DataStoreReqGetInfoV1) Copy() types.RVType {
 	copied := NewDataStoreReqGetInfoV1()
 
 	copied.StructureVersion = dsrgiv.StructureVersion
-	copied.URL = dsrgiv.URL.Copy().(*types.String)
-	copied.RequestHeaders = dsrgiv.RequestHeaders.Copy().(*types.List[*DataStoreKeyValue])
-	copied.Size = dsrgiv.Size.Copy().(*types.PrimitiveU32)
-	copied.RootCACert = dsrgiv.RootCACert.Copy().(*types.Buffer)
+	copied.URL = dsrgiv.URL.Copy().(types.String)
+	copied.RequestHeaders = dsrgiv.RequestHeaders.Copy().(types.List[DataStoreKeyValue])
+	copied.Size = dsrgiv.Size.Copy().(types.UInt32)
+	copied.RootCACert = dsrgiv.RootCACert.Copy().(types.Buffer)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReqGetInfoV1 contains the same data as the current DataStoreReqGetInfoV1
-func (dsrgiv *DataStoreReqGetInfoV1) Equals(o types.RVType) bool {
+func (dsrgiv DataStoreReqGetInfoV1) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreReqGetInfoV1); !ok {
 		return false
 	}
@@ -106,12 +106,12 @@ func (dsrgiv *DataStoreReqGetInfoV1) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreReqGetInfoV1
-func (dsrgiv *DataStoreReqGetInfoV1) String() string {
+func (dsrgiv DataStoreReqGetInfoV1) String() string {
 	return dsrgiv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReqGetInfoV1 using the provided indentation level
-func (dsrgiv *DataStoreReqGetInfoV1) FormatToString(indentationLevel int) string {
+func (dsrgiv DataStoreReqGetInfoV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,15 +128,12 @@ func (dsrgiv *DataStoreReqGetInfoV1) FormatToString(indentationLevel int) string
 }
 
 // NewDataStoreReqGetInfoV1 returns a new DataStoreReqGetInfoV1
-func NewDataStoreReqGetInfoV1() *DataStoreReqGetInfoV1 {
-	dsrgiv := &DataStoreReqGetInfoV1{
+func NewDataStoreReqGetInfoV1() DataStoreReqGetInfoV1 {
+	return DataStoreReqGetInfoV1{
 		URL:            types.NewString(""),
-		RequestHeaders: types.NewList[*DataStoreKeyValue](),
-		Size:           types.NewPrimitiveU32(0),
+		RequestHeaders: types.NewList[DataStoreKeyValue](),
+		Size:           types.NewUInt32(0),
 		RootCACert:     types.NewBuffer(nil),
 	}
 
-	dsrgiv.RequestHeaders.Type = NewDataStoreKeyValue()
-
-	return dsrgiv
 }

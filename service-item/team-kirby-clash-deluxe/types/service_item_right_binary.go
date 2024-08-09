@@ -11,12 +11,12 @@ import (
 // ServiceItemRightBinary is a type within the ServiceItem protocol
 type ServiceItemRightBinary struct {
 	types.Structure
-	UseType     *types.PrimitiveU8
-	RightBinary *types.QBuffer
+	UseType     types.UInt8
+	RightBinary types.QBuffer
 }
 
 // WriteTo writes the ServiceItemRightBinary to the given writable
-func (sirb *ServiceItemRightBinary) WriteTo(writable types.Writable) {
+func (sirb ServiceItemRightBinary) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sirb.UseType.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (sirb *ServiceItemRightBinary) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemRightBinary
-func (sirb *ServiceItemRightBinary) Copy() types.RVType {
+func (sirb ServiceItemRightBinary) Copy() types.RVType {
 	copied := NewServiceItemRightBinary()
 
 	copied.StructureVersion = sirb.StructureVersion
-	copied.UseType = sirb.UseType.Copy().(*types.PrimitiveU8)
-	copied.RightBinary = sirb.RightBinary.Copy().(*types.QBuffer)
+	copied.UseType = sirb.UseType.Copy().(types.UInt8)
+	copied.RightBinary = sirb.RightBinary.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemRightBinary contains the same data as the current ServiceItemRightBinary
-func (sirb *ServiceItemRightBinary) Equals(o types.RVType) bool {
+func (sirb ServiceItemRightBinary) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemRightBinary); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (sirb *ServiceItemRightBinary) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemRightBinary
-func (sirb *ServiceItemRightBinary) String() string {
+func (sirb ServiceItemRightBinary) String() string {
 	return sirb.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemRightBinary using the provided indentation level
-func (sirb *ServiceItemRightBinary) FormatToString(indentationLevel int) string {
+func (sirb ServiceItemRightBinary) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (sirb *ServiceItemRightBinary) FormatToString(indentationLevel int) string 
 }
 
 // NewServiceItemRightBinary returns a new ServiceItemRightBinary
-func NewServiceItemRightBinary() *ServiceItemRightBinary {
-	sirb := &ServiceItemRightBinary{
-		UseType:     types.NewPrimitiveU8(0),
+func NewServiceItemRightBinary() ServiceItemRightBinary {
+	return ServiceItemRightBinary{
+		UseType:     types.NewUInt8(0),
 		RightBinary: types.NewQBuffer(nil),
 	}
 
-	return sirb
 }

@@ -29,7 +29,7 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 
 	err := postRightBinaryByAccountParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostRightBinaryByAccount(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.PostRightBinaryByAccount(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), packet, callID, postRightBinaryByAccountParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

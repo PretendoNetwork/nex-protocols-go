@@ -11,19 +11,19 @@ import (
 // DataStorePreparePostSharedDataParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStorePreparePostSharedDataParam struct {
 	types.Structure
-	DataType   *types.PrimitiveU8
-	Region     *types.PrimitiveU8
-	Attribute1 *types.PrimitiveU8
-	Attribute2 *types.PrimitiveU8
-	Fighter    *types.Buffer
-	Size       *types.PrimitiveU32
-	Comment    *types.String
-	MetaBinary *types.QBuffer
-	ExtraData  *types.List[*types.String]
+	DataType   types.UInt8
+	Region     types.UInt8
+	Attribute1 types.UInt8
+	Attribute2 types.UInt8
+	Fighter    types.Buffer
+	Size       types.UInt32
+	Comment    types.String
+	MetaBinary types.QBuffer
+	ExtraData  types.List[types.String]
 }
 
 // WriteTo writes the DataStorePreparePostSharedDataParam to the given writable
-func (dsppsdp *DataStorePreparePostSharedDataParam) WriteTo(writable types.Writable) {
+func (dsppsdp DataStorePreparePostSharedDataParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsppsdp.DataType.WriteTo(contentWritable)
@@ -101,25 +101,25 @@ func (dsppsdp *DataStorePreparePostSharedDataParam) ExtractFrom(readable types.R
 }
 
 // Copy returns a new copied instance of DataStorePreparePostSharedDataParam
-func (dsppsdp *DataStorePreparePostSharedDataParam) Copy() types.RVType {
+func (dsppsdp DataStorePreparePostSharedDataParam) Copy() types.RVType {
 	copied := NewDataStorePreparePostSharedDataParam()
 
 	copied.StructureVersion = dsppsdp.StructureVersion
-	copied.DataType = dsppsdp.DataType.Copy().(*types.PrimitiveU8)
-	copied.Region = dsppsdp.Region.Copy().(*types.PrimitiveU8)
-	copied.Attribute1 = dsppsdp.Attribute1.Copy().(*types.PrimitiveU8)
-	copied.Attribute2 = dsppsdp.Attribute2.Copy().(*types.PrimitiveU8)
-	copied.Fighter = dsppsdp.Fighter.Copy().(*types.Buffer)
-	copied.Size = dsppsdp.Size.Copy().(*types.PrimitiveU32)
-	copied.Comment = dsppsdp.Comment.Copy().(*types.String)
-	copied.MetaBinary = dsppsdp.MetaBinary.Copy().(*types.QBuffer)
-	copied.ExtraData = dsppsdp.ExtraData.Copy().(*types.List[*types.String])
+	copied.DataType = dsppsdp.DataType.Copy().(types.UInt8)
+	copied.Region = dsppsdp.Region.Copy().(types.UInt8)
+	copied.Attribute1 = dsppsdp.Attribute1.Copy().(types.UInt8)
+	copied.Attribute2 = dsppsdp.Attribute2.Copy().(types.UInt8)
+	copied.Fighter = dsppsdp.Fighter.Copy().(types.Buffer)
+	copied.Size = dsppsdp.Size.Copy().(types.UInt32)
+	copied.Comment = dsppsdp.Comment.Copy().(types.String)
+	copied.MetaBinary = dsppsdp.MetaBinary.Copy().(types.QBuffer)
+	copied.ExtraData = dsppsdp.ExtraData.Copy().(types.List[types.String])
 
 	return copied
 }
 
 // Equals checks if the given DataStorePreparePostSharedDataParam contains the same data as the current DataStorePreparePostSharedDataParam
-func (dsppsdp *DataStorePreparePostSharedDataParam) Equals(o types.RVType) bool {
+func (dsppsdp DataStorePreparePostSharedDataParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePreparePostSharedDataParam); !ok {
 		return false
 	}
@@ -166,12 +166,12 @@ func (dsppsdp *DataStorePreparePostSharedDataParam) Equals(o types.RVType) bool 
 }
 
 // String returns the string representation of the DataStorePreparePostSharedDataParam
-func (dsppsdp *DataStorePreparePostSharedDataParam) String() string {
+func (dsppsdp DataStorePreparePostSharedDataParam) String() string {
 	return dsppsdp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePreparePostSharedDataParam using the provided indentation level
-func (dsppsdp *DataStorePreparePostSharedDataParam) FormatToString(indentationLevel int) string {
+func (dsppsdp DataStorePreparePostSharedDataParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,20 +193,17 @@ func (dsppsdp *DataStorePreparePostSharedDataParam) FormatToString(indentationLe
 }
 
 // NewDataStorePreparePostSharedDataParam returns a new DataStorePreparePostSharedDataParam
-func NewDataStorePreparePostSharedDataParam() *DataStorePreparePostSharedDataParam {
-	dsppsdp := &DataStorePreparePostSharedDataParam{
-		DataType:   types.NewPrimitiveU8(0),
-		Region:     types.NewPrimitiveU8(0),
-		Attribute1: types.NewPrimitiveU8(0),
-		Attribute2: types.NewPrimitiveU8(0),
+func NewDataStorePreparePostSharedDataParam() DataStorePreparePostSharedDataParam {
+	return DataStorePreparePostSharedDataParam{
+		DataType:   types.NewUInt8(0),
+		Region:     types.NewUInt8(0),
+		Attribute1: types.NewUInt8(0),
+		Attribute2: types.NewUInt8(0),
 		Fighter:    types.NewBuffer(nil),
-		Size:       types.NewPrimitiveU32(0),
+		Size:       types.NewUInt32(0),
 		Comment:    types.NewString(""),
 		MetaBinary: types.NewQBuffer(nil),
-		ExtraData:  types.NewList[*types.String](),
+		ExtraData:  types.NewList[types.String](),
 	}
 
-	dsppsdp.ExtraData.Type = types.NewString("")
-
-	return dsppsdp
 }

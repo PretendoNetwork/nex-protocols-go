@@ -25,14 +25,14 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	category := types.NewPrimitiveU32(0)
-	uniqueID := types.NewPrimitiveU64(0)
+	var category types.UInt32
+	var uniqueID types.UInt64
 
 	var err error
 
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, category, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, category, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

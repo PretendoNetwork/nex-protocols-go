@@ -11,14 +11,14 @@ import (
 // Ranking2Info is a type within the Ranking2 protocol
 type Ranking2Info struct {
 	types.Structure
-	RankDataList *types.List[*Ranking2RankData]
-	LowestRank   *types.PrimitiveU32
-	NumRankedIn  *types.PrimitiveU32
-	Season       *types.PrimitiveS32
+	RankDataList types.List[Ranking2RankData]
+	LowestRank   types.UInt32
+	NumRankedIn  types.UInt32
+	Season       types.Int32
 }
 
 // WriteTo writes the Ranking2Info to the given writable
-func (ri *Ranking2Info) WriteTo(writable types.Writable) {
+func (ri Ranking2Info) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	ri.RankDataList.WriteTo(contentWritable)
@@ -66,20 +66,20 @@ func (ri *Ranking2Info) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Ranking2Info
-func (ri *Ranking2Info) Copy() types.RVType {
+func (ri Ranking2Info) Copy() types.RVType {
 	copied := NewRanking2Info()
 
 	copied.StructureVersion = ri.StructureVersion
-	copied.RankDataList = ri.RankDataList.Copy().(*types.List[*Ranking2RankData])
-	copied.LowestRank = ri.LowestRank.Copy().(*types.PrimitiveU32)
-	copied.NumRankedIn = ri.NumRankedIn.Copy().(*types.PrimitiveU32)
-	copied.Season = ri.Season.Copy().(*types.PrimitiveS32)
+	copied.RankDataList = ri.RankDataList.Copy().(types.List[Ranking2RankData])
+	copied.LowestRank = ri.LowestRank.Copy().(types.UInt32)
+	copied.NumRankedIn = ri.NumRankedIn.Copy().(types.UInt32)
+	copied.Season = ri.Season.Copy().(types.Int32)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2Info contains the same data as the current Ranking2Info
-func (ri *Ranking2Info) Equals(o types.RVType) bool {
+func (ri Ranking2Info) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2Info); !ok {
 		return false
 	}
@@ -106,12 +106,12 @@ func (ri *Ranking2Info) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the Ranking2Info
-func (ri *Ranking2Info) String() string {
+func (ri Ranking2Info) String() string {
 	return ri.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2Info using the provided indentation level
-func (ri *Ranking2Info) FormatToString(indentationLevel int) string {
+func (ri Ranking2Info) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,15 +128,12 @@ func (ri *Ranking2Info) FormatToString(indentationLevel int) string {
 }
 
 // NewRanking2Info returns a new Ranking2Info
-func NewRanking2Info() *Ranking2Info {
-	ri := &Ranking2Info{
-		RankDataList: types.NewList[*Ranking2RankData](),
-		LowestRank:   types.NewPrimitiveU32(0),
-		NumRankedIn:  types.NewPrimitiveU32(0),
-		Season:       types.NewPrimitiveS32(0),
+func NewRanking2Info() Ranking2Info {
+	return Ranking2Info{
+		RankDataList: types.NewList[Ranking2RankData](),
+		LowestRank:   types.NewUInt32(0),
+		NumRankedIn:  types.NewUInt32(0),
+		Season:       types.NewInt32(0),
 	}
 
-	ri.RankDataList.Type = NewRanking2RankData()
-
-	return ri
 }

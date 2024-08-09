@@ -25,16 +25,15 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	pids := types.NewList[*types.PID]()
-	pids.Type = types.NewPID(0)
-	unknown := types.NewDateTime(0)
-	unknown2 := types.NewDateTime(0)
+	var pids types.List[types.PID]
+	var unknown types.DateTime
+	var unknown2 types.DateTime
 
 	var err error
 
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +53,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

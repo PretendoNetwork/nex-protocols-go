@@ -25,16 +25,15 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lstGID := types.NewList[*types.PrimitiveU32]()
-	lstGID.Type = types.NewPrimitiveU32(0)
-	anyGathering := types.NewAnyDataHolder()
-	strMessage := types.NewString("")
+	var lstGID types.List[types.UInt32]
+	var anyGathering types.AnyDataHolder
+	var strMessage types.String
 
 	var err error
 
 	err = lstGID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +53,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

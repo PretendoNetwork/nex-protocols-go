@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 
 	err := useServiceItemByAccountParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UseServiceItemByAccountRequest(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UseServiceItemByAccountRequest(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, useServiceItemByAccountParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

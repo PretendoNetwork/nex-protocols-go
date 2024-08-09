@@ -11,22 +11,22 @@ import (
 // DataStorePreparePostReplayParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStorePreparePostReplayParam struct {
 	types.Structure
-	Size          *types.PrimitiveU32
-	Mode          *types.PrimitiveU8
-	Style         *types.PrimitiveU8
-	Rule          *types.PrimitiveU8
-	Stage         *types.PrimitiveU8
-	ReplayType    *types.PrimitiveU8
-	CompetitionID *types.PrimitiveU64
-	Score         *types.PrimitiveS32
-	Players       *types.List[*DataStoreReplayPlayer]
-	Winners       *types.List[*types.PrimitiveU32]
-	KeyVersion    *types.PrimitiveU16
-	ExtraData     *types.List[*types.String]
+	Size          types.UInt32
+	Mode          types.UInt8
+	Style         types.UInt8
+	Rule          types.UInt8
+	Stage         types.UInt8
+	ReplayType    types.UInt8
+	CompetitionID types.UInt64
+	Score         types.Int32
+	Players       types.List[DataStoreReplayPlayer]
+	Winners       types.List[types.UInt32]
+	KeyVersion    types.UInt16
+	ExtraData     types.List[types.String]
 }
 
 // WriteTo writes the DataStorePreparePostReplayParam to the given writable
-func (dspprp *DataStorePreparePostReplayParam) WriteTo(writable types.Writable) {
+func (dspprp DataStorePreparePostReplayParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspprp.Size.WriteTo(contentWritable)
@@ -122,28 +122,28 @@ func (dspprp *DataStorePreparePostReplayParam) ExtractFrom(readable types.Readab
 }
 
 // Copy returns a new copied instance of DataStorePreparePostReplayParam
-func (dspprp *DataStorePreparePostReplayParam) Copy() types.RVType {
+func (dspprp DataStorePreparePostReplayParam) Copy() types.RVType {
 	copied := NewDataStorePreparePostReplayParam()
 
 	copied.StructureVersion = dspprp.StructureVersion
-	copied.Size = dspprp.Size.Copy().(*types.PrimitiveU32)
-	copied.Mode = dspprp.Mode.Copy().(*types.PrimitiveU8)
-	copied.Style = dspprp.Style.Copy().(*types.PrimitiveU8)
-	copied.Rule = dspprp.Rule.Copy().(*types.PrimitiveU8)
-	copied.Stage = dspprp.Stage.Copy().(*types.PrimitiveU8)
-	copied.ReplayType = dspprp.ReplayType.Copy().(*types.PrimitiveU8)
-	copied.CompetitionID = dspprp.CompetitionID.Copy().(*types.PrimitiveU64)
-	copied.Score = dspprp.Score.Copy().(*types.PrimitiveS32)
-	copied.Players = dspprp.Players.Copy().(*types.List[*DataStoreReplayPlayer])
-	copied.Winners = dspprp.Winners.Copy().(*types.List[*types.PrimitiveU32])
-	copied.KeyVersion = dspprp.KeyVersion.Copy().(*types.PrimitiveU16)
-	copied.ExtraData = dspprp.ExtraData.Copy().(*types.List[*types.String])
+	copied.Size = dspprp.Size.Copy().(types.UInt32)
+	copied.Mode = dspprp.Mode.Copy().(types.UInt8)
+	copied.Style = dspprp.Style.Copy().(types.UInt8)
+	copied.Rule = dspprp.Rule.Copy().(types.UInt8)
+	copied.Stage = dspprp.Stage.Copy().(types.UInt8)
+	copied.ReplayType = dspprp.ReplayType.Copy().(types.UInt8)
+	copied.CompetitionID = dspprp.CompetitionID.Copy().(types.UInt64)
+	copied.Score = dspprp.Score.Copy().(types.Int32)
+	copied.Players = dspprp.Players.Copy().(types.List[DataStoreReplayPlayer])
+	copied.Winners = dspprp.Winners.Copy().(types.List[types.UInt32])
+	copied.KeyVersion = dspprp.KeyVersion.Copy().(types.UInt16)
+	copied.ExtraData = dspprp.ExtraData.Copy().(types.List[types.String])
 
 	return copied
 }
 
 // Equals checks if the given DataStorePreparePostReplayParam contains the same data as the current DataStorePreparePostReplayParam
-func (dspprp *DataStorePreparePostReplayParam) Equals(o types.RVType) bool {
+func (dspprp DataStorePreparePostReplayParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePreparePostReplayParam); !ok {
 		return false
 	}
@@ -202,12 +202,12 @@ func (dspprp *DataStorePreparePostReplayParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStorePreparePostReplayParam
-func (dspprp *DataStorePreparePostReplayParam) String() string {
+func (dspprp DataStorePreparePostReplayParam) String() string {
 	return dspprp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePreparePostReplayParam using the provided indentation level
-func (dspprp *DataStorePreparePostReplayParam) FormatToString(indentationLevel int) string {
+func (dspprp DataStorePreparePostReplayParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -232,25 +232,20 @@ func (dspprp *DataStorePreparePostReplayParam) FormatToString(indentationLevel i
 }
 
 // NewDataStorePreparePostReplayParam returns a new DataStorePreparePostReplayParam
-func NewDataStorePreparePostReplayParam() *DataStorePreparePostReplayParam {
-	dspprp := &DataStorePreparePostReplayParam{
-		Size:          types.NewPrimitiveU32(0),
-		Mode:          types.NewPrimitiveU8(0),
-		Style:         types.NewPrimitiveU8(0),
-		Rule:          types.NewPrimitiveU8(0),
-		Stage:         types.NewPrimitiveU8(0),
-		ReplayType:    types.NewPrimitiveU8(0),
-		CompetitionID: types.NewPrimitiveU64(0),
-		Score:         types.NewPrimitiveS32(0),
-		Players:       types.NewList[*DataStoreReplayPlayer](),
-		Winners:       types.NewList[*types.PrimitiveU32](),
-		KeyVersion:    types.NewPrimitiveU16(0),
-		ExtraData:     types.NewList[*types.String](),
+func NewDataStorePreparePostReplayParam() DataStorePreparePostReplayParam {
+	return DataStorePreparePostReplayParam{
+		Size:          types.NewUInt32(0),
+		Mode:          types.NewUInt8(0),
+		Style:         types.NewUInt8(0),
+		Rule:          types.NewUInt8(0),
+		Stage:         types.NewUInt8(0),
+		ReplayType:    types.NewUInt8(0),
+		CompetitionID: types.NewUInt64(0),
+		Score:         types.NewInt32(0),
+		Players:       types.NewList[DataStoreReplayPlayer](),
+		Winners:       types.NewList[types.UInt32](),
+		KeyVersion:    types.NewUInt16(0),
+		ExtraData:     types.NewList[types.String](),
 	}
 
-	dspprp.Players.Type = NewDataStoreReplayPlayer()
-	dspprp.Winners.Type = types.NewPrimitiveU32(0)
-	dspprp.ExtraData.Type = types.NewString("")
-
-	return dspprp
 }

@@ -11,14 +11,14 @@ import (
 // MatchmakeRefereeStartRoundParam is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStartRoundParam struct {
 	types.Structure
-	*types.Data
-	PersonalDataCategory *types.PrimitiveU32
-	GID                  *types.PrimitiveU32
-	PIDs                 *types.List[*types.PID]
+	types.Data
+	PersonalDataCategory types.UInt32
+	GID                  types.UInt32
+	PIDs                 types.List[types.PID]
 }
 
 // WriteTo writes the MatchmakeRefereeStartRoundParam to the given writable
-func (mrsrp *MatchmakeRefereeStartRoundParam) WriteTo(writable types.Writable) {
+func (mrsrp MatchmakeRefereeStartRoundParam) WriteTo(writable types.Writable) {
 	mrsrp.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,20 +67,20 @@ func (mrsrp *MatchmakeRefereeStartRoundParam) ExtractFrom(readable types.Readabl
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeStartRoundParam
-func (mrsrp *MatchmakeRefereeStartRoundParam) Copy() types.RVType {
+func (mrsrp MatchmakeRefereeStartRoundParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStartRoundParam()
 
 	copied.StructureVersion = mrsrp.StructureVersion
-	copied.Data = mrsrp.Data.Copy().(*types.Data)
-	copied.PersonalDataCategory = mrsrp.PersonalDataCategory.Copy().(*types.PrimitiveU32)
-	copied.GID = mrsrp.GID.Copy().(*types.PrimitiveU32)
-	copied.PIDs = mrsrp.PIDs.Copy().(*types.List[*types.PID])
+	copied.Data = mrsrp.Data.Copy().(types.Data)
+	copied.PersonalDataCategory = mrsrp.PersonalDataCategory.Copy().(types.UInt32)
+	copied.GID = mrsrp.GID.Copy().(types.UInt32)
+	copied.PIDs = mrsrp.PIDs.Copy().(types.List[types.PID])
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeRefereeStartRoundParam contains the same data as the current MatchmakeRefereeStartRoundParam
-func (mrsrp *MatchmakeRefereeStartRoundParam) Equals(o types.RVType) bool {
+func (mrsrp MatchmakeRefereeStartRoundParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*MatchmakeRefereeStartRoundParam); !ok {
 		return false
 	}
@@ -107,12 +107,12 @@ func (mrsrp *MatchmakeRefereeStartRoundParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MatchmakeRefereeStartRoundParam
-func (mrsrp *MatchmakeRefereeStartRoundParam) String() string {
+func (mrsrp MatchmakeRefereeStartRoundParam) String() string {
 	return mrsrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeRefereeStartRoundParam using the provided indentation level
-func (mrsrp *MatchmakeRefereeStartRoundParam) FormatToString(indentationLevel int) string {
+func (mrsrp MatchmakeRefereeStartRoundParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,15 +129,12 @@ func (mrsrp *MatchmakeRefereeStartRoundParam) FormatToString(indentationLevel in
 }
 
 // NewMatchmakeRefereeStartRoundParam returns a new MatchmakeRefereeStartRoundParam
-func NewMatchmakeRefereeStartRoundParam() *MatchmakeRefereeStartRoundParam {
-	mrsrp := &MatchmakeRefereeStartRoundParam{
+func NewMatchmakeRefereeStartRoundParam() MatchmakeRefereeStartRoundParam {
+	return MatchmakeRefereeStartRoundParam{
 		Data:                 types.NewData(),
-		PersonalDataCategory: types.NewPrimitiveU32(0),
-		GID:                  types.NewPrimitiveU32(0),
-		PIDs:                 types.NewList[*types.PID](),
+		PersonalDataCategory: types.NewUInt32(0),
+		GID:                  types.NewUInt32(0),
+		PIDs:                 types.NewList[types.PID](),
 	}
 
-	mrsrp.PIDs.Type = types.NewPID(0)
-
-	return mrsrp
 }

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
 
 	err := getBalanceParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetBalanceRequest(fmt.Errorf("Failed to read getBalanceParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetBalanceRequest(fmt.Errorf("Failed to read getBalanceParam from parameters. %s", err.Error()), packet, callID, getBalanceParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

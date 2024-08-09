@@ -25,14 +25,14 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strType := types.NewString("")
-	resultRange := types.NewResultRange()
+	var strType types.String
+	var resultRange types.ResultRange
 
 	var err error
 
 	err = strType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByType(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindByType(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), packet, callID, strType, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByType(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindByType(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, strType, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

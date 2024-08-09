@@ -21,7 +21,7 @@ const (
 // Protocol handles the RemoteLogDevice protocol
 type Protocol struct {
 	endpoint       nex.EndpointInterface
-	Log            func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error)
+	Log            func(err error, packet nex.PacketInterface, callID uint32, strLine types.String) (*nex.RMCMessage, *nex.Error)
 	Patches        nex.ServiceProtocol
 	PatchedMethods []uint32
 }
@@ -30,7 +30,7 @@ type Protocol struct {
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
-	SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine types.String) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -44,7 +44,7 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // SetHandlerLog sets the handler for the Log method
-func (protocol *Protocol) SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Log = handler
 }
 

@@ -25,12 +25,11 @@ func (protocol *Protocol) handleAddToBlockList(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lstPrincipalID := types.NewList[*types.PID]()
-	lstPrincipalID.Type = types.NewPID(0)
+	var lstPrincipalID types.List[types.PID]
 
 	err := lstPrincipalID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddToBlockList(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.AddToBlockList(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, lstPrincipalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

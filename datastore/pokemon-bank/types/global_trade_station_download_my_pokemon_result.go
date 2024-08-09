@@ -11,12 +11,12 @@ import (
 // GlobalTradeStationDownloadMyPokemonResult is a type within the DataStore protocol
 type GlobalTradeStationDownloadMyPokemonResult struct {
 	types.Structure
-	Result   *GlobalTradeStationDownloadPokemonResult
-	IsTraded *types.PrimitiveBool
+	Result   GlobalTradeStationDownloadPokemonResult
+	IsTraded types.Bool
 }
 
 // WriteTo writes the GlobalTradeStationDownloadMyPokemonResult to the given writable
-func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) WriteTo(writable types.Writable) {
+func (gtsdmpr GlobalTradeStationDownloadMyPokemonResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsdmpr.Result.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) ExtractFrom(readable t
 }
 
 // Copy returns a new copied instance of GlobalTradeStationDownloadMyPokemonResult
-func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) Copy() types.RVType {
+func (gtsdmpr GlobalTradeStationDownloadMyPokemonResult) Copy() types.RVType {
 	copied := NewGlobalTradeStationDownloadMyPokemonResult()
 
 	copied.StructureVersion = gtsdmpr.StructureVersion
-	copied.Result = gtsdmpr.Result.Copy().(*GlobalTradeStationDownloadPokemonResult)
-	copied.IsTraded = gtsdmpr.IsTraded.Copy().(*types.PrimitiveBool)
+	copied.Result = gtsdmpr.Result.Copy().(GlobalTradeStationDownloadPokemonResult)
+	copied.IsTraded = gtsdmpr.IsTraded.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationDownloadMyPokemonResult contains the same data as the current GlobalTradeStationDownloadMyPokemonResult
-func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) Equals(o types.RVType) bool {
+func (gtsdmpr GlobalTradeStationDownloadMyPokemonResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationDownloadMyPokemonResult); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) Equals(o types.RVType)
 }
 
 // String returns the string representation of the GlobalTradeStationDownloadMyPokemonResult
-func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) String() string {
+func (gtsdmpr GlobalTradeStationDownloadMyPokemonResult) String() string {
 	return gtsdmpr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationDownloadMyPokemonResult using the provided indentation level
-func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) FormatToString(indentationLevel int) string {
+func (gtsdmpr GlobalTradeStationDownloadMyPokemonResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) FormatToString(indenta
 }
 
 // NewGlobalTradeStationDownloadMyPokemonResult returns a new GlobalTradeStationDownloadMyPokemonResult
-func NewGlobalTradeStationDownloadMyPokemonResult() *GlobalTradeStationDownloadMyPokemonResult {
-	gtsdmpr := &GlobalTradeStationDownloadMyPokemonResult{
+func NewGlobalTradeStationDownloadMyPokemonResult() GlobalTradeStationDownloadMyPokemonResult {
+	return GlobalTradeStationDownloadMyPokemonResult{
 		Result:   NewGlobalTradeStationDownloadPokemonResult(),
-		IsTraded: types.NewPrimitiveBool(false),
+		IsTraded: types.NewBool(false),
 	}
 
-	return gtsdmpr
 }

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 
 	err := input.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetEstimateScoreRank(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetEstimateScoreRank(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, input)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

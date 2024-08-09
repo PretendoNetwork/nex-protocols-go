@@ -25,14 +25,14 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	unknown := types.NewPrimitiveU32(0)
-	picture := types.NewBuffer(nil)
+	var unknown types.UInt32
+	var picture types.Buffer
 
 	var err error
 
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePicture(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdatePicture(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, unknown, picture)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 
 	err = picture.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePicture(fmt.Errorf("Failed to read picture from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdatePicture(fmt.Errorf("Failed to read picture from parameters. %s", err.Error()), packet, callID, unknown, picture)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

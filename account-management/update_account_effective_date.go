@@ -25,15 +25,15 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idPrincipal := types.NewPID(0)
-	dtEffectiveFrom := types.NewDateTime(0)
-	strNotEffectiveMessage := types.NewString("")
+	var idPrincipal types.PID
+	var dtEffectiveFrom types.DateTime
+	var strNotEffectiveMessage types.String
 
 	var err error
 
 	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	err = dtEffectiveFrom.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	err = strNotEffectiveMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

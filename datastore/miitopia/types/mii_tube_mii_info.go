@@ -12,13 +12,13 @@ import (
 // MiiTubeMiiInfo is a type within the DataStoreMiitopia protocol
 type MiiTubeMiiInfo struct {
 	types.Structure
-	MetaInfo    *datastore_types.DataStoreMetaInfo
-	Category    *types.PrimitiveU8
-	RankingType *types.PrimitiveU8
+	MetaInfo    datastore_types.DataStoreMetaInfo
+	Category    types.UInt8
+	RankingType types.UInt8
 }
 
 // WriteTo writes the MiiTubeMiiInfo to the given writable
-func (mtmi *MiiTubeMiiInfo) WriteTo(writable types.Writable) {
+func (mtmi MiiTubeMiiInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	mtmi.MetaInfo.WriteTo(contentWritable)
@@ -60,7 +60,7 @@ func (mtmi *MiiTubeMiiInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MiiTubeMiiInfo
-func (mtmi *MiiTubeMiiInfo) Copy() types.RVType {
+func (mtmi MiiTubeMiiInfo) Copy() types.RVType {
 	copied := NewMiiTubeMiiInfo()
 
 	copied.MetaInfo = mtmi.MetaInfo
@@ -71,7 +71,7 @@ func (mtmi *MiiTubeMiiInfo) Copy() types.RVType {
 }
 
 // Equals checks if the given MiiTubeMiiInfo contains the same data as the current MiiTubeMiiInfo
-func (mtmi *MiiTubeMiiInfo) Equals(o types.RVType) bool {
+func (mtmi MiiTubeMiiInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*MiiTubeMiiInfo); !ok {
 		return false
 	}
@@ -90,12 +90,12 @@ func (mtmi *MiiTubeMiiInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MiiTubeMiiInfo
-func (mtmi *MiiTubeMiiInfo) String() string {
+func (mtmi MiiTubeMiiInfo) String() string {
 	return mtmi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MiiTubeMiiInfo using the provided indentation level
-func (mtmi *MiiTubeMiiInfo) FormatToString(indentationLevel int) string {
+func (mtmi MiiTubeMiiInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -111,12 +111,11 @@ func (mtmi *MiiTubeMiiInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewMiiTubeMiiInfo returns a new MiiTubeMiiInfo
-func NewMiiTubeMiiInfo() *MiiTubeMiiInfo {
-	mtmi := &MiiTubeMiiInfo{
+func NewMiiTubeMiiInfo() MiiTubeMiiInfo {
+	return MiiTubeMiiInfo{
 		MetaInfo:    datastore_types.NewDataStoreMetaInfo(),
-		Category:    types.NewPrimitiveU8(0),
-		RankingType: types.NewPrimitiveU8(0),
+		Category:    types.NewUInt8(0),
+		RankingType: types.NewUInt8(0),
 	}
 
-	return mtmi
 }

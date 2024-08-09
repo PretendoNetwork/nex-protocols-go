@@ -11,12 +11,12 @@ import (
 // Ranking2ChartInfoInput is a type within the Ranking2 protocol
 type Ranking2ChartInfoInput struct {
 	types.Structure
-	ChartIndex         *types.PrimitiveU32
-	NumSeasonsToGoBack *types.PrimitiveU8
+	ChartIndex         types.UInt32
+	NumSeasonsToGoBack types.UInt8
 }
 
 // WriteTo writes the Ranking2ChartInfoInput to the given writable
-func (rcii *Ranking2ChartInfoInput) WriteTo(writable types.Writable) {
+func (rcii Ranking2ChartInfoInput) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rcii.ChartIndex.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (rcii *Ranking2ChartInfoInput) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Ranking2ChartInfoInput
-func (rcii *Ranking2ChartInfoInput) Copy() types.RVType {
+func (rcii Ranking2ChartInfoInput) Copy() types.RVType {
 	copied := NewRanking2ChartInfoInput()
 
 	copied.StructureVersion = rcii.StructureVersion
-	copied.ChartIndex = rcii.ChartIndex.Copy().(*types.PrimitiveU32)
-	copied.NumSeasonsToGoBack = rcii.NumSeasonsToGoBack.Copy().(*types.PrimitiveU8)
+	copied.ChartIndex = rcii.ChartIndex.Copy().(types.UInt32)
+	copied.NumSeasonsToGoBack = rcii.NumSeasonsToGoBack.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2ChartInfoInput contains the same data as the current Ranking2ChartInfoInput
-func (rcii *Ranking2ChartInfoInput) Equals(o types.RVType) bool {
+func (rcii Ranking2ChartInfoInput) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2ChartInfoInput); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (rcii *Ranking2ChartInfoInput) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the Ranking2ChartInfoInput
-func (rcii *Ranking2ChartInfoInput) String() string {
+func (rcii Ranking2ChartInfoInput) String() string {
 	return rcii.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2ChartInfoInput using the provided indentation level
-func (rcii *Ranking2ChartInfoInput) FormatToString(indentationLevel int) string {
+func (rcii Ranking2ChartInfoInput) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (rcii *Ranking2ChartInfoInput) FormatToString(indentationLevel int) string 
 }
 
 // NewRanking2ChartInfoInput returns a new Ranking2ChartInfoInput
-func NewRanking2ChartInfoInput() *Ranking2ChartInfoInput {
-	rcii := &Ranking2ChartInfoInput{
-		ChartIndex:         types.NewPrimitiveU32(0),
-		NumSeasonsToGoBack: types.NewPrimitiveU8(0),
+func NewRanking2ChartInfoInput() Ranking2ChartInfoInput {
+	return Ranking2ChartInfoInput{
+		ChartIndex:         types.NewUInt32(0),
+		NumSeasonsToGoBack: types.NewUInt8(0),
 	}
 
-	return rcii
 }

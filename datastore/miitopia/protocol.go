@@ -30,7 +30,7 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
-	SearchMii func(err error, packet nex.PacketInterface, callId uint32, param *datastore_miitopia_types.MiiTubeSearchParam) (*nex.RMCMessage, *nex.Error)
+	SearchMii func(err error, packet nex.PacketInterface, callId uint32, param datastore_miitopia_types.MiiTubeSearchParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler

@@ -25,12 +25,11 @@ func (protocol *Protocol) handleFindMatchmakeSessionByGatheringID(packet nex.Pac
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lstGID := types.NewList[*types.PrimitiveU32]()
-	lstGID.Type = types.NewPrimitiveU32(0)
+	var lstGID types.List[types.UInt32]
 
 	err := lstGID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindMatchmakeSessionByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.FindMatchmakeSessionByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, lstGID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

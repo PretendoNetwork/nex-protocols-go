@@ -26,16 +26,15 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	condition := types.NewPrimitiveU32(0)
+	var condition types.UInt32
 	param := datastore_types.NewDataStoreSearchParam()
-	extraData := types.NewList[*types.String]()
-	extraData.Type = types.NewString("")
+	var extraData types.List[types.String]
 
 	var err error
 
 	err = condition.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -45,7 +44,7 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -55,7 +54,7 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 
 	err = extraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

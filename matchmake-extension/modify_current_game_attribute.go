@@ -25,15 +25,15 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	gid := types.NewPrimitiveU32(0)
-	attribIndex := types.NewPrimitiveU32(0)
-	newValue := types.NewPrimitiveU32(0)
+	var gid types.UInt32
+	var attribIndex types.UInt32
+	var newValue types.UInt32
 
 	var err error
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	err = attribIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	err = newValue.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

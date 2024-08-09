@@ -25,15 +25,14 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lstDeletions := types.NewList[*types.PrimitiveU32]()
-	lstDeletions.Type = types.NewPrimitiveU32(0)
-	pid := types.NewPID(0)
+	var lstDeletions types.List[types.UInt32]
+	var pid types.PID
 
 	var err error
 
 	err = lstDeletions.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, lstDeletions, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, lstDeletions, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

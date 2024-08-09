@@ -11,17 +11,17 @@ import (
 // GlobalTradeStationSearchPokemonParam is a type within the DataStore protocol
 type GlobalTradeStationSearchPokemonParam struct {
 	types.Structure
-	PrepareUploadKey  *GlobalTradeStationRecordKey
-	Conditions        *types.List[*types.PrimitiveU32]
-	ResultOrderColumn *types.PrimitiveU8
-	ResultOrder       *types.PrimitiveU8
-	UploadedAfter     *types.DateTime
-	UploadedBefore    *types.DateTime
-	ResultRange       *types.ResultRange
+	PrepareUploadKey  GlobalTradeStationRecordKey
+	Conditions        types.List[types.UInt32]
+	ResultOrderColumn types.UInt8
+	ResultOrder       types.UInt8
+	UploadedAfter     types.DateTime
+	UploadedBefore    types.DateTime
+	ResultRange       types.ResultRange
 }
 
 // WriteTo writes the GlobalTradeStationSearchPokemonParam to the given writable
-func (gtsspp *GlobalTradeStationSearchPokemonParam) WriteTo(writable types.Writable) {
+func (gtsspp GlobalTradeStationSearchPokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsspp.PrepareUploadKey.WriteTo(contentWritable)
@@ -87,23 +87,23 @@ func (gtsspp *GlobalTradeStationSearchPokemonParam) ExtractFrom(readable types.R
 }
 
 // Copy returns a new copied instance of GlobalTradeStationSearchPokemonParam
-func (gtsspp *GlobalTradeStationSearchPokemonParam) Copy() types.RVType {
+func (gtsspp GlobalTradeStationSearchPokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationSearchPokemonParam()
 
 	copied.StructureVersion = gtsspp.StructureVersion
-	copied.PrepareUploadKey = gtsspp.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
-	copied.Conditions = gtsspp.Conditions.Copy().(*types.List[*types.PrimitiveU32])
-	copied.ResultOrderColumn = gtsspp.ResultOrderColumn.Copy().(*types.PrimitiveU8)
-	copied.ResultOrder = gtsspp.ResultOrder.Copy().(*types.PrimitiveU8)
-	copied.UploadedAfter = gtsspp.UploadedAfter.Copy().(*types.DateTime)
-	copied.UploadedBefore = gtsspp.UploadedBefore.Copy().(*types.DateTime)
-	copied.ResultRange = gtsspp.ResultRange.Copy().(*types.ResultRange)
+	copied.PrepareUploadKey = gtsspp.PrepareUploadKey.Copy().(GlobalTradeStationRecordKey)
+	copied.Conditions = gtsspp.Conditions.Copy().(types.List[types.UInt32])
+	copied.ResultOrderColumn = gtsspp.ResultOrderColumn.Copy().(types.UInt8)
+	copied.ResultOrder = gtsspp.ResultOrder.Copy().(types.UInt8)
+	copied.UploadedAfter = gtsspp.UploadedAfter.Copy().(types.DateTime)
+	copied.UploadedBefore = gtsspp.UploadedBefore.Copy().(types.DateTime)
+	copied.ResultRange = gtsspp.ResultRange.Copy().(types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationSearchPokemonParam contains the same data as the current GlobalTradeStationSearchPokemonParam
-func (gtsspp *GlobalTradeStationSearchPokemonParam) Equals(o types.RVType) bool {
+func (gtsspp GlobalTradeStationSearchPokemonParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationSearchPokemonParam); !ok {
 		return false
 	}
@@ -142,12 +142,12 @@ func (gtsspp *GlobalTradeStationSearchPokemonParam) Equals(o types.RVType) bool 
 }
 
 // String returns the string representation of the GlobalTradeStationSearchPokemonParam
-func (gtsspp *GlobalTradeStationSearchPokemonParam) String() string {
+func (gtsspp GlobalTradeStationSearchPokemonParam) String() string {
 	return gtsspp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationSearchPokemonParam using the provided indentation level
-func (gtsspp *GlobalTradeStationSearchPokemonParam) FormatToString(indentationLevel int) string {
+func (gtsspp GlobalTradeStationSearchPokemonParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -167,18 +167,15 @@ func (gtsspp *GlobalTradeStationSearchPokemonParam) FormatToString(indentationLe
 }
 
 // NewGlobalTradeStationSearchPokemonParam returns a new GlobalTradeStationSearchPokemonParam
-func NewGlobalTradeStationSearchPokemonParam() *GlobalTradeStationSearchPokemonParam {
-	gtsspp := &GlobalTradeStationSearchPokemonParam{
+func NewGlobalTradeStationSearchPokemonParam() GlobalTradeStationSearchPokemonParam {
+	return GlobalTradeStationSearchPokemonParam{
 		PrepareUploadKey:  NewGlobalTradeStationRecordKey(),
-		Conditions:        types.NewList[*types.PrimitiveU32](),
-		ResultOrderColumn: types.NewPrimitiveU8(0),
-		ResultOrder:       types.NewPrimitiveU8(0),
+		Conditions:        types.NewList[types.UInt32](),
+		ResultOrderColumn: types.NewUInt8(0),
+		ResultOrder:       types.NewUInt8(0),
 		UploadedAfter:     types.NewDateTime(0),
 		UploadedBefore:    types.NewDateTime(0),
 		ResultRange:       types.NewResultRange(),
 	}
 
-	gtsspp.Conditions.Type = types.NewPrimitiveU32(0)
-
-	return gtsspp
 }

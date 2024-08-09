@@ -25,14 +25,14 @@ func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInte
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	pid := types.NewPID(0)
-	resultRange := types.NewResultRange()
+	var pid types.PID
+	var resultRange types.ResultRange
 
 	var err error
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInte
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, pid, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

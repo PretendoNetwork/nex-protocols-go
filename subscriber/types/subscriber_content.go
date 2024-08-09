@@ -11,16 +11,16 @@ import (
 // SubscriberContent is a type within the Shop protocol
 type SubscriberContent struct {
 	types.Structure
-	Unknown1 *types.PrimitiveU64
-	Unknown2 *types.String
-	Unknown3 *types.Buffer
-	Unknown4 *types.PrimitiveU64
-	Unknown5 *types.List[*types.String]
-	Unknown6 *types.DateTime
+	Unknown1 types.UInt64
+	Unknown2 types.String
+	Unknown3 types.Buffer
+	Unknown4 types.UInt64
+	Unknown5 types.List[types.String]
+	Unknown6 types.DateTime
 }
 
 // WriteTo writes the SubscriberContent to the given writable
-func (sc *SubscriberContent) WriteTo(writable types.Writable) {
+func (sc SubscriberContent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sc.Unknown1.WriteTo(contentWritable)
@@ -80,22 +80,22 @@ func (sc *SubscriberContent) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of SubscriberContent
-func (sc *SubscriberContent) Copy() types.RVType {
+func (sc SubscriberContent) Copy() types.RVType {
 	copied := NewSubscriberContent()
 
 	copied.StructureVersion = sc.StructureVersion
-	copied.Unknown1 = sc.Unknown1.Copy().(*types.PrimitiveU64)
-	copied.Unknown2 = sc.Unknown2.Copy().(*types.String)
-	copied.Unknown3 = sc.Unknown3.Copy().(*types.Buffer)
-	copied.Unknown4 = sc.Unknown4.Copy().(*types.PrimitiveU64)
-	copied.Unknown5 = sc.Unknown5.Copy().(*types.List[*types.String])
-	copied.Unknown6 = sc.Unknown6.Copy().(*types.DateTime)
+	copied.Unknown1 = sc.Unknown1.Copy().(types.UInt64)
+	copied.Unknown2 = sc.Unknown2.Copy().(types.String)
+	copied.Unknown3 = sc.Unknown3.Copy().(types.Buffer)
+	copied.Unknown4 = sc.Unknown4.Copy().(types.UInt64)
+	copied.Unknown5 = sc.Unknown5.Copy().(types.List[types.String])
+	copied.Unknown6 = sc.Unknown6.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given SubscriberContent contains the same data as the current SubscriberContent
-func (sc *SubscriberContent) Equals(o types.RVType) bool {
+func (sc SubscriberContent) Equals(o types.RVType) bool {
 	if _, ok := o.(*SubscriberContent); !ok {
 		return false
 	}
@@ -130,12 +130,12 @@ func (sc *SubscriberContent) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the SubscriberContent
-func (sc *SubscriberContent) String() string {
+func (sc SubscriberContent) String() string {
 	return sc.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SubscriberContent using the provided indentation level
-func (sc *SubscriberContent) FormatToString(indentationLevel int) string {
+func (sc SubscriberContent) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,17 +154,14 @@ func (sc *SubscriberContent) FormatToString(indentationLevel int) string {
 }
 
 // NewSubscriberContent returns a new SubscriberContent
-func NewSubscriberContent() *SubscriberContent {
-	sc := &SubscriberContent{
-		Unknown1: types.NewPrimitiveU64(0),
+func NewSubscriberContent() SubscriberContent {
+	return SubscriberContent{
+		Unknown1: types.NewUInt64(0),
 		Unknown2: types.NewString(""),
 		Unknown3: types.NewBuffer(nil),
-		Unknown4: types.NewPrimitiveU64(0),
-		Unknown5: types.NewList[*types.String](),
+		Unknown4: types.NewUInt64(0),
+		Unknown5: types.NewList[types.String](),
 		Unknown6: types.NewDateTime(0),
 	}
 
-	sc.Unknown5.Type = types.NewString("")
-
-	return sc
 }

@@ -25,11 +25,11 @@ func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	anyGathering := types.NewAnyDataHolder()
+	var anyGathering types.AnyDataHolder
 
 	err := anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, anyGathering)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

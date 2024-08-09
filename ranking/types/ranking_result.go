@@ -11,13 +11,13 @@ import (
 // RankingResult is a type within the Ranking protocol
 type RankingResult struct {
 	types.Structure
-	RankDataList *types.List[*RankingRankData]
-	TotalCount   *types.PrimitiveU32
-	SinceTime    *types.DateTime
+	RankDataList types.List[RankingRankData]
+	TotalCount   types.UInt32
+	SinceTime    types.DateTime
 }
 
 // WriteTo writes the RankingResult to the given writable
-func (rr *RankingResult) WriteTo(writable types.Writable) {
+func (rr RankingResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rr.RankDataList.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (rr *RankingResult) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of RankingResult
-func (rr *RankingResult) Copy() types.RVType {
+func (rr RankingResult) Copy() types.RVType {
 	copied := NewRankingResult()
 
 	copied.StructureVersion = rr.StructureVersion
-	copied.RankDataList = rr.RankDataList.Copy().(*types.List[*RankingRankData])
-	copied.TotalCount = rr.TotalCount.Copy().(*types.PrimitiveU32)
-	copied.SinceTime = rr.SinceTime.Copy().(*types.DateTime)
+	copied.RankDataList = rr.RankDataList.Copy().(types.List[RankingRankData])
+	copied.TotalCount = rr.TotalCount.Copy().(types.UInt32)
+	copied.SinceTime = rr.SinceTime.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given RankingResult contains the same data as the current RankingResult
-func (rr *RankingResult) Equals(o types.RVType) bool {
+func (rr RankingResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*RankingResult); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (rr *RankingResult) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the RankingResult
-func (rr *RankingResult) String() string {
+func (rr RankingResult) String() string {
 	return rr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the RankingResult using the provided indentation level
-func (rr *RankingResult) FormatToString(indentationLevel int) string {
+func (rr RankingResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +115,11 @@ func (rr *RankingResult) FormatToString(indentationLevel int) string {
 }
 
 // NewRankingResult returns a new RankingResult
-func NewRankingResult() *RankingResult {
-	rr := &RankingResult{
-		RankDataList: types.NewList[*RankingRankData](),
-		TotalCount:   types.NewPrimitiveU32(0),
+func NewRankingResult() RankingResult {
+	return RankingResult{
+		RankDataList: types.NewList[RankingRankData](),
+		TotalCount:   types.NewUInt32(0),
 		SinceTime:    types.NewDateTime(0),
 	}
 
-	rr.RankDataList.Type = NewRankingRankData()
-
-	return rr
 }

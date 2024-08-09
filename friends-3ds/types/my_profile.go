@@ -11,19 +11,19 @@ import (
 // MyProfile is a type within the Friends3DS protocol
 type MyProfile struct {
 	types.Structure
-	*types.Data
-	Region   *types.PrimitiveU8
-	Country  *types.PrimitiveU8
-	Area     *types.PrimitiveU8
-	Language *types.PrimitiveU8
-	Platform *types.PrimitiveU8
-	Unknown1 *types.PrimitiveU64
-	Unknown2 *types.String
-	Unknown3 *types.String
+	types.Data
+	Region   types.UInt8
+	Country  types.UInt8
+	Area     types.UInt8
+	Language types.UInt8
+	Platform types.UInt8
+	Unknown1 types.UInt64
+	Unknown2 types.String
+	Unknown3 types.String
 }
 
 // WriteTo writes the MyProfile to the given writable
-func (mp *MyProfile) WriteTo(writable types.Writable) {
+func (mp MyProfile) WriteTo(writable types.Writable) {
 	mp.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -102,25 +102,25 @@ func (mp *MyProfile) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MyProfile
-func (mp *MyProfile) Copy() types.RVType {
+func (mp MyProfile) Copy() types.RVType {
 	copied := NewMyProfile()
 
 	copied.StructureVersion = mp.StructureVersion
-	copied.Data = mp.Data.Copy().(*types.Data)
-	copied.Region = mp.Region.Copy().(*types.PrimitiveU8)
-	copied.Country = mp.Country.Copy().(*types.PrimitiveU8)
-	copied.Area = mp.Area.Copy().(*types.PrimitiveU8)
-	copied.Language = mp.Language.Copy().(*types.PrimitiveU8)
-	copied.Platform = mp.Platform.Copy().(*types.PrimitiveU8)
-	copied.Unknown1 = mp.Unknown1.Copy().(*types.PrimitiveU64)
-	copied.Unknown2 = mp.Unknown2.Copy().(*types.String)
-	copied.Unknown3 = mp.Unknown3.Copy().(*types.String)
+	copied.Data = mp.Data.Copy().(types.Data)
+	copied.Region = mp.Region.Copy().(types.UInt8)
+	copied.Country = mp.Country.Copy().(types.UInt8)
+	copied.Area = mp.Area.Copy().(types.UInt8)
+	copied.Language = mp.Language.Copy().(types.UInt8)
+	copied.Platform = mp.Platform.Copy().(types.UInt8)
+	copied.Unknown1 = mp.Unknown1.Copy().(types.UInt64)
+	copied.Unknown2 = mp.Unknown2.Copy().(types.String)
+	copied.Unknown3 = mp.Unknown3.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given MyProfile contains the same data as the current MyProfile
-func (mp *MyProfile) Equals(o types.RVType) bool {
+func (mp MyProfile) Equals(o types.RVType) bool {
 	if _, ok := o.(*MyProfile); !ok {
 		return false
 	}
@@ -167,12 +167,12 @@ func (mp *MyProfile) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MyProfile
-func (mp *MyProfile) String() string {
+func (mp MyProfile) String() string {
 	return mp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MyProfile using the provided indentation level
-func (mp *MyProfile) FormatToString(indentationLevel int) string {
+func (mp MyProfile) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -194,18 +194,17 @@ func (mp *MyProfile) FormatToString(indentationLevel int) string {
 }
 
 // NewMyProfile returns a new MyProfile
-func NewMyProfile() *MyProfile {
-	mp := &MyProfile{
+func NewMyProfile() MyProfile {
+	return MyProfile{
 		Data:     types.NewData(),
-		Region:   types.NewPrimitiveU8(0),
-		Country:  types.NewPrimitiveU8(0),
-		Area:     types.NewPrimitiveU8(0),
-		Language: types.NewPrimitiveU8(0),
-		Platform: types.NewPrimitiveU8(0),
-		Unknown1: types.NewPrimitiveU64(0),
+		Region:   types.NewUInt8(0),
+		Country:  types.NewUInt8(0),
+		Area:     types.NewUInt8(0),
+		Language: types.NewUInt8(0),
+		Platform: types.NewUInt8(0),
+		Unknown1: types.NewUInt64(0),
 		Unknown2: types.NewString(""),
 		Unknown3: types.NewString(""),
 	}
 
-	return mp
 }

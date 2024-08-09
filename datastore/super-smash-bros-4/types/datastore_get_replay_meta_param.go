@@ -11,12 +11,12 @@ import (
 // DataStoreGetReplayMetaParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreGetReplayMetaParam struct {
 	types.Structure
-	ReplayID *types.PrimitiveU64
-	MetaType *types.PrimitiveU8
+	ReplayID types.UInt64
+	MetaType types.UInt8
 }
 
 // WriteTo writes the DataStoreGetReplayMetaParam to the given writable
-func (dsgrmp *DataStoreGetReplayMetaParam) WriteTo(writable types.Writable) {
+func (dsgrmp DataStoreGetReplayMetaParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsgrmp.ReplayID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dsgrmp *DataStoreGetReplayMetaParam) ExtractFrom(readable types.Readable) 
 }
 
 // Copy returns a new copied instance of DataStoreGetReplayMetaParam
-func (dsgrmp *DataStoreGetReplayMetaParam) Copy() types.RVType {
+func (dsgrmp DataStoreGetReplayMetaParam) Copy() types.RVType {
 	copied := NewDataStoreGetReplayMetaParam()
 
 	copied.StructureVersion = dsgrmp.StructureVersion
-	copied.ReplayID = dsgrmp.ReplayID.Copy().(*types.PrimitiveU64)
-	copied.MetaType = dsgrmp.MetaType.Copy().(*types.PrimitiveU8)
+	copied.ReplayID = dsgrmp.ReplayID.Copy().(types.UInt64)
+	copied.MetaType = dsgrmp.MetaType.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreGetReplayMetaParam contains the same data as the current DataStoreGetReplayMetaParam
-func (dsgrmp *DataStoreGetReplayMetaParam) Equals(o types.RVType) bool {
+func (dsgrmp DataStoreGetReplayMetaParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreGetReplayMetaParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dsgrmp *DataStoreGetReplayMetaParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreGetReplayMetaParam
-func (dsgrmp *DataStoreGetReplayMetaParam) String() string {
+func (dsgrmp DataStoreGetReplayMetaParam) String() string {
 	return dsgrmp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreGetReplayMetaParam using the provided indentation level
-func (dsgrmp *DataStoreGetReplayMetaParam) FormatToString(indentationLevel int) string {
+func (dsgrmp DataStoreGetReplayMetaParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dsgrmp *DataStoreGetReplayMetaParam) FormatToString(indentationLevel int) 
 }
 
 // NewDataStoreGetReplayMetaParam returns a new DataStoreGetReplayMetaParam
-func NewDataStoreGetReplayMetaParam() *DataStoreGetReplayMetaParam {
-	dsgrmp := &DataStoreGetReplayMetaParam{
-		ReplayID: types.NewPrimitiveU64(0),
-		MetaType: types.NewPrimitiveU8(0),
+func NewDataStoreGetReplayMetaParam() DataStoreGetReplayMetaParam {
+	return DataStoreGetReplayMetaParam{
+		ReplayID: types.NewUInt64(0),
+		MetaType: types.NewUInt8(0),
 	}
 
-	return dsgrmp
 }

@@ -11,14 +11,14 @@ import (
 // FriendMii is a type within the Friends3DS protocol
 type FriendMii struct {
 	types.Structure
-	*types.Data
-	PID        *types.PID
-	Mii        *Mii
-	ModifiedAt *types.DateTime
+	types.Data
+	PID        types.PID
+	Mii        Mii
+	ModifiedAt types.DateTime
 }
 
 // WriteTo writes the FriendMii to the given writable
-func (fm *FriendMii) WriteTo(writable types.Writable) {
+func (fm FriendMii) WriteTo(writable types.Writable) {
 	fm.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,20 +67,20 @@ func (fm *FriendMii) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendMii
-func (fm *FriendMii) Copy() types.RVType {
+func (fm FriendMii) Copy() types.RVType {
 	copied := NewFriendMii()
 
 	copied.StructureVersion = fm.StructureVersion
-	copied.Data = fm.Data.Copy().(*types.Data)
-	copied.PID = fm.PID.Copy().(*types.PID)
-	copied.Mii = fm.Mii.Copy().(*Mii)
-	copied.ModifiedAt = fm.ModifiedAt.Copy().(*types.DateTime)
+	copied.Data = fm.Data.Copy().(types.Data)
+	copied.PID = fm.PID.Copy().(types.PID)
+	copied.Mii = fm.Mii.Copy().(Mii)
+	copied.ModifiedAt = fm.ModifiedAt.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given FriendMii contains the same data as the current FriendMii
-func (fm *FriendMii) Equals(o types.RVType) bool {
+func (fm FriendMii) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendMii); !ok {
 		return false
 	}
@@ -107,12 +107,12 @@ func (fm *FriendMii) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the FriendMii
-func (fm *FriendMii) String() string {
+func (fm FriendMii) String() string {
 	return fm.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendMii using the provided indentation level
-func (fm *FriendMii) FormatToString(indentationLevel int) string {
+func (fm FriendMii) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +129,12 @@ func (fm *FriendMii) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendMii returns a new FriendMii
-func NewFriendMii() *FriendMii {
-	fm := &FriendMii{
+func NewFriendMii() FriendMii {
+	return FriendMii{
 		Data:       types.NewData(),
 		PID:        types.NewPID(0),
 		Mii:        NewMii(),
 		ModifiedAt: types.NewDateTime(0),
 	}
 
-	return fm
 }

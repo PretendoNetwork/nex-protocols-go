@@ -11,12 +11,12 @@ import (
 // ServiceItemListServiceItemResponse is a type within the ServiceItem protocol
 type ServiceItemListServiceItemResponse struct {
 	types.Structure
-	*ServiceItemEShopResponse
-	NullableCatalog *types.List[*ServiceItemCatalog]
+	ServiceItemEShopResponse
+	NullableCatalog types.List[ServiceItemCatalog]
 }
 
 // WriteTo writes the ServiceItemListServiceItemResponse to the given writable
-func (silsir *ServiceItemListServiceItemResponse) WriteTo(writable types.Writable) {
+func (silsir ServiceItemListServiceItemResponse) WriteTo(writable types.Writable) {
 	silsir.ServiceItemEShopResponse.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,18 +53,18 @@ func (silsir *ServiceItemListServiceItemResponse) ExtractFrom(readable types.Rea
 }
 
 // Copy returns a new copied instance of ServiceItemListServiceItemResponse
-func (silsir *ServiceItemListServiceItemResponse) Copy() types.RVType {
+func (silsir ServiceItemListServiceItemResponse) Copy() types.RVType {
 	copied := NewServiceItemListServiceItemResponse()
 
 	copied.StructureVersion = silsir.StructureVersion
-	copied.ServiceItemEShopResponse = silsir.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.NullableCatalog = silsir.NullableCatalog.Copy().(*types.List[*ServiceItemCatalog])
+	copied.ServiceItemEShopResponse = silsir.ServiceItemEShopResponse.Copy().(ServiceItemEShopResponse)
+	copied.NullableCatalog = silsir.NullableCatalog.Copy().(types.List[ServiceItemCatalog])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemListServiceItemResponse contains the same data as the current ServiceItemListServiceItemResponse
-func (silsir *ServiceItemListServiceItemResponse) Equals(o types.RVType) bool {
+func (silsir ServiceItemListServiceItemResponse) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemListServiceItemResponse); !ok {
 		return false
 	}
@@ -83,12 +83,12 @@ func (silsir *ServiceItemListServiceItemResponse) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemListServiceItemResponse
-func (silsir *ServiceItemListServiceItemResponse) String() string {
+func (silsir ServiceItemListServiceItemResponse) String() string {
 	return silsir.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemListServiceItemResponse using the provided indentation level
-func (silsir *ServiceItemListServiceItemResponse) FormatToString(indentationLevel int) string {
+func (silsir ServiceItemListServiceItemResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +103,10 @@ func (silsir *ServiceItemListServiceItemResponse) FormatToString(indentationLeve
 }
 
 // NewServiceItemListServiceItemResponse returns a new ServiceItemListServiceItemResponse
-func NewServiceItemListServiceItemResponse() *ServiceItemListServiceItemResponse {
-	silsir := &ServiceItemListServiceItemResponse{
+func NewServiceItemListServiceItemResponse() ServiceItemListServiceItemResponse {
+	return ServiceItemListServiceItemResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableCatalog:          types.NewList[*ServiceItemCatalog](),
+		NullableCatalog:          types.NewList[ServiceItemCatalog](),
 	}
 
-	silsir.NullableCatalog.Type = NewServiceItemCatalog()
-
-	return silsir
 }

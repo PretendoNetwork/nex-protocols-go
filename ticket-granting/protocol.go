@@ -36,11 +36,11 @@ const (
 // Protocol stores all the RMC method handlers for the Ticket Granting protocol and listens for requests
 type Protocol struct {
 	endpoint         nex.EndpointInterface
-	Login            func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String) (*nex.RMCMessage, *nex.Error)
-	LoginEx          func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String, oExtraData *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
-	RequestTicket    func(err error, packet nex.PacketInterface, callID uint32, idSource *types.PID, idTarget *types.PID) (*nex.RMCMessage, *nex.Error)
-	GetPID           func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String) (*nex.RMCMessage, *nex.Error)
-	GetName          func(err error, packet nex.PacketInterface, callID uint32, id *types.PID) (*nex.RMCMessage, *nex.Error)
+	Login            func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
+	LoginEx          func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	RequestTicket    func(err error, packet nex.PacketInterface, callID uint32, idSource types.PID, idTarget types.PID) (*nex.RMCMessage, *nex.Error)
+	GetPID           func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
+	GetName          func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error)
 	LoginWithContext func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 	Patches          nex.ServiceProtocol
 	PatchedMethods   []uint32
@@ -50,11 +50,11 @@ type Protocol struct {
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
-	SetHandlerLogin(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerLoginEx(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String, oExtraData *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
-	SetHandlerRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, idSource *types.PID, idTarget *types.PID) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PID) (*nex.RMCMessage, *nex.Error))
+	SetHandlerLogin(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerLoginEx(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, idSource types.PID, idTarget types.PID) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 }
 
@@ -69,27 +69,27 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // SetHandlerLogin sets the handler for the Login method
-func (protocol *Protocol) SetHandlerLogin(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerLogin(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Login = handler
 }
 
 // SetHandlerLoginEx sets the handler for the LoginEx method
-func (protocol *Protocol) SetHandlerLoginEx(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String, oExtraData *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerLoginEx(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.LoginEx = handler
 }
 
 // SetHandlerRequestTicket sets the handler for the RequestTicket method
-func (protocol *Protocol) SetHandlerRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, idSource *types.PID, idTarget *types.PID) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, idSource types.PID, idTarget types.PID) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RequestTicket = handler
 }
 
 // SetHandlerGetPID sets the handler for the GetPID method
-func (protocol *Protocol) SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName *types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetPID = handler
 }
 
 // SetHandlerGetName sets the handler for the GetName method
-func (protocol *Protocol) SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PID) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetName = handler
 }
 

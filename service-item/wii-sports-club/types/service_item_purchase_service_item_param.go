@@ -11,18 +11,18 @@ import (
 // ServiceItemPurchaseServiceItemParam is a type within the ServiceItem protocol
 type ServiceItemPurchaseServiceItemParam struct {
 	types.Structure
-	ItemCode       *types.String
-	PriceID        *types.String
-	ReferenceID    *types.String
-	Balance        *types.String
-	ItemName       *types.String
-	EcServiceToken *types.String
-	Language       *types.String
-	TitleID        *types.String
+	ItemCode       types.String
+	PriceID        types.String
+	ReferenceID    types.String
+	Balance        types.String
+	ItemName       types.String
+	EcServiceToken types.String
+	Language       types.String
+	TitleID        types.String
 }
 
 // WriteTo writes the ServiceItemPurchaseServiceItemParam to the given writable
-func (sipsip *ServiceItemPurchaseServiceItemParam) WriteTo(writable types.Writable) {
+func (sipsip ServiceItemPurchaseServiceItemParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sipsip.ItemCode.WriteTo(contentWritable)
@@ -94,24 +94,24 @@ func (sipsip *ServiceItemPurchaseServiceItemParam) ExtractFrom(readable types.Re
 }
 
 // Copy returns a new copied instance of ServiceItemPurchaseServiceItemParam
-func (sipsip *ServiceItemPurchaseServiceItemParam) Copy() types.RVType {
+func (sipsip ServiceItemPurchaseServiceItemParam) Copy() types.RVType {
 	copied := NewServiceItemPurchaseServiceItemParam()
 
 	copied.StructureVersion = sipsip.StructureVersion
-	copied.ItemCode = sipsip.ItemCode.Copy().(*types.String)
-	copied.PriceID = sipsip.PriceID.Copy().(*types.String)
-	copied.ReferenceID = sipsip.ReferenceID.Copy().(*types.String)
-	copied.Balance = sipsip.Balance.Copy().(*types.String)
-	copied.ItemName = sipsip.ItemName.Copy().(*types.String)
-	copied.EcServiceToken = sipsip.EcServiceToken.Copy().(*types.String)
-	copied.Language = sipsip.Language.Copy().(*types.String)
-	copied.TitleID = sipsip.TitleID.Copy().(*types.String)
+	copied.ItemCode = sipsip.ItemCode.Copy().(types.String)
+	copied.PriceID = sipsip.PriceID.Copy().(types.String)
+	copied.ReferenceID = sipsip.ReferenceID.Copy().(types.String)
+	copied.Balance = sipsip.Balance.Copy().(types.String)
+	copied.ItemName = sipsip.ItemName.Copy().(types.String)
+	copied.EcServiceToken = sipsip.EcServiceToken.Copy().(types.String)
+	copied.Language = sipsip.Language.Copy().(types.String)
+	copied.TitleID = sipsip.TitleID.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemPurchaseServiceItemParam contains the same data as the current ServiceItemPurchaseServiceItemParam
-func (sipsip *ServiceItemPurchaseServiceItemParam) Equals(o types.RVType) bool {
+func (sipsip ServiceItemPurchaseServiceItemParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemPurchaseServiceItemParam); !ok {
 		return false
 	}
@@ -154,12 +154,12 @@ func (sipsip *ServiceItemPurchaseServiceItemParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemPurchaseServiceItemParam
-func (sipsip *ServiceItemPurchaseServiceItemParam) String() string {
+func (sipsip ServiceItemPurchaseServiceItemParam) String() string {
 	return sipsip.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemPurchaseServiceItemParam using the provided indentation level
-func (sipsip *ServiceItemPurchaseServiceItemParam) FormatToString(indentationLevel int) string {
+func (sipsip ServiceItemPurchaseServiceItemParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -180,8 +180,8 @@ func (sipsip *ServiceItemPurchaseServiceItemParam) FormatToString(indentationLev
 }
 
 // NewServiceItemPurchaseServiceItemParam returns a new ServiceItemPurchaseServiceItemParam
-func NewServiceItemPurchaseServiceItemParam() *ServiceItemPurchaseServiceItemParam {
-	sipsip := &ServiceItemPurchaseServiceItemParam{
+func NewServiceItemPurchaseServiceItemParam() ServiceItemPurchaseServiceItemParam {
+	return ServiceItemPurchaseServiceItemParam{
 		ItemCode:       types.NewString(""),
 		PriceID:        types.NewString(""),
 		ReferenceID:    types.NewString(""),
@@ -192,5 +192,4 @@ func NewServiceItemPurchaseServiceItemParam() *ServiceItemPurchaseServiceItemPar
 		TitleID:        types.NewString(""),
 	}
 
-	return sipsip
 }

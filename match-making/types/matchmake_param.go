@@ -11,11 +11,11 @@ import (
 // MatchmakeParam is a type within the Matchmaking protocol
 type MatchmakeParam struct {
 	types.Structure
-	Params *types.Map[*types.String, *types.Variant]
+	Params types.Map[types.String, types.Variant]
 }
 
 // WriteTo writes the MatchmakeParam to the given writable
-func (mp *MatchmakeParam) WriteTo(writable types.Writable) {
+func (mp MatchmakeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	mp.Params.WriteTo(contentWritable)
@@ -45,17 +45,17 @@ func (mp *MatchmakeParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MatchmakeParam
-func (mp *MatchmakeParam) Copy() types.RVType {
+func (mp MatchmakeParam) Copy() types.RVType {
 	copied := NewMatchmakeParam()
 
 	copied.StructureVersion = mp.StructureVersion
-	copied.Params = mp.Params.Copy().(*types.Map[*types.String, *types.Variant])
+	copied.Params = mp.Params.Copy().(types.Map[types.String, types.Variant])
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeParam contains the same data as the current MatchmakeParam
-func (mp *MatchmakeParam) Equals(o types.RVType) bool {
+func (mp MatchmakeParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*MatchmakeParam); !ok {
 		return false
 	}
@@ -70,12 +70,12 @@ func (mp *MatchmakeParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MatchmakeParam
-func (mp *MatchmakeParam) String() string {
+func (mp MatchmakeParam) String() string {
 	return mp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeParam using the provided indentation level
-func (mp *MatchmakeParam) FormatToString(indentationLevel int) string {
+func (mp MatchmakeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,13 +89,8 @@ func (mp *MatchmakeParam) FormatToString(indentationLevel int) string {
 }
 
 // NewMatchmakeParam returns a new MatchmakeParam
-func NewMatchmakeParam() *MatchmakeParam {
-	mp := &MatchmakeParam{
-		Params: types.NewMap[*types.String, *types.Variant](),
+func NewMatchmakeParam() MatchmakeParam {
+	return MatchmakeParam{
+		Params: types.NewMap[types.String, types.Variant](),
 	}
-
-	mp.Params.KeyType = types.NewString("")
-	mp.Params.ValueType = types.NewVariant()
-
-	return mp
 }

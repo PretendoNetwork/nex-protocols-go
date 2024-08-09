@@ -12,12 +12,12 @@ import (
 // DataStoreFileServerObjectInfo is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreFileServerObjectInfo struct {
 	types.Structure
-	DataID  *types.PrimitiveU64
-	GetInfo *datastore_types.DataStoreReqGetInfo
+	DataID  types.UInt64
+	GetInfo datastore_types.DataStoreReqGetInfo
 }
 
 // WriteTo writes the DataStoreFileServerObjectInfo to the given writable
-func (dsfsoi *DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
+func (dsfsoi DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsfsoi.DataID.WriteTo(contentWritable)
@@ -53,18 +53,18 @@ func (dsfsoi *DataStoreFileServerObjectInfo) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of DataStoreFileServerObjectInfo
-func (dsfsoi *DataStoreFileServerObjectInfo) Copy() types.RVType {
+func (dsfsoi DataStoreFileServerObjectInfo) Copy() types.RVType {
 	copied := NewDataStoreFileServerObjectInfo()
 
 	copied.StructureVersion = dsfsoi.StructureVersion
-	copied.DataID = dsfsoi.DataID.Copy().(*types.PrimitiveU64)
-	copied.GetInfo = dsfsoi.GetInfo.Copy().(*datastore_types.DataStoreReqGetInfo)
+	copied.DataID = dsfsoi.DataID.Copy().(types.UInt64)
+	copied.GetInfo = dsfsoi.GetInfo.Copy().(datastore_types.DataStoreReqGetInfo)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreFileServerObjectInfo contains the same data as the current DataStoreFileServerObjectInfo
-func (dsfsoi *DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
+func (dsfsoi DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreFileServerObjectInfo); !ok {
 		return false
 	}
@@ -83,12 +83,12 @@ func (dsfsoi *DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreFileServerObjectInfo
-func (dsfsoi *DataStoreFileServerObjectInfo) String() string {
+func (dsfsoi DataStoreFileServerObjectInfo) String() string {
 	return dsfsoi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreFileServerObjectInfo using the provided indentation level
-func (dsfsoi *DataStoreFileServerObjectInfo) FormatToString(indentationLevel int) string {
+func (dsfsoi DataStoreFileServerObjectInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,11 +103,10 @@ func (dsfsoi *DataStoreFileServerObjectInfo) FormatToString(indentationLevel int
 }
 
 // NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo
-func NewDataStoreFileServerObjectInfo() *DataStoreFileServerObjectInfo {
-	dsfsoi := &DataStoreFileServerObjectInfo{
-		DataID:  types.NewPrimitiveU64(0),
+func NewDataStoreFileServerObjectInfo() DataStoreFileServerObjectInfo {
+	return DataStoreFileServerObjectInfo{
+		DataID:  types.NewUInt64(0),
 		GetInfo: datastore_types.NewDataStoreReqGetInfo(),
 	}
 
-	return dsfsoi
 }

@@ -25,12 +25,11 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	pids := types.NewList[*types.PrimitiveU32]()
-	pids.Type = types.NewPrimitiveU32(0)
+	var pids types.List[types.UInt32]
 
 	err := pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,12 +11,12 @@ import (
 // GlobalTradeStationTradePokemonResult is a type within the DataStore protocol
 type GlobalTradeStationTradePokemonResult struct {
 	types.Structure
-	Result   *GlobalTradeStationDownloadPokemonResult
-	MyDataID *types.PrimitiveU64
+	Result   GlobalTradeStationDownloadPokemonResult
+	MyDataID types.UInt64
 }
 
 // WriteTo writes the GlobalTradeStationTradePokemonResult to the given writable
-func (gtstpr *GlobalTradeStationTradePokemonResult) WriteTo(writable types.Writable) {
+func (gtstpr GlobalTradeStationTradePokemonResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtstpr.Result.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (gtstpr *GlobalTradeStationTradePokemonResult) ExtractFrom(readable types.R
 }
 
 // Copy returns a new copied instance of GlobalTradeStationTradePokemonResult
-func (gtstpr *GlobalTradeStationTradePokemonResult) Copy() types.RVType {
+func (gtstpr GlobalTradeStationTradePokemonResult) Copy() types.RVType {
 	copied := NewGlobalTradeStationTradePokemonResult()
 
 	copied.StructureVersion = gtstpr.StructureVersion
-	copied.Result = gtstpr.Result.Copy().(*GlobalTradeStationDownloadPokemonResult)
-	copied.MyDataID = gtstpr.MyDataID.Copy().(*types.PrimitiveU64)
+	copied.Result = gtstpr.Result.Copy().(GlobalTradeStationDownloadPokemonResult)
+	copied.MyDataID = gtstpr.MyDataID.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationTradePokemonResult contains the same data as the current GlobalTradeStationTradePokemonResult
-func (gtstpr *GlobalTradeStationTradePokemonResult) Equals(o types.RVType) bool {
+func (gtstpr GlobalTradeStationTradePokemonResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationTradePokemonResult); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (gtstpr *GlobalTradeStationTradePokemonResult) Equals(o types.RVType) bool 
 }
 
 // String returns the string representation of the GlobalTradeStationTradePokemonResult
-func (gtstpr *GlobalTradeStationTradePokemonResult) String() string {
+func (gtstpr GlobalTradeStationTradePokemonResult) String() string {
 	return gtstpr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationTradePokemonResult using the provided indentation level
-func (gtstpr *GlobalTradeStationTradePokemonResult) FormatToString(indentationLevel int) string {
+func (gtstpr GlobalTradeStationTradePokemonResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (gtstpr *GlobalTradeStationTradePokemonResult) FormatToString(indentationLe
 }
 
 // NewGlobalTradeStationTradePokemonResult returns a new GlobalTradeStationTradePokemonResult
-func NewGlobalTradeStationTradePokemonResult() *GlobalTradeStationTradePokemonResult {
-	gtstpr := &GlobalTradeStationTradePokemonResult{
+func NewGlobalTradeStationTradePokemonResult() GlobalTradeStationTradePokemonResult {
+	return GlobalTradeStationTradePokemonResult{
 		Result:   NewGlobalTradeStationDownloadPokemonResult(),
-		MyDataID: types.NewPrimitiveU64(0),
+		MyDataID: types.NewUInt64(0),
 	}
 
-	return gtstpr
 }

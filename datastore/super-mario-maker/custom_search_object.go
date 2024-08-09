@@ -26,14 +26,14 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	condition := types.NewPrimitiveU32(0)
+	var condition types.UInt32
 	param := datastore_types.NewDataStoreSearchParam()
 
 	var err error
 
 	err = condition.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, condition, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, condition, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

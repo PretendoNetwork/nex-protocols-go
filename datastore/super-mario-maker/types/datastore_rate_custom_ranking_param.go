@@ -11,14 +11,14 @@ import (
 // DataStoreRateCustomRankingParam is a type within the DataStore protocol
 type DataStoreRateCustomRankingParam struct {
 	types.Structure
-	DataID        *types.PrimitiveU64
-	ApplicationID *types.PrimitiveU32
-	Score         *types.PrimitiveU32
-	Period        *types.PrimitiveU16
+	DataID        types.UInt64
+	ApplicationID types.UInt32
+	Score         types.UInt32
+	Period        types.UInt16
 }
 
 // WriteTo writes the DataStoreRateCustomRankingParam to the given writable
-func (dsrcrp *DataStoreRateCustomRankingParam) WriteTo(writable types.Writable) {
+func (dsrcrp DataStoreRateCustomRankingParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrcrp.DataID.WriteTo(contentWritable)
@@ -66,20 +66,20 @@ func (dsrcrp *DataStoreRateCustomRankingParam) ExtractFrom(readable types.Readab
 }
 
 // Copy returns a new copied instance of DataStoreRateCustomRankingParam
-func (dsrcrp *DataStoreRateCustomRankingParam) Copy() types.RVType {
+func (dsrcrp DataStoreRateCustomRankingParam) Copy() types.RVType {
 	copied := NewDataStoreRateCustomRankingParam()
 
 	copied.StructureVersion = dsrcrp.StructureVersion
-	copied.DataID = dsrcrp.DataID.Copy().(*types.PrimitiveU64)
-	copied.ApplicationID = dsrcrp.ApplicationID.Copy().(*types.PrimitiveU32)
-	copied.Score = dsrcrp.Score.Copy().(*types.PrimitiveU32)
-	copied.Period = dsrcrp.Period.Copy().(*types.PrimitiveU16)
+	copied.DataID = dsrcrp.DataID.Copy().(types.UInt64)
+	copied.ApplicationID = dsrcrp.ApplicationID.Copy().(types.UInt32)
+	copied.Score = dsrcrp.Score.Copy().(types.UInt32)
+	copied.Period = dsrcrp.Period.Copy().(types.UInt16)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreRateCustomRankingParam contains the same data as the current DataStoreRateCustomRankingParam
-func (dsrcrp *DataStoreRateCustomRankingParam) Equals(o types.RVType) bool {
+func (dsrcrp DataStoreRateCustomRankingParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreRateCustomRankingParam); !ok {
 		return false
 	}
@@ -106,12 +106,12 @@ func (dsrcrp *DataStoreRateCustomRankingParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreRateCustomRankingParam
-func (dsrcrp *DataStoreRateCustomRankingParam) String() string {
+func (dsrcrp DataStoreRateCustomRankingParam) String() string {
 	return dsrcrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreRateCustomRankingParam using the provided indentation level
-func (dsrcrp *DataStoreRateCustomRankingParam) FormatToString(indentationLevel int) string {
+func (dsrcrp DataStoreRateCustomRankingParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +128,12 @@ func (dsrcrp *DataStoreRateCustomRankingParam) FormatToString(indentationLevel i
 }
 
 // NewDataStoreRateCustomRankingParam returns a new DataStoreRateCustomRankingParam
-func NewDataStoreRateCustomRankingParam() *DataStoreRateCustomRankingParam {
-	dsrcrp := &DataStoreRateCustomRankingParam{
-		DataID:        types.NewPrimitiveU64(0),
-		ApplicationID: types.NewPrimitiveU32(0),
-		Score:         types.NewPrimitiveU32(0),
-		Period:        types.NewPrimitiveU16(0),
+func NewDataStoreRateCustomRankingParam() DataStoreRateCustomRankingParam {
+	return DataStoreRateCustomRankingParam{
+		DataID:        types.NewUInt64(0),
+		ApplicationID: types.NewUInt32(0),
+		Score:         types.NewUInt32(0),
+		Period:        types.NewUInt16(0),
 	}
 
-	return dsrcrp
 }

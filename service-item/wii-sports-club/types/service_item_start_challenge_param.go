@@ -11,13 +11,13 @@ import (
 // ServiceItemStartChallengeParam is a type within the ServiceItem protocol
 type ServiceItemStartChallengeParam struct {
 	types.Structure
-	ChallengeScheduleID *types.PrimitiveU32
-	TicketType          *types.PrimitiveU32
-	NumTicket           *types.PrimitiveU32
+	ChallengeScheduleID types.UInt32
+	TicketType          types.UInt32
+	NumTicket           types.UInt32
 }
 
 // WriteTo writes the ServiceItemStartChallengeParam to the given writable
-func (siscp *ServiceItemStartChallengeParam) WriteTo(writable types.Writable) {
+func (siscp ServiceItemStartChallengeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siscp.ChallengeScheduleID.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (siscp *ServiceItemStartChallengeParam) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of ServiceItemStartChallengeParam
-func (siscp *ServiceItemStartChallengeParam) Copy() types.RVType {
+func (siscp ServiceItemStartChallengeParam) Copy() types.RVType {
 	copied := NewServiceItemStartChallengeParam()
 
 	copied.StructureVersion = siscp.StructureVersion
-	copied.ChallengeScheduleID = siscp.ChallengeScheduleID.Copy().(*types.PrimitiveU32)
-	copied.TicketType = siscp.TicketType.Copy().(*types.PrimitiveU32)
-	copied.NumTicket = siscp.NumTicket.Copy().(*types.PrimitiveU32)
+	copied.ChallengeScheduleID = siscp.ChallengeScheduleID.Copy().(types.UInt32)
+	copied.TicketType = siscp.TicketType.Copy().(types.UInt32)
+	copied.NumTicket = siscp.NumTicket.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemStartChallengeParam contains the same data as the current ServiceItemStartChallengeParam
-func (siscp *ServiceItemStartChallengeParam) Equals(o types.RVType) bool {
+func (siscp ServiceItemStartChallengeParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemStartChallengeParam); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (siscp *ServiceItemStartChallengeParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemStartChallengeParam
-func (siscp *ServiceItemStartChallengeParam) String() string {
+func (siscp ServiceItemStartChallengeParam) String() string {
 	return siscp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemStartChallengeParam using the provided indentation level
-func (siscp *ServiceItemStartChallengeParam) FormatToString(indentationLevel int) string {
+func (siscp ServiceItemStartChallengeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +115,11 @@ func (siscp *ServiceItemStartChallengeParam) FormatToString(indentationLevel int
 }
 
 // NewServiceItemStartChallengeParam returns a new ServiceItemStartChallengeParam
-func NewServiceItemStartChallengeParam() *ServiceItemStartChallengeParam {
-	siscp := &ServiceItemStartChallengeParam{
-		ChallengeScheduleID: types.NewPrimitiveU32(0),
-		TicketType:          types.NewPrimitiveU32(0),
-		NumTicket:           types.NewPrimitiveU32(0),
+func NewServiceItemStartChallengeParam() ServiceItemStartChallengeParam {
+	return ServiceItemStartChallengeParam{
+		ChallengeScheduleID: types.NewUInt32(0),
+		TicketType:          types.NewUInt32(0),
+		NumTicket:           types.NewUInt32(0),
 	}
 
-	return siscp
 }

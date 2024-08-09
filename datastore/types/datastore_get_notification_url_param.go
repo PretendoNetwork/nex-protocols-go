@@ -11,11 +11,11 @@ import (
 // DataStoreGetNotificationURLParam is a type within the DataStore protocol
 type DataStoreGetNotificationURLParam struct {
 	types.Structure
-	PreviousURL *types.String
+	PreviousURL types.String
 }
 
 // WriteTo writes the DataStoreGetNotificationURLParam to the given writable
-func (dsgnurlp *DataStoreGetNotificationURLParam) WriteTo(writable types.Writable) {
+func (dsgnurlp DataStoreGetNotificationURLParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsgnurlp.PreviousURL.WriteTo(contentWritable)
@@ -45,17 +45,17 @@ func (dsgnurlp *DataStoreGetNotificationURLParam) ExtractFrom(readable types.Rea
 }
 
 // Copy returns a new copied instance of DataStoreGetNotificationURLParam
-func (dsgnurlp *DataStoreGetNotificationURLParam) Copy() types.RVType {
+func (dsgnurlp DataStoreGetNotificationURLParam) Copy() types.RVType {
 	copied := NewDataStoreGetNotificationURLParam()
 
 	copied.StructureVersion = dsgnurlp.StructureVersion
-	copied.PreviousURL = dsgnurlp.PreviousURL.Copy().(*types.String)
+	copied.PreviousURL = dsgnurlp.PreviousURL.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreGetNotificationURLParam contains the same data as the current DataStoreGetNotificationURLParam
-func (dsgnurlp *DataStoreGetNotificationURLParam) Equals(o types.RVType) bool {
+func (dsgnurlp DataStoreGetNotificationURLParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreGetNotificationURLParam); !ok {
 		return false
 	}
@@ -70,12 +70,12 @@ func (dsgnurlp *DataStoreGetNotificationURLParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreGetNotificationURLParam
-func (dsgnurlp *DataStoreGetNotificationURLParam) String() string {
+func (dsgnurlp DataStoreGetNotificationURLParam) String() string {
 	return dsgnurlp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreGetNotificationURLParam using the provided indentation level
-func (dsgnurlp *DataStoreGetNotificationURLParam) FormatToString(indentationLevel int) string {
+func (dsgnurlp DataStoreGetNotificationURLParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +89,9 @@ func (dsgnurlp *DataStoreGetNotificationURLParam) FormatToString(indentationLeve
 }
 
 // NewDataStoreGetNotificationURLParam returns a new DataStoreGetNotificationURLParam
-func NewDataStoreGetNotificationURLParam() *DataStoreGetNotificationURLParam {
-	dsgnurlp := &DataStoreGetNotificationURLParam{
+func NewDataStoreGetNotificationURLParam() DataStoreGetNotificationURLParam {
+	return DataStoreGetNotificationURLParam{
 		PreviousURL: types.NewString(""),
 	}
 
-	return dsgnurlp
 }

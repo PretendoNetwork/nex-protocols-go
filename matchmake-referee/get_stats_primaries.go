@@ -26,12 +26,11 @@ func (protocol *Protocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	targets := types.NewList[*matchmake_referee_types.MatchmakeRefereeStatsTarget]()
-	targets.Type = matchmake_referee_types.NewMatchmakeRefereeStatsTarget()
+	var targets types.List[matchmake_referee_types.MatchmakeRefereeStatsTarget]
 
 	err := targets.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStatsPrimaries(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetStatsPrimaries(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), packet, callID, targets)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

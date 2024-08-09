@@ -11,19 +11,19 @@ import (
 // ServiceItemTransaction is a type within the ServiceItem protocol
 type ServiceItemTransaction struct {
 	types.Structure
-	TransactionID          *types.String
-	ExtTransactionID       *types.String
-	Time                   *types.DateTime
-	TransactionType        *types.PrimitiveU32
-	TransactionDescription *types.String
-	TransactionAmount      *ServiceItemAmount
-	ItemCode               *types.String
-	ReferenceID            *types.String
-	Limitation             *ServiceItemLimitation
+	TransactionID          types.String
+	ExtTransactionID       types.String
+	Time                   types.DateTime
+	TransactionType        types.UInt32
+	TransactionDescription types.String
+	TransactionAmount      ServiceItemAmount
+	ItemCode               types.String
+	ReferenceID            types.String
+	Limitation             ServiceItemLimitation
 }
 
 // WriteTo writes the ServiceItemTransaction to the given writable
-func (sit *ServiceItemTransaction) WriteTo(writable types.Writable) {
+func (sit ServiceItemTransaction) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sit.TransactionID.WriteTo(contentWritable)
@@ -101,25 +101,25 @@ func (sit *ServiceItemTransaction) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemTransaction
-func (sit *ServiceItemTransaction) Copy() types.RVType {
+func (sit ServiceItemTransaction) Copy() types.RVType {
 	copied := NewServiceItemTransaction()
 
 	copied.StructureVersion = sit.StructureVersion
-	copied.TransactionID = sit.TransactionID.Copy().(*types.String)
-	copied.ExtTransactionID = sit.ExtTransactionID.Copy().(*types.String)
-	copied.Time = sit.Time.Copy().(*types.DateTime)
-	copied.TransactionType = sit.TransactionType.Copy().(*types.PrimitiveU32)
-	copied.TransactionDescription = sit.TransactionDescription.Copy().(*types.String)
-	copied.TransactionAmount = sit.TransactionAmount.Copy().(*ServiceItemAmount)
-	copied.ItemCode = sit.ItemCode.Copy().(*types.String)
-	copied.ReferenceID = sit.ReferenceID.Copy().(*types.String)
-	copied.Limitation = sit.Limitation.Copy().(*ServiceItemLimitation)
+	copied.TransactionID = sit.TransactionID.Copy().(types.String)
+	copied.ExtTransactionID = sit.ExtTransactionID.Copy().(types.String)
+	copied.Time = sit.Time.Copy().(types.DateTime)
+	copied.TransactionType = sit.TransactionType.Copy().(types.UInt32)
+	copied.TransactionDescription = sit.TransactionDescription.Copy().(types.String)
+	copied.TransactionAmount = sit.TransactionAmount.Copy().(ServiceItemAmount)
+	copied.ItemCode = sit.ItemCode.Copy().(types.String)
+	copied.ReferenceID = sit.ReferenceID.Copy().(types.String)
+	copied.Limitation = sit.Limitation.Copy().(ServiceItemLimitation)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemTransaction contains the same data as the current ServiceItemTransaction
-func (sit *ServiceItemTransaction) Equals(o types.RVType) bool {
+func (sit ServiceItemTransaction) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemTransaction); !ok {
 		return false
 	}
@@ -166,12 +166,12 @@ func (sit *ServiceItemTransaction) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemTransaction
-func (sit *ServiceItemTransaction) String() string {
+func (sit ServiceItemTransaction) String() string {
 	return sit.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemTransaction using the provided indentation level
-func (sit *ServiceItemTransaction) FormatToString(indentationLevel int) string {
+func (sit ServiceItemTransaction) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,12 +193,12 @@ func (sit *ServiceItemTransaction) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemTransaction returns a new ServiceItemTransaction
-func NewServiceItemTransaction() *ServiceItemTransaction {
-	sit := &ServiceItemTransaction{
+func NewServiceItemTransaction() ServiceItemTransaction {
+	return ServiceItemTransaction{
 		TransactionID:          types.NewString(""),
 		ExtTransactionID:       types.NewString(""),
 		Time:                   types.NewDateTime(0),
-		TransactionType:        types.NewPrimitiveU32(0),
+		TransactionType:        types.NewUInt32(0),
 		TransactionDescription: types.NewString(""),
 		TransactionAmount:      NewServiceItemAmount(),
 		ItemCode:               types.NewString(""),
@@ -206,5 +206,4 @@ func NewServiceItemTransaction() *ServiceItemTransaction {
 		Limitation:             NewServiceItemLimitation(),
 	}
 
-	return sit
 }

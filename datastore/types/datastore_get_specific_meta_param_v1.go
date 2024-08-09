@@ -11,11 +11,11 @@ import (
 // DataStoreGetSpecificMetaParamV1 is a type within the DataStore protocol
 type DataStoreGetSpecificMetaParamV1 struct {
 	types.Structure
-	DataIDs *types.List[*types.PrimitiveU32]
+	DataIDs types.List[types.UInt32]
 }
 
 // WriteTo writes the DataStoreGetSpecificMetaParamV1 to the given writable
-func (dsgsmpv *DataStoreGetSpecificMetaParamV1) WriteTo(writable types.Writable) {
+func (dsgsmpv DataStoreGetSpecificMetaParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsgsmpv.DataIDs.WriteTo(contentWritable)
@@ -45,17 +45,17 @@ func (dsgsmpv *DataStoreGetSpecificMetaParamV1) ExtractFrom(readable types.Reada
 }
 
 // Copy returns a new copied instance of DataStoreGetSpecificMetaParamV1
-func (dsgsmpv *DataStoreGetSpecificMetaParamV1) Copy() types.RVType {
+func (dsgsmpv DataStoreGetSpecificMetaParamV1) Copy() types.RVType {
 	copied := NewDataStoreGetSpecificMetaParamV1()
 
 	copied.StructureVersion = dsgsmpv.StructureVersion
-	copied.DataIDs = dsgsmpv.DataIDs.Copy().(*types.List[*types.PrimitiveU32])
+	copied.DataIDs = dsgsmpv.DataIDs.Copy().(types.List[types.UInt32])
 
 	return copied
 }
 
 // Equals checks if the given DataStoreGetSpecificMetaParamV1 contains the same data as the current DataStoreGetSpecificMetaParamV1
-func (dsgsmpv *DataStoreGetSpecificMetaParamV1) Equals(o types.RVType) bool {
+func (dsgsmpv DataStoreGetSpecificMetaParamV1) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreGetSpecificMetaParamV1); !ok {
 		return false
 	}
@@ -70,12 +70,12 @@ func (dsgsmpv *DataStoreGetSpecificMetaParamV1) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreGetSpecificMetaParamV1
-func (dsgsmpv *DataStoreGetSpecificMetaParamV1) String() string {
+func (dsgsmpv DataStoreGetSpecificMetaParamV1) String() string {
 	return dsgsmpv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreGetSpecificMetaParamV1 using the provided indentation level
-func (dsgsmpv *DataStoreGetSpecificMetaParamV1) FormatToString(indentationLevel int) string {
+func (dsgsmpv DataStoreGetSpecificMetaParamV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,12 +89,9 @@ func (dsgsmpv *DataStoreGetSpecificMetaParamV1) FormatToString(indentationLevel 
 }
 
 // NewDataStoreGetSpecificMetaParamV1 returns a new DataStoreGetSpecificMetaParamV1
-func NewDataStoreGetSpecificMetaParamV1() *DataStoreGetSpecificMetaParamV1 {
-	dsgsmpv := &DataStoreGetSpecificMetaParamV1{
-		DataIDs: types.NewList[*types.PrimitiveU32](),
+func NewDataStoreGetSpecificMetaParamV1() DataStoreGetSpecificMetaParamV1 {
+	return DataStoreGetSpecificMetaParamV1{
+		DataIDs: types.NewList[types.UInt32](),
 	}
 
-	dsgsmpv.DataIDs.Type = types.NewPrimitiveU32(0)
-
-	return dsgsmpv
 }

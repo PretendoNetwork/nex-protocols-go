@@ -11,15 +11,15 @@ import (
 // GlobalTradeStationData is a type within the DataStore protocol
 type GlobalTradeStationData struct {
 	types.Structure
-	DataID      *types.PrimitiveU64
-	OwnerID     *types.PID
-	UpdatedTime *types.DateTime
-	IndexData   *types.QBuffer
-	Version     *types.PrimitiveU32
+	DataID      types.UInt64
+	OwnerID     types.PID
+	UpdatedTime types.DateTime
+	IndexData   types.QBuffer
+	Version     types.UInt32
 }
 
 // WriteTo writes the GlobalTradeStationData to the given writable
-func (gtsd *GlobalTradeStationData) WriteTo(writable types.Writable) {
+func (gtsd GlobalTradeStationData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsd.DataID.WriteTo(contentWritable)
@@ -73,21 +73,21 @@ func (gtsd *GlobalTradeStationData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of GlobalTradeStationData
-func (gtsd *GlobalTradeStationData) Copy() types.RVType {
+func (gtsd GlobalTradeStationData) Copy() types.RVType {
 	copied := NewGlobalTradeStationData()
 
 	copied.StructureVersion = gtsd.StructureVersion
-	copied.DataID = gtsd.DataID.Copy().(*types.PrimitiveU64)
-	copied.OwnerID = gtsd.OwnerID.Copy().(*types.PID)
-	copied.UpdatedTime = gtsd.UpdatedTime.Copy().(*types.DateTime)
-	copied.IndexData = gtsd.IndexData.Copy().(*types.QBuffer)
-	copied.Version = gtsd.Version.Copy().(*types.PrimitiveU32)
+	copied.DataID = gtsd.DataID.Copy().(types.UInt64)
+	copied.OwnerID = gtsd.OwnerID.Copy().(types.PID)
+	copied.UpdatedTime = gtsd.UpdatedTime.Copy().(types.DateTime)
+	copied.IndexData = gtsd.IndexData.Copy().(types.QBuffer)
+	copied.Version = gtsd.Version.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationData contains the same data as the current GlobalTradeStationData
-func (gtsd *GlobalTradeStationData) Equals(o types.RVType) bool {
+func (gtsd GlobalTradeStationData) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationData); !ok {
 		return false
 	}
@@ -118,12 +118,12 @@ func (gtsd *GlobalTradeStationData) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the GlobalTradeStationData
-func (gtsd *GlobalTradeStationData) String() string {
+func (gtsd GlobalTradeStationData) String() string {
 	return gtsd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationData using the provided indentation level
-func (gtsd *GlobalTradeStationData) FormatToString(indentationLevel int) string {
+func (gtsd GlobalTradeStationData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,14 +141,13 @@ func (gtsd *GlobalTradeStationData) FormatToString(indentationLevel int) string 
 }
 
 // NewGlobalTradeStationData returns a new GlobalTradeStationData
-func NewGlobalTradeStationData() *GlobalTradeStationData {
-	gtsd := &GlobalTradeStationData{
-		DataID:      types.NewPrimitiveU64(0),
+func NewGlobalTradeStationData() GlobalTradeStationData {
+	return GlobalTradeStationData{
+		DataID:      types.NewUInt64(0),
 		OwnerID:     types.NewPID(0),
 		UpdatedTime: types.NewDateTime(0),
 		IndexData:   types.NewQBuffer(nil),
-		Version:     types.NewPrimitiveU32(0),
+		Version:     types.NewUInt32(0),
 	}
 
-	return gtsd
 }

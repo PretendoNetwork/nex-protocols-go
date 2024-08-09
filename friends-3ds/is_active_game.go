@@ -26,15 +26,14 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	pids := types.NewList[*types.PID]()
-	pids.Type = types.NewPID(0)
+	var pids types.List[types.PID]
 	gameKey := friends_3ds_types.NewGameKey()
 
 	var err error
 
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.IsActiveGame(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.IsActiveGame(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids, gameKey)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	err = gameKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.IsActiveGame(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.IsActiveGame(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, pids, gameKey)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

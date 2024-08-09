@@ -11,15 +11,15 @@ import (
 // RelationshipData is a type within the Friends protocol
 type RelationshipData struct {
 	types.Structure
-	PID            *types.PrimitiveU32
-	StrName        *types.String
-	ByRelationship *types.PrimitiveU8
-	UIDetails      *types.PrimitiveU32
-	ByStatus       *types.PrimitiveU8
+	PID            types.UInt32
+	StrName        types.String
+	ByRelationship types.UInt8
+	UIDetails      types.UInt32
+	ByStatus       types.UInt8
 }
 
 // WriteTo writes the RelationshipData to the given writable
-func (rd *RelationshipData) WriteTo(writable types.Writable) {
+func (rd RelationshipData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rd.PID.WriteTo(contentWritable)
@@ -73,21 +73,21 @@ func (rd *RelationshipData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of RelationshipData
-func (rd *RelationshipData) Copy() types.RVType {
+func (rd RelationshipData) Copy() types.RVType {
 	copied := NewRelationshipData()
 
 	copied.StructureVersion = rd.StructureVersion
-	copied.PID = rd.PID.Copy().(*types.PrimitiveU32)
-	copied.StrName = rd.StrName.Copy().(*types.String)
-	copied.ByRelationship = rd.ByRelationship.Copy().(*types.PrimitiveU8)
-	copied.UIDetails = rd.UIDetails.Copy().(*types.PrimitiveU32)
-	copied.ByStatus = rd.ByStatus.Copy().(*types.PrimitiveU8)
+	copied.PID = rd.PID.Copy().(types.UInt32)
+	copied.StrName = rd.StrName.Copy().(types.String)
+	copied.ByRelationship = rd.ByRelationship.Copy().(types.UInt8)
+	copied.UIDetails = rd.UIDetails.Copy().(types.UInt32)
+	copied.ByStatus = rd.ByStatus.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given RelationshipData contains the same data as the current RelationshipData
-func (rd *RelationshipData) Equals(o types.RVType) bool {
+func (rd RelationshipData) Equals(o types.RVType) bool {
 	if _, ok := o.(*RelationshipData); !ok {
 		return false
 	}
@@ -118,12 +118,12 @@ func (rd *RelationshipData) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the RelationshipData
-func (rd *RelationshipData) String() string {
+func (rd RelationshipData) String() string {
 	return rd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the RelationshipData using the provided indentation level
-func (rd *RelationshipData) FormatToString(indentationLevel int) string {
+func (rd RelationshipData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,14 +141,13 @@ func (rd *RelationshipData) FormatToString(indentationLevel int) string {
 }
 
 // NewRelationshipData returns a new RelationshipData
-func NewRelationshipData() *RelationshipData {
-	rd := &RelationshipData{
-		PID:            types.NewPrimitiveU32(0),
+func NewRelationshipData() RelationshipData {
+	return RelationshipData{
+		PID:            types.NewUInt32(0),
 		StrName:        types.NewString(""),
-		ByRelationship: types.NewPrimitiveU8(0),
-		UIDetails:      types.NewPrimitiveU32(0),
-		ByStatus:       types.NewPrimitiveU8(0),
+		ByRelationship: types.NewUInt8(0),
+		UIDetails:      types.NewUInt32(0),
+		ByStatus:       types.NewUInt8(0),
 	}
 
-	return rd
 }

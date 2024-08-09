@@ -11,12 +11,12 @@ import (
 // ServiceItemAccountRight is a type within the ServiceItem protocol
 type ServiceItemAccountRight struct {
 	types.Structure
-	PID        *types.PID
-	Limitation *ServiceItemLimitation
+	PID        types.PID
+	Limitation ServiceItemLimitation
 }
 
 // WriteTo writes the ServiceItemAccountRight to the given writable
-func (siar *ServiceItemAccountRight) WriteTo(writable types.Writable) {
+func (siar ServiceItemAccountRight) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siar.PID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (siar *ServiceItemAccountRight) ExtractFrom(readable types.Readable) error 
 }
 
 // Copy returns a new copied instance of ServiceItemAccountRight
-func (siar *ServiceItemAccountRight) Copy() types.RVType {
+func (siar ServiceItemAccountRight) Copy() types.RVType {
 	copied := NewServiceItemAccountRight()
 
 	copied.StructureVersion = siar.StructureVersion
-	copied.PID = siar.PID.Copy().(*types.PID)
-	copied.Limitation = siar.Limitation.Copy().(*ServiceItemLimitation)
+	copied.PID = siar.PID.Copy().(types.PID)
+	copied.Limitation = siar.Limitation.Copy().(ServiceItemLimitation)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemAccountRight contains the same data as the current ServiceItemAccountRight
-func (siar *ServiceItemAccountRight) Equals(o types.RVType) bool {
+func (siar ServiceItemAccountRight) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemAccountRight); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (siar *ServiceItemAccountRight) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemAccountRight
-func (siar *ServiceItemAccountRight) String() string {
+func (siar ServiceItemAccountRight) String() string {
 	return siar.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemAccountRight using the provided indentation level
-func (siar *ServiceItemAccountRight) FormatToString(indentationLevel int) string {
+func (siar ServiceItemAccountRight) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (siar *ServiceItemAccountRight) FormatToString(indentationLevel int) string
 }
 
 // NewServiceItemAccountRight returns a new ServiceItemAccountRight
-func NewServiceItemAccountRight() *ServiceItemAccountRight {
-	siar := &ServiceItemAccountRight{
+func NewServiceItemAccountRight() ServiceItemAccountRight {
+	return ServiceItemAccountRight{
 		PID:        types.NewPID(0),
 		Limitation: NewServiceItemLimitation(),
 	}
 
-	return siar
 }

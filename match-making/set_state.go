@@ -25,14 +25,14 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idGathering := types.NewPrimitiveU32(0)
-	uiNewState := types.NewPrimitiveU32(0)
+	var idGathering types.UInt32
+	var uiNewState types.UInt32
 
 	var err error
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetState(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.SetState(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, uiNewState)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 
 	err = uiNewState.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetState(fmt.Errorf("Failed to read uiNewState from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.SetState(fmt.Errorf("Failed to read uiNewState from parameters. %s", err.Error()), packet, callID, idGathering, uiNewState)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

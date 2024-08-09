@@ -11,12 +11,12 @@ import (
 // ServiceItemGetSupportIDParam is a type within the ServiceItem protocol
 type ServiceItemGetSupportIDParam struct {
 	types.Structure
-	UniqueID *types.PrimitiveU32
-	Platform *types.PrimitiveU8
+	UniqueID types.UInt32
+	Platform types.UInt8
 }
 
 // WriteTo writes the ServiceItemGetSupportIDParam to the given writable
-func (sigsidp *ServiceItemGetSupportIDParam) WriteTo(writable types.Writable) {
+func (sigsidp ServiceItemGetSupportIDParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sigsidp.UniqueID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (sigsidp *ServiceItemGetSupportIDParam) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of ServiceItemGetSupportIDParam
-func (sigsidp *ServiceItemGetSupportIDParam) Copy() types.RVType {
+func (sigsidp ServiceItemGetSupportIDParam) Copy() types.RVType {
 	copied := NewServiceItemGetSupportIDParam()
 
 	copied.StructureVersion = sigsidp.StructureVersion
-	copied.UniqueID = sigsidp.UniqueID.Copy().(*types.PrimitiveU32)
-	copied.Platform = sigsidp.Platform.Copy().(*types.PrimitiveU8)
+	copied.UniqueID = sigsidp.UniqueID.Copy().(types.UInt32)
+	copied.Platform = sigsidp.Platform.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetSupportIDParam contains the same data as the current ServiceItemGetSupportIDParam
-func (sigsidp *ServiceItemGetSupportIDParam) Equals(o types.RVType) bool {
+func (sigsidp ServiceItemGetSupportIDParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetSupportIDParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (sigsidp *ServiceItemGetSupportIDParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemGetSupportIDParam
-func (sigsidp *ServiceItemGetSupportIDParam) String() string {
+func (sigsidp ServiceItemGetSupportIDParam) String() string {
 	return sigsidp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetSupportIDParam using the provided indentation level
-func (sigsidp *ServiceItemGetSupportIDParam) FormatToString(indentationLevel int) string {
+func (sigsidp ServiceItemGetSupportIDParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (sigsidp *ServiceItemGetSupportIDParam) FormatToString(indentationLevel int
 }
 
 // NewServiceItemGetSupportIDParam returns a new ServiceItemGetSupportIDParam
-func NewServiceItemGetSupportIDParam() *ServiceItemGetSupportIDParam {
-	sigsidp := &ServiceItemGetSupportIDParam{
-		UniqueID: types.NewPrimitiveU32(0),
-		Platform: types.NewPrimitiveU8(0),
+func NewServiceItemGetSupportIDParam() ServiceItemGetSupportIDParam {
+	return ServiceItemGetSupportIDParam{
+		UniqueID: types.NewUInt32(0),
+		Platform: types.NewUInt8(0),
 	}
 
-	return sigsidp
 }

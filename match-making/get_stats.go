@@ -25,16 +25,15 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idGathering := types.NewPrimitiveU32(0)
-	lstParticipants := types.NewList[*types.PID]()
-	lstParticipants.Type = types.NewPID(0)
-	lstColumns := types.NewBuffer(nil)
+	var idGathering types.UInt32
+	var lstParticipants types.List[types.PID]
+	var lstColumns types.Buffer
 
 	var err error
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, lstParticipants, lstColumns)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	err = lstParticipants.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read lstParticipants from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read lstParticipants from parameters. %s", err.Error()), packet, callID, idGathering, lstParticipants, lstColumns)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +53,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	err = lstColumns.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read lstColumns from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read lstColumns from parameters. %s", err.Error()), packet, callID, idGathering, lstParticipants, lstColumns)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

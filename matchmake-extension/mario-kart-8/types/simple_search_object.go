@@ -11,17 +11,17 @@ import (
 // SimpleSearchObject is a type within the MatchmakeExtension protocol
 type SimpleSearchObject struct {
 	types.Structure
-	ObjectID            *types.PrimitiveU32
-	OwnerPID            *types.PID
-	Attributes          *types.List[*types.PrimitiveU32]
-	Metadata            *types.QBuffer
-	CommunityIDMiiverse *types.PrimitiveU32
-	CommunityCode       *types.String
-	DatetimeAttribute   *SimpleSearchDateTimeAttribute
+	ObjectID            types.UInt32
+	OwnerPID            types.PID
+	Attributes          types.List[types.UInt32]
+	Metadata            types.QBuffer
+	CommunityIDMiiverse types.UInt32
+	CommunityCode       types.String
+	DatetimeAttribute   SimpleSearchDateTimeAttribute
 }
 
 // WriteTo writes the SimpleSearchObject to the given writable
-func (sso *SimpleSearchObject) WriteTo(writable types.Writable) {
+func (sso SimpleSearchObject) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sso.ObjectID.WriteTo(contentWritable)
@@ -87,23 +87,23 @@ func (sso *SimpleSearchObject) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of SimpleSearchObject
-func (sso *SimpleSearchObject) Copy() types.RVType {
+func (sso SimpleSearchObject) Copy() types.RVType {
 	copied := NewSimpleSearchObject()
 
 	copied.StructureVersion = sso.StructureVersion
-	copied.ObjectID = sso.ObjectID.Copy().(*types.PrimitiveU32)
-	copied.OwnerPID = sso.OwnerPID.Copy().(*types.PID)
-	copied.Attributes = sso.Attributes.Copy().(*types.List[*types.PrimitiveU32])
-	copied.Metadata = sso.Metadata.Copy().(*types.QBuffer)
-	copied.CommunityIDMiiverse = sso.CommunityIDMiiverse.Copy().(*types.PrimitiveU32)
-	copied.CommunityCode = sso.CommunityCode.Copy().(*types.String)
-	copied.DatetimeAttribute = sso.DatetimeAttribute.Copy().(*SimpleSearchDateTimeAttribute)
+	copied.ObjectID = sso.ObjectID.Copy().(types.UInt32)
+	copied.OwnerPID = sso.OwnerPID.Copy().(types.PID)
+	copied.Attributes = sso.Attributes.Copy().(types.List[types.UInt32])
+	copied.Metadata = sso.Metadata.Copy().(types.QBuffer)
+	copied.CommunityIDMiiverse = sso.CommunityIDMiiverse.Copy().(types.UInt32)
+	copied.CommunityCode = sso.CommunityCode.Copy().(types.String)
+	copied.DatetimeAttribute = sso.DatetimeAttribute.Copy().(SimpleSearchDateTimeAttribute)
 
 	return copied
 }
 
 // Equals checks if the given SimpleSearchObject contains the same data as the current SimpleSearchObject
-func (sso *SimpleSearchObject) Equals(o types.RVType) bool {
+func (sso SimpleSearchObject) Equals(o types.RVType) bool {
 	if _, ok := o.(*SimpleSearchObject); !ok {
 		return false
 	}
@@ -142,12 +142,12 @@ func (sso *SimpleSearchObject) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the SimpleSearchObject
-func (sso *SimpleSearchObject) String() string {
+func (sso SimpleSearchObject) String() string {
 	return sso.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SimpleSearchObject using the provided indentation level
-func (sso *SimpleSearchObject) FormatToString(indentationLevel int) string {
+func (sso SimpleSearchObject) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -167,18 +167,15 @@ func (sso *SimpleSearchObject) FormatToString(indentationLevel int) string {
 }
 
 // NewSimpleSearchObject returns a new SimpleSearchObject
-func NewSimpleSearchObject() *SimpleSearchObject {
-	sso := &SimpleSearchObject{
-		ObjectID:            types.NewPrimitiveU32(0),
+func NewSimpleSearchObject() SimpleSearchObject {
+	return SimpleSearchObject{
+		ObjectID:            types.NewUInt32(0),
 		OwnerPID:            types.NewPID(0),
-		Attributes:          types.NewList[*types.PrimitiveU32](),
+		Attributes:          types.NewList[types.UInt32](),
 		Metadata:            types.NewQBuffer(nil),
-		CommunityIDMiiverse: types.NewPrimitiveU32(0),
+		CommunityIDMiiverse: types.NewUInt32(0),
 		CommunityCode:       types.NewString(""),
 		DatetimeAttribute:   NewSimpleSearchDateTimeAttribute(),
 	}
 
-	sso.Attributes.Type = types.NewPrimitiveU32(0)
-
-	return sso
 }

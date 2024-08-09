@@ -11,12 +11,12 @@ import (
 // DataStorePersistenceTarget is a type within the DataStore protocol
 type DataStorePersistenceTarget struct {
 	types.Structure
-	OwnerID           *types.PID
-	PersistenceSlotID *types.PrimitiveU16
+	OwnerID           types.PID
+	PersistenceSlotID types.UInt16
 }
 
 // WriteTo writes the DataStorePersistenceTarget to the given writable
-func (dspt *DataStorePersistenceTarget) WriteTo(writable types.Writable) {
+func (dspt DataStorePersistenceTarget) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspt.OwnerID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dspt *DataStorePersistenceTarget) ExtractFrom(readable types.Readable) err
 }
 
 // Copy returns a new copied instance of DataStorePersistenceTarget
-func (dspt *DataStorePersistenceTarget) Copy() types.RVType {
+func (dspt DataStorePersistenceTarget) Copy() types.RVType {
 	copied := NewDataStorePersistenceTarget()
 
 	copied.StructureVersion = dspt.StructureVersion
-	copied.OwnerID = dspt.OwnerID.Copy().(*types.PID)
-	copied.PersistenceSlotID = dspt.PersistenceSlotID.Copy().(*types.PrimitiveU16)
+	copied.OwnerID = dspt.OwnerID.Copy().(types.PID)
+	copied.PersistenceSlotID = dspt.PersistenceSlotID.Copy().(types.UInt16)
 
 	return copied
 }
 
 // Equals checks if the given DataStorePersistenceTarget contains the same data as the current DataStorePersistenceTarget
-func (dspt *DataStorePersistenceTarget) Equals(o types.RVType) bool {
+func (dspt DataStorePersistenceTarget) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePersistenceTarget); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dspt *DataStorePersistenceTarget) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStorePersistenceTarget
-func (dspt *DataStorePersistenceTarget) String() string {
+func (dspt DataStorePersistenceTarget) String() string {
 	return dspt.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePersistenceTarget using the provided indentation level
-func (dspt *DataStorePersistenceTarget) FormatToString(indentationLevel int) string {
+func (dspt DataStorePersistenceTarget) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dspt *DataStorePersistenceTarget) FormatToString(indentationLevel int) str
 }
 
 // NewDataStorePersistenceTarget returns a new DataStorePersistenceTarget
-func NewDataStorePersistenceTarget() *DataStorePersistenceTarget {
-	dspt := &DataStorePersistenceTarget{
+func NewDataStorePersistenceTarget() DataStorePersistenceTarget {
+	return DataStorePersistenceTarget{
 		OwnerID:           types.NewPID(0),
-		PersistenceSlotID: types.NewPrimitiveU16(0),
+		PersistenceSlotID: types.NewUInt16(0),
 	}
 
-	return dspt
 }

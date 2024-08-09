@@ -11,19 +11,19 @@ import (
 // ServiceItemAcquireServiceItemByAccountParam is a type within the ServiceItem protocol
 type ServiceItemAcquireServiceItemByAccountParam struct {
 	types.Structure
-	ReferenceIDForAcquisition *types.String
-	ReferenceIDForRightBinary *types.String
-	UseType                   *types.PrimitiveU8
-	LimitationType            *types.PrimitiveU32
-	LimitationValue           *types.PrimitiveU32
-	RightBinary               *types.QBuffer
-	LogMessage                *types.String
-	UniqueID                  *types.PrimitiveU32
-	Platform                  *types.PrimitiveU8
+	ReferenceIDForAcquisition types.String
+	ReferenceIDForRightBinary types.String
+	UseType                   types.UInt8
+	LimitationType            types.UInt32
+	LimitationValue           types.UInt32
+	RightBinary               types.QBuffer
+	LogMessage                types.String
+	UniqueID                  types.UInt32
+	Platform                  types.UInt8
 }
 
 // WriteTo writes the ServiceItemAcquireServiceItemByAccountParam to the given writable
-func (siasibap *ServiceItemAcquireServiceItemByAccountParam) WriteTo(writable types.Writable) {
+func (siasibap ServiceItemAcquireServiceItemByAccountParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siasibap.ReferenceIDForAcquisition.WriteTo(contentWritable)
@@ -101,25 +101,25 @@ func (siasibap *ServiceItemAcquireServiceItemByAccountParam) ExtractFrom(readabl
 }
 
 // Copy returns a new copied instance of ServiceItemAcquireServiceItemByAccountParam
-func (siasibap *ServiceItemAcquireServiceItemByAccountParam) Copy() types.RVType {
+func (siasibap ServiceItemAcquireServiceItemByAccountParam) Copy() types.RVType {
 	copied := NewServiceItemAcquireServiceItemByAccountParam()
 
 	copied.StructureVersion = siasibap.StructureVersion
-	copied.ReferenceIDForAcquisition = siasibap.ReferenceIDForAcquisition.Copy().(*types.String)
-	copied.ReferenceIDForRightBinary = siasibap.ReferenceIDForRightBinary.Copy().(*types.String)
-	copied.UseType = siasibap.UseType.Copy().(*types.PrimitiveU8)
-	copied.LimitationType = siasibap.LimitationType.Copy().(*types.PrimitiveU32)
-	copied.LimitationValue = siasibap.LimitationValue.Copy().(*types.PrimitiveU32)
-	copied.RightBinary = siasibap.RightBinary.Copy().(*types.QBuffer)
-	copied.LogMessage = siasibap.LogMessage.Copy().(*types.String)
-	copied.UniqueID = siasibap.UniqueID.Copy().(*types.PrimitiveU32)
-	copied.Platform = siasibap.Platform.Copy().(*types.PrimitiveU8)
+	copied.ReferenceIDForAcquisition = siasibap.ReferenceIDForAcquisition.Copy().(types.String)
+	copied.ReferenceIDForRightBinary = siasibap.ReferenceIDForRightBinary.Copy().(types.String)
+	copied.UseType = siasibap.UseType.Copy().(types.UInt8)
+	copied.LimitationType = siasibap.LimitationType.Copy().(types.UInt32)
+	copied.LimitationValue = siasibap.LimitationValue.Copy().(types.UInt32)
+	copied.RightBinary = siasibap.RightBinary.Copy().(types.QBuffer)
+	copied.LogMessage = siasibap.LogMessage.Copy().(types.String)
+	copied.UniqueID = siasibap.UniqueID.Copy().(types.UInt32)
+	copied.Platform = siasibap.Platform.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemAcquireServiceItemByAccountParam contains the same data as the current ServiceItemAcquireServiceItemByAccountParam
-func (siasibap *ServiceItemAcquireServiceItemByAccountParam) Equals(o types.RVType) bool {
+func (siasibap ServiceItemAcquireServiceItemByAccountParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemAcquireServiceItemByAccountParam); !ok {
 		return false
 	}
@@ -166,12 +166,12 @@ func (siasibap *ServiceItemAcquireServiceItemByAccountParam) Equals(o types.RVTy
 }
 
 // String returns the string representation of the ServiceItemAcquireServiceItemByAccountParam
-func (siasibap *ServiceItemAcquireServiceItemByAccountParam) String() string {
+func (siasibap ServiceItemAcquireServiceItemByAccountParam) String() string {
 	return siasibap.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemAcquireServiceItemByAccountParam using the provided indentation level
-func (siasibap *ServiceItemAcquireServiceItemByAccountParam) FormatToString(indentationLevel int) string {
+func (siasibap ServiceItemAcquireServiceItemByAccountParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,18 +193,17 @@ func (siasibap *ServiceItemAcquireServiceItemByAccountParam) FormatToString(inde
 }
 
 // NewServiceItemAcquireServiceItemByAccountParam returns a new ServiceItemAcquireServiceItemByAccountParam
-func NewServiceItemAcquireServiceItemByAccountParam() *ServiceItemAcquireServiceItemByAccountParam {
-	siasibap := &ServiceItemAcquireServiceItemByAccountParam{
+func NewServiceItemAcquireServiceItemByAccountParam() ServiceItemAcquireServiceItemByAccountParam {
+	return ServiceItemAcquireServiceItemByAccountParam{
 		ReferenceIDForAcquisition: types.NewString(""),
 		ReferenceIDForRightBinary: types.NewString(""),
-		UseType:                   types.NewPrimitiveU8(0),
-		LimitationType:            types.NewPrimitiveU32(0),
-		LimitationValue:           types.NewPrimitiveU32(0),
+		UseType:                   types.NewUInt8(0),
+		LimitationType:            types.NewUInt32(0),
+		LimitationValue:           types.NewUInt32(0),
 		RightBinary:               types.NewQBuffer(nil),
 		LogMessage:                types.NewString(""),
-		UniqueID:                  types.NewPrimitiveU32(0),
-		Platform:                  types.NewPrimitiveU8(0),
+		UniqueID:                  types.NewUInt32(0),
+		Platform:                  types.NewUInt8(0),
 	}
 
-	return siasibap
 }

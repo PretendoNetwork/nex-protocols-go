@@ -11,17 +11,17 @@ import (
 // DataStoreSearchSharedDataParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreSearchSharedDataParam struct {
 	types.Structure
-	DataType    *types.PrimitiveU8
-	Owner       *types.PrimitiveU32
-	Region      *types.PrimitiveU8
-	Attribute1  *types.PrimitiveU8
-	Attribute2  *types.PrimitiveU8
-	Fighter     *types.PrimitiveU8
-	ResultRange *types.ResultRange
+	DataType    types.UInt8
+	Owner       types.UInt32
+	Region      types.UInt8
+	Attribute1  types.UInt8
+	Attribute2  types.UInt8
+	Fighter     types.UInt8
+	ResultRange types.ResultRange
 }
 
 // WriteTo writes the DataStoreSearchSharedDataParam to the given writable
-func (dsssdp *DataStoreSearchSharedDataParam) WriteTo(writable types.Writable) {
+func (dsssdp DataStoreSearchSharedDataParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsssdp.DataType.WriteTo(contentWritable)
@@ -87,23 +87,23 @@ func (dsssdp *DataStoreSearchSharedDataParam) ExtractFrom(readable types.Readabl
 }
 
 // Copy returns a new copied instance of DataStoreSearchSharedDataParam
-func (dsssdp *DataStoreSearchSharedDataParam) Copy() types.RVType {
+func (dsssdp DataStoreSearchSharedDataParam) Copy() types.RVType {
 	copied := NewDataStoreSearchSharedDataParam()
 
 	copied.StructureVersion = dsssdp.StructureVersion
-	copied.DataType = dsssdp.DataType.Copy().(*types.PrimitiveU8)
-	copied.Owner = dsssdp.Owner.Copy().(*types.PrimitiveU32)
-	copied.Region = dsssdp.Region.Copy().(*types.PrimitiveU8)
-	copied.Attribute1 = dsssdp.Attribute1.Copy().(*types.PrimitiveU8)
-	copied.Attribute2 = dsssdp.Attribute2.Copy().(*types.PrimitiveU8)
-	copied.Fighter = dsssdp.Fighter.Copy().(*types.PrimitiveU8)
-	copied.ResultRange = dsssdp.ResultRange.Copy().(*types.ResultRange)
+	copied.DataType = dsssdp.DataType.Copy().(types.UInt8)
+	copied.Owner = dsssdp.Owner.Copy().(types.UInt32)
+	copied.Region = dsssdp.Region.Copy().(types.UInt8)
+	copied.Attribute1 = dsssdp.Attribute1.Copy().(types.UInt8)
+	copied.Attribute2 = dsssdp.Attribute2.Copy().(types.UInt8)
+	copied.Fighter = dsssdp.Fighter.Copy().(types.UInt8)
+	copied.ResultRange = dsssdp.ResultRange.Copy().(types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreSearchSharedDataParam contains the same data as the current DataStoreSearchSharedDataParam
-func (dsssdp *DataStoreSearchSharedDataParam) Equals(o types.RVType) bool {
+func (dsssdp DataStoreSearchSharedDataParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreSearchSharedDataParam); !ok {
 		return false
 	}
@@ -142,12 +142,12 @@ func (dsssdp *DataStoreSearchSharedDataParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreSearchSharedDataParam
-func (dsssdp *DataStoreSearchSharedDataParam) String() string {
+func (dsssdp DataStoreSearchSharedDataParam) String() string {
 	return dsssdp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreSearchSharedDataParam using the provided indentation level
-func (dsssdp *DataStoreSearchSharedDataParam) FormatToString(indentationLevel int) string {
+func (dsssdp DataStoreSearchSharedDataParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -167,16 +167,15 @@ func (dsssdp *DataStoreSearchSharedDataParam) FormatToString(indentationLevel in
 }
 
 // NewDataStoreSearchSharedDataParam returns a new DataStoreSearchSharedDataParam
-func NewDataStoreSearchSharedDataParam() *DataStoreSearchSharedDataParam {
-	dsssdp := &DataStoreSearchSharedDataParam{
-		DataType:    types.NewPrimitiveU8(0),
-		Owner:       types.NewPrimitiveU32(0),
-		Region:      types.NewPrimitiveU8(0),
-		Attribute1:  types.NewPrimitiveU8(0),
-		Attribute2:  types.NewPrimitiveU8(0),
-		Fighter:     types.NewPrimitiveU8(0),
+func NewDataStoreSearchSharedDataParam() DataStoreSearchSharedDataParam {
+	return DataStoreSearchSharedDataParam{
+		DataType:    types.NewUInt8(0),
+		Owner:       types.NewUInt32(0),
+		Region:      types.NewUInt8(0),
+		Attribute1:  types.NewUInt8(0),
+		Attribute2:  types.NewUInt8(0),
+		Fighter:     types.NewUInt8(0),
 		ResultRange: types.NewResultRange(),
 	}
 
-	return dsssdp
 }

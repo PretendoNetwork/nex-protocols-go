@@ -11,13 +11,13 @@ import (
 // ServiceItemGetLawMessageParam is a type within the ServiceItem protocol
 type ServiceItemGetLawMessageParam struct {
 	types.Structure
-	Language *types.String
-	UniqueID *types.PrimitiveU32
-	Platform *types.PrimitiveU8 // * Revision 1
+	Language types.String
+	UniqueID types.UInt32
+	Platform types.UInt8 // * Revision 1
 }
 
 // WriteTo writes the ServiceItemGetLawMessageParam to the given writable
-func (siglmp *ServiceItemGetLawMessageParam) WriteTo(writable types.Writable) {
+func (siglmp ServiceItemGetLawMessageParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siglmp.Language.WriteTo(contentWritable)
@@ -64,19 +64,19 @@ func (siglmp *ServiceItemGetLawMessageParam) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of ServiceItemGetLawMessageParam
-func (siglmp *ServiceItemGetLawMessageParam) Copy() types.RVType {
+func (siglmp ServiceItemGetLawMessageParam) Copy() types.RVType {
 	copied := NewServiceItemGetLawMessageParam()
 
 	copied.StructureVersion = siglmp.StructureVersion
-	copied.Language = siglmp.Language.Copy().(*types.String)
-	copied.UniqueID = siglmp.UniqueID.Copy().(*types.PrimitiveU32)
-	copied.Platform = siglmp.Platform.Copy().(*types.PrimitiveU8)
+	copied.Language = siglmp.Language.Copy().(types.String)
+	copied.UniqueID = siglmp.UniqueID.Copy().(types.UInt32)
+	copied.Platform = siglmp.Platform.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetLawMessageParam contains the same data as the current ServiceItemGetLawMessageParam
-func (siglmp *ServiceItemGetLawMessageParam) Equals(o types.RVType) bool {
+func (siglmp ServiceItemGetLawMessageParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetLawMessageParam); !ok {
 		return false
 	}
@@ -99,12 +99,12 @@ func (siglmp *ServiceItemGetLawMessageParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemGetLawMessageParam
-func (siglmp *ServiceItemGetLawMessageParam) String() string {
+func (siglmp ServiceItemGetLawMessageParam) String() string {
 	return siglmp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetLawMessageParam using the provided indentation level
-func (siglmp *ServiceItemGetLawMessageParam) FormatToString(indentationLevel int) string {
+func (siglmp ServiceItemGetLawMessageParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -120,12 +120,11 @@ func (siglmp *ServiceItemGetLawMessageParam) FormatToString(indentationLevel int
 }
 
 // NewServiceItemGetLawMessageParam returns a new ServiceItemGetLawMessageParam
-func NewServiceItemGetLawMessageParam() *ServiceItemGetLawMessageParam {
-	siglmp := &ServiceItemGetLawMessageParam{
+func NewServiceItemGetLawMessageParam() ServiceItemGetLawMessageParam {
+	return ServiceItemGetLawMessageParam{
 		Language: types.NewString(""),
-		UniqueID: types.NewPrimitiveU32(0),
-		Platform: types.NewPrimitiveU8(0),
+		UniqueID: types.NewUInt32(0),
+		Platform: types.NewUInt8(0),
 	}
 
-	return siglmp
 }

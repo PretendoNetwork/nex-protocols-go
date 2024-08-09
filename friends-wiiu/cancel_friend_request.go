@@ -25,11 +25,11 @@ func (protocol *Protocol) handleCancelFriendRequest(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	id := types.NewPrimitiveU64(0)
+	var id types.UInt64
 
 	err := id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CancelFriendRequest(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.CancelFriendRequest(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, id)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

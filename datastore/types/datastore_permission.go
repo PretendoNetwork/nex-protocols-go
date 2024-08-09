@@ -11,12 +11,12 @@ import (
 // DataStorePermission is a type within the DataStore protocol
 type DataStorePermission struct {
 	types.Structure
-	Permission   *types.PrimitiveU8
-	RecipientIDs *types.List[*types.PID]
+	Permission   types.UInt8
+	RecipientIDs types.List[types.PID]
 }
 
 // WriteTo writes the DataStorePermission to the given writable
-func (dsp *DataStorePermission) WriteTo(writable types.Writable) {
+func (dsp DataStorePermission) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsp.Permission.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dsp *DataStorePermission) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStorePermission
-func (dsp *DataStorePermission) Copy() types.RVType {
+func (dsp DataStorePermission) Copy() types.RVType {
 	copied := NewDataStorePermission()
 
 	copied.StructureVersion = dsp.StructureVersion
-	copied.Permission = dsp.Permission.Copy().(*types.PrimitiveU8)
-	copied.RecipientIDs = dsp.RecipientIDs.Copy().(*types.List[*types.PID])
+	copied.Permission = dsp.Permission.Copy().(types.UInt8)
+	copied.RecipientIDs = dsp.RecipientIDs.Copy().(types.List[types.PID])
 
 	return copied
 }
 
 // Equals checks if the given DataStorePermission contains the same data as the current DataStorePermission
-func (dsp *DataStorePermission) Equals(o types.RVType) bool {
+func (dsp DataStorePermission) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePermission); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dsp *DataStorePermission) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStorePermission
-func (dsp *DataStorePermission) String() string {
+func (dsp DataStorePermission) String() string {
 	return dsp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePermission using the provided indentation level
-func (dsp *DataStorePermission) FormatToString(indentationLevel int) string {
+func (dsp DataStorePermission) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,13 +102,10 @@ func (dsp *DataStorePermission) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStorePermission returns a new DataStorePermission
-func NewDataStorePermission() *DataStorePermission {
-	dsp := &DataStorePermission{
-		Permission:   types.NewPrimitiveU8(0),
-		RecipientIDs: types.NewList[*types.PID](),
+func NewDataStorePermission() DataStorePermission {
+	return DataStorePermission{
+		Permission:   types.NewUInt8(0),
+		RecipientIDs: types.NewList[types.PID](),
 	}
 
-	dsp.RecipientIDs.Type = types.NewPID(0)
-
-	return dsp
 }

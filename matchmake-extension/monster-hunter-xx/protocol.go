@@ -47,11 +47,11 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	matchmakeExtensionProtocol
-	UpdateFriendUserProfile func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) (*nex.RMCMessage, *nex.Error)
-	GetFriendUserProfiles   func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
-	AddFriends              func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
-	RemoveFriend            func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, *nex.Error)
-	FindCommunityByOwner    func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU64, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	UpdateFriendUserProfile func(err error, packet nex.PacketInterface, callID uint32, param matchmake_extension_monster_hunter_x_x_types.FriendUserParam) (*nex.RMCMessage, *nex.Error)
+	GetFriendUserProfiles   func(err error, packet nex.PacketInterface, callID uint32, pids types.List[types.PID]) (*nex.RMCMessage, *nex.Error)
+	AddFriends              func(err error, packet nex.PacketInterface, callID uint32, pids types.List[types.PID]) (*nex.RMCMessage, *nex.Error)
+	RemoveFriend            func(err error, packet nex.PacketInterface, callID uint32, pid types.PID) (*nex.RMCMessage, *nex.Error)
+	FindCommunityByOwner    func(err error, packet nex.PacketInterface, callID uint32, id types.UInt64, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler

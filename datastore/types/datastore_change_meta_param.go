@@ -11,24 +11,24 @@ import (
 // DataStoreChangeMetaParam is a type within the DataStore protocol
 type DataStoreChangeMetaParam struct {
 	types.Structure
-	DataID            *types.PrimitiveU64
-	ModifiesFlag      *types.PrimitiveU32
-	Name              *types.String
-	Permission        *DataStorePermission
-	DelPermission     *DataStorePermission
-	Period            *types.PrimitiveU16
-	MetaBinary        *types.QBuffer
-	Tags              *types.List[*types.String]
-	UpdatePassword    *types.PrimitiveU64
-	ReferredCnt       *types.PrimitiveU32
-	DataType          *types.PrimitiveU16
-	Status            *types.PrimitiveU8
-	CompareParam      *DataStoreChangeMetaCompareParam
-	PersistenceTarget *DataStorePersistenceTarget // * Revision 1
+	DataID            types.UInt64
+	ModifiesFlag      types.UInt32
+	Name              types.String
+	Permission        DataStorePermission
+	DelPermission     DataStorePermission
+	Period            types.UInt16
+	MetaBinary        types.QBuffer
+	Tags              types.List[types.String]
+	UpdatePassword    types.UInt64
+	ReferredCnt       types.UInt32
+	DataType          types.UInt16
+	Status            types.UInt8
+	CompareParam      DataStoreChangeMetaCompareParam
+	PersistenceTarget DataStorePersistenceTarget // * Revision 1
 }
 
 // WriteTo writes the DataStoreChangeMetaParam to the given writable
-func (dscmp *DataStoreChangeMetaParam) WriteTo(writable types.Writable) {
+func (dscmp DataStoreChangeMetaParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dscmp.DataID.WriteTo(contentWritable)
@@ -141,30 +141,30 @@ func (dscmp *DataStoreChangeMetaParam) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of DataStoreChangeMetaParam
-func (dscmp *DataStoreChangeMetaParam) Copy() types.RVType {
+func (dscmp DataStoreChangeMetaParam) Copy() types.RVType {
 	copied := NewDataStoreChangeMetaParam()
 
 	copied.StructureVersion = dscmp.StructureVersion
-	copied.DataID = dscmp.DataID.Copy().(*types.PrimitiveU64)
-	copied.ModifiesFlag = dscmp.ModifiesFlag.Copy().(*types.PrimitiveU32)
-	copied.Name = dscmp.Name.Copy().(*types.String)
-	copied.Permission = dscmp.Permission.Copy().(*DataStorePermission)
-	copied.DelPermission = dscmp.DelPermission.Copy().(*DataStorePermission)
-	copied.Period = dscmp.Period.Copy().(*types.PrimitiveU16)
-	copied.MetaBinary = dscmp.MetaBinary.Copy().(*types.QBuffer)
-	copied.Tags = dscmp.Tags.Copy().(*types.List[*types.String])
-	copied.UpdatePassword = dscmp.UpdatePassword.Copy().(*types.PrimitiveU64)
-	copied.ReferredCnt = dscmp.ReferredCnt.Copy().(*types.PrimitiveU32)
-	copied.DataType = dscmp.DataType.Copy().(*types.PrimitiveU16)
-	copied.Status = dscmp.Status.Copy().(*types.PrimitiveU8)
-	copied.CompareParam = dscmp.CompareParam.Copy().(*DataStoreChangeMetaCompareParam)
-	copied.PersistenceTarget = dscmp.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
+	copied.DataID = dscmp.DataID.Copy().(types.UInt64)
+	copied.ModifiesFlag = dscmp.ModifiesFlag.Copy().(types.UInt32)
+	copied.Name = dscmp.Name.Copy().(types.String)
+	copied.Permission = dscmp.Permission.Copy().(DataStorePermission)
+	copied.DelPermission = dscmp.DelPermission.Copy().(DataStorePermission)
+	copied.Period = dscmp.Period.Copy().(types.UInt16)
+	copied.MetaBinary = dscmp.MetaBinary.Copy().(types.QBuffer)
+	copied.Tags = dscmp.Tags.Copy().(types.List[types.String])
+	copied.UpdatePassword = dscmp.UpdatePassword.Copy().(types.UInt64)
+	copied.ReferredCnt = dscmp.ReferredCnt.Copy().(types.UInt32)
+	copied.DataType = dscmp.DataType.Copy().(types.UInt16)
+	copied.Status = dscmp.Status.Copy().(types.UInt8)
+	copied.CompareParam = dscmp.CompareParam.Copy().(DataStoreChangeMetaCompareParam)
+	copied.PersistenceTarget = dscmp.PersistenceTarget.Copy().(DataStorePersistenceTarget)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreChangeMetaParam contains the same data as the current DataStoreChangeMetaParam
-func (dscmp *DataStoreChangeMetaParam) Equals(o types.RVType) bool {
+func (dscmp DataStoreChangeMetaParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreChangeMetaParam); !ok {
 		return false
 	}
@@ -231,12 +231,12 @@ func (dscmp *DataStoreChangeMetaParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreChangeMetaParam
-func (dscmp *DataStoreChangeMetaParam) String() string {
+func (dscmp DataStoreChangeMetaParam) String() string {
 	return dscmp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreChangeMetaParam using the provided indentation level
-func (dscmp *DataStoreChangeMetaParam) FormatToString(indentationLevel int) string {
+func (dscmp DataStoreChangeMetaParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -263,25 +263,22 @@ func (dscmp *DataStoreChangeMetaParam) FormatToString(indentationLevel int) stri
 }
 
 // NewDataStoreChangeMetaParam returns a new DataStoreChangeMetaParam
-func NewDataStoreChangeMetaParam() *DataStoreChangeMetaParam {
-	dscmp := &DataStoreChangeMetaParam{
-		DataID:            types.NewPrimitiveU64(0),
-		ModifiesFlag:      types.NewPrimitiveU32(0),
+func NewDataStoreChangeMetaParam() DataStoreChangeMetaParam {
+	return DataStoreChangeMetaParam{
+		DataID:            types.NewUInt64(0),
+		ModifiesFlag:      types.NewUInt32(0),
 		Name:              types.NewString(""),
 		Permission:        NewDataStorePermission(),
 		DelPermission:     NewDataStorePermission(),
-		Period:            types.NewPrimitiveU16(0),
+		Period:            types.NewUInt16(0),
 		MetaBinary:        types.NewQBuffer(nil),
-		Tags:              types.NewList[*types.String](),
-		UpdatePassword:    types.NewPrimitiveU64(0),
-		ReferredCnt:       types.NewPrimitiveU32(0),
-		DataType:          types.NewPrimitiveU16(0),
-		Status:            types.NewPrimitiveU8(0),
+		Tags:              types.NewList[types.String](),
+		UpdatePassword:    types.NewUInt64(0),
+		ReferredCnt:       types.NewUInt32(0),
+		DataType:          types.NewUInt16(0),
+		Status:            types.NewUInt8(0),
 		CompareParam:      NewDataStoreChangeMetaCompareParam(),
 		PersistenceTarget: NewDataStorePersistenceTarget(),
 	}
 
-	dscmp.Tags.Type = types.NewString("")
-
-	return dscmp
 }

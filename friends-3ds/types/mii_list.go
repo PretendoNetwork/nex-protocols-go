@@ -11,15 +11,15 @@ import (
 // MiiList is a type within the Friends3DS protocol
 type MiiList struct {
 	types.Structure
-	*types.Data
-	Unknown1    *types.String
-	Unknown2    *types.PrimitiveBool
-	Unknown3    *types.PrimitiveU8
-	MiiDataList *types.List[*types.Buffer]
+	types.Data
+	Unknown1    types.String
+	Unknown2    types.Bool
+	Unknown3    types.UInt8
+	MiiDataList types.List[types.Buffer]
 }
 
 // WriteTo writes the MiiList to the given writable
-func (ml *MiiList) WriteTo(writable types.Writable) {
+func (ml MiiList) WriteTo(writable types.Writable) {
 	ml.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -74,21 +74,21 @@ func (ml *MiiList) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MiiList
-func (ml *MiiList) Copy() types.RVType {
+func (ml MiiList) Copy() types.RVType {
 	copied := NewMiiList()
 
 	copied.StructureVersion = ml.StructureVersion
-	copied.Data = ml.Data.Copy().(*types.Data)
-	copied.Unknown1 = ml.Unknown1.Copy().(*types.String)
-	copied.Unknown2 = ml.Unknown2.Copy().(*types.PrimitiveBool)
-	copied.Unknown3 = ml.Unknown3.Copy().(*types.PrimitiveU8)
-	copied.MiiDataList = ml.MiiDataList.Copy().(*types.List[*types.Buffer])
+	copied.Data = ml.Data.Copy().(types.Data)
+	copied.Unknown1 = ml.Unknown1.Copy().(types.String)
+	copied.Unknown2 = ml.Unknown2.Copy().(types.Bool)
+	copied.Unknown3 = ml.Unknown3.Copy().(types.UInt8)
+	copied.MiiDataList = ml.MiiDataList.Copy().(types.List[types.Buffer])
 
 	return copied
 }
 
 // Equals checks if the given MiiList contains the same data as the current MiiList
-func (ml *MiiList) Equals(o types.RVType) bool {
+func (ml MiiList) Equals(o types.RVType) bool {
 	if _, ok := o.(*MiiList); !ok {
 		return false
 	}
@@ -119,12 +119,12 @@ func (ml *MiiList) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MiiList
-func (ml *MiiList) String() string {
+func (ml MiiList) String() string {
 	return ml.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MiiList using the provided indentation level
-func (ml *MiiList) FormatToString(indentationLevel int) string {
+func (ml MiiList) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -142,16 +142,13 @@ func (ml *MiiList) FormatToString(indentationLevel int) string {
 }
 
 // NewMiiList returns a new MiiList
-func NewMiiList() *MiiList {
-	ml := &MiiList{
+func NewMiiList() MiiList {
+	return MiiList{
 		Data:        types.NewData(),
 		Unknown1:    types.NewString(""),
-		Unknown2:    types.NewPrimitiveBool(false),
-		Unknown3:    types.NewPrimitiveU8(0),
-		MiiDataList: types.NewList[*types.Buffer](),
+		Unknown2:    types.NewBool(false),
+		Unknown3:    types.NewUInt8(0),
+		MiiDataList: types.NewList[types.Buffer](),
 	}
 
-	ml.MiiDataList.Type = types.NewBuffer(nil)
-
-	return ml
 }

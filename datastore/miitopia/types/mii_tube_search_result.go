@@ -12,14 +12,14 @@ import (
 type MiiTubeSearchResult struct {
 	types.Structure
 
-	Result  *types.List[*MiiTubeMiiInfo]
-	Count   *types.PrimitiveU32
-	Page    *types.PrimitiveU32
-	HasNext *types.PrimitiveBool
+	Result  types.List[MiiTubeMiiInfo]
+	Count   types.UInt32
+	Page    types.UInt32
+	HasNext types.Bool
 }
 
 // WriteTo writes the MiiTubeSearchResult to the given variable
-func (mtsr *MiiTubeSearchResult) WriteTo(writable types.Writable) {
+func (mtsr MiiTubeSearchResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	mtsr.Result.WriteTo(contentWritable)
@@ -67,7 +67,7 @@ func (mtsr *MiiTubeSearchResult) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MiiTubeSearchResult
-func (mtsr *MiiTubeSearchResult) Copy() types.RVType {
+func (mtsr MiiTubeSearchResult) Copy() types.RVType {
 	copied := NewMiiTubeSearchResult()
 
 	copied.Result = mtsr.Result
@@ -79,7 +79,7 @@ func (mtsr *MiiTubeSearchResult) Copy() types.RVType {
 }
 
 // Equals checks if the given MiiTubeSearchResult contains the same data as the current MiiTubeSearchResult
-func (mtsr *MiiTubeSearchResult) Equals(o types.RVType) bool {
+func (mtsr MiiTubeSearchResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*MiiTubeSearchResult); !ok {
 		return false
 	}
@@ -102,12 +102,12 @@ func (mtsr *MiiTubeSearchResult) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the MiiTubeSearchResult
-func (mtsr *MiiTubeSearchResult) String() string {
+func (mtsr MiiTubeSearchResult) String() string {
 	return mtsr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MiiTubeSearchResult using the provided indentation level
-func (mtsr *MiiTubeSearchResult) FormatToString(indentationLevel int) string {
+func (mtsr MiiTubeSearchResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -124,15 +124,12 @@ func (mtsr *MiiTubeSearchResult) FormatToString(indentationLevel int) string {
 }
 
 // NewMiiTubeSearchResult returns a new MiiTubeSearchResult
-func NewMiiTubeSearchResult() *MiiTubeSearchResult {
-	mtsr := &MiiTubeSearchResult{
-		Result:  types.NewList[*MiiTubeMiiInfo](),
-		Count:   types.NewPrimitiveU32(0),
-		Page:    types.NewPrimitiveU32(0),
-		HasNext: types.NewPrimitiveBool(false),
+func NewMiiTubeSearchResult() MiiTubeSearchResult {
+	return MiiTubeSearchResult{
+		Result:  types.NewList[MiiTubeMiiInfo](),
+		Count:   types.NewUInt32(0),
+		Page:    types.NewUInt32(0),
+		HasNext: types.NewBool(false),
 	}
 
-	mtsr.Result.Type = NewMiiTubeMiiInfo()
-
-	return mtsr
 }

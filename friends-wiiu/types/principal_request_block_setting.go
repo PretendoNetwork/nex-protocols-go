@@ -11,13 +11,13 @@ import (
 // PrincipalRequestBlockSetting is a type within the FriendsWiiU protocol
 type PrincipalRequestBlockSetting struct {
 	types.Structure
-	*types.Data
-	PID       *types.PrimitiveU32
-	IsBlocked *types.PrimitiveBool
+	types.Data
+	PID       types.UInt32
+	IsBlocked types.Bool
 }
 
 // WriteTo writes the PrincipalRequestBlockSetting to the given writable
-func (prbs *PrincipalRequestBlockSetting) WriteTo(writable types.Writable) {
+func (prbs PrincipalRequestBlockSetting) WriteTo(writable types.Writable) {
 	prbs.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -60,19 +60,19 @@ func (prbs *PrincipalRequestBlockSetting) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of PrincipalRequestBlockSetting
-func (prbs *PrincipalRequestBlockSetting) Copy() types.RVType {
+func (prbs PrincipalRequestBlockSetting) Copy() types.RVType {
 	copied := NewPrincipalRequestBlockSetting()
 
 	copied.StructureVersion = prbs.StructureVersion
-	copied.Data = prbs.Data.Copy().(*types.Data)
-	copied.PID = prbs.PID.Copy().(*types.PrimitiveU32)
-	copied.IsBlocked = prbs.IsBlocked.Copy().(*types.PrimitiveBool)
+	copied.Data = prbs.Data.Copy().(types.Data)
+	copied.PID = prbs.PID.Copy().(types.UInt32)
+	copied.IsBlocked = prbs.IsBlocked.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given PrincipalRequestBlockSetting contains the same data as the current PrincipalRequestBlockSetting
-func (prbs *PrincipalRequestBlockSetting) Equals(o types.RVType) bool {
+func (prbs PrincipalRequestBlockSetting) Equals(o types.RVType) bool {
 	if _, ok := o.(*PrincipalRequestBlockSetting); !ok {
 		return false
 	}
@@ -95,12 +95,12 @@ func (prbs *PrincipalRequestBlockSetting) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the PrincipalRequestBlockSetting
-func (prbs *PrincipalRequestBlockSetting) String() string {
+func (prbs PrincipalRequestBlockSetting) String() string {
 	return prbs.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PrincipalRequestBlockSetting using the provided indentation level
-func (prbs *PrincipalRequestBlockSetting) FormatToString(indentationLevel int) string {
+func (prbs PrincipalRequestBlockSetting) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,12 +116,11 @@ func (prbs *PrincipalRequestBlockSetting) FormatToString(indentationLevel int) s
 }
 
 // NewPrincipalRequestBlockSetting returns a new PrincipalRequestBlockSetting
-func NewPrincipalRequestBlockSetting() *PrincipalRequestBlockSetting {
-	prbs := &PrincipalRequestBlockSetting{
+func NewPrincipalRequestBlockSetting() PrincipalRequestBlockSetting {
+	return PrincipalRequestBlockSetting{
 		Data:      types.NewData(),
-		PID:       types.NewPrimitiveU32(0),
-		IsBlocked: types.NewPrimitiveBool(false),
+		PID:       types.NewUInt32(0),
+		IsBlocked: types.NewBool(false),
 	}
 
-	return prbs
 }

@@ -11,15 +11,15 @@ import (
 // DataStoreCustomRankingRatingCondition is a type within the DataStore protocol
 type DataStoreCustomRankingRatingCondition struct {
 	types.Structure
-	Slot     *types.PrimitiveS8
-	MinValue *types.PrimitiveS32
-	MaxValue *types.PrimitiveS32
-	MinCount *types.PrimitiveS32 // * Revision 1
-	MaxCount *types.PrimitiveS32 // * Revision 1
+	Slot     types.Int8
+	MinValue types.Int32
+	MaxValue types.Int32
+	MinCount types.Int32 // * Revision 1
+	MaxCount types.Int32 // * Revision 1
 }
 
 // WriteTo writes the DataStoreCustomRankingRatingCondition to the given writable
-func (dscrrc *DataStoreCustomRankingRatingCondition) WriteTo(writable types.Writable) {
+func (dscrrc DataStoreCustomRankingRatingCondition) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dscrrc.Slot.WriteTo(contentWritable)
@@ -83,21 +83,21 @@ func (dscrrc *DataStoreCustomRankingRatingCondition) ExtractFrom(readable types.
 }
 
 // Copy returns a new copied instance of DataStoreCustomRankingRatingCondition
-func (dscrrc *DataStoreCustomRankingRatingCondition) Copy() types.RVType {
+func (dscrrc DataStoreCustomRankingRatingCondition) Copy() types.RVType {
 	copied := NewDataStoreCustomRankingRatingCondition()
 
 	copied.StructureVersion = dscrrc.StructureVersion
-	copied.Slot = dscrrc.Slot.Copy().(*types.PrimitiveS8)
-	copied.MinValue = dscrrc.MinValue.Copy().(*types.PrimitiveS32)
-	copied.MaxValue = dscrrc.MaxValue.Copy().(*types.PrimitiveS32)
-	copied.MinCount = dscrrc.MinCount.Copy().(*types.PrimitiveS32)
-	copied.MaxCount = dscrrc.MaxCount.Copy().(*types.PrimitiveS32)
+	copied.Slot = dscrrc.Slot.Copy().(types.Int8)
+	copied.MinValue = dscrrc.MinValue.Copy().(types.Int32)
+	copied.MaxValue = dscrrc.MaxValue.Copy().(types.Int32)
+	copied.MinCount = dscrrc.MinCount.Copy().(types.Int32)
+	copied.MaxCount = dscrrc.MaxCount.Copy().(types.Int32)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreCustomRankingRatingCondition contains the same data as the current DataStoreCustomRankingRatingCondition
-func (dscrrc *DataStoreCustomRankingRatingCondition) Equals(o types.RVType) bool {
+func (dscrrc DataStoreCustomRankingRatingCondition) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreCustomRankingRatingCondition); !ok {
 		return false
 	}
@@ -128,12 +128,12 @@ func (dscrrc *DataStoreCustomRankingRatingCondition) Equals(o types.RVType) bool
 }
 
 // String returns the string representation of the DataStoreCustomRankingRatingCondition
-func (dscrrc *DataStoreCustomRankingRatingCondition) String() string {
+func (dscrrc DataStoreCustomRankingRatingCondition) String() string {
 	return dscrrc.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreCustomRankingRatingCondition using the provided indentation level
-func (dscrrc *DataStoreCustomRankingRatingCondition) FormatToString(indentationLevel int) string {
+func (dscrrc DataStoreCustomRankingRatingCondition) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -151,14 +151,13 @@ func (dscrrc *DataStoreCustomRankingRatingCondition) FormatToString(indentationL
 }
 
 // NewDataStoreCustomRankingRatingCondition returns a new DataStoreCustomRankingRatingCondition
-func NewDataStoreCustomRankingRatingCondition() *DataStoreCustomRankingRatingCondition {
-	dscrrc := &DataStoreCustomRankingRatingCondition{
-		Slot:     types.NewPrimitiveS8(0),
-		MinValue: types.NewPrimitiveS32(0),
-		MaxValue: types.NewPrimitiveS32(0),
-		MinCount: types.NewPrimitiveS32(0),
-		MaxCount: types.NewPrimitiveS32(0),
+func NewDataStoreCustomRankingRatingCondition() DataStoreCustomRankingRatingCondition {
+	return DataStoreCustomRankingRatingCondition{
+		Slot:     types.NewInt8(0),
+		MinValue: types.NewInt32(0),
+		MaxValue: types.NewInt32(0),
+		MinCount: types.NewInt32(0),
+		MaxCount: types.NewInt32(0),
 	}
 
-	return dscrrc
 }

@@ -11,19 +11,19 @@ import (
 // Ranking2GetParam is a type within the Ranking2 protocol
 type Ranking2GetParam struct {
 	types.Structure
-	NexUniqueID        *types.PrimitiveU64
-	PrincipalID        *types.PID
-	Category           *types.PrimitiveU32
-	Offset             *types.PrimitiveU32
-	Length             *types.PrimitiveU32
-	SortFlags          *types.PrimitiveU32
-	OptionFlags        *types.PrimitiveU32
-	Mode               *types.PrimitiveU8
-	NumSeasonsToGoBack *types.PrimitiveU8
+	NexUniqueID        types.UInt64
+	PrincipalID        types.PID
+	Category           types.UInt32
+	Offset             types.UInt32
+	Length             types.UInt32
+	SortFlags          types.UInt32
+	OptionFlags        types.UInt32
+	Mode               types.UInt8
+	NumSeasonsToGoBack types.UInt8
 }
 
 // WriteTo writes the Ranking2GetParam to the given writable
-func (rgp *Ranking2GetParam) WriteTo(writable types.Writable) {
+func (rgp Ranking2GetParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rgp.NexUniqueID.WriteTo(contentWritable)
@@ -101,25 +101,25 @@ func (rgp *Ranking2GetParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Ranking2GetParam
-func (rgp *Ranking2GetParam) Copy() types.RVType {
+func (rgp Ranking2GetParam) Copy() types.RVType {
 	copied := NewRanking2GetParam()
 
 	copied.StructureVersion = rgp.StructureVersion
-	copied.NexUniqueID = rgp.NexUniqueID.Copy().(*types.PrimitiveU64)
-	copied.PrincipalID = rgp.PrincipalID.Copy().(*types.PID)
-	copied.Category = rgp.Category.Copy().(*types.PrimitiveU32)
-	copied.Offset = rgp.Offset.Copy().(*types.PrimitiveU32)
-	copied.Length = rgp.Length.Copy().(*types.PrimitiveU32)
-	copied.SortFlags = rgp.SortFlags.Copy().(*types.PrimitiveU32)
-	copied.OptionFlags = rgp.OptionFlags.Copy().(*types.PrimitiveU32)
-	copied.Mode = rgp.Mode.Copy().(*types.PrimitiveU8)
-	copied.NumSeasonsToGoBack = rgp.NumSeasonsToGoBack.Copy().(*types.PrimitiveU8)
+	copied.NexUniqueID = rgp.NexUniqueID.Copy().(types.UInt64)
+	copied.PrincipalID = rgp.PrincipalID.Copy().(types.PID)
+	copied.Category = rgp.Category.Copy().(types.UInt32)
+	copied.Offset = rgp.Offset.Copy().(types.UInt32)
+	copied.Length = rgp.Length.Copy().(types.UInt32)
+	copied.SortFlags = rgp.SortFlags.Copy().(types.UInt32)
+	copied.OptionFlags = rgp.OptionFlags.Copy().(types.UInt32)
+	copied.Mode = rgp.Mode.Copy().(types.UInt8)
+	copied.NumSeasonsToGoBack = rgp.NumSeasonsToGoBack.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2GetParam contains the same data as the current Ranking2GetParam
-func (rgp *Ranking2GetParam) Equals(o types.RVType) bool {
+func (rgp Ranking2GetParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2GetParam); !ok {
 		return false
 	}
@@ -166,12 +166,12 @@ func (rgp *Ranking2GetParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the Ranking2GetParam
-func (rgp *Ranking2GetParam) String() string {
+func (rgp Ranking2GetParam) String() string {
 	return rgp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2GetParam using the provided indentation level
-func (rgp *Ranking2GetParam) FormatToString(indentationLevel int) string {
+func (rgp Ranking2GetParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,18 +193,17 @@ func (rgp *Ranking2GetParam) FormatToString(indentationLevel int) string {
 }
 
 // NewRanking2GetParam returns a new Ranking2GetParam
-func NewRanking2GetParam() *Ranking2GetParam {
-	rgp := &Ranking2GetParam{
-		NexUniqueID:        types.NewPrimitiveU64(0),
+func NewRanking2GetParam() Ranking2GetParam {
+	return Ranking2GetParam{
+		NexUniqueID:        types.NewUInt64(0),
 		PrincipalID:        types.NewPID(0),
-		Category:           types.NewPrimitiveU32(0),
-		Offset:             types.NewPrimitiveU32(0),
-		Length:             types.NewPrimitiveU32(0),
-		SortFlags:          types.NewPrimitiveU32(0),
-		OptionFlags:        types.NewPrimitiveU32(0),
-		Mode:               types.NewPrimitiveU8(0),
-		NumSeasonsToGoBack: types.NewPrimitiveU8(0),
+		Category:           types.NewUInt32(0),
+		Offset:             types.NewUInt32(0),
+		Length:             types.NewUInt32(0),
+		SortFlags:          types.NewUInt32(0),
+		OptionFlags:        types.NewUInt32(0),
+		Mode:               types.NewUInt8(0),
+		NumSeasonsToGoBack: types.NewUInt8(0),
 	}
 
-	return rgp
 }

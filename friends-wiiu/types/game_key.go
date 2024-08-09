@@ -11,13 +11,13 @@ import (
 // GameKey is a type within the FriendsWiiU protocol
 type GameKey struct {
 	types.Structure
-	*types.Data
-	TitleID      *types.PrimitiveU64
-	TitleVersion *types.PrimitiveU16
+	types.Data
+	TitleID      types.UInt64
+	TitleVersion types.UInt16
 }
 
 // WriteTo writes the GameKey to the given writable
-func (gk *GameKey) WriteTo(writable types.Writable) {
+func (gk GameKey) WriteTo(writable types.Writable) {
 	gk.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -60,19 +60,19 @@ func (gk *GameKey) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of GameKey
-func (gk *GameKey) Copy() types.RVType {
+func (gk GameKey) Copy() types.RVType {
 	copied := NewGameKey()
 
 	copied.StructureVersion = gk.StructureVersion
-	copied.Data = gk.Data.Copy().(*types.Data)
-	copied.TitleID = gk.TitleID.Copy().(*types.PrimitiveU64)
-	copied.TitleVersion = gk.TitleVersion.Copy().(*types.PrimitiveU16)
+	copied.Data = gk.Data.Copy().(types.Data)
+	copied.TitleID = gk.TitleID.Copy().(types.UInt64)
+	copied.TitleVersion = gk.TitleVersion.Copy().(types.UInt16)
 
 	return copied
 }
 
 // Equals checks if the given GameKey contains the same data as the current GameKey
-func (gk *GameKey) Equals(o types.RVType) bool {
+func (gk GameKey) Equals(o types.RVType) bool {
 	if _, ok := o.(*GameKey); !ok {
 		return false
 	}
@@ -95,12 +95,12 @@ func (gk *GameKey) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the GameKey
-func (gk *GameKey) String() string {
+func (gk GameKey) String() string {
 	return gk.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GameKey using the provided indentation level
-func (gk *GameKey) FormatToString(indentationLevel int) string {
+func (gk GameKey) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,12 +116,11 @@ func (gk *GameKey) FormatToString(indentationLevel int) string {
 }
 
 // NewGameKey returns a new GameKey
-func NewGameKey() *GameKey {
-	gk := &GameKey{
+func NewGameKey() GameKey {
+	return GameKey{
 		Data:         types.NewData(),
-		TitleID:      types.NewPrimitiveU64(0),
-		TitleVersion: types.NewPrimitiveU16(0),
+		TitleID:      types.NewUInt64(0),
+		TitleVersion: types.NewUInt16(0),
 	}
 
-	return gk
 }

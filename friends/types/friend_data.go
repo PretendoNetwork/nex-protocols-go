@@ -11,15 +11,15 @@ import (
 // FriendData is a type within the Friends protocol
 type FriendData struct {
 	types.Structure
-	PID            *types.PID
-	StrName        *types.String
-	ByRelationship *types.PrimitiveU8
-	UIDetails      *types.PrimitiveU32
-	StrStatus      *types.String
+	PID            types.PID
+	StrName        types.String
+	ByRelationship types.UInt8
+	UIDetails      types.UInt32
+	StrStatus      types.String
 }
 
 // WriteTo writes the FriendData to the given writable
-func (fd *FriendData) WriteTo(writable types.Writable) {
+func (fd FriendData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	fd.PID.WriteTo(contentWritable)
@@ -73,21 +73,21 @@ func (fd *FriendData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendData
-func (fd *FriendData) Copy() types.RVType {
+func (fd FriendData) Copy() types.RVType {
 	copied := NewFriendData()
 
 	copied.StructureVersion = fd.StructureVersion
-	copied.PID = fd.PID.Copy().(*types.PID)
-	copied.StrName = fd.StrName.Copy().(*types.String)
-	copied.ByRelationship = fd.ByRelationship.Copy().(*types.PrimitiveU8)
-	copied.UIDetails = fd.UIDetails.Copy().(*types.PrimitiveU32)
-	copied.StrStatus = fd.StrStatus.Copy().(*types.String)
+	copied.PID = fd.PID.Copy().(types.PID)
+	copied.StrName = fd.StrName.Copy().(types.String)
+	copied.ByRelationship = fd.ByRelationship.Copy().(types.UInt8)
+	copied.UIDetails = fd.UIDetails.Copy().(types.UInt32)
+	copied.StrStatus = fd.StrStatus.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given FriendData contains the same data as the current FriendData
-func (fd *FriendData) Equals(o types.RVType) bool {
+func (fd FriendData) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendData); !ok {
 		return false
 	}
@@ -118,12 +118,12 @@ func (fd *FriendData) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the FriendData
-func (fd *FriendData) String() string {
+func (fd FriendData) String() string {
 	return fd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendData using the provided indentation level
-func (fd *FriendData) FormatToString(indentationLevel int) string {
+func (fd FriendData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,14 +141,13 @@ func (fd *FriendData) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendData returns a new FriendData
-func NewFriendData() *FriendData {
-	fd := &FriendData{
+func NewFriendData() FriendData {
+	return FriendData{
 		PID:            types.NewPID(0),
 		StrName:        types.NewString(""),
-		ByRelationship: types.NewPrimitiveU8(0),
-		UIDetails:      types.NewPrimitiveU32(0),
+		ByRelationship: types.NewUInt8(0),
+		UIDetails:      types.NewUInt32(0),
 		StrStatus:      types.NewString(""),
 	}
 
-	return fd
 }

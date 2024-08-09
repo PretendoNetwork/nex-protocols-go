@@ -27,13 +27,13 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	target := datastore_types.NewDataStoreRatingTarget()
-	transactional := types.NewPrimitiveBool(false)
+	var transactional types.Bool
 
 	var err error
 
 	err = target.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, target, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, target, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

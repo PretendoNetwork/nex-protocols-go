@@ -26,12 +26,11 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	infoArray := types.NewList[*ranking2_types.Ranking2ChartInfoInput]()
-	infoArray.Type = ranking2_types.NewRanking2ChartInfoInput()
+	var infoArray types.List[ranking2_types.Ranking2ChartInfoInput]
 
 	err := infoArray.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, infoArray)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

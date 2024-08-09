@@ -11,11 +11,11 @@ import (
 // NintendoLoginData is a type within the TicketGranting protocol
 type NintendoLoginData struct {
 	types.Structure
-	Token *types.String
+	Token types.String
 }
 
 // WriteTo writes the NintendoLoginData to the given writable
-func (nld *NintendoLoginData) WriteTo(writable types.Writable) {
+func (nld NintendoLoginData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	nld.Token.WriteTo(contentWritable)
@@ -45,17 +45,17 @@ func (nld *NintendoLoginData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of NintendoLoginData
-func (nld *NintendoLoginData) Copy() types.RVType {
+func (nld NintendoLoginData) Copy() types.RVType {
 	copied := NewNintendoLoginData()
 
 	copied.StructureVersion = nld.StructureVersion
-	copied.Token = nld.Token.Copy().(*types.String)
+	copied.Token = nld.Token.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given NintendoLoginData contains the same data as the current NintendoLoginData
-func (nld *NintendoLoginData) Equals(o types.RVType) bool {
+func (nld NintendoLoginData) Equals(o types.RVType) bool {
 	if _, ok := o.(*NintendoLoginData); !ok {
 		return false
 	}
@@ -70,12 +70,12 @@ func (nld *NintendoLoginData) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the NintendoLoginData
-func (nld *NintendoLoginData) String() string {
+func (nld NintendoLoginData) String() string {
 	return nld.FormatToString(0)
 }
 
 // FormatToString pretty-prints the NintendoLoginData using the provided indentation level
-func (nld *NintendoLoginData) FormatToString(indentationLevel int) string {
+func (nld NintendoLoginData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +89,9 @@ func (nld *NintendoLoginData) FormatToString(indentationLevel int) string {
 }
 
 // NewNintendoLoginData returns a new NintendoLoginData
-func NewNintendoLoginData() *NintendoLoginData {
-	nld := &NintendoLoginData{
+func NewNintendoLoginData() NintendoLoginData {
+	return NintendoLoginData{
 		Token: types.NewString(""),
 	}
 
-	return nld
 }

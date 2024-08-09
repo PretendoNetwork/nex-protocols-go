@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetNumberOfMessages(packet nex.PacketInterface) 
 
 	err := recipient.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetNumberOfMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetNumberOfMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, recipient)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

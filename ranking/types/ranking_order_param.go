@@ -11,16 +11,16 @@ import (
 // RankingOrderParam is a type within the Ranking protocol
 type RankingOrderParam struct {
 	types.Structure
-	OrderCalculation *types.PrimitiveU8
-	GroupIndex       *types.PrimitiveU8
-	GroupNum         *types.PrimitiveU8
-	TimeScope        *types.PrimitiveU8
-	Offset           *types.PrimitiveU32
-	Length           *types.PrimitiveU8
+	OrderCalculation types.UInt8
+	GroupIndex       types.UInt8
+	GroupNum         types.UInt8
+	TimeScope        types.UInt8
+	Offset           types.UInt32
+	Length           types.UInt8
 }
 
 // WriteTo writes the RankingOrderParam to the given writable
-func (rop *RankingOrderParam) WriteTo(writable types.Writable) {
+func (rop RankingOrderParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rop.OrderCalculation.WriteTo(contentWritable)
@@ -80,22 +80,22 @@ func (rop *RankingOrderParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of RankingOrderParam
-func (rop *RankingOrderParam) Copy() types.RVType {
+func (rop RankingOrderParam) Copy() types.RVType {
 	copied := NewRankingOrderParam()
 
 	copied.StructureVersion = rop.StructureVersion
-	copied.OrderCalculation = rop.OrderCalculation.Copy().(*types.PrimitiveU8)
-	copied.GroupIndex = rop.GroupIndex.Copy().(*types.PrimitiveU8)
-	copied.GroupNum = rop.GroupNum.Copy().(*types.PrimitiveU8)
-	copied.TimeScope = rop.TimeScope.Copy().(*types.PrimitiveU8)
-	copied.Offset = rop.Offset.Copy().(*types.PrimitiveU32)
-	copied.Length = rop.Length.Copy().(*types.PrimitiveU8)
+	copied.OrderCalculation = rop.OrderCalculation.Copy().(types.UInt8)
+	copied.GroupIndex = rop.GroupIndex.Copy().(types.UInt8)
+	copied.GroupNum = rop.GroupNum.Copy().(types.UInt8)
+	copied.TimeScope = rop.TimeScope.Copy().(types.UInt8)
+	copied.Offset = rop.Offset.Copy().(types.UInt32)
+	copied.Length = rop.Length.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given RankingOrderParam contains the same data as the current RankingOrderParam
-func (rop *RankingOrderParam) Equals(o types.RVType) bool {
+func (rop RankingOrderParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*RankingOrderParam); !ok {
 		return false
 	}
@@ -130,12 +130,12 @@ func (rop *RankingOrderParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the RankingOrderParam
-func (rop *RankingOrderParam) String() string {
+func (rop RankingOrderParam) String() string {
 	return rop.FormatToString(0)
 }
 
 // FormatToString pretty-prints the RankingOrderParam using the provided indentation level
-func (rop *RankingOrderParam) FormatToString(indentationLevel int) string {
+func (rop RankingOrderParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,15 +154,14 @@ func (rop *RankingOrderParam) FormatToString(indentationLevel int) string {
 }
 
 // NewRankingOrderParam returns a new RankingOrderParam
-func NewRankingOrderParam() *RankingOrderParam {
-	rop := &RankingOrderParam{
-		OrderCalculation: types.NewPrimitiveU8(0),
-		GroupIndex:       types.NewPrimitiveU8(0),
-		GroupNum:         types.NewPrimitiveU8(0),
-		TimeScope:        types.NewPrimitiveU8(0),
-		Offset:           types.NewPrimitiveU32(0),
-		Length:           types.NewPrimitiveU8(0),
+func NewRankingOrderParam() RankingOrderParam {
+	return RankingOrderParam{
+		OrderCalculation: types.NewUInt8(0),
+		GroupIndex:       types.NewUInt8(0),
+		GroupNum:         types.NewUInt8(0),
+		TimeScope:        types.NewUInt8(0),
+		Offset:           types.NewUInt32(0),
+		Length:           types.NewUInt8(0),
 	}
 
-	return rop
 }

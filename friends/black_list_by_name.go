@@ -25,14 +25,14 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strPlayerName := types.NewString("")
-	uiDetails := types.NewPrimitiveU32(0)
+	var strPlayerName types.String
+	var uiDetails types.UInt32
 
 	var err error
 
 	err = strPlayerName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.BlackListByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.BlackListByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, strPlayerName, uiDetails)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 
 	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.BlackListByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.BlackListByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, strPlayerName, uiDetails)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

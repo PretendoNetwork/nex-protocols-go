@@ -11,12 +11,12 @@ import (
 // DataStorePrepareGetReplayParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStorePrepareGetReplayParam struct {
 	types.Structure
-	ReplayID  *types.PrimitiveU64
-	ExtraData *types.List[*types.String]
+	ReplayID  types.UInt64
+	ExtraData types.List[types.String]
 }
 
 // WriteTo writes the DataStorePrepareGetReplayParam to the given writable
-func (dspgrp *DataStorePrepareGetReplayParam) WriteTo(writable types.Writable) {
+func (dspgrp DataStorePrepareGetReplayParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspgrp.ReplayID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dspgrp *DataStorePrepareGetReplayParam) ExtractFrom(readable types.Readabl
 }
 
 // Copy returns a new copied instance of DataStorePrepareGetReplayParam
-func (dspgrp *DataStorePrepareGetReplayParam) Copy() types.RVType {
+func (dspgrp DataStorePrepareGetReplayParam) Copy() types.RVType {
 	copied := NewDataStorePrepareGetReplayParam()
 
 	copied.StructureVersion = dspgrp.StructureVersion
-	copied.ReplayID = dspgrp.ReplayID.Copy().(*types.PrimitiveU64)
-	copied.ExtraData = dspgrp.ExtraData.Copy().(*types.List[*types.String])
+	copied.ReplayID = dspgrp.ReplayID.Copy().(types.UInt64)
+	copied.ExtraData = dspgrp.ExtraData.Copy().(types.List[types.String])
 
 	return copied
 }
 
 // Equals checks if the given DataStorePrepareGetReplayParam contains the same data as the current DataStorePrepareGetReplayParam
-func (dspgrp *DataStorePrepareGetReplayParam) Equals(o types.RVType) bool {
+func (dspgrp DataStorePrepareGetReplayParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePrepareGetReplayParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dspgrp *DataStorePrepareGetReplayParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStorePrepareGetReplayParam
-func (dspgrp *DataStorePrepareGetReplayParam) String() string {
+func (dspgrp DataStorePrepareGetReplayParam) String() string {
 	return dspgrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePrepareGetReplayParam using the provided indentation level
-func (dspgrp *DataStorePrepareGetReplayParam) FormatToString(indentationLevel int) string {
+func (dspgrp DataStorePrepareGetReplayParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,13 +102,10 @@ func (dspgrp *DataStorePrepareGetReplayParam) FormatToString(indentationLevel in
 }
 
 // NewDataStorePrepareGetReplayParam returns a new DataStorePrepareGetReplayParam
-func NewDataStorePrepareGetReplayParam() *DataStorePrepareGetReplayParam {
-	dspgrp := &DataStorePrepareGetReplayParam{
-		ReplayID:  types.NewPrimitiveU64(0),
-		ExtraData: types.NewList[*types.String](),
+func NewDataStorePrepareGetReplayParam() DataStorePrepareGetReplayParam {
+	return DataStorePrepareGetReplayParam{
+		ReplayID:  types.NewUInt64(0),
+		ExtraData: types.NewList[types.String](),
 	}
 
-	dspgrp.ExtraData.Type = types.NewString("")
-
-	return dspgrp
 }

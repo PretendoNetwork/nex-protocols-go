@@ -35,8 +35,8 @@ type shopProtocol = shop.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	shopProtocol
-	GetRivToken func(err error, packet nex.PacketInterface, callID uint32, itemCode *types.String, referenceID *types.QBuffer) (*nex.RMCMessage, *nex.Error)
-	PostPlayLog func(err error, packet nex.PacketInterface, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) (*nex.RMCMessage, *nex.Error)
+	GetRivToken func(err error, packet nex.PacketInterface, callID uint32, itemCode types.String, referenceID types.QBuffer) (*nex.RMCMessage, *nex.Error)
+	PostPlayLog func(err error, packet nex.PacketInterface, callID uint32, param shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler

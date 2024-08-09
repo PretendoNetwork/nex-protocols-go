@@ -11,12 +11,12 @@ import (
 // ServiceItemRightInfo is a type within the ServiceItem protocol
 type ServiceItemRightInfo struct {
 	types.Structure
-	ReferenceID   *types.String
-	AccountRights *types.List[*ServiceItemAccountRight]
+	ReferenceID   types.String
+	AccountRights types.List[ServiceItemAccountRight]
 }
 
 // WriteTo writes the ServiceItemRightInfo to the given writable
-func (siri *ServiceItemRightInfo) WriteTo(writable types.Writable) {
+func (siri ServiceItemRightInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siri.ReferenceID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (siri *ServiceItemRightInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemRightInfo
-func (siri *ServiceItemRightInfo) Copy() types.RVType {
+func (siri ServiceItemRightInfo) Copy() types.RVType {
 	copied := NewServiceItemRightInfo()
 
 	copied.StructureVersion = siri.StructureVersion
-	copied.ReferenceID = siri.ReferenceID.Copy().(*types.String)
-	copied.AccountRights = siri.AccountRights.Copy().(*types.List[*ServiceItemAccountRight])
+	copied.ReferenceID = siri.ReferenceID.Copy().(types.String)
+	copied.AccountRights = siri.AccountRights.Copy().(types.List[ServiceItemAccountRight])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemRightInfo contains the same data as the current ServiceItemRightInfo
-func (siri *ServiceItemRightInfo) Equals(o types.RVType) bool {
+func (siri ServiceItemRightInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemRightInfo); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (siri *ServiceItemRightInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemRightInfo
-func (siri *ServiceItemRightInfo) String() string {
+func (siri ServiceItemRightInfo) String() string {
 	return siri.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemRightInfo using the provided indentation level
-func (siri *ServiceItemRightInfo) FormatToString(indentationLevel int) string {
+func (siri ServiceItemRightInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,13 +102,10 @@ func (siri *ServiceItemRightInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemRightInfo returns a new ServiceItemRightInfo
-func NewServiceItemRightInfo() *ServiceItemRightInfo {
-	siri := &ServiceItemRightInfo{
+func NewServiceItemRightInfo() ServiceItemRightInfo {
+	return ServiceItemRightInfo{
 		ReferenceID:   types.NewString(""),
-		AccountRights: types.NewList[*ServiceItemAccountRight](),
+		AccountRights: types.NewList[ServiceItemAccountRight](),
 	}
 
-	siri.AccountRights.Type = NewServiceItemAccountRight()
-
-	return siri
 }

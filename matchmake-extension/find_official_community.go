@@ -25,14 +25,14 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	isAvailableOnly := types.NewPrimitiveBool(false)
-	resultRange := types.NewResultRange()
+	var isAvailableOnly types.Bool
+	var resultRange types.ResultRange
 
 	var err error
 
 	err = isAvailableOnly.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindOfficialCommunity(fmt.Errorf("Failed to read isAvailableOnly from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindOfficialCommunity(fmt.Errorf("Failed to read isAvailableOnly from parameters. %s", err.Error()), packet, callID, isAvailableOnly, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindOfficialCommunity(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindOfficialCommunity(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, isAvailableOnly, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

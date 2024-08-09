@@ -11,19 +11,19 @@ import (
 // DataStoreChangeMetaParamV1 is a type within the DataStore protocol
 type DataStoreChangeMetaParamV1 struct {
 	types.Structure
-	DataID         *types.PrimitiveU64
-	ModifiesFlag   *types.PrimitiveU32
-	Name           *types.String
-	Permission     *DataStorePermission
-	DelPermission  *DataStorePermission
-	Period         *types.PrimitiveU16
-	MetaBinary     *types.QBuffer
-	Tags           *types.List[*types.String]
-	UpdatePassword *types.PrimitiveU64
+	DataID         types.UInt64
+	ModifiesFlag   types.UInt32
+	Name           types.String
+	Permission     DataStorePermission
+	DelPermission  DataStorePermission
+	Period         types.UInt16
+	MetaBinary     types.QBuffer
+	Tags           types.List[types.String]
+	UpdatePassword types.UInt64
 }
 
 // WriteTo writes the DataStoreChangeMetaParamV1 to the given writable
-func (dscmpv *DataStoreChangeMetaParamV1) WriteTo(writable types.Writable) {
+func (dscmpv DataStoreChangeMetaParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dscmpv.DataID.WriteTo(contentWritable)
@@ -101,25 +101,25 @@ func (dscmpv *DataStoreChangeMetaParamV1) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of DataStoreChangeMetaParamV1
-func (dscmpv *DataStoreChangeMetaParamV1) Copy() types.RVType {
+func (dscmpv DataStoreChangeMetaParamV1) Copy() types.RVType {
 	copied := NewDataStoreChangeMetaParamV1()
 
 	copied.StructureVersion = dscmpv.StructureVersion
-	copied.DataID = dscmpv.DataID.Copy().(*types.PrimitiveU64)
-	copied.ModifiesFlag = dscmpv.ModifiesFlag.Copy().(*types.PrimitiveU32)
-	copied.Name = dscmpv.Name.Copy().(*types.String)
-	copied.Permission = dscmpv.Permission.Copy().(*DataStorePermission)
-	copied.DelPermission = dscmpv.DelPermission.Copy().(*DataStorePermission)
-	copied.Period = dscmpv.Period.Copy().(*types.PrimitiveU16)
-	copied.MetaBinary = dscmpv.MetaBinary.Copy().(*types.QBuffer)
-	copied.Tags = dscmpv.Tags.Copy().(*types.List[*types.String])
-	copied.UpdatePassword = dscmpv.UpdatePassword.Copy().(*types.PrimitiveU64)
+	copied.DataID = dscmpv.DataID.Copy().(types.UInt64)
+	copied.ModifiesFlag = dscmpv.ModifiesFlag.Copy().(types.UInt32)
+	copied.Name = dscmpv.Name.Copy().(types.String)
+	copied.Permission = dscmpv.Permission.Copy().(DataStorePermission)
+	copied.DelPermission = dscmpv.DelPermission.Copy().(DataStorePermission)
+	copied.Period = dscmpv.Period.Copy().(types.UInt16)
+	copied.MetaBinary = dscmpv.MetaBinary.Copy().(types.QBuffer)
+	copied.Tags = dscmpv.Tags.Copy().(types.List[types.String])
+	copied.UpdatePassword = dscmpv.UpdatePassword.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreChangeMetaParamV1 contains the same data as the current DataStoreChangeMetaParamV1
-func (dscmpv *DataStoreChangeMetaParamV1) Equals(o types.RVType) bool {
+func (dscmpv DataStoreChangeMetaParamV1) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreChangeMetaParamV1); !ok {
 		return false
 	}
@@ -166,12 +166,12 @@ func (dscmpv *DataStoreChangeMetaParamV1) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreChangeMetaParamV1
-func (dscmpv *DataStoreChangeMetaParamV1) String() string {
+func (dscmpv DataStoreChangeMetaParamV1) String() string {
 	return dscmpv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreChangeMetaParamV1 using the provided indentation level
-func (dscmpv *DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) string {
+func (dscmpv DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,20 +193,17 @@ func (dscmpv *DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) s
 }
 
 // NewDataStoreChangeMetaParamV1 returns a new DataStoreChangeMetaParamV1
-func NewDataStoreChangeMetaParamV1() *DataStoreChangeMetaParamV1 {
-	dscmpv := &DataStoreChangeMetaParamV1{
-		DataID:         types.NewPrimitiveU64(0),
-		ModifiesFlag:   types.NewPrimitiveU32(0),
+func NewDataStoreChangeMetaParamV1() DataStoreChangeMetaParamV1 {
+	return DataStoreChangeMetaParamV1{
+		DataID:         types.NewUInt64(0),
+		ModifiesFlag:   types.NewUInt32(0),
 		Name:           types.NewString(""),
 		Permission:     NewDataStorePermission(),
 		DelPermission:  NewDataStorePermission(),
-		Period:         types.NewPrimitiveU16(0),
+		Period:         types.NewUInt16(0),
 		MetaBinary:     types.NewQBuffer(nil),
-		Tags:           types.NewList[*types.String](),
-		UpdatePassword: types.NewPrimitiveU64(0),
+		Tags:           types.NewList[types.String](),
+		UpdatePassword: types.NewUInt64(0),
 	}
 
-	dscmpv.Tags.Type = types.NewString("")
-
-	return dscmpv
 }

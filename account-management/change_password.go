@@ -25,11 +25,11 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strNewKey := types.NewString("")
+	var strNewKey types.String
 
 	err := strNewKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangePassword(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.ChangePassword(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), packet, callID, strNewKey)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,14 +11,14 @@ import (
 // ShopItem is a type within the Shop protocol
 type ShopItem struct {
 	types.Structure
-	ItemID      *types.PrimitiveU32
-	ReferenceID *types.QBuffer
-	ServiceName *types.String
-	ItemCode    *types.String
+	ItemID      types.UInt32
+	ReferenceID types.QBuffer
+	ServiceName types.String
+	ItemCode    types.String
 }
 
 // WriteTo writes the ShopItem to the given writable
-func (si *ShopItem) WriteTo(writable types.Writable) {
+func (si ShopItem) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	si.ItemID.WriteTo(contentWritable)
@@ -66,20 +66,20 @@ func (si *ShopItem) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ShopItem
-func (si *ShopItem) Copy() types.RVType {
+func (si ShopItem) Copy() types.RVType {
 	copied := NewShopItem()
 
 	copied.StructureVersion = si.StructureVersion
-	copied.ItemID = si.ItemID.Copy().(*types.PrimitiveU32)
-	copied.ReferenceID = si.ReferenceID.Copy().(*types.QBuffer)
-	copied.ServiceName = si.ServiceName.Copy().(*types.String)
-	copied.ItemCode = si.ItemCode.Copy().(*types.String)
+	copied.ItemID = si.ItemID.Copy().(types.UInt32)
+	copied.ReferenceID = si.ReferenceID.Copy().(types.QBuffer)
+	copied.ServiceName = si.ServiceName.Copy().(types.String)
+	copied.ItemCode = si.ItemCode.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ShopItem contains the same data as the current ShopItem
-func (si *ShopItem) Equals(o types.RVType) bool {
+func (si ShopItem) Equals(o types.RVType) bool {
 	if _, ok := o.(*ShopItem); !ok {
 		return false
 	}
@@ -106,12 +106,12 @@ func (si *ShopItem) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ShopItem
-func (si *ShopItem) String() string {
+func (si ShopItem) String() string {
 	return si.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ShopItem using the provided indentation level
-func (si *ShopItem) FormatToString(indentationLevel int) string {
+func (si ShopItem) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +128,12 @@ func (si *ShopItem) FormatToString(indentationLevel int) string {
 }
 
 // NewShopItem returns a new ShopItem
-func NewShopItem() *ShopItem {
-	si := &ShopItem{
-		ItemID:      types.NewPrimitiveU32(0),
+func NewShopItem() ShopItem {
+	return ShopItem{
+		ItemID:      types.NewUInt32(0),
 		ReferenceID: types.NewQBuffer(nil),
 		ServiceName: types.NewString(""),
 		ItemCode:    types.NewString(""),
 	}
 
-	return si
 }

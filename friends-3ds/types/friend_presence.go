@@ -11,13 +11,13 @@ import (
 // FriendPresence is a type within the Friends3DS protocol
 type FriendPresence struct {
 	types.Structure
-	*types.Data
-	PID      *types.PID
-	Presence *NintendoPresence
+	types.Data
+	PID      types.PID
+	Presence NintendoPresence
 }
 
 // WriteTo writes the FriendPresence to the given writable
-func (fp *FriendPresence) WriteTo(writable types.Writable) {
+func (fp FriendPresence) WriteTo(writable types.Writable) {
 	fp.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -60,19 +60,19 @@ func (fp *FriendPresence) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendPresence
-func (fp *FriendPresence) Copy() types.RVType {
+func (fp FriendPresence) Copy() types.RVType {
 	copied := NewFriendPresence()
 
 	copied.StructureVersion = fp.StructureVersion
-	copied.Data = fp.Data.Copy().(*types.Data)
-	copied.PID = fp.PID.Copy().(*types.PID)
-	copied.Presence = fp.Presence.Copy().(*NintendoPresence)
+	copied.Data = fp.Data.Copy().(types.Data)
+	copied.PID = fp.PID.Copy().(types.PID)
+	copied.Presence = fp.Presence.Copy().(NintendoPresence)
 
 	return copied
 }
 
 // Equals checks if the given FriendPresence contains the same data as the current FriendPresence
-func (fp *FriendPresence) Equals(o types.RVType) bool {
+func (fp FriendPresence) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendPresence); !ok {
 		return false
 	}
@@ -95,12 +95,12 @@ func (fp *FriendPresence) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the FriendPresence
-func (fp *FriendPresence) String() string {
+func (fp FriendPresence) String() string {
 	return fp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendPresence using the provided indentation level
-func (fp *FriendPresence) FormatToString(indentationLevel int) string {
+func (fp FriendPresence) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,12 +116,11 @@ func (fp *FriendPresence) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendPresence returns a new FriendPresence
-func NewFriendPresence() *FriendPresence {
-	fp := &FriendPresence{
+func NewFriendPresence() FriendPresence {
+	return FriendPresence{
 		Data:     types.NewData(),
 		PID:      types.NewPID(0),
 		Presence: NewNintendoPresence(),
 	}
 
-	return fp
 }

@@ -11,13 +11,13 @@ import (
 // SubscriberPostContentParam is a type within the Shop protocol
 type SubscriberPostContentParam struct {
 	types.Structure
-	Unknown1 *types.List[*types.String]
-	Unknown2 *types.String
-	Unknown3 *types.QBuffer
+	Unknown1 types.List[types.String]
+	Unknown2 types.String
+	Unknown3 types.QBuffer
 }
 
 // WriteTo writes the SubscriberPostContentParam to the given writable
-func (spcp *SubscriberPostContentParam) WriteTo(writable types.Writable) {
+func (spcp SubscriberPostContentParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	spcp.Unknown1.WriteTo(contentWritable)
@@ -59,19 +59,19 @@ func (spcp *SubscriberPostContentParam) ExtractFrom(readable types.Readable) err
 }
 
 // Copy returns a new copied instance of SubscriberPostContentParam
-func (spcp *SubscriberPostContentParam) Copy() types.RVType {
+func (spcp SubscriberPostContentParam) Copy() types.RVType {
 	copied := NewSubscriberPostContentParam()
 
 	copied.StructureVersion = spcp.StructureVersion
-	copied.Unknown1 = spcp.Unknown1.Copy().(*types.List[*types.String])
-	copied.Unknown2 = spcp.Unknown2.Copy().(*types.String)
-	copied.Unknown3 = spcp.Unknown3.Copy().(*types.QBuffer)
+	copied.Unknown1 = spcp.Unknown1.Copy().(types.List[types.String])
+	copied.Unknown2 = spcp.Unknown2.Copy().(types.String)
+	copied.Unknown3 = spcp.Unknown3.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given SubscriberPostContentParam contains the same data as the current SubscriberPostContentParam
-func (spcp *SubscriberPostContentParam) Equals(o types.RVType) bool {
+func (spcp SubscriberPostContentParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*SubscriberPostContentParam); !ok {
 		return false
 	}
@@ -94,12 +94,12 @@ func (spcp *SubscriberPostContentParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the SubscriberPostContentParam
-func (spcp *SubscriberPostContentParam) String() string {
+func (spcp SubscriberPostContentParam) String() string {
 	return spcp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SubscriberPostContentParam using the provided indentation level
-func (spcp *SubscriberPostContentParam) FormatToString(indentationLevel int) string {
+func (spcp SubscriberPostContentParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +115,11 @@ func (spcp *SubscriberPostContentParam) FormatToString(indentationLevel int) str
 }
 
 // NewSubscriberPostContentParam returns a new SubscriberPostContentParam
-func NewSubscriberPostContentParam() *SubscriberPostContentParam {
-	spcp := &SubscriberPostContentParam{
-		Unknown1: types.NewList[*types.String](),
+func NewSubscriberPostContentParam() SubscriberPostContentParam {
+	return SubscriberPostContentParam{
+		Unknown1: types.NewList[types.String](),
 		Unknown2: types.NewString(""),
 		Unknown3: types.NewQBuffer(nil),
 	}
 
-	spcp.Unknown1.Type = types.NewString("")
-
-	return spcp
 }

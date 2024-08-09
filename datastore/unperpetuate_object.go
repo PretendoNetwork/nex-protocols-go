@@ -25,14 +25,14 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	persistenceSlotID := types.NewPrimitiveU16(0)
-	deleteLastObject := types.NewPrimitiveBool(false)
+	var persistenceSlotID types.UInt16
+	var deleteLastObject types.Bool
 
 	var err error
 
 	err = persistenceSlotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UnperpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UnperpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, persistenceSlotID, deleteLastObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 
 	err = deleteLastObject.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UnperpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UnperpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, persistenceSlotID, deleteLastObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,17 +11,17 @@ import (
 // ServiceItemNotice is a type within the ServiceItem protocol
 type ServiceItemNotice struct {
 	types.Structure
-	ScheduleID   *types.PrimitiveU64
-	ScheduleType *types.PrimitiveU32
-	ParamInt     *types.PrimitiveS32
-	ParamString  *types.String
-	ParamBinary  *types.QBuffer
-	TimeBegin    *types.DateTime
-	TimeEnd      *types.DateTime
+	ScheduleID   types.UInt64
+	ScheduleType types.UInt32
+	ParamInt     types.Int32
+	ParamString  types.String
+	ParamBinary  types.QBuffer
+	TimeBegin    types.DateTime
+	TimeEnd      types.DateTime
 }
 
 // WriteTo writes the ServiceItemNotice to the given writable
-func (sin *ServiceItemNotice) WriteTo(writable types.Writable) {
+func (sin ServiceItemNotice) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sin.ScheduleID.WriteTo(contentWritable)
@@ -87,23 +87,23 @@ func (sin *ServiceItemNotice) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemNotice
-func (sin *ServiceItemNotice) Copy() types.RVType {
+func (sin ServiceItemNotice) Copy() types.RVType {
 	copied := NewServiceItemNotice()
 
 	copied.StructureVersion = sin.StructureVersion
-	copied.ScheduleID = sin.ScheduleID.Copy().(*types.PrimitiveU64)
-	copied.ScheduleType = sin.ScheduleType.Copy().(*types.PrimitiveU32)
-	copied.ParamInt = sin.ParamInt.Copy().(*types.PrimitiveS32)
-	copied.ParamString = sin.ParamString.Copy().(*types.String)
-	copied.ParamBinary = sin.ParamBinary.Copy().(*types.QBuffer)
-	copied.TimeBegin = sin.TimeBegin.Copy().(*types.DateTime)
-	copied.TimeEnd = sin.TimeEnd.Copy().(*types.DateTime)
+	copied.ScheduleID = sin.ScheduleID.Copy().(types.UInt64)
+	copied.ScheduleType = sin.ScheduleType.Copy().(types.UInt32)
+	copied.ParamInt = sin.ParamInt.Copy().(types.Int32)
+	copied.ParamString = sin.ParamString.Copy().(types.String)
+	copied.ParamBinary = sin.ParamBinary.Copy().(types.QBuffer)
+	copied.TimeBegin = sin.TimeBegin.Copy().(types.DateTime)
+	copied.TimeEnd = sin.TimeEnd.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemNotice contains the same data as the current ServiceItemNotice
-func (sin *ServiceItemNotice) Equals(o types.RVType) bool {
+func (sin ServiceItemNotice) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemNotice); !ok {
 		return false
 	}
@@ -142,12 +142,12 @@ func (sin *ServiceItemNotice) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the ServiceItemNotice
-func (sin *ServiceItemNotice) String() string {
+func (sin ServiceItemNotice) String() string {
 	return sin.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemNotice using the provided indentation level
-func (sin *ServiceItemNotice) FormatToString(indentationLevel int) string {
+func (sin ServiceItemNotice) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -167,16 +167,15 @@ func (sin *ServiceItemNotice) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemNotice returns a new ServiceItemNotice
-func NewServiceItemNotice() *ServiceItemNotice {
-	sin := &ServiceItemNotice{
-		ScheduleID:   types.NewPrimitiveU64(0),
-		ScheduleType: types.NewPrimitiveU32(0),
-		ParamInt:     types.NewPrimitiveS32(0),
+func NewServiceItemNotice() ServiceItemNotice {
+	return ServiceItemNotice{
+		ScheduleID:   types.NewUInt64(0),
+		ScheduleType: types.NewUInt32(0),
+		ParamInt:     types.NewInt32(0),
 		ParamString:  types.NewString(""),
 		ParamBinary:  types.NewQBuffer(nil),
 		TimeBegin:    types.NewDateTime(0),
 		TimeEnd:      types.NewDateTime(0),
 	}
 
-	return sin
 }

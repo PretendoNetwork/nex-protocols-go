@@ -26,14 +26,14 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	dataID := types.NewPrimitiveU64(0)
+	var dataID types.UInt64
 	param := datastore_types.NewDataStorePreparePostParam()
 
 	var err error
 
 	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, dataID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, dataID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

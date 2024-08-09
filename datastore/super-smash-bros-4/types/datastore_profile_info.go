@@ -11,12 +11,12 @@ import (
 // DataStoreProfileInfo is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreProfileInfo struct {
 	types.Structure
-	PID     *types.PID
-	Profile *types.QBuffer
+	PID     types.PID
+	Profile types.QBuffer
 }
 
 // WriteTo writes the DataStoreProfileInfo to the given writable
-func (dspi *DataStoreProfileInfo) WriteTo(writable types.Writable) {
+func (dspi DataStoreProfileInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspi.PID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dspi *DataStoreProfileInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreProfileInfo
-func (dspi *DataStoreProfileInfo) Copy() types.RVType {
+func (dspi DataStoreProfileInfo) Copy() types.RVType {
 	copied := NewDataStoreProfileInfo()
 
 	copied.StructureVersion = dspi.StructureVersion
-	copied.PID = dspi.PID.Copy().(*types.PID)
-	copied.Profile = dspi.Profile.Copy().(*types.QBuffer)
+	copied.PID = dspi.PID.Copy().(types.PID)
+	copied.Profile = dspi.Profile.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreProfileInfo contains the same data as the current DataStoreProfileInfo
-func (dspi *DataStoreProfileInfo) Equals(o types.RVType) bool {
+func (dspi DataStoreProfileInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreProfileInfo); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dspi *DataStoreProfileInfo) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreProfileInfo
-func (dspi *DataStoreProfileInfo) String() string {
+func (dspi DataStoreProfileInfo) String() string {
 	return dspi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreProfileInfo using the provided indentation level
-func (dspi *DataStoreProfileInfo) FormatToString(indentationLevel int) string {
+func (dspi DataStoreProfileInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dspi *DataStoreProfileInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreProfileInfo returns a new DataStoreProfileInfo
-func NewDataStoreProfileInfo() *DataStoreProfileInfo {
-	dspi := &DataStoreProfileInfo{
+func NewDataStoreProfileInfo() DataStoreProfileInfo {
+	return DataStoreProfileInfo{
 		PID:     types.NewPID(0),
 		Profile: types.NewQBuffer(nil),
 	}
 
-	return dspi
 }

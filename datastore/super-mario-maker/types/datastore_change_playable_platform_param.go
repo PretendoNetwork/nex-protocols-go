@@ -11,12 +11,12 @@ import (
 // DataStoreChangePlayablePlatformParam is a type within the DataStore protocol
 type DataStoreChangePlayablePlatformParam struct {
 	types.Structure
-	DataID           *types.PrimitiveU64
-	PlayablePlatform *types.PrimitiveU32
+	DataID           types.UInt64
+	PlayablePlatform types.UInt32
 }
 
 // WriteTo writes the DataStoreChangePlayablePlatformParam to the given writable
-func (dscppp *DataStoreChangePlayablePlatformParam) WriteTo(writable types.Writable) {
+func (dscppp DataStoreChangePlayablePlatformParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dscppp.DataID.WriteTo(contentWritable)
@@ -52,18 +52,18 @@ func (dscppp *DataStoreChangePlayablePlatformParam) ExtractFrom(readable types.R
 }
 
 // Copy returns a new copied instance of DataStoreChangePlayablePlatformParam
-func (dscppp *DataStoreChangePlayablePlatformParam) Copy() types.RVType {
+func (dscppp DataStoreChangePlayablePlatformParam) Copy() types.RVType {
 	copied := NewDataStoreChangePlayablePlatformParam()
 
 	copied.StructureVersion = dscppp.StructureVersion
-	copied.DataID = dscppp.DataID.Copy().(*types.PrimitiveU64)
-	copied.PlayablePlatform = dscppp.PlayablePlatform.Copy().(*types.PrimitiveU32)
+	copied.DataID = dscppp.DataID.Copy().(types.UInt64)
+	copied.PlayablePlatform = dscppp.PlayablePlatform.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreChangePlayablePlatformParam contains the same data as the current DataStoreChangePlayablePlatformParam
-func (dscppp *DataStoreChangePlayablePlatformParam) Equals(o types.RVType) bool {
+func (dscppp DataStoreChangePlayablePlatformParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreChangePlayablePlatformParam); !ok {
 		return false
 	}
@@ -82,12 +82,12 @@ func (dscppp *DataStoreChangePlayablePlatformParam) Equals(o types.RVType) bool 
 }
 
 // String returns the string representation of the DataStoreChangePlayablePlatformParam
-func (dscppp *DataStoreChangePlayablePlatformParam) String() string {
+func (dscppp DataStoreChangePlayablePlatformParam) String() string {
 	return dscppp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreChangePlayablePlatformParam using the provided indentation level
-func (dscppp *DataStoreChangePlayablePlatformParam) FormatToString(indentationLevel int) string {
+func (dscppp DataStoreChangePlayablePlatformParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +102,10 @@ func (dscppp *DataStoreChangePlayablePlatformParam) FormatToString(indentationLe
 }
 
 // NewDataStoreChangePlayablePlatformParam returns a new DataStoreChangePlayablePlatformParam
-func NewDataStoreChangePlayablePlatformParam() *DataStoreChangePlayablePlatformParam {
-	dscppp := &DataStoreChangePlayablePlatformParam{
-		DataID:           types.NewPrimitiveU64(0),
-		PlayablePlatform: types.NewPrimitiveU32(0),
+func NewDataStoreChangePlayablePlatformParam() DataStoreChangePlayablePlatformParam {
+	return DataStoreChangePlayablePlatformParam{
+		DataID:           types.NewUInt64(0),
+		PlayablePlatform: types.NewUInt32(0),
 	}
 
-	return dscppp
 }

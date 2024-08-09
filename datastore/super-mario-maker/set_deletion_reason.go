@@ -25,15 +25,14 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	dataIDLst := types.NewList[*types.PrimitiveU64]()
-	dataIDLst.Type = types.NewPrimitiveU64(0)
-	deletionReason := types.NewPrimitiveU32(0)
+	var dataIDLst types.List[types.UInt64]
+	var deletionReason types.UInt32
 
 	var err error
 
 	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, dataIDLst, deletionReason)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 
 	err = deletionReason.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, dataIDLst, deletionReason)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

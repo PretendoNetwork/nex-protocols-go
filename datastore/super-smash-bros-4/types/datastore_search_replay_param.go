@@ -11,14 +11,14 @@ import (
 // DataStoreSearchReplayParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreSearchReplayParam struct {
 	types.Structure
-	Mode        *types.PrimitiveU8
-	Style       *types.PrimitiveU8
-	Fighter     *types.PrimitiveU8
-	ResultRange *types.ResultRange
+	Mode        types.UInt8
+	Style       types.UInt8
+	Fighter     types.UInt8
+	ResultRange types.ResultRange
 }
 
 // WriteTo writes the DataStoreSearchReplayParam to the given writable
-func (dssrp *DataStoreSearchReplayParam) WriteTo(writable types.Writable) {
+func (dssrp DataStoreSearchReplayParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dssrp.Mode.WriteTo(contentWritable)
@@ -66,20 +66,20 @@ func (dssrp *DataStoreSearchReplayParam) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of DataStoreSearchReplayParam
-func (dssrp *DataStoreSearchReplayParam) Copy() types.RVType {
+func (dssrp DataStoreSearchReplayParam) Copy() types.RVType {
 	copied := NewDataStoreSearchReplayParam()
 
 	copied.StructureVersion = dssrp.StructureVersion
-	copied.Mode = dssrp.Mode.Copy().(*types.PrimitiveU8)
-	copied.Style = dssrp.Style.Copy().(*types.PrimitiveU8)
-	copied.Fighter = dssrp.Fighter.Copy().(*types.PrimitiveU8)
-	copied.ResultRange = dssrp.ResultRange.Copy().(*types.ResultRange)
+	copied.Mode = dssrp.Mode.Copy().(types.UInt8)
+	copied.Style = dssrp.Style.Copy().(types.UInt8)
+	copied.Fighter = dssrp.Fighter.Copy().(types.UInt8)
+	copied.ResultRange = dssrp.ResultRange.Copy().(types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreSearchReplayParam contains the same data as the current DataStoreSearchReplayParam
-func (dssrp *DataStoreSearchReplayParam) Equals(o types.RVType) bool {
+func (dssrp DataStoreSearchReplayParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreSearchReplayParam); !ok {
 		return false
 	}
@@ -106,12 +106,12 @@ func (dssrp *DataStoreSearchReplayParam) Equals(o types.RVType) bool {
 }
 
 // String returns the string representation of the DataStoreSearchReplayParam
-func (dssrp *DataStoreSearchReplayParam) String() string {
+func (dssrp DataStoreSearchReplayParam) String() string {
 	return dssrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreSearchReplayParam using the provided indentation level
-func (dssrp *DataStoreSearchReplayParam) FormatToString(indentationLevel int) string {
+func (dssrp DataStoreSearchReplayParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +128,12 @@ func (dssrp *DataStoreSearchReplayParam) FormatToString(indentationLevel int) st
 }
 
 // NewDataStoreSearchReplayParam returns a new DataStoreSearchReplayParam
-func NewDataStoreSearchReplayParam() *DataStoreSearchReplayParam {
-	dssrp := &DataStoreSearchReplayParam{
-		Mode:        types.NewPrimitiveU8(0),
-		Style:       types.NewPrimitiveU8(0),
-		Fighter:     types.NewPrimitiveU8(0),
+func NewDataStoreSearchReplayParam() DataStoreSearchReplayParam {
+	return DataStoreSearchReplayParam{
+		Mode:        types.NewUInt8(0),
+		Style:       types.NewUInt8(0),
+		Fighter:     types.NewUInt8(0),
 		ResultRange: types.NewResultRange(),
 	}
 
-	return dssrp
 }

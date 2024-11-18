@@ -93,6 +93,20 @@ func (rr RankingResult) Equals(o types.RVType) bool {
 	return rr.SinceTime.Equals(other.SinceTime)
 }
 
+// CopyRef copies the current value of the RankingResult
+// and returns a pointer to the new copy
+func (rr RankingResult) CopyRef() types.RVTypePtr {
+	copied := rr.Copy().(RankingResult)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rr *RankingResult) Deref() types.RVType {
+	return *rr
+}
+
 // String returns the string representation of the RankingResult
 func (rr RankingResult) String() string {
 	return rr.FormatToString(0)

@@ -165,6 +165,20 @@ func (ad AccountData) Equals(o types.RVType) bool {
 	return ad.StrExpiredMsg.Equals(other.StrExpiredMsg)
 }
 
+// CopyRef copies the current value of the AccountData
+// and returns a pointer to the new copy
+func (ad AccountData) CopyRef() types.RVTypePtr {
+	copied := ad.Copy().(AccountData)
+	return &copied
+}
+
+// Deref takes a pointer to the AccountData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ad *AccountData) Deref() types.RVType {
+	return *ad
+}
+
 // String returns the string representation of the AccountData
 func (ad AccountData) String() string {
 	return ad.FormatToString(0)

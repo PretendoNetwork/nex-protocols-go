@@ -129,6 +129,20 @@ func (siprbbap ServiceItemPostRightBinaryByAccountParam) Equals(o types.RVType) 
 	return siprbbap.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemPostRightBinaryByAccountParam
+// and returns a pointer to the new copy
+func (siprbbap ServiceItemPostRightBinaryByAccountParam) CopyRef() types.RVTypePtr {
+	copied := siprbbap.Copy().(ServiceItemPostRightBinaryByAccountParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPostRightBinaryByAccountParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siprbbap *ServiceItemPostRightBinaryByAccountParam) Deref() types.RVType {
+	return *siprbbap
+}
+
 // String returns the string representation of the ServiceItemPostRightBinaryByAccountParam
 func (siprbbap ServiceItemPostRightBinaryByAccountParam) String() string {
 	return siprbbap.FormatToString(0)

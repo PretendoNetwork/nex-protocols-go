@@ -177,6 +177,20 @@ func (rrd RankingRankData) Equals(o types.RVType) bool {
 	return rrd.UpdateTime.Equals(other.UpdateTime)
 }
 
+// CopyRef copies the current value of the RankingRankData
+// and returns a pointer to the new copy
+func (rrd RankingRankData) CopyRef() types.RVTypePtr {
+	copied := rrd.Copy().(RankingRankData)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingRankData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rrd *RankingRankData) Deref() types.RVType {
+	return *rrd
+}
+
 // String returns the string representation of the RankingRankData
 func (rrd RankingRankData) String() string {
 	return rrd.FormatToString(0)

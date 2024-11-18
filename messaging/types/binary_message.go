@@ -82,6 +82,20 @@ func (bm BinaryMessage) Equals(o types.RVType) bool {
 	return bm.BinaryBody.Equals(other.BinaryBody)
 }
 
+// CopyRef copies the current value of the BinaryMessage
+// and returns a pointer to the new copy
+func (bm BinaryMessage) CopyRef() types.RVTypePtr {
+	copied := bm.Copy().(BinaryMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the BinaryMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (bm *BinaryMessage) Deref() types.RVType {
+	return *bm
+}
+
 // String returns the string representation of the BinaryMessage
 func (bm BinaryMessage) String() string {
 	return bm.FormatToString(0)

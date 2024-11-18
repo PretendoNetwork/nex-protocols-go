@@ -130,6 +130,20 @@ func (mrprr MatchmakeRefereePersonalRoundResult) Equals(o types.RVType) bool {
 	return mrprr.Buffer.Equals(other.Buffer)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereePersonalRoundResult
+// and returns a pointer to the new copy
+func (mrprr MatchmakeRefereePersonalRoundResult) CopyRef() types.RVTypePtr {
+	copied := mrprr.Copy().(MatchmakeRefereePersonalRoundResult)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereePersonalRoundResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrprr *MatchmakeRefereePersonalRoundResult) Deref() types.RVType {
+	return *mrprr
+}
+
 // String returns the string representation of the MatchmakeRefereePersonalRoundResult
 func (mrprr MatchmakeRefereePersonalRoundResult) String() string {
 	return mrprr.FormatToString(0)

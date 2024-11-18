@@ -73,6 +73,20 @@ func (siart ServiceItemAccountRightTime) Equals(o types.RVType) bool {
 	return true
 }
 
+// CopyRef copies the current value of the ServiceItemAccountRightTime
+// and returns a pointer to the new copy
+func (siart ServiceItemAccountRightTime) CopyRef() types.RVTypePtr {
+	copied := siart.Copy().(ServiceItemAccountRightTime)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAccountRightTime
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siart *ServiceItemAccountRightTime) Deref() types.RVType {
+	return *siart
+}
+
 // String returns the string representation of the ServiceItemAccountRightTime
 func (siart ServiceItemAccountRightTime) String() string {
 	return siart.FormatToString(0)

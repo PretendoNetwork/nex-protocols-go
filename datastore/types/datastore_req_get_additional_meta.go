@@ -105,6 +105,20 @@ func (dsrgam DataStoreReqGetAdditionalMeta) Equals(o types.RVType) bool {
 	return dsrgam.MetaBinary.Equals(other.MetaBinary)
 }
 
+// CopyRef copies the current value of the DataStoreReqGetAdditionalMeta
+// and returns a pointer to the new copy
+func (dsrgam DataStoreReqGetAdditionalMeta) CopyRef() types.RVTypePtr {
+	copied := dsrgam.Copy().(DataStoreReqGetAdditionalMeta)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqGetAdditionalMeta
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrgam *DataStoreReqGetAdditionalMeta) Deref() types.RVType {
+	return *dsrgam
+}
+
 // String returns the string representation of the DataStoreReqGetAdditionalMeta
 func (dsrgam DataStoreReqGetAdditionalMeta) String() string {
 	return dsrgam.FormatToString(0)

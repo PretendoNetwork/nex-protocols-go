@@ -94,6 +94,20 @@ func (dscprp DataStoreCompletePostReplayParam) Equals(o types.RVType) bool {
 	return dscprp.PrepareParam.Equals(other.PrepareParam)
 }
 
+// CopyRef copies the current value of the DataStoreCompletePostReplayParam
+// and returns a pointer to the new copy
+func (dscprp DataStoreCompletePostReplayParam) CopyRef() types.RVTypePtr {
+	copied := dscprp.Copy().(DataStoreCompletePostReplayParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreCompletePostReplayParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscprp *DataStoreCompletePostReplayParam) Deref() types.RVType {
+	return *dscprp
+}
+
 // String returns the string representation of the DataStoreCompletePostReplayParam
 func (dscprp DataStoreCompletePostReplayParam) String() string {
 	return dscprp.FormatToString(0)

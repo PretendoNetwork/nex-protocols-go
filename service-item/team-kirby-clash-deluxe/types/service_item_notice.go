@@ -141,6 +141,20 @@ func (sin ServiceItemNotice) Equals(o types.RVType) bool {
 	return sin.TimeEnd.Equals(other.TimeEnd)
 }
 
+// CopyRef copies the current value of the ServiceItemNotice
+// and returns a pointer to the new copy
+func (sin ServiceItemNotice) CopyRef() types.RVTypePtr {
+	copied := sin.Copy().(ServiceItemNotice)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemNotice
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sin *ServiceItemNotice) Deref() types.RVType {
+	return *sin
+}
+
 // String returns the string representation of the ServiceItemNotice
 func (sin ServiceItemNotice) String() string {
 	return sin.FormatToString(0)

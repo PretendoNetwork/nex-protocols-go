@@ -82,6 +82,20 @@ func (sigphr ServiceItemGetPurchaseHistoryResponse) Equals(o types.RVType) bool 
 	return sigphr.NullablePurchaseHistory.Equals(other.NullablePurchaseHistory)
 }
 
+// CopyRef copies the current value of the ServiceItemGetPurchaseHistoryResponse
+// and returns a pointer to the new copy
+func (sigphr ServiceItemGetPurchaseHistoryResponse) CopyRef() types.RVTypePtr {
+	copied := sigphr.Copy().(ServiceItemGetPurchaseHistoryResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetPurchaseHistoryResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigphr *ServiceItemGetPurchaseHistoryResponse) Deref() types.RVType {
+	return *sigphr
+}
+
 // String returns the string representation of the ServiceItemGetPurchaseHistoryResponse
 func (sigphr ServiceItemGetPurchaseHistoryResponse) String() string {
 	return sigphr.FormatToString(0)

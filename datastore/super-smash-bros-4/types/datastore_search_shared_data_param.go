@@ -141,6 +141,20 @@ func (dsssdp DataStoreSearchSharedDataParam) Equals(o types.RVType) bool {
 	return dsssdp.ResultRange.Equals(other.ResultRange)
 }
 
+// CopyRef copies the current value of the DataStoreSearchSharedDataParam
+// and returns a pointer to the new copy
+func (dsssdp DataStoreSearchSharedDataParam) CopyRef() types.RVTypePtr {
+	copied := dsssdp.Copy().(DataStoreSearchSharedDataParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreSearchSharedDataParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsssdp *DataStoreSearchSharedDataParam) Deref() types.RVType {
+	return *dsssdp
+}
+
 // String returns the string representation of the DataStoreSearchSharedDataParam
 func (dsssdp DataStoreSearchSharedDataParam) String() string {
 	return dsssdp.FormatToString(0)

@@ -105,6 +105,20 @@ func (dsrcp DataStoreReportCourseParam) Equals(o types.RVType) bool {
 	return dsrcp.ReportReason.Equals(other.ReportReason)
 }
 
+// CopyRef copies the current value of the DataStoreReportCourseParam
+// and returns a pointer to the new copy
+func (dsrcp DataStoreReportCourseParam) CopyRef() types.RVTypePtr {
+	copied := dsrcp.Copy().(DataStoreReportCourseParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReportCourseParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrcp *DataStoreReportCourseParam) Deref() types.RVType {
+	return *dsrcp
+}
+
 // String returns the string representation of the DataStoreReportCourseParam
 func (dsrcp DataStoreReportCourseParam) String() string {
 	return dsrcp.FormatToString(0)

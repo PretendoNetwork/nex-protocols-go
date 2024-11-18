@@ -93,6 +93,20 @@ func (gs GatheringStats) Equals(o types.RVType) bool {
 	return gs.LstValues.Equals(other.LstValues)
 }
 
+// CopyRef copies the current value of the GatheringStats
+// and returns a pointer to the new copy
+func (gs GatheringStats) CopyRef() types.RVTypePtr {
+	copied := gs.Copy().(GatheringStats)
+	return &copied
+}
+
+// Deref takes a pointer to the GatheringStats
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gs *GatheringStats) Deref() types.RVType {
+	return *gs
+}
+
 // String returns the string representation of the GatheringStats
 func (gs GatheringStats) String() string {
 	return gs.FormatToString(0)

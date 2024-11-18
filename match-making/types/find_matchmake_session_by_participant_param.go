@@ -93,6 +93,20 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) Equals(o types.RVType) bool
 	return fmsbpp.BlockListParam.Equals(other.BlockListParam)
 }
 
+// CopyRef copies the current value of the FindMatchmakeSessionByParticipantParam
+// and returns a pointer to the new copy
+func (fmsbpp FindMatchmakeSessionByParticipantParam) CopyRef() types.RVTypePtr {
+	copied := fmsbpp.Copy().(FindMatchmakeSessionByParticipantParam)
+	return &copied
+}
+
+// Deref takes a pointer to the FindMatchmakeSessionByParticipantParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fmsbpp *FindMatchmakeSessionByParticipantParam) Deref() types.RVType {
+	return *fmsbpp
+}
+
 // String returns the string representation of the FindMatchmakeSessionByParticipantParam
 func (fmsbpp FindMatchmakeSessionByParticipantParam) String() string {
 	return fmsbpp.FormatToString(0)

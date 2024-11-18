@@ -82,6 +82,20 @@ func (tm TextMessage) Equals(o types.RVType) bool {
 	return tm.StrTextBody.Equals(other.StrTextBody)
 }
 
+// CopyRef copies the current value of the TextMessage
+// and returns a pointer to the new copy
+func (tm TextMessage) CopyRef() types.RVTypePtr {
+	copied := tm.Copy().(TextMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the TextMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (tm *TextMessage) Deref() types.RVType {
+	return *tm
+}
+
 // String returns the string representation of the TextMessage
 func (tm TextMessage) String() string {
 	return tm.FormatToString(0)

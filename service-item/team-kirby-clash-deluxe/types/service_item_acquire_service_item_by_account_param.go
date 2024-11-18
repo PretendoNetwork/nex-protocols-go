@@ -165,6 +165,20 @@ func (siasibap ServiceItemAcquireServiceItemByAccountParam) Equals(o types.RVTyp
 	return siasibap.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemAcquireServiceItemByAccountParam
+// and returns a pointer to the new copy
+func (siasibap ServiceItemAcquireServiceItemByAccountParam) CopyRef() types.RVTypePtr {
+	copied := siasibap.Copy().(ServiceItemAcquireServiceItemByAccountParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAcquireServiceItemByAccountParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siasibap *ServiceItemAcquireServiceItemByAccountParam) Deref() types.RVType {
+	return *siasibap
+}
+
 // String returns the string representation of the ServiceItemAcquireServiceItemByAccountParam
 func (siasibap ServiceItemAcquireServiceItemByAccountParam) String() string {
 	return siasibap.FormatToString(0)

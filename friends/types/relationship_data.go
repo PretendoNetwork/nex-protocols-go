@@ -117,6 +117,20 @@ func (rd RelationshipData) Equals(o types.RVType) bool {
 	return rd.ByStatus.Equals(other.ByStatus)
 }
 
+// CopyRef copies the current value of the RelationshipData
+// and returns a pointer to the new copy
+func (rd RelationshipData) CopyRef() types.RVTypePtr {
+	copied := rd.Copy().(RelationshipData)
+	return &copied
+}
+
+// Deref takes a pointer to the RelationshipData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rd *RelationshipData) Deref() types.RVType {
+	return *rd
+}
+
 // String returns the string representation of the RelationshipData
 func (rd RelationshipData) String() string {
 	return rd.FormatToString(0)

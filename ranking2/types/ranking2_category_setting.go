@@ -165,6 +165,20 @@ func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
 	return rcs.ScoreOrder.Equals(other.ScoreOrder)
 }
 
+// CopyRef copies the current value of the Ranking2CategorySetting
+// and returns a pointer to the new copy
+func (rcs Ranking2CategorySetting) CopyRef() types.RVTypePtr {
+	copied := rcs.Copy().(Ranking2CategorySetting)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2CategorySetting
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rcs *Ranking2CategorySetting) Deref() types.RVType {
+	return *rcs
+}
+
 // String returns the string representation of the Ranking2CategorySetting
 func (rcs Ranking2CategorySetting) String() string {
 	return rcs.FormatToString(0)

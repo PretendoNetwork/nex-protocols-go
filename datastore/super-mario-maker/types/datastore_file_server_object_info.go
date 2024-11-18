@@ -82,6 +82,20 @@ func (dsfsoi DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
 	return dsfsoi.GetInfo.Equals(other.GetInfo)
 }
 
+// CopyRef copies the current value of the DataStoreFileServerObjectInfo
+// and returns a pointer to the new copy
+func (dsfsoi DataStoreFileServerObjectInfo) CopyRef() types.RVTypePtr {
+	copied := dsfsoi.Copy().(DataStoreFileServerObjectInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreFileServerObjectInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsfsoi *DataStoreFileServerObjectInfo) Deref() types.RVType {
+	return *dsfsoi
+}
+
 // String returns the string representation of the DataStoreFileServerObjectInfo
 func (dsfsoi DataStoreFileServerObjectInfo) String() string {
 	return dsfsoi.FormatToString(0)

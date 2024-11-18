@@ -69,6 +69,20 @@ func (sihttpgp ServiceItemHTTPGetParam) Equals(o types.RVType) bool {
 	return sihttpgp.URL.Equals(other.URL)
 }
 
+// CopyRef copies the current value of the ServiceItemHTTPGetParam
+// and returns a pointer to the new copy
+func (sihttpgp ServiceItemHTTPGetParam) CopyRef() types.RVTypePtr {
+	copied := sihttpgp.Copy().(ServiceItemHTTPGetParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemHTTPGetParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sihttpgp *ServiceItemHTTPGetParam) Deref() types.RVType {
+	return *sihttpgp
+}
+
 // String returns the string representation of the ServiceItemHTTPGetParam
 func (sihttpgp ServiceItemHTTPGetParam) String() string {
 	return sihttpgp.FormatToString(0)

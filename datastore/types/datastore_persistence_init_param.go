@@ -81,6 +81,20 @@ func (dspip DataStorePersistenceInitParam) Equals(o types.RVType) bool {
 	return dspip.DeleteLastObject.Equals(other.DeleteLastObject)
 }
 
+// CopyRef copies the current value of the DataStorePersistenceInitParam
+// and returns a pointer to the new copy
+func (dspip DataStorePersistenceInitParam) CopyRef() types.RVTypePtr {
+	copied := dspip.Copy().(DataStorePersistenceInitParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePersistenceInitParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspip *DataStorePersistenceInitParam) Deref() types.RVType {
+	return *dspip
+}
+
 // String returns the string representation of the DataStorePersistenceInitParam
 func (dspip DataStorePersistenceInitParam) String() string {
 	return dspip.FormatToString(0)

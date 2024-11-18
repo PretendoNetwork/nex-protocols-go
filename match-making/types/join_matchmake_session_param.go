@@ -206,6 +206,20 @@ func (jmsp JoinMatchmakeSessionParam) Equals(o types.RVType) bool {
 	return jmsp.BlockListParam.Equals(other.BlockListParam)
 }
 
+// CopyRef copies the current value of the JoinMatchmakeSessionParam
+// and returns a pointer to the new copy
+func (jmsp JoinMatchmakeSessionParam) CopyRef() types.RVTypePtr {
+	copied := jmsp.Copy().(JoinMatchmakeSessionParam)
+	return &copied
+}
+
+// Deref takes a pointer to the JoinMatchmakeSessionParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (jmsp *JoinMatchmakeSessionParam) Deref() types.RVType {
+	return *jmsp
+}
+
 // String returns the string representation of the JoinMatchmakeSessionParam
 func (jmsp JoinMatchmakeSessionParam) String() string {
 	return jmsp.FormatToString(0)

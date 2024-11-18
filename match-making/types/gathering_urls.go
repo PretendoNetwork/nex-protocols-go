@@ -81,6 +81,20 @@ func (gurl GatheringURLs) Equals(o types.RVType) bool {
 	return gurl.LstStationURLs.Equals(other.LstStationURLs)
 }
 
+// CopyRef copies the current value of the GatheringURLs
+// and returns a pointer to the new copy
+func (gurl GatheringURLs) CopyRef() types.RVTypePtr {
+	copied := gurl.Copy().(GatheringURLs)
+	return &copied
+}
+
+// Deref takes a pointer to the GatheringURLs
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gurl *GatheringURLs) Deref() types.RVType {
+	return *gurl
+}
+
 // String returns the string representation of the GatheringURLs
 func (gurl GatheringURLs) String() string {
 	return gurl.FormatToString(0)

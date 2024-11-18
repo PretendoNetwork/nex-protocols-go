@@ -93,6 +93,20 @@ func (dstop DataStoreTouchObjectParam) Equals(o types.RVType) bool {
 	return dstop.AccessPassword.Equals(other.AccessPassword)
 }
 
+// CopyRef copies the current value of the DataStoreTouchObjectParam
+// and returns a pointer to the new copy
+func (dstop DataStoreTouchObjectParam) CopyRef() types.RVTypePtr {
+	copied := dstop.Copy().(DataStoreTouchObjectParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreTouchObjectParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dstop *DataStoreTouchObjectParam) Deref() types.RVType {
+	return *dstop
+}
+
 // String returns the string representation of the DataStoreTouchObjectParam
 func (dstop DataStoreTouchObjectParam) String() string {
 	return dstop.FormatToString(0)

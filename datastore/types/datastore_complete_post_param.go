@@ -81,6 +81,20 @@ func (dscpp DataStoreCompletePostParam) Equals(o types.RVType) bool {
 	return dscpp.IsSuccess.Equals(other.IsSuccess)
 }
 
+// CopyRef copies the current value of the DataStoreCompletePostParam
+// and returns a pointer to the new copy
+func (dscpp DataStoreCompletePostParam) CopyRef() types.RVTypePtr {
+	copied := dscpp.Copy().(DataStoreCompletePostParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreCompletePostParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscpp *DataStoreCompletePostParam) Deref() types.RVType {
+	return *dscpp
+}
+
 // String returns the string representation of the DataStoreCompletePostParam
 func (dscpp DataStoreCompletePostParam) String() string {
 	return dscpp.FormatToString(0)

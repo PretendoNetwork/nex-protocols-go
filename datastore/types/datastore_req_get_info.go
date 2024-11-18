@@ -129,6 +129,20 @@ func (dsrgi DataStoreReqGetInfo) Equals(o types.RVType) bool {
 	return dsrgi.DataID.Equals(other.DataID)
 }
 
+// CopyRef copies the current value of the DataStoreReqGetInfo
+// and returns a pointer to the new copy
+func (dsrgi DataStoreReqGetInfo) CopyRef() types.RVTypePtr {
+	copied := dsrgi.Copy().(DataStoreReqGetInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqGetInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrgi *DataStoreReqGetInfo) Deref() types.RVType {
+	return *dsrgi
+}
+
 // String returns the string representation of the DataStoreReqGetInfo
 func (dsrgi DataStoreReqGetInfo) String() string {
 	return dsrgi.FormatToString(0)

@@ -81,6 +81,20 @@ func (ssc SimpleSearchCondition) Equals(o types.RVType) bool {
 	return ssc.ComparisonOperator.Equals(other.ComparisonOperator)
 }
 
+// CopyRef copies the current value of the SimpleSearchCondition
+// and returns a pointer to the new copy
+func (ssc SimpleSearchCondition) CopyRef() types.RVTypePtr {
+	copied := ssc.Copy().(SimpleSearchCondition)
+	return &copied
+}
+
+// Deref takes a pointer to the SimpleSearchCondition
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ssc *SimpleSearchCondition) Deref() types.RVType {
+	return *ssc
+}
+
 // String returns the string representation of the SimpleSearchCondition
 func (ssc SimpleSearchCondition) String() string {
 	return ssc.FormatToString(0)

@@ -93,6 +93,20 @@ func (spcp SubscriberPostContentParam) Equals(o types.RVType) bool {
 	return spcp.Unknown3.Equals(other.Unknown3)
 }
 
+// CopyRef copies the current value of the SubscriberPostContentParam
+// and returns a pointer to the new copy
+func (spcp SubscriberPostContentParam) CopyRef() types.RVTypePtr {
+	copied := spcp.Copy().(SubscriberPostContentParam)
+	return &copied
+}
+
+// Deref takes a pointer to the SubscriberPostContentParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (spcp *SubscriberPostContentParam) Deref() types.RVType {
+	return *spcp
+}
+
 // String returns the string representation of the SubscriberPostContentParam
 func (spcp SubscriberPostContentParam) String() string {
 	return spcp.FormatToString(0)

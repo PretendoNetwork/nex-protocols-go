@@ -81,6 +81,20 @@ func (bqp BufferQueueParam) Equals(o types.RVType) bool {
 	return bqp.Slot.Equals(other.Slot)
 }
 
+// CopyRef copies the current value of the BufferQueueParam
+// and returns a pointer to the new copy
+func (bqp BufferQueueParam) CopyRef() types.RVTypePtr {
+	copied := bqp.Copy().(BufferQueueParam)
+	return &copied
+}
+
+// Deref takes a pointer to the BufferQueueParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (bqp *BufferQueueParam) Deref() types.RVType {
+	return *bqp
+}
+
 // String returns the string representation of the BufferQueueParam
 func (bqp BufferQueueParam) String() string {
 	return bqp.FormatToString(0)

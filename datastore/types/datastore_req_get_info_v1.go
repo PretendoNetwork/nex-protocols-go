@@ -105,6 +105,20 @@ func (dsrgiv DataStoreReqGetInfoV1) Equals(o types.RVType) bool {
 	return dsrgiv.RootCACert.Equals(other.RootCACert)
 }
 
+// CopyRef copies the current value of the DataStoreReqGetInfoV1
+// and returns a pointer to the new copy
+func (dsrgiv DataStoreReqGetInfoV1) CopyRef() types.RVTypePtr {
+	copied := dsrgiv.Copy().(DataStoreReqGetInfoV1)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqGetInfoV1
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrgiv *DataStoreReqGetInfoV1) Deref() types.RVType {
+	return *dsrgiv
+}
+
 // String returns the string representation of the DataStoreReqGetInfoV1
 func (dsrgiv DataStoreReqGetInfoV1) String() string {
 	return dsrgiv.FormatToString(0)

@@ -81,6 +81,20 @@ func (gtsdpp GlobalTradeStationDeletePokemonParam) Equals(o types.RVType) bool {
 	return gtsdpp.DeleteFlag.Equals(other.DeleteFlag)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationDeletePokemonParam
+// and returns a pointer to the new copy
+func (gtsdpp GlobalTradeStationDeletePokemonParam) CopyRef() types.RVTypePtr {
+	copied := gtsdpp.Copy().(GlobalTradeStationDeletePokemonParam)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationDeletePokemonParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsdpp *GlobalTradeStationDeletePokemonParam) Deref() types.RVType {
+	return *gtsdpp
+}
+
 // String returns the string representation of the GlobalTradeStationDeletePokemonParam
 func (gtsdpp GlobalTradeStationDeletePokemonParam) String() string {
 	return gtsdpp.FormatToString(0)

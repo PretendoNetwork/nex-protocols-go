@@ -307,6 +307,20 @@ func (dssp DataStoreSearchParam) Equals(o types.RVType) bool {
 	return dssp.DataTypes.Equals(other.DataTypes)
 }
 
+// CopyRef copies the current value of the DataStoreSearchParam
+// and returns a pointer to the new copy
+func (dssp DataStoreSearchParam) CopyRef() types.RVTypePtr {
+	copied := dssp.Copy().(DataStoreSearchParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreSearchParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dssp *DataStoreSearchParam) Deref() types.RVType {
+	return *dssp
+}
+
 // String returns the string representation of the DataStoreSearchParam
 func (dssp DataStoreSearchParam) String() string {
 	return dssp.FormatToString(0)

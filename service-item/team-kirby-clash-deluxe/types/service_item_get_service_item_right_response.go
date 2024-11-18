@@ -82,6 +82,20 @@ func (sigsirr ServiceItemGetServiceItemRightResponse) Equals(o types.RVType) boo
 	return sigsirr.NullableRightInfos.Equals(other.NullableRightInfos)
 }
 
+// CopyRef copies the current value of the ServiceItemGetServiceItemRightResponse
+// and returns a pointer to the new copy
+func (sigsirr ServiceItemGetServiceItemRightResponse) CopyRef() types.RVTypePtr {
+	copied := sigsirr.Copy().(ServiceItemGetServiceItemRightResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetServiceItemRightResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigsirr *ServiceItemGetServiceItemRightResponse) Deref() types.RVType {
+	return *sigsirr
+}
+
 // String returns the string representation of the ServiceItemGetServiceItemRightResponse
 func (sigsirr ServiceItemGetServiceItemRightResponse) String() string {
 	return sigsirr.FormatToString(0)

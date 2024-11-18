@@ -166,6 +166,20 @@ func (pg PersistentGathering) Equals(o types.RVType) bool {
 	return pg.ParticipationCount.Equals(other.ParticipationCount)
 }
 
+// CopyRef copies the current value of the PersistentGathering
+// and returns a pointer to the new copy
+func (pg PersistentGathering) CopyRef() types.RVTypePtr {
+	copied := pg.Copy().(PersistentGathering)
+	return &copied
+}
+
+// Deref takes a pointer to the PersistentGathering
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pg *PersistentGathering) Deref() types.RVType {
+	return *pg
+}
+
 // String returns the string representation of the PersistentGathering
 func (pg PersistentGathering) String() string {
 	return pg.FormatToString(0)

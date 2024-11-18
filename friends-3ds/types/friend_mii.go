@@ -106,6 +106,20 @@ func (fm FriendMii) Equals(o types.RVType) bool {
 	return fm.ModifiedAt.Equals(other.ModifiedAt)
 }
 
+// CopyRef copies the current value of the FriendMii
+// and returns a pointer to the new copy
+func (fm FriendMii) CopyRef() types.RVTypePtr {
+	copied := fm.Copy().(FriendMii)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendMii
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fm *FriendMii) Deref() types.RVType {
+	return *fm
+}
+
 // String returns the string representation of the FriendMii
 func (fm FriendMii) String() string {
 	return fm.FormatToString(0)

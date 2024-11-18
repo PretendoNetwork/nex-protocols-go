@@ -81,6 +81,20 @@ func (bmi BankMigrationInfo) Equals(o types.RVType) bool {
 	return bmi.UpdatedTime.Equals(other.UpdatedTime)
 }
 
+// CopyRef copies the current value of the BankMigrationInfo
+// and returns a pointer to the new copy
+func (bmi BankMigrationInfo) CopyRef() types.RVTypePtr {
+	copied := bmi.Copy().(BankMigrationInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the BankMigrationInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (bmi *BankMigrationInfo) Deref() types.RVType {
+	return *bmi
+}
+
 // String returns the string representation of the BankMigrationInfo
 func (bmi BankMigrationInfo) String() string {
 	return bmi.FormatToString(0)

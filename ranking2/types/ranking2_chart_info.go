@@ -273,6 +273,20 @@ func (rci Ranking2ChartInfo) Equals(o types.RVType) bool {
 	return rci.Quantities.Equals(other.Quantities)
 }
 
+// CopyRef copies the current value of the Ranking2ChartInfo
+// and returns a pointer to the new copy
+func (rci Ranking2ChartInfo) CopyRef() types.RVTypePtr {
+	copied := rci.Copy().(Ranking2ChartInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2ChartInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rci *Ranking2ChartInfo) Deref() types.RVType {
+	return *rci
+}
+
 // String returns the string representation of the Ranking2ChartInfo
 func (rci Ranking2ChartInfo) String() string {
 	return rci.FormatToString(0)

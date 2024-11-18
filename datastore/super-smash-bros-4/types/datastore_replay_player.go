@@ -165,6 +165,20 @@ func (dsrp DataStoreReplayPlayer) Equals(o types.RVType) bool {
 	return dsrp.Number.Equals(other.Number)
 }
 
+// CopyRef copies the current value of the DataStoreReplayPlayer
+// and returns a pointer to the new copy
+func (dsrp DataStoreReplayPlayer) CopyRef() types.RVTypePtr {
+	copied := dsrp.Copy().(DataStoreReplayPlayer)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReplayPlayer
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrp *DataStoreReplayPlayer) Deref() types.RVType {
+	return *dsrp
+}
+
 // String returns the string representation of the DataStoreReplayPlayer
 func (dsrp DataStoreReplayPlayer) String() string {
 	return dsrp.FormatToString(0)

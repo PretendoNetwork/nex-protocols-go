@@ -117,6 +117,20 @@ func (gtsd GlobalTradeStationData) Equals(o types.RVType) bool {
 	return gtsd.Version.Equals(other.Version)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationData
+// and returns a pointer to the new copy
+func (gtsd GlobalTradeStationData) CopyRef() types.RVTypePtr {
+	copied := gtsd.Copy().(GlobalTradeStationData)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsd *GlobalTradeStationData) Deref() types.RVType {
+	return *gtsd
+}
+
 // String returns the string representation of the GlobalTradeStationData
 func (gtsd GlobalTradeStationData) String() string {
 	return gtsd.FormatToString(0)

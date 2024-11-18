@@ -81,6 +81,20 @@ func (dsdp DataStoreDeleteParam) Equals(o types.RVType) bool {
 	return dsdp.UpdatePassword.Equals(other.UpdatePassword)
 }
 
+// CopyRef copies the current value of the DataStoreDeleteParam
+// and returns a pointer to the new copy
+func (dsdp DataStoreDeleteParam) CopyRef() types.RVTypePtr {
+	copied := dsdp.Copy().(DataStoreDeleteParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreDeleteParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsdp *DataStoreDeleteParam) Deref() types.RVType {
+	return *dsdp
+}
+
 // String returns the string representation of the DataStoreDeleteParam
 func (dsdp DataStoreDeleteParam) String() string {
 	return dsdp.FormatToString(0)

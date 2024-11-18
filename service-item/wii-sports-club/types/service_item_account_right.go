@@ -81,6 +81,20 @@ func (siar ServiceItemAccountRight) Equals(o types.RVType) bool {
 	return siar.Limitation.Equals(other.Limitation)
 }
 
+// CopyRef copies the current value of the ServiceItemAccountRight
+// and returns a pointer to the new copy
+func (siar ServiceItemAccountRight) CopyRef() types.RVTypePtr {
+	copied := siar.Copy().(ServiceItemAccountRight)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAccountRight
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siar *ServiceItemAccountRight) Deref() types.RVType {
+	return *siar
+}
+
 // String returns the string representation of the ServiceItemAccountRight
 func (siar ServiceItemAccountRight) String() string {
 	return siar.FormatToString(0)

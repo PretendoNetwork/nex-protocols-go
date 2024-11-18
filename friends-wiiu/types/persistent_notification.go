@@ -130,6 +130,20 @@ func (pn PersistentNotification) Equals(o types.RVType) bool {
 	return pn.Unknown5.Equals(other.Unknown5)
 }
 
+// CopyRef copies the current value of the PersistentNotification
+// and returns a pointer to the new copy
+func (pn PersistentNotification) CopyRef() types.RVTypePtr {
+	copied := pn.Copy().(PersistentNotification)
+	return &copied
+}
+
+// Deref takes a pointer to the PersistentNotification
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pn *PersistentNotification) Deref() types.RVType {
+	return *pn
+}
+
 // String returns the string representation of the PersistentNotification
 func (pn PersistentNotification) String() string {
 	return pn.FormatToString(0)

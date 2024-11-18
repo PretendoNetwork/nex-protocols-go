@@ -177,6 +177,20 @@ func (dscmcp DataStoreChangeMetaCompareParam) Equals(o types.RVType) bool {
 	return dscmcp.Status.Equals(other.Status)
 }
 
+// CopyRef copies the current value of the DataStoreChangeMetaCompareParam
+// and returns a pointer to the new copy
+func (dscmcp DataStoreChangeMetaCompareParam) CopyRef() types.RVTypePtr {
+	copied := dscmcp.Copy().(DataStoreChangeMetaCompareParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreChangeMetaCompareParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscmcp *DataStoreChangeMetaCompareParam) Deref() types.RVType {
+	return *dscmcp
+}
+
 // String returns the string representation of the DataStoreChangeMetaCompareParam
 func (dscmcp DataStoreChangeMetaCompareParam) String() string {
 	return dscmcp.FormatToString(0)

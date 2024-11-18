@@ -153,6 +153,20 @@ func (crusp CompetitionRankingUploadScoreParam) Equals(o types.RVType) bool {
 	return crusp.Metadata.Equals(other.Metadata)
 }
 
+// CopyRef copies the current value of the CompetitionRankingUploadScoreParam
+// and returns a pointer to the new copy
+func (crusp CompetitionRankingUploadScoreParam) CopyRef() types.RVTypePtr {
+	copied := crusp.Copy().(CompetitionRankingUploadScoreParam)
+	return &copied
+}
+
+// Deref takes a pointer to the CompetitionRankingUploadScoreParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (crusp *CompetitionRankingUploadScoreParam) Deref() types.RVType {
+	return *crusp
+}
+
 // String returns the string representation of the CompetitionRankingUploadScoreParam
 func (crusp CompetitionRankingUploadScoreParam) String() string {
 	return crusp.FormatToString(0)

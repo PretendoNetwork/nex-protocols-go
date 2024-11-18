@@ -128,6 +128,20 @@ func (dscup DataStoreCompleteUpdateParam) Equals(o types.RVType) bool {
 	return dscup.IsSuccess.Equals(other.IsSuccess)
 }
 
+// CopyRef copies the current value of the DataStoreCompleteUpdateParam
+// and returns a pointer to the new copy
+func (dscup DataStoreCompleteUpdateParam) CopyRef() types.RVTypePtr {
+	copied := dscup.Copy().(DataStoreCompleteUpdateParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreCompleteUpdateParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscup *DataStoreCompleteUpdateParam) Deref() types.RVType {
+	return *dscup
+}
+
 // String returns the string representation of the DataStoreCompleteUpdateParam
 func (dscup DataStoreCompleteUpdateParam) String() string {
 	return dscup.FormatToString(0)

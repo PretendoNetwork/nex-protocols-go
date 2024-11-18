@@ -69,6 +69,20 @@ func (dsgsmp DataStoreGetSpecificMetaParam) Equals(o types.RVType) bool {
 	return dsgsmp.DataIDs.Equals(other.DataIDs)
 }
 
+// CopyRef copies the current value of the DataStoreGetSpecificMetaParam
+// and returns a pointer to the new copy
+func (dsgsmp DataStoreGetSpecificMetaParam) CopyRef() types.RVTypePtr {
+	copied := dsgsmp.Copy().(DataStoreGetSpecificMetaParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetSpecificMetaParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgsmp *DataStoreGetSpecificMetaParam) Deref() types.RVType {
+	return *dsgsmp
+}
+
 // String returns the string representation of the DataStoreGetSpecificMetaParam
 func (dsgsmp DataStoreGetSpecificMetaParam) String() string {
 	return dsgsmp.FormatToString(0)

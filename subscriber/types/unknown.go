@@ -69,6 +69,20 @@ func (u Unknown) Equals(o types.RVType) bool {
 	return u.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the Unknown
+// and returns a pointer to the new copy
+func (u Unknown) CopyRef() types.RVTypePtr {
+	copied := u.Copy().(Unknown)
+	return &copied
+}
+
+// Deref takes a pointer to the Unknown
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (u *Unknown) Deref() types.RVType {
+	return *u
+}
+
 // String returns the string representation of the Unknown
 func (u Unknown) String() string {
 	return u.FormatToString(0)

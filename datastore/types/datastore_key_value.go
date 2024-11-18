@@ -81,6 +81,20 @@ func (dskv DataStoreKeyValue) Equals(o types.RVType) bool {
 	return dskv.Value.Equals(other.Value)
 }
 
+// CopyRef copies the current value of the DataStoreKeyValue
+// and returns a pointer to the new copy
+func (dskv DataStoreKeyValue) CopyRef() types.RVTypePtr {
+	copied := dskv.Copy().(DataStoreKeyValue)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreKeyValue
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dskv *DataStoreKeyValue) Deref() types.RVType {
+	return *dskv
+}
+
 // String returns the string representation of the DataStoreKeyValue
 func (dskv DataStoreKeyValue) String() string {
 	return dskv.FormatToString(0)

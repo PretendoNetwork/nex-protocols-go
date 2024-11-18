@@ -129,6 +129,20 @@ func (resro Ranking2EstimateScoreRankOutput) Equals(o types.RVType) bool {
 	return resro.SamplingRate.Equals(other.SamplingRate)
 }
 
+// CopyRef copies the current value of the Ranking2EstimateScoreRankOutput
+// and returns a pointer to the new copy
+func (resro Ranking2EstimateScoreRankOutput) CopyRef() types.RVTypePtr {
+	copied := resro.Copy().(Ranking2EstimateScoreRankOutput)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2EstimateScoreRankOutput
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (resro *Ranking2EstimateScoreRankOutput) Deref() types.RVType {
+	return *resro
+}
+
 // String returns the string representation of the Ranking2EstimateScoreRankOutput
 func (resro Ranking2EstimateScoreRankOutput) String() string {
 	return resro.FormatToString(0)

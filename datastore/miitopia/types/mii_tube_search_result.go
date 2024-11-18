@@ -101,6 +101,20 @@ func (mtsr MiiTubeSearchResult) Equals(o types.RVType) bool {
 	return mtsr.HasNext.Equals(other.HasNext)
 }
 
+// CopyRef copies the current value of the MiiTubeSearchResult
+// and returns a pointer to the new copy
+func (mtsr MiiTubeSearchResult) CopyRef() types.RVTypePtr {
+	copied := mtsr.Copy().(MiiTubeSearchResult)
+	return &copied
+}
+
+// Deref takes a pointer to the MiiTubeSearchResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mtsr *MiiTubeSearchResult) Deref() types.RVType {
+	return *mtsr
+}
+
 // String returns the string representation of the MiiTubeSearchResult
 func (mtsr MiiTubeSearchResult) String() string {
 	return mtsr.FormatToString(0)

@@ -307,6 +307,20 @@ func (mssc MatchmakeSessionSearchCriteria) Equals(o types.RVType) bool {
 	return mssc.ResultRange.Equals(other.ResultRange)
 }
 
+// CopyRef copies the current value of the MatchmakeSessionSearchCriteria
+// and returns a pointer to the new copy
+func (mssc MatchmakeSessionSearchCriteria) CopyRef() types.RVTypePtr {
+	copied := mssc.Copy().(MatchmakeSessionSearchCriteria)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeSessionSearchCriteria
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mssc *MatchmakeSessionSearchCriteria) Deref() types.RVType {
+	return *mssc
+}
+
 // String returns the string representation of the MatchmakeSessionSearchCriteria
 func (mssc MatchmakeSessionSearchCriteria) String() string {
 	return mssc.FormatToString(0)

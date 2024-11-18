@@ -153,6 +153,20 @@ func (sipsip ServiceItemPurchaseServiceItemParam) Equals(o types.RVType) bool {
 	return sipsip.TitleID.Equals(other.TitleID)
 }
 
+// CopyRef copies the current value of the ServiceItemPurchaseServiceItemParam
+// and returns a pointer to the new copy
+func (sipsip ServiceItemPurchaseServiceItemParam) CopyRef() types.RVTypePtr {
+	copied := sipsip.Copy().(ServiceItemPurchaseServiceItemParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPurchaseServiceItemParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sipsip *ServiceItemPurchaseServiceItemParam) Deref() types.RVType {
+	return *sipsip
+}
+
 // String returns the string representation of the ServiceItemPurchaseServiceItemParam
 func (sipsip ServiceItemPurchaseServiceItemParam) String() string {
 	return sipsip.FormatToString(0)

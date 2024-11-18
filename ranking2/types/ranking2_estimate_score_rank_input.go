@@ -93,6 +93,20 @@ func (resri Ranking2EstimateScoreRankInput) Equals(o types.RVType) bool {
 	return resri.Score.Equals(other.Score)
 }
 
+// CopyRef copies the current value of the Ranking2EstimateScoreRankInput
+// and returns a pointer to the new copy
+func (resri Ranking2EstimateScoreRankInput) CopyRef() types.RVTypePtr {
+	copied := resri.Copy().(Ranking2EstimateScoreRankInput)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2EstimateScoreRankInput
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (resri *Ranking2EstimateScoreRankInput) Deref() types.RVType {
+	return *resri
+}
+
 // String returns the string representation of the Ranking2EstimateScoreRankInput
 func (resri Ranking2EstimateScoreRankInput) String() string {
 	return resri.FormatToString(0)

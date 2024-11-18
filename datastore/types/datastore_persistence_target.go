@@ -81,6 +81,20 @@ func (dspt DataStorePersistenceTarget) Equals(o types.RVType) bool {
 	return dspt.PersistenceSlotID.Equals(other.PersistenceSlotID)
 }
 
+// CopyRef copies the current value of the DataStorePersistenceTarget
+// and returns a pointer to the new copy
+func (dspt DataStorePersistenceTarget) CopyRef() types.RVTypePtr {
+	copied := dspt.Copy().(DataStorePersistenceTarget)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePersistenceTarget
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspt *DataStorePersistenceTarget) Deref() types.RVType {
+	return *dspt
+}
+
 // String returns the string representation of the DataStorePersistenceTarget
 func (dspt DataStorePersistenceTarget) String() string {
 	return dspt.FormatToString(0)

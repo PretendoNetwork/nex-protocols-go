@@ -81,6 +81,20 @@ func (siecp ServiceItemEndChallengeParam) Equals(o types.RVType) bool {
 	return siecp.UserInfo.Equals(other.UserInfo)
 }
 
+// CopyRef copies the current value of the ServiceItemEndChallengeParam
+// and returns a pointer to the new copy
+func (siecp ServiceItemEndChallengeParam) CopyRef() types.RVTypePtr {
+	copied := siecp.Copy().(ServiceItemEndChallengeParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemEndChallengeParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siecp *ServiceItemEndChallengeParam) Deref() types.RVType {
+	return *siecp
+}
+
 // String returns the string representation of the ServiceItemEndChallengeParam
 func (siecp ServiceItemEndChallengeParam) String() string {
 	return siecp.FormatToString(0)

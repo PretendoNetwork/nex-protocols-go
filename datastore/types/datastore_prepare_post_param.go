@@ -225,6 +225,20 @@ func (dsppp DataStorePreparePostParam) Equals(o types.RVType) bool {
 	return dsppp.ExtraData.Equals(other.ExtraData)
 }
 
+// CopyRef copies the current value of the DataStorePreparePostParam
+// and returns a pointer to the new copy
+func (dsppp DataStorePreparePostParam) CopyRef() types.RVTypePtr {
+	copied := dsppp.Copy().(DataStorePreparePostParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePreparePostParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsppp *DataStorePreparePostParam) Deref() types.RVType {
+	return *dsppp
+}
+
 // String returns the string representation of the DataStorePreparePostParam
 func (dsppp DataStorePreparePostParam) String() string {
 	return dsppp.FormatToString(0)

@@ -118,6 +118,20 @@ func (m Mii) Equals(o types.RVType) bool {
 	return m.MiiData.Equals(other.MiiData)
 }
 
+// CopyRef copies the current value of the Mii
+// and returns a pointer to the new copy
+func (m Mii) CopyRef() types.RVTypePtr {
+	copied := m.Copy().(Mii)
+	return &copied
+}
+
+// Deref takes a pointer to the Mii
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (m *Mii) Deref() types.RVType {
+	return *m
+}
+
 // String returns the string representation of the Mii
 func (m Mii) String() string {
 	return m.FormatToString(0)

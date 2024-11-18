@@ -153,6 +153,20 @@ func (sie ServiceItemEvent) Equals(o types.RVType) bool {
 	return sie.TimeEnd.Equals(other.TimeEnd)
 }
 
+// CopyRef copies the current value of the ServiceItemEvent
+// and returns a pointer to the new copy
+func (sie ServiceItemEvent) CopyRef() types.RVTypePtr {
+	copied := sie.Copy().(ServiceItemEvent)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemEvent
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sie *ServiceItemEvent) Deref() types.RVType {
+	return *sie
+}
+
 // String returns the string representation of the ServiceItemEvent
 func (sie ServiceItemEvent) String() string {
 	return sie.FormatToString(0)

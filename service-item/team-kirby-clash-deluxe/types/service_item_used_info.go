@@ -81,6 +81,20 @@ func (siui ServiceItemUsedInfo) Equals(o types.RVType) bool {
 	return siui.UsedCount.Equals(other.UsedCount)
 }
 
+// CopyRef copies the current value of the ServiceItemUsedInfo
+// and returns a pointer to the new copy
+func (siui ServiceItemUsedInfo) CopyRef() types.RVTypePtr {
+	copied := siui.Copy().(ServiceItemUsedInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemUsedInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siui *ServiceItemUsedInfo) Deref() types.RVType {
+	return *siui
+}
+
 // String returns the string representation of the ServiceItemUsedInfo
 func (siui ServiceItemUsedInfo) String() string {
 	return siui.FormatToString(0)

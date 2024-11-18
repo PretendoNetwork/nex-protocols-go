@@ -81,6 +81,20 @@ func (sigsidp ServiceItemGetSupportIDParam) Equals(o types.RVType) bool {
 	return sigsidp.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemGetSupportIDParam
+// and returns a pointer to the new copy
+func (sigsidp ServiceItemGetSupportIDParam) CopyRef() types.RVTypePtr {
+	copied := sigsidp.Copy().(ServiceItemGetSupportIDParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetSupportIDParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigsidp *ServiceItemGetSupportIDParam) Deref() types.RVType {
+	return *sigsidp
+}
+
 // String returns the string representation of the ServiceItemGetSupportIDParam
 func (sigsidp ServiceItemGetSupportIDParam) String() string {
 	return sigsidp.FormatToString(0)

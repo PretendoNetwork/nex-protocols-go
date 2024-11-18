@@ -81,6 +81,20 @@ func (dsfps DataStoreFightingPowerScore) Equals(o types.RVType) bool {
 	return dsfps.Rank.Equals(other.Rank)
 }
 
+// CopyRef copies the current value of the DataStoreFightingPowerScore
+// and returns a pointer to the new copy
+func (dsfps DataStoreFightingPowerScore) CopyRef() types.RVTypePtr {
+	copied := dsfps.Copy().(DataStoreFightingPowerScore)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreFightingPowerScore
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsfps *DataStoreFightingPowerScore) Deref() types.RVType {
+	return *dsfps
+}
+
 // String returns the string representation of the DataStoreFightingPowerScore
 func (dsfps DataStoreFightingPowerScore) String() string {
 	return dsfps.FormatToString(0)

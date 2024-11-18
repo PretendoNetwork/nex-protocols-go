@@ -106,6 +106,20 @@ func (ncad NintendoCreateAccountData) Equals(o types.RVType) bool {
 	return ncad.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the NintendoCreateAccountData
+// and returns a pointer to the new copy
+func (ncad NintendoCreateAccountData) CopyRef() types.RVTypePtr {
+	copied := ncad.Copy().(NintendoCreateAccountData)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoCreateAccountData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ncad *NintendoCreateAccountData) Deref() types.RVType {
+	return *ncad
+}
+
 // String returns the string representation of the NintendoCreateAccountData
 func (ncad NintendoCreateAccountData) String() string {
 	return ncad.FormatToString(0)

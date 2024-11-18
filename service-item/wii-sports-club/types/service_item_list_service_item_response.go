@@ -82,6 +82,20 @@ func (silsir ServiceItemListServiceItemResponse) Equals(o types.RVType) bool {
 	return silsir.NullableCatalog.Equals(other.NullableCatalog)
 }
 
+// CopyRef copies the current value of the ServiceItemListServiceItemResponse
+// and returns a pointer to the new copy
+func (silsir ServiceItemListServiceItemResponse) CopyRef() types.RVTypePtr {
+	copied := silsir.Copy().(ServiceItemListServiceItemResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemListServiceItemResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (silsir *ServiceItemListServiceItemResponse) Deref() types.RVType {
+	return *silsir
+}
+
 // String returns the string representation of the ServiceItemListServiceItemResponse
 func (silsir ServiceItemListServiceItemResponse) String() string {
 	return silsir.FormatToString(0)

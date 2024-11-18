@@ -82,6 +82,20 @@ func (siglmr ServiceItemGetLawMessageResponse) Equals(o types.RVType) bool {
 	return siglmr.NullableLawMessage.Equals(other.NullableLawMessage)
 }
 
+// CopyRef copies the current value of the ServiceItemGetLawMessageResponse
+// and returns a pointer to the new copy
+func (siglmr ServiceItemGetLawMessageResponse) CopyRef() types.RVTypePtr {
+	copied := siglmr.Copy().(ServiceItemGetLawMessageResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetLawMessageResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siglmr *ServiceItemGetLawMessageResponse) Deref() types.RVType {
+	return *siglmr
+}
+
 // String returns the string representation of the ServiceItemGetLawMessageResponse
 func (siglmr ServiceItemGetLawMessageResponse) String() string {
 	return siglmr.FormatToString(0)

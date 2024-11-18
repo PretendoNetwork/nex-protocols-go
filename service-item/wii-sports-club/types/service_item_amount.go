@@ -93,6 +93,20 @@ func (sia ServiceItemAmount) Equals(o types.RVType) bool {
 	return sia.RawValue.Equals(other.RawValue)
 }
 
+// CopyRef copies the current value of the ServiceItemAmount
+// and returns a pointer to the new copy
+func (sia ServiceItemAmount) CopyRef() types.RVTypePtr {
+	copied := sia.Copy().(ServiceItemAmount)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAmount
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sia *ServiceItemAmount) Deref() types.RVType {
+	return *sia
+}
+
 // String returns the string representation of the ServiceItemAmount
 func (sia ServiceItemAmount) String() string {
 	return sia.FormatToString(0)

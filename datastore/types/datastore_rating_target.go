@@ -81,6 +81,20 @@ func (dsrt DataStoreRatingTarget) Equals(o types.RVType) bool {
 	return dsrt.Slot.Equals(other.Slot)
 }
 
+// CopyRef copies the current value of the DataStoreRatingTarget
+// and returns a pointer to the new copy
+func (dsrt DataStoreRatingTarget) CopyRef() types.RVTypePtr {
+	copied := dsrt.Copy().(DataStoreRatingTarget)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingTarget
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrt *DataStoreRatingTarget) Deref() types.RVType {
+	return *dsrt
+}
+
 // String returns the string representation of the DataStoreRatingTarget
 func (dsrt DataStoreRatingTarget) String() string {
 	return dsrt.FormatToString(0)

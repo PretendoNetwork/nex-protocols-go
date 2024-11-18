@@ -81,6 +81,20 @@ func (dspgpv DataStorePrepareGetParamV1) Equals(o types.RVType) bool {
 	return dspgpv.LockID.Equals(other.LockID)
 }
 
+// CopyRef copies the current value of the DataStorePrepareGetParamV1
+// and returns a pointer to the new copy
+func (dspgpv DataStorePrepareGetParamV1) CopyRef() types.RVTypePtr {
+	copied := dspgpv.Copy().(DataStorePrepareGetParamV1)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePrepareGetParamV1
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspgpv *DataStorePrepareGetParamV1) Deref() types.RVType {
+	return *dspgpv
+}
+
 // String returns the string representation of the DataStorePrepareGetParamV1
 func (dspgpv DataStorePrepareGetParamV1) String() string {
 	return dspgpv.FormatToString(0)

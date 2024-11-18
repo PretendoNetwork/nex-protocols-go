@@ -117,6 +117,20 @@ func (dsrpi DataStoreReqPostInfo) Equals(o types.RVType) bool {
 	return dsrpi.RootCACert.Equals(other.RootCACert)
 }
 
+// CopyRef copies the current value of the DataStoreReqPostInfo
+// and returns a pointer to the new copy
+func (dsrpi DataStoreReqPostInfo) CopyRef() types.RVTypePtr {
+	copied := dsrpi.Copy().(DataStoreReqPostInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqPostInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrpi *DataStoreReqPostInfo) Deref() types.RVType {
+	return *dsrpi
+}
+
 // String returns the string representation of the DataStoreReqPostInfo
 func (dsrpi DataStoreReqPostInfo) String() string {
 	return dsrpi.FormatToString(0)

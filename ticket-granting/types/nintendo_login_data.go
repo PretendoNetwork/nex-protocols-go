@@ -69,6 +69,20 @@ func (nld NintendoLoginData) Equals(o types.RVType) bool {
 	return nld.Token.Equals(other.Token)
 }
 
+// CopyRef copies the current value of the NintendoLoginData
+// and returns a pointer to the new copy
+func (nld NintendoLoginData) CopyRef() types.RVTypePtr {
+	copied := nld.Copy().(NintendoLoginData)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoLoginData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (nld *NintendoLoginData) Deref() types.RVType {
+	return *nld
+}
+
 // String returns the string representation of the NintendoLoginData
 func (nld NintendoLoginData) String() string {
 	return nld.FormatToString(0)

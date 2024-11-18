@@ -82,6 +82,20 @@ func (siusir ServiceItemUseServiceItemResponse) Equals(o types.RVType) bool {
 	return siusir.NullableUsedInfo.Equals(other.NullableUsedInfo)
 }
 
+// CopyRef copies the current value of the ServiceItemUseServiceItemResponse
+// and returns a pointer to the new copy
+func (siusir ServiceItemUseServiceItemResponse) CopyRef() types.RVTypePtr {
+	copied := siusir.Copy().(ServiceItemUseServiceItemResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemUseServiceItemResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siusir *ServiceItemUseServiceItemResponse) Deref() types.RVType {
+	return *siusir
+}
+
 // String returns the string representation of the ServiceItemUseServiceItemResponse
 func (siusir ServiceItemUseServiceItemResponse) String() string {
 	return siusir.FormatToString(0)

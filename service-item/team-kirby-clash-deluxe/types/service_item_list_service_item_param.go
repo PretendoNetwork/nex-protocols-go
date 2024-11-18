@@ -134,6 +134,20 @@ func (silsip ServiceItemListServiceItemParam) Equals(o types.RVType) bool {
 	return silsip.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemListServiceItemParam
+// and returns a pointer to the new copy
+func (silsip ServiceItemListServiceItemParam) CopyRef() types.RVTypePtr {
+	copied := silsip.Copy().(ServiceItemListServiceItemParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemListServiceItemParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (silsip *ServiceItemListServiceItemParam) Deref() types.RVType {
+	return *silsip
+}
+
 // String returns the string representation of the ServiceItemListServiceItemParam
 func (silsip ServiceItemListServiceItemParam) String() string {
 	return silsip.FormatToString(0)

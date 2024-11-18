@@ -82,6 +82,20 @@ func (sigbr ServiceItemGetBalanceResponse) Equals(o types.RVType) bool {
 	return sigbr.NullableBalance.Equals(other.NullableBalance)
 }
 
+// CopyRef copies the current value of the ServiceItemGetBalanceResponse
+// and returns a pointer to the new copy
+func (sigbr ServiceItemGetBalanceResponse) CopyRef() types.RVTypePtr {
+	copied := sigbr.Copy().(ServiceItemGetBalanceResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetBalanceResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigbr *ServiceItemGetBalanceResponse) Deref() types.RVType {
+	return *sigbr
+}
+
 // String returns the string representation of the ServiceItemGetBalanceResponse
 func (sigbr ServiceItemGetBalanceResponse) String() string {
 	return sigbr.FormatToString(0)

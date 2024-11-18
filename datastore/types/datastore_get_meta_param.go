@@ -105,6 +105,20 @@ func (dsgmp DataStoreGetMetaParam) Equals(o types.RVType) bool {
 	return dsgmp.AccessPassword.Equals(other.AccessPassword)
 }
 
+// CopyRef copies the current value of the DataStoreGetMetaParam
+// and returns a pointer to the new copy
+func (dsgmp DataStoreGetMetaParam) CopyRef() types.RVTypePtr {
+	copied := dsgmp.Copy().(DataStoreGetMetaParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetMetaParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgmp *DataStoreGetMetaParam) Deref() types.RVType {
+	return *dsgmp
+}
+
 // String returns the string representation of the DataStoreGetMetaParam
 func (dsgmp DataStoreGetMetaParam) String() string {
 	return dsgmp.FormatToString(0)

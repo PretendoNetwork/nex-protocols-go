@@ -81,6 +81,20 @@ func (sc SimpleCommunity) Equals(o types.RVType) bool {
 	return sc.MatchmakeSessionCount.Equals(other.MatchmakeSessionCount)
 }
 
+// CopyRef copies the current value of the SimpleCommunity
+// and returns a pointer to the new copy
+func (sc SimpleCommunity) CopyRef() types.RVTypePtr {
+	copied := sc.Copy().(SimpleCommunity)
+	return &copied
+}
+
+// Deref takes a pointer to the SimpleCommunity
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sc *SimpleCommunity) Deref() types.RVType {
+	return *sc
+}
+
 // String returns the string representation of the SimpleCommunity
 func (sc SimpleCommunity) String() string {
 	return sc.FormatToString(0)

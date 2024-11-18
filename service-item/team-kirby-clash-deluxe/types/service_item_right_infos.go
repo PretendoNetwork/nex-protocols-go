@@ -117,6 +117,20 @@ func (siri ServiceItemRightInfos) Equals(o types.RVType) bool {
 	return siri.AlreadyPurchasedInitialOnlyItem.Equals(other.AlreadyPurchasedInitialOnlyItem)
 }
 
+// CopyRef copies the current value of the ServiceItemRightInfos
+// and returns a pointer to the new copy
+func (siri ServiceItemRightInfos) CopyRef() types.RVTypePtr {
+	copied := siri.Copy().(ServiceItemRightInfos)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemRightInfos
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siri *ServiceItemRightInfos) Deref() types.RVType {
+	return *siri
+}
+
 // String returns the string representation of the ServiceItemRightInfos
 func (siri ServiceItemRightInfos) String() string {
 	return siri.FormatToString(0)

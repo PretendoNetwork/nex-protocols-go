@@ -127,6 +127,20 @@ func (dscrrc DataStoreCustomRankingRatingCondition) Equals(o types.RVType) bool 
 	return dscrrc.MaxCount.Equals(other.MaxCount)
 }
 
+// CopyRef copies the current value of the DataStoreCustomRankingRatingCondition
+// and returns a pointer to the new copy
+func (dscrrc DataStoreCustomRankingRatingCondition) CopyRef() types.RVTypePtr {
+	copied := dscrrc.Copy().(DataStoreCustomRankingRatingCondition)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreCustomRankingRatingCondition
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscrrc *DataStoreCustomRankingRatingCondition) Deref() types.RVType {
+	return *dscrrc
+}
+
 // String returns the string representation of the DataStoreCustomRankingRatingCondition
 func (dscrrc DataStoreCustomRankingRatingCondition) String() string {
 	return dscrrc.FormatToString(0)

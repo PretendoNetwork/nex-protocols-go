@@ -130,6 +130,20 @@ func (mv MiiV2) Equals(o types.RVType) bool {
 	return mv.Datetime.Equals(other.Datetime)
 }
 
+// CopyRef copies the current value of the MiiV2
+// and returns a pointer to the new copy
+func (mv MiiV2) CopyRef() types.RVTypePtr {
+	copied := mv.Copy().(MiiV2)
+	return &copied
+}
+
+// Deref takes a pointer to the MiiV2
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mv *MiiV2) Deref() types.RVType {
+	return *mv
+}
+
 // String returns the string representation of the MiiV2
 func (mv MiiV2) String() string {
 	return mv.FormatToString(0)

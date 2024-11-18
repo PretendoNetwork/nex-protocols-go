@@ -81,6 +81,20 @@ func (dspi DataStoreProfileInfo) Equals(o types.RVType) bool {
 	return dspi.Profile.Equals(other.Profile)
 }
 
+// CopyRef copies the current value of the DataStoreProfileInfo
+// and returns a pointer to the new copy
+func (dspi DataStoreProfileInfo) CopyRef() types.RVTypePtr {
+	copied := dspi.Copy().(DataStoreProfileInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreProfileInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspi *DataStoreProfileInfo) Deref() types.RVType {
+	return *dspi
+}
+
 // String returns the string representation of the DataStoreProfileInfo
 func (dspi DataStoreProfileInfo) String() string {
 	return dspi.FormatToString(0)

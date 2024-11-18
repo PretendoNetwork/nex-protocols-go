@@ -106,6 +106,20 @@ func (rcr RankingCachedResult) Equals(o types.RVType) bool {
 	return rcr.MaxLength.Equals(other.MaxLength)
 }
 
+// CopyRef copies the current value of the RankingCachedResult
+// and returns a pointer to the new copy
+func (rcr RankingCachedResult) CopyRef() types.RVTypePtr {
+	copied := rcr.Copy().(RankingCachedResult)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingCachedResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rcr *RankingCachedResult) Deref() types.RVType {
+	return *rcr
+}
+
 // String returns the string representation of the RankingCachedResult
 func (rcr RankingCachedResult) String() string {
 	return rcr.FormatToString(0)

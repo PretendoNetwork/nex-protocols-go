@@ -129,6 +129,20 @@ func (ssdta SimpleSearchDateTimeAttribute) Equals(o types.RVType) bool {
 	return ssdta.EndTime.Equals(other.EndTime)
 }
 
+// CopyRef copies the current value of the SimpleSearchDateTimeAttribute
+// and returns a pointer to the new copy
+func (ssdta SimpleSearchDateTimeAttribute) CopyRef() types.RVTypePtr {
+	copied := ssdta.Copy().(SimpleSearchDateTimeAttribute)
+	return &copied
+}
+
+// Deref takes a pointer to the SimpleSearchDateTimeAttribute
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ssdta *SimpleSearchDateTimeAttribute) Deref() types.RVType {
+	return *ssdta
+}
+
 // String returns the string representation of the SimpleSearchDateTimeAttribute
 func (ssdta SimpleSearchDateTimeAttribute) String() string {
 	return ssdta.FormatToString(0)

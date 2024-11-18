@@ -285,6 +285,20 @@ func (dsmi DataStoreMetaInfo) Equals(o types.RVType) bool {
 	return dsmi.Ratings.Equals(other.Ratings)
 }
 
+// CopyRef copies the current value of the DataStoreMetaInfo
+// and returns a pointer to the new copy
+func (dsmi DataStoreMetaInfo) CopyRef() types.RVTypePtr {
+	copied := dsmi.Copy().(DataStoreMetaInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreMetaInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsmi *DataStoreMetaInfo) Deref() types.RVType {
+	return *dsmi
+}
+
 // String returns the string representation of the DataStoreMetaInfo
 func (dsmi DataStoreMetaInfo) String() string {
 	return dsmi.FormatToString(0)

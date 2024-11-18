@@ -94,6 +94,20 @@ func (mrst MatchmakeRefereeStatsTarget) Equals(o types.RVType) bool {
 	return mrst.Category.Equals(other.Category)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeStatsTarget
+// and returns a pointer to the new copy
+func (mrst MatchmakeRefereeStatsTarget) CopyRef() types.RVTypePtr {
+	copied := mrst.Copy().(MatchmakeRefereeStatsTarget)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeStatsTarget
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrst *MatchmakeRefereeStatsTarget) Deref() types.RVType {
+	return *mrst
+}
+
 // String returns the string representation of the MatchmakeRefereeStatsTarget
 func (mrst MatchmakeRefereeStatsTarget) String() string {
 	return mrst.FormatToString(0)

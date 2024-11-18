@@ -94,6 +94,20 @@ func (prbs PrincipalRequestBlockSetting) Equals(o types.RVType) bool {
 	return prbs.IsBlocked.Equals(other.IsBlocked)
 }
 
+// CopyRef copies the current value of the PrincipalRequestBlockSetting
+// and returns a pointer to the new copy
+func (prbs PrincipalRequestBlockSetting) CopyRef() types.RVTypePtr {
+	copied := prbs.Copy().(PrincipalRequestBlockSetting)
+	return &copied
+}
+
+// Deref takes a pointer to the PrincipalRequestBlockSetting
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (prbs *PrincipalRequestBlockSetting) Deref() types.RVType {
+	return *prbs
+}
+
 // String returns the string representation of the PrincipalRequestBlockSetting
 func (prbs PrincipalRequestBlockSetting) String() string {
 	return prbs.FormatToString(0)

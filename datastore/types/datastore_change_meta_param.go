@@ -230,6 +230,20 @@ func (dscmp DataStoreChangeMetaParam) Equals(o types.RVType) bool {
 	return dscmp.PersistenceTarget.Equals(other.PersistenceTarget)
 }
 
+// CopyRef copies the current value of the DataStoreChangeMetaParam
+// and returns a pointer to the new copy
+func (dscmp DataStoreChangeMetaParam) CopyRef() types.RVTypePtr {
+	copied := dscmp.Copy().(DataStoreChangeMetaParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreChangeMetaParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscmp *DataStoreChangeMetaParam) Deref() types.RVType {
+	return *dscmp
+}
+
 // String returns the string representation of the DataStoreChangeMetaParam
 func (dscmp DataStoreChangeMetaParam) String() string {
 	return dscmp.FormatToString(0)

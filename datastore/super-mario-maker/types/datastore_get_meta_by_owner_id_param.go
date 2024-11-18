@@ -105,6 +105,20 @@ func (dsgmboidp DataStoreGetMetaByOwnerIDParam) Equals(o types.RVType) bool {
 	return dsgmboidp.ResultRange.Equals(other.ResultRange)
 }
 
+// CopyRef copies the current value of the DataStoreGetMetaByOwnerIDParam
+// and returns a pointer to the new copy
+func (dsgmboidp DataStoreGetMetaByOwnerIDParam) CopyRef() types.RVTypePtr {
+	copied := dsgmboidp.Copy().(DataStoreGetMetaByOwnerIDParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetMetaByOwnerIDParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) Deref() types.RVType {
+	return *dsgmboidp
+}
+
 // String returns the string representation of the DataStoreGetMetaByOwnerIDParam
 func (dsgmboidp DataStoreGetMetaByOwnerIDParam) String() string {
 	return dsgmboidp.FormatToString(0)

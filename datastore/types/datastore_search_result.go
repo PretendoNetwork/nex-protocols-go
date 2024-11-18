@@ -93,6 +93,20 @@ func (dssr DataStoreSearchResult) Equals(o types.RVType) bool {
 	return dssr.TotalCountType.Equals(other.TotalCountType)
 }
 
+// CopyRef copies the current value of the DataStoreSearchResult
+// and returns a pointer to the new copy
+func (dssr DataStoreSearchResult) CopyRef() types.RVTypePtr {
+	copied := dssr.Copy().(DataStoreSearchResult)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreSearchResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dssr *DataStoreSearchResult) Deref() types.RVType {
+	return *dssr
+}
+
 // String returns the string representation of the DataStoreSearchResult
 func (dssr DataStoreSearchResult) String() string {
 	return dssr.FormatToString(0)

@@ -81,6 +81,20 @@ func (uidi UniqueIDInfo) Equals(o types.RVType) bool {
 	return uidi.NEXUniqueIDPassword.Equals(other.NEXUniqueIDPassword)
 }
 
+// CopyRef copies the current value of the UniqueIDInfo
+// and returns a pointer to the new copy
+func (uidi UniqueIDInfo) CopyRef() types.RVTypePtr {
+	copied := uidi.Copy().(UniqueIDInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the UniqueIDInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (uidi *UniqueIDInfo) Deref() types.RVType {
+	return *uidi
+}
+
 // String returns the string representation of the UniqueIDInfo
 func (uidi UniqueIDInfo) String() string {
 	return uidi.FormatToString(0)

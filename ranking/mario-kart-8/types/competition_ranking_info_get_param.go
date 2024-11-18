@@ -81,6 +81,20 @@ func (crigp CompetitionRankingInfoGetParam) Equals(o types.RVType) bool {
 	return crigp.Result.Equals(other.Result)
 }
 
+// CopyRef copies the current value of the CompetitionRankingInfoGetParam
+// and returns a pointer to the new copy
+func (crigp CompetitionRankingInfoGetParam) CopyRef() types.RVTypePtr {
+	copied := crigp.Copy().(CompetitionRankingInfoGetParam)
+	return &copied
+}
+
+// Deref takes a pointer to the CompetitionRankingInfoGetParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (crigp *CompetitionRankingInfoGetParam) Deref() types.RVType {
+	return *crigp
+}
+
 // String returns the string representation of the CompetitionRankingInfoGetParam
 func (crigp CompetitionRankingInfoGetParam) String() string {
 	return crigp.FormatToString(0)

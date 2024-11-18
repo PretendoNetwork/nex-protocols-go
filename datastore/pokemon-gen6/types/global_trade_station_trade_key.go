@@ -81,6 +81,20 @@ func (gtstk GlobalTradeStationTradeKey) Equals(o types.RVType) bool {
 	return gtstk.Version.Equals(other.Version)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationTradeKey
+// and returns a pointer to the new copy
+func (gtstk GlobalTradeStationTradeKey) CopyRef() types.RVTypePtr {
+	copied := gtstk.Copy().(GlobalTradeStationTradeKey)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationTradeKey
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtstk *GlobalTradeStationTradeKey) Deref() types.RVType {
+	return *gtstk
+}
+
 // String returns the string representation of the GlobalTradeStationTradeKey
 func (gtstk GlobalTradeStationTradeKey) String() string {
 	return gtstk.FormatToString(0)

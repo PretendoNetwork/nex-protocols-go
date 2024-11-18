@@ -129,6 +129,20 @@ func (rsd RankingScoreData) Equals(o types.RVType) bool {
 	return rsd.Param.Equals(other.Param)
 }
 
+// CopyRef copies the current value of the RankingScoreData
+// and returns a pointer to the new copy
+func (rsd RankingScoreData) CopyRef() types.RVTypePtr {
+	copied := rsd.Copy().(RankingScoreData)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingScoreData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rsd *RankingScoreData) Deref() types.RVType {
+	return *rsd
+}
+
 // String returns the string representation of the RankingScoreData
 func (rsd RankingScoreData) String() string {
 	return rsd.FormatToString(0)

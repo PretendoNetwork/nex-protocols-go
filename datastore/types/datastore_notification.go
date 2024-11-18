@@ -81,6 +81,20 @@ func (dsn DataStoreNotification) Equals(o types.RVType) bool {
 	return dsn.DataID.Equals(other.DataID)
 }
 
+// CopyRef copies the current value of the DataStoreNotification
+// and returns a pointer to the new copy
+func (dsn DataStoreNotification) CopyRef() types.RVTypePtr {
+	copied := dsn.Copy().(DataStoreNotification)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreNotification
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsn *DataStoreNotification) Deref() types.RVType {
+	return *dsn
+}
+
 // String returns the string representation of the DataStoreNotification
 func (dsn DataStoreNotification) String() string {
 	return dsn.FormatToString(0)

@@ -93,6 +93,20 @@ func (dspfpsp DataStorePostFightingPowerScoreParam) Equals(o types.RVType) bool 
 	return dspfpsp.IsWorldHighScore.Equals(other.IsWorldHighScore)
 }
 
+// CopyRef copies the current value of the DataStorePostFightingPowerScoreParam
+// and returns a pointer to the new copy
+func (dspfpsp DataStorePostFightingPowerScoreParam) CopyRef() types.RVTypePtr {
+	copied := dspfpsp.Copy().(DataStorePostFightingPowerScoreParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePostFightingPowerScoreParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspfpsp *DataStorePostFightingPowerScoreParam) Deref() types.RVType {
+	return *dspfpsp
+}
+
 // String returns the string representation of the DataStorePostFightingPowerScoreParam
 func (dspfpsp DataStorePostFightingPowerScoreParam) String() string {
 	return dspfpsp.FormatToString(0)

@@ -81,6 +81,20 @@ func (rcii Ranking2ChartInfoInput) Equals(o types.RVType) bool {
 	return rcii.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack)
 }
 
+// CopyRef copies the current value of the Ranking2ChartInfoInput
+// and returns a pointer to the new copy
+func (rcii Ranking2ChartInfoInput) CopyRef() types.RVTypePtr {
+	copied := rcii.Copy().(Ranking2ChartInfoInput)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2ChartInfoInput
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rcii *Ranking2ChartInfoInput) Deref() types.RVType {
+	return *rcii
+}
+
 // String returns the string representation of the Ranking2ChartInfoInput
 func (rcii Ranking2ChartInfoInput) String() string {
 	return rcii.FormatToString(0)

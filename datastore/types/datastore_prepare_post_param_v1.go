@@ -189,6 +189,20 @@ func (dspppv DataStorePreparePostParamV1) Equals(o types.RVType) bool {
 	return dspppv.RatingInitParams.Equals(other.RatingInitParams)
 }
 
+// CopyRef copies the current value of the DataStorePreparePostParamV1
+// and returns a pointer to the new copy
+func (dspppv DataStorePreparePostParamV1) CopyRef() types.RVTypePtr {
+	copied := dspppv.Copy().(DataStorePreparePostParamV1)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePreparePostParamV1
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspppv *DataStorePreparePostParamV1) Deref() types.RVType {
+	return *dspppv
+}
+
 // String returns the string representation of the DataStorePreparePostParamV1
 func (dspppv DataStorePreparePostParamV1) String() string {
 	return dspppv.FormatToString(0)

@@ -81,6 +81,20 @@ func (susi SubscriberUserStatusInfo) Equals(o types.RVType) bool {
 	return susi.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the SubscriberUserStatusInfo
+// and returns a pointer to the new copy
+func (susi SubscriberUserStatusInfo) CopyRef() types.RVTypePtr {
+	copied := susi.Copy().(SubscriberUserStatusInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the SubscriberUserStatusInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (susi *SubscriberUserStatusInfo) Deref() types.RVType {
+	return *susi
+}
+
 // String returns the string representation of the SubscriberUserStatusInfo
 func (susi SubscriberUserStatusInfo) String() string {
 	return susi.FormatToString(0)

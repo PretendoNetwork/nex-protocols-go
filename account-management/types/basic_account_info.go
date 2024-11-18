@@ -81,6 +81,20 @@ func (bai BasicAccountInfo) Equals(o types.RVType) bool {
 	return bai.StrName.Equals(other.StrName)
 }
 
+// CopyRef copies the current value of the BasicAccountInfo
+// and returns a pointer to the new copy
+func (bai BasicAccountInfo) CopyRef() types.RVTypePtr {
+	copied := bai.Copy().(BasicAccountInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the BasicAccountInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (bai *BasicAccountInfo) Deref() types.RVType {
+	return *bai
+}
+
 // String returns the string representation of the BasicAccountInfo
 func (bai BasicAccountInfo) String() string {
 	return bai.FormatToString(0)

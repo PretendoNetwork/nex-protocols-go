@@ -129,6 +129,20 @@ func (sc SubscriberContent) Equals(o types.RVType) bool {
 	return sc.Unknown6.Equals(other.Unknown6)
 }
 
+// CopyRef copies the current value of the SubscriberContent
+// and returns a pointer to the new copy
+func (sc SubscriberContent) CopyRef() types.RVTypePtr {
+	copied := sc.Copy().(SubscriberContent)
+	return &copied
+}
+
+// Deref takes a pointer to the SubscriberContent
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sc *SubscriberContent) Deref() types.RVType {
+	return *sc
+}
+
 // String returns the string representation of the SubscriberContent
 func (sc SubscriberContent) String() string {
 	return sc.FormatToString(0)

@@ -69,6 +69,20 @@ func (dsgnurlp DataStoreGetNotificationURLParam) Equals(o types.RVType) bool {
 	return dsgnurlp.PreviousURL.Equals(other.PreviousURL)
 }
 
+// CopyRef copies the current value of the DataStoreGetNotificationURLParam
+// and returns a pointer to the new copy
+func (dsgnurlp DataStoreGetNotificationURLParam) CopyRef() types.RVTypePtr {
+	copied := dsgnurlp.Copy().(DataStoreGetNotificationURLParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetNotificationURLParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgnurlp *DataStoreGetNotificationURLParam) Deref() types.RVType {
+	return *dsgnurlp
+}
+
 // String returns the string representation of the DataStoreGetNotificationURLParam
 func (dsgnurlp DataStoreGetNotificationURLParam) String() string {
 	return dsgnurlp.FormatToString(0)

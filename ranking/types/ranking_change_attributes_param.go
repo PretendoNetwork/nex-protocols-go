@@ -93,6 +93,20 @@ func (rcap RankingChangeAttributesParam) Equals(o types.RVType) bool {
 	return rcap.Param.Equals(other.Param)
 }
 
+// CopyRef copies the current value of the RankingChangeAttributesParam
+// and returns a pointer to the new copy
+func (rcap RankingChangeAttributesParam) CopyRef() types.RVTypePtr {
+	copied := rcap.Copy().(RankingChangeAttributesParam)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingChangeAttributesParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rcap *RankingChangeAttributesParam) Deref() types.RVType {
+	return *rcap
+}
+
 // String returns the string representation of the RankingChangeAttributesParam
 func (rcap RankingChangeAttributesParam) String() string {
 	return rcap.FormatToString(0)

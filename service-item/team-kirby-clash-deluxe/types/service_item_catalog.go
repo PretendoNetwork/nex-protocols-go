@@ -117,6 +117,20 @@ func (sic ServiceItemCatalog) Equals(o types.RVType) bool {
 	return sic.Balance.Equals(other.Balance)
 }
 
+// CopyRef copies the current value of the ServiceItemCatalog
+// and returns a pointer to the new copy
+func (sic ServiceItemCatalog) CopyRef() types.RVTypePtr {
+	copied := sic.Copy().(ServiceItemCatalog)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemCatalog
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sic *ServiceItemCatalog) Deref() types.RVType {
+	return *sic
+}
+
 // String returns the string representation of the ServiceItemCatalog
 func (sic ServiceItemCatalog) String() string {
 	return sic.FormatToString(0)

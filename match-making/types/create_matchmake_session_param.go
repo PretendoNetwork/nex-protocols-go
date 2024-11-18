@@ -129,6 +129,20 @@ func (cmsp CreateMatchmakeSessionParam) Equals(o types.RVType) bool {
 	return cmsp.ParticipationCount.Equals(other.ParticipationCount)
 }
 
+// CopyRef copies the current value of the CreateMatchmakeSessionParam
+// and returns a pointer to the new copy
+func (cmsp CreateMatchmakeSessionParam) CopyRef() types.RVTypePtr {
+	copied := cmsp.Copy().(CreateMatchmakeSessionParam)
+	return &copied
+}
+
+// Deref takes a pointer to the CreateMatchmakeSessionParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (cmsp *CreateMatchmakeSessionParam) Deref() types.RVType {
+	return *cmsp
+}
+
 // String returns the string representation of the CreateMatchmakeSessionParam
 func (cmsp CreateMatchmakeSessionParam) String() string {
 	return cmsp.FormatToString(0)

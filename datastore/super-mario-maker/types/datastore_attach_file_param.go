@@ -94,6 +94,20 @@ func (dsafp DataStoreAttachFileParam) Equals(o types.RVType) bool {
 	return dsafp.ContentType.Equals(other.ContentType)
 }
 
+// CopyRef copies the current value of the DataStoreAttachFileParam
+// and returns a pointer to the new copy
+func (dsafp DataStoreAttachFileParam) CopyRef() types.RVTypePtr {
+	copied := dsafp.Copy().(DataStoreAttachFileParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreAttachFileParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsafp *DataStoreAttachFileParam) Deref() types.RVType {
+	return *dsafp
+}
+
 // String returns the string representation of the DataStoreAttachFileParam
 func (dsafp DataStoreAttachFileParam) String() string {
 	return dsafp.FormatToString(0)

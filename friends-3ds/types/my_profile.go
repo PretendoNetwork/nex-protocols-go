@@ -166,6 +166,20 @@ func (mp MyProfile) Equals(o types.RVType) bool {
 	return mp.Unknown3.Equals(other.Unknown3)
 }
 
+// CopyRef copies the current value of the MyProfile
+// and returns a pointer to the new copy
+func (mp MyProfile) CopyRef() types.RVTypePtr {
+	copied := mp.Copy().(MyProfile)
+	return &copied
+}
+
+// Deref takes a pointer to the MyProfile
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mp *MyProfile) Deref() types.RVType {
+	return *mp
+}
+
 // String returns the string representation of the MyProfile
 func (mp MyProfile) String() string {
 	return mp.FormatToString(0)

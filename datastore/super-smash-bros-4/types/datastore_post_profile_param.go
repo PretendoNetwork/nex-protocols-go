@@ -69,6 +69,20 @@ func (dsppp DataStorePostProfileParam) Equals(o types.RVType) bool {
 	return dsppp.Profile.Equals(other.Profile)
 }
 
+// CopyRef copies the current value of the DataStorePostProfileParam
+// and returns a pointer to the new copy
+func (dsppp DataStorePostProfileParam) CopyRef() types.RVTypePtr {
+	copied := dsppp.Copy().(DataStorePostProfileParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePostProfileParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsppp *DataStorePostProfileParam) Deref() types.RVType {
+	return *dsppp
+}
+
 // String returns the string representation of the DataStorePostProfileParam
 func (dsppp DataStorePostProfileParam) String() string {
 	return dsppp.FormatToString(0)

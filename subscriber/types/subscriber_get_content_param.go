@@ -105,6 +105,20 @@ func (sgcp SubscriberGetContentParam) Equals(o types.RVType) bool {
 	return sgcp.Unknown4.Equals(other.Unknown4)
 }
 
+// CopyRef copies the current value of the SubscriberGetContentParam
+// and returns a pointer to the new copy
+func (sgcp SubscriberGetContentParam) CopyRef() types.RVTypePtr {
+	copied := sgcp.Copy().(SubscriberGetContentParam)
+	return &copied
+}
+
+// Deref takes a pointer to the SubscriberGetContentParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sgcp *SubscriberGetContentParam) Deref() types.RVType {
+	return *sgcp
+}
+
 // String returns the string representation of the SubscriberGetContentParam
 func (sgcp SubscriberGetContentParam) String() string {
 	return sgcp.FormatToString(0)

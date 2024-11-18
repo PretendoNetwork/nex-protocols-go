@@ -94,6 +94,20 @@ func (gk GameKey) Equals(o types.RVType) bool {
 	return gk.TitleVersion.Equals(other.TitleVersion)
 }
 
+// CopyRef copies the current value of the GameKey
+// and returns a pointer to the new copy
+func (gk GameKey) CopyRef() types.RVTypePtr {
+	copied := gk.Copy().(GameKey)
+	return &copied
+}
+
+// Deref takes a pointer to the GameKey
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gk *GameKey) Deref() types.RVType {
+	return *gk
+}
+
 // String returns the string representation of the GameKey
 func (gk GameKey) String() string {
 	return gk.FormatToString(0)

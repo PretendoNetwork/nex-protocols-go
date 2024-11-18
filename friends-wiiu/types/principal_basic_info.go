@@ -118,6 +118,20 @@ func (pbi PrincipalBasicInfo) Equals(o types.RVType) bool {
 	return pbi.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the PrincipalBasicInfo
+// and returns a pointer to the new copy
+func (pbi PrincipalBasicInfo) CopyRef() types.RVTypePtr {
+	copied := pbi.Copy().(PrincipalBasicInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the PrincipalBasicInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pbi *PrincipalBasicInfo) Deref() types.RVType {
+	return *pbi
+}
+
 // String returns the string representation of the PrincipalBasicInfo
 func (pbi PrincipalBasicInfo) String() string {
 	return pbi.FormatToString(0)

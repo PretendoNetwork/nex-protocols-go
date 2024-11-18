@@ -93,6 +93,20 @@ func (i Invitation) Equals(o types.RVType) bool {
 	return i.StrMessage.Equals(other.StrMessage)
 }
 
+// CopyRef copies the current value of the Invitation
+// and returns a pointer to the new copy
+func (i Invitation) CopyRef() types.RVTypePtr {
+	copied := i.Copy().(Invitation)
+	return &copied
+}
+
+// Deref takes a pointer to the Invitation
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (i *Invitation) Deref() types.RVType {
+	return *i
+}
+
 // String returns the string representation of the Invitation
 func (i Invitation) String() string {
 	return i.FormatToString(0)

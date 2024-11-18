@@ -129,6 +129,20 @@ func (sipri ServiceItemPrepurchaseRightInfo) Equals(o types.RVType) bool {
 	return sipri.ExpiryCounts.Equals(other.ExpiryCounts)
 }
 
+// CopyRef copies the current value of the ServiceItemPrepurchaseRightInfo
+// and returns a pointer to the new copy
+func (sipri ServiceItemPrepurchaseRightInfo) CopyRef() types.RVTypePtr {
+	copied := sipri.Copy().(ServiceItemPrepurchaseRightInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPrepurchaseRightInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sipri *ServiceItemPrepurchaseRightInfo) Deref() types.RVType {
+	return *sipri
+}
+
 // String returns the string representation of the ServiceItemPrepurchaseRightInfo
 func (sipri ServiceItemPrepurchaseRightInfo) String() string {
 	return sipri.FormatToString(0)

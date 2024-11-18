@@ -93,6 +93,20 @@ func (dspi DataStorePasswordInfo) Equals(o types.RVType) bool {
 	return dspi.UpdatePassword.Equals(other.UpdatePassword)
 }
 
+// CopyRef copies the current value of the DataStorePasswordInfo
+// and returns a pointer to the new copy
+func (dspi DataStorePasswordInfo) CopyRef() types.RVTypePtr {
+	copied := dspi.Copy().(DataStorePasswordInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePasswordInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspi *DataStorePasswordInfo) Deref() types.RVType {
+	return *dspi
+}
+
 // String returns the string representation of the DataStorePasswordInfo
 func (dspi DataStorePasswordInfo) String() string {
 	return dspi.FormatToString(0)

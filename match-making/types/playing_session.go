@@ -81,6 +81,20 @@ func (ps PlayingSession) Equals(o types.RVType) bool {
 	return ps.Gathering.Equals(other.Gathering)
 }
 
+// CopyRef copies the current value of the PlayingSession
+// and returns a pointer to the new copy
+func (ps PlayingSession) CopyRef() types.RVTypePtr {
+	copied := ps.Copy().(PlayingSession)
+	return &copied
+}
+
+// Deref takes a pointer to the PlayingSession
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ps *PlayingSession) Deref() types.RVType {
+	return *ps
+}
+
 // String returns the string representation of the PlayingSession
 func (ps PlayingSession) String() string {
 	return ps.FormatToString(0)

@@ -129,6 +129,20 @@ func (rop RankingOrderParam) Equals(o types.RVType) bool {
 	return rop.Length.Equals(other.Length)
 }
 
+// CopyRef copies the current value of the RankingOrderParam
+// and returns a pointer to the new copy
+func (rop RankingOrderParam) CopyRef() types.RVTypePtr {
+	copied := rop.Copy().(RankingOrderParam)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingOrderParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rop *RankingOrderParam) Deref() types.RVType {
+	return *rop
+}
+
 // String returns the string representation of the RankingOrderParam
 func (rop RankingOrderParam) String() string {
 	return rop.FormatToString(0)

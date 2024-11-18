@@ -105,6 +105,20 @@ func (dsrl DataStoreRatingLog) Equals(o types.RVType) bool {
 	return dsrl.LockExpirationTime.Equals(other.LockExpirationTime)
 }
 
+// CopyRef copies the current value of the DataStoreRatingLog
+// and returns a pointer to the new copy
+func (dsrl DataStoreRatingLog) CopyRef() types.RVTypePtr {
+	copied := dsrl.Copy().(DataStoreRatingLog)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingLog
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrl *DataStoreRatingLog) Deref() types.RVType {
+	return *dsrl
+}
+
 // String returns the string representation of the DataStoreRatingLog
 func (dsrl DataStoreRatingLog) String() string {
 	return dsrl.FormatToString(0)

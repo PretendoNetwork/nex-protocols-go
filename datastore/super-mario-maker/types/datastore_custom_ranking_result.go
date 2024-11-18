@@ -94,6 +94,20 @@ func (dscrr DataStoreCustomRankingResult) Equals(o types.RVType) bool {
 	return dscrr.MetaInfo.Equals(other.MetaInfo)
 }
 
+// CopyRef copies the current value of the DataStoreCustomRankingResult
+// and returns a pointer to the new copy
+func (dscrr DataStoreCustomRankingResult) CopyRef() types.RVTypePtr {
+	copied := dscrr.Copy().(DataStoreCustomRankingResult)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreCustomRankingResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscrr *DataStoreCustomRankingResult) Deref() types.RVType {
+	return *dscrr
+}
+
 // String returns the string representation of the DataStoreCustomRankingResult
 func (dscrr DataStoreCustomRankingResult) String() string {
 	return dscrr.FormatToString(0)

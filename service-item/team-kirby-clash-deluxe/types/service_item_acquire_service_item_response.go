@@ -129,6 +129,20 @@ func (siasir ServiceItemAcquireServiceItemResponse) Equals(o types.RVType) bool 
 	return siasir.ExpiryCounts.Equals(other.ExpiryCounts)
 }
 
+// CopyRef copies the current value of the ServiceItemAcquireServiceItemResponse
+// and returns a pointer to the new copy
+func (siasir ServiceItemAcquireServiceItemResponse) CopyRef() types.RVTypePtr {
+	copied := siasir.Copy().(ServiceItemAcquireServiceItemResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAcquireServiceItemResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siasir *ServiceItemAcquireServiceItemResponse) Deref() types.RVType {
+	return *siasir
+}
+
 // String returns the string representation of the ServiceItemAcquireServiceItemResponse
 func (siasir ServiceItemAcquireServiceItemResponse) String() string {
 	return siasir.FormatToString(0)

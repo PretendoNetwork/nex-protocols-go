@@ -93,6 +93,20 @@ func (siesr ServiceItemEShopResponse) Equals(o types.RVType) bool {
 	return siesr.CorrelationID.Equals(other.CorrelationID)
 }
 
+// CopyRef copies the current value of the ServiceItemEShopResponse
+// and returns a pointer to the new copy
+func (siesr ServiceItemEShopResponse) CopyRef() types.RVTypePtr {
+	copied := siesr.Copy().(ServiceItemEShopResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemEShopResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siesr *ServiceItemEShopResponse) Deref() types.RVType {
+	return *siesr
+}
+
 // String returns the string representation of the ServiceItemEShopResponse
 func (siesr ServiceItemEShopResponse) String() string {
 	return siesr.FormatToString(0)

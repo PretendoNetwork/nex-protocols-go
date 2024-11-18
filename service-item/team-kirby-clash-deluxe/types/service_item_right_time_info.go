@@ -82,6 +82,20 @@ func (sirti ServiceItemRightTimeInfo) Equals(o types.RVType) bool {
 	return sirti.AccountRights.Equals(other.AccountRights)
 }
 
+// CopyRef copies the current value of the ServiceItemRightTimeInfo
+// and returns a pointer to the new copy
+func (sirti ServiceItemRightTimeInfo) CopyRef() types.RVTypePtr {
+	copied := sirti.Copy().(ServiceItemRightTimeInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemRightTimeInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sirti *ServiceItemRightTimeInfo) Deref() types.RVType {
+	return *sirti
+}
+
 // String returns the string representation of the ServiceItemRightTimeInfo
 func (sirti ServiceItemRightTimeInfo) String() string {
 	return sirti.FormatToString(0)

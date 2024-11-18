@@ -93,6 +93,20 @@ func (nne NintendoNotificationEvent) Equals(o types.RVType) bool {
 	return nne.DataHolder.Equals(other.DataHolder)
 }
 
+// CopyRef copies the current value of the NintendoNotificationEvent
+// and returns a pointer to the new copy
+func (nne NintendoNotificationEvent) CopyRef() types.RVTypePtr {
+	copied := nne.Copy().(NintendoNotificationEvent)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoNotificationEvent
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (nne *NintendoNotificationEvent) Deref() types.RVType {
+	return *nne
+}
+
 // String returns the string representation of the NintendoNotificationEvent
 func (nne NintendoNotificationEvent) String() string {
 	return nne.FormatToString(0)

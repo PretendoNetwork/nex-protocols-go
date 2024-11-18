@@ -93,6 +93,20 @@ func (rcd Ranking2CommonData) Equals(o types.RVType) bool {
 	return rcd.BinaryData.Equals(other.BinaryData)
 }
 
+// CopyRef copies the current value of the Ranking2CommonData
+// and returns a pointer to the new copy
+func (rcd Ranking2CommonData) CopyRef() types.RVTypePtr {
+	copied := rcd.Copy().(Ranking2CommonData)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2CommonData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rcd *Ranking2CommonData) Deref() types.RVType {
+	return *rcd
+}
+
 // String returns the string representation of the Ranking2CommonData
 func (rcd Ranking2CommonData) String() string {
 	return rcd.FormatToString(0)

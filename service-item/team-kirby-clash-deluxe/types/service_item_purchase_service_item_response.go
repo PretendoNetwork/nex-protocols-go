@@ -82,6 +82,20 @@ func (sipsir ServiceItemPurchaseServiceItemResponse) Equals(o types.RVType) bool
 	return sipsir.NullablePurchaseInfo.Equals(other.NullablePurchaseInfo)
 }
 
+// CopyRef copies the current value of the ServiceItemPurchaseServiceItemResponse
+// and returns a pointer to the new copy
+func (sipsir ServiceItemPurchaseServiceItemResponse) CopyRef() types.RVTypePtr {
+	copied := sipsir.Copy().(ServiceItemPurchaseServiceItemResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPurchaseServiceItemResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sipsir *ServiceItemPurchaseServiceItemResponse) Deref() types.RVType {
+	return *sipsir
+}
+
 // String returns the string representation of the ServiceItemPurchaseServiceItemResponse
 func (sipsir ServiceItemPurchaseServiceItemResponse) String() string {
 	return sipsir.FormatToString(0)

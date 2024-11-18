@@ -177,6 +177,20 @@ func (g Gathering) Equals(o types.RVType) bool {
 	return g.Description.Equals(other.Description)
 }
 
+// CopyRef copies the current value of the Gathering
+// and returns a pointer to the new copy
+func (g Gathering) CopyRef() types.RVTypePtr {
+	copied := g.Copy().(Gathering)
+	return &copied
+}
+
+// Deref takes a pointer to the Gathering
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (g *Gathering) Deref() types.RVType {
+	return *g
+}
+
 // String returns the string representation of the Gathering
 func (g Gathering) String() string {
 	return g.FormatToString(0)

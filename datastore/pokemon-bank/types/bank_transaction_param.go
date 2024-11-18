@@ -117,6 +117,20 @@ func (btp BankTransactionParam) Equals(o types.RVType) bool {
 	return btp.TransactionPassword.Equals(other.TransactionPassword)
 }
 
+// CopyRef copies the current value of the BankTransactionParam
+// and returns a pointer to the new copy
+func (btp BankTransactionParam) CopyRef() types.RVTypePtr {
+	copied := btp.Copy().(BankTransactionParam)
+	return &copied
+}
+
+// Deref takes a pointer to the BankTransactionParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (btp *BankTransactionParam) Deref() types.RVType {
+	return *btp
+}
+
 // String returns the string representation of the BankTransactionParam
 func (btp BankTransactionParam) String() string {
 	return btp.FormatToString(0)

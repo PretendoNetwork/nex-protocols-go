@@ -93,6 +93,20 @@ func (mr MessageRecipient) Equals(o types.RVType) bool {
 	return mr.GatheringID.Equals(other.GatheringID)
 }
 
+// CopyRef copies the current value of the MessageRecipient
+// and returns a pointer to the new copy
+func (mr MessageRecipient) CopyRef() types.RVTypePtr {
+	copied := mr.Copy().(MessageRecipient)
+	return &copied
+}
+
+// Deref takes a pointer to the MessageRecipient
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mr *MessageRecipient) Deref() types.RVType {
+	return *mr
+}
+
 // String returns the string representation of the MessageRecipient
 func (mr MessageRecipient) String() string {
 	return mr.FormatToString(0)

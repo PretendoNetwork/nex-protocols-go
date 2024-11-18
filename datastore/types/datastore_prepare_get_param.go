@@ -129,6 +129,20 @@ func (dspgp DataStorePrepareGetParam) Equals(o types.RVType) bool {
 	return dspgp.ExtraData.Equals(other.ExtraData)
 }
 
+// CopyRef copies the current value of the DataStorePrepareGetParam
+// and returns a pointer to the new copy
+func (dspgp DataStorePrepareGetParam) CopyRef() types.RVTypePtr {
+	copied := dspgp.Copy().(DataStorePrepareGetParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePrepareGetParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspgp *DataStorePrepareGetParam) Deref() types.RVType {
+	return *dspgp
+}
+
 // String returns the string representation of the DataStorePrepareGetParam
 func (dspgp DataStorePrepareGetParam) String() string {
 	return dspgp.FormatToString(0)

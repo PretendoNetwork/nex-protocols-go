@@ -81,6 +81,20 @@ func (sirb ServiceItemRightBinary) Equals(o types.RVType) bool {
 	return sirb.RightBinary.Equals(other.RightBinary)
 }
 
+// CopyRef copies the current value of the ServiceItemRightBinary
+// and returns a pointer to the new copy
+func (sirb ServiceItemRightBinary) CopyRef() types.RVTypePtr {
+	copied := sirb.Copy().(ServiceItemRightBinary)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemRightBinary
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sirb *ServiceItemRightBinary) Deref() types.RVType {
+	return *sirb
+}
+
 // String returns the string representation of the ServiceItemRightBinary
 func (sirb ServiceItemRightBinary) String() string {
 	return sirb.FormatToString(0)

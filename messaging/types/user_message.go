@@ -178,6 +178,20 @@ func (um UserMessage) Equals(o types.RVType) bool {
 	return um.MessageRecipient.Equals(other.MessageRecipient)
 }
 
+// CopyRef copies the current value of the UserMessage
+// and returns a pointer to the new copy
+func (um UserMessage) CopyRef() types.RVTypePtr {
+	copied := um.Copy().(UserMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the UserMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (um *UserMessage) Deref() types.RVType {
+	return *um
+}
+
 // String returns the string representation of the UserMessage
 func (um UserMessage) String() string {
 	return um.FormatToString(0)

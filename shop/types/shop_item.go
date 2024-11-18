@@ -105,6 +105,20 @@ func (si ShopItem) Equals(o types.RVType) bool {
 	return si.ItemCode.Equals(other.ItemCode)
 }
 
+// CopyRef copies the current value of the ShopItem
+// and returns a pointer to the new copy
+func (si ShopItem) CopyRef() types.RVTypePtr {
+	copied := si.Copy().(ShopItem)
+	return &copied
+}
+
+// Deref takes a pointer to the ShopItem
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (si *ShopItem) Deref() types.RVType {
+	return *si
+}
+
 // String returns the string representation of the ShopItem
 func (si ShopItem) String() string {
 	return si.FormatToString(0)

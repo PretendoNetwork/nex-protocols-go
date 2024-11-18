@@ -105,6 +105,20 @@ func (sigphp ServiceItemGetPurchaseHistoryParam) Equals(o types.RVType) bool {
 	return sigphp.TitleID.Equals(other.TitleID)
 }
 
+// CopyRef copies the current value of the ServiceItemGetPurchaseHistoryParam
+// and returns a pointer to the new copy
+func (sigphp ServiceItemGetPurchaseHistoryParam) CopyRef() types.RVTypePtr {
+	copied := sigphp.Copy().(ServiceItemGetPurchaseHistoryParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetPurchaseHistoryParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigphp *ServiceItemGetPurchaseHistoryParam) Deref() types.RVType {
+	return *sigphp
+}
+
 // String returns the string representation of the ServiceItemGetPurchaseHistoryParam
 func (sigphp ServiceItemGetPurchaseHistoryParam) String() string {
 	return sigphp.FormatToString(0)

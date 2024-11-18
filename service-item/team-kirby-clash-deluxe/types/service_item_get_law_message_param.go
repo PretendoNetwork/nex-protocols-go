@@ -98,6 +98,20 @@ func (siglmp ServiceItemGetLawMessageParam) Equals(o types.RVType) bool {
 	return siglmp.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemGetLawMessageParam
+// and returns a pointer to the new copy
+func (siglmp ServiceItemGetLawMessageParam) CopyRef() types.RVTypePtr {
+	copied := siglmp.Copy().(ServiceItemGetLawMessageParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetLawMessageParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siglmp *ServiceItemGetLawMessageParam) Deref() types.RVType {
+	return *siglmp
+}
+
 // String returns the string representation of the ServiceItemGetLawMessageParam
 func (siglmp ServiceItemGetLawMessageParam) String() string {
 	return siglmp.FormatToString(0)

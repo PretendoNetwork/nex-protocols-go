@@ -81,6 +81,20 @@ func (dsgcrp DataStoreGetCourseRecordParam) Equals(o types.RVType) bool {
 	return dsgcrp.Slot.Equals(other.Slot)
 }
 
+// CopyRef copies the current value of the DataStoreGetCourseRecordParam
+// and returns a pointer to the new copy
+func (dsgcrp DataStoreGetCourseRecordParam) CopyRef() types.RVTypePtr {
+	copied := dsgcrp.Copy().(DataStoreGetCourseRecordParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetCourseRecordParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgcrp *DataStoreGetCourseRecordParam) Deref() types.RVType {
+	return *dsgcrp
+}
+
 // String returns the string representation of the DataStoreGetCourseRecordParam
 func (dsgcrp DataStoreGetCourseRecordParam) String() string {
 	return dsgcrp.FormatToString(0)

@@ -106,6 +106,20 @@ func (bp BlacklistedPrincipal) Equals(o types.RVType) bool {
 	return bp.BlackListedSince.Equals(other.BlackListedSince)
 }
 
+// CopyRef copies the current value of the BlacklistedPrincipal
+// and returns a pointer to the new copy
+func (bp BlacklistedPrincipal) CopyRef() types.RVTypePtr {
+	copied := bp.Copy().(BlacklistedPrincipal)
+	return &copied
+}
+
+// Deref takes a pointer to the BlacklistedPrincipal
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (bp *BlacklistedPrincipal) Deref() types.RVType {
+	return *bp
+}
+
 // String returns the string representation of the BlacklistedPrincipal
 func (bp BlacklistedPrincipal) String() string {
 	return bp.FormatToString(0)

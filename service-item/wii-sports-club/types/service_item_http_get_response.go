@@ -69,6 +69,20 @@ func (sihttpgr ServiceItemHTTPGetResponse) Equals(o types.RVType) bool {
 	return sihttpgr.Response.Equals(other.Response)
 }
 
+// CopyRef copies the current value of the ServiceItemHTTPGetResponse
+// and returns a pointer to the new copy
+func (sihttpgr ServiceItemHTTPGetResponse) CopyRef() types.RVTypePtr {
+	copied := sihttpgr.Copy().(ServiceItemHTTPGetResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemHTTPGetResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sihttpgr *ServiceItemHTTPGetResponse) Deref() types.RVType {
+	return *sihttpgr
+}
+
 // String returns the string representation of the ServiceItemHTTPGetResponse
 func (sihttpgr ServiceItemHTTPGetResponse) String() string {
 	return sihttpgr.FormatToString(0)

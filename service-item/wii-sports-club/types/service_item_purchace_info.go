@@ -105,6 +105,20 @@ func (sipi ServiceItemPurchaceInfo) Equals(o types.RVType) bool {
 	return sipi.PostBalance.Equals(other.PostBalance)
 }
 
+// CopyRef copies the current value of the ServiceItemPurchaceInfo
+// and returns a pointer to the new copy
+func (sipi ServiceItemPurchaceInfo) CopyRef() types.RVTypePtr {
+	copied := sipi.Copy().(ServiceItemPurchaceInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPurchaceInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sipi *ServiceItemPurchaceInfo) Deref() types.RVType {
+	return *sipi
+}
+
 // String returns the string representation of the ServiceItemPurchaceInfo
 func (sipi ServiceItemPurchaceInfo) String() string {
 	return sipi.FormatToString(0)

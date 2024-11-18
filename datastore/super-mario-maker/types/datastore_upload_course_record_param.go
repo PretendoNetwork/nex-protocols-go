@@ -93,6 +93,20 @@ func (dsucrp DataStoreUploadCourseRecordParam) Equals(o types.RVType) bool {
 	return dsucrp.Score.Equals(other.Score)
 }
 
+// CopyRef copies the current value of the DataStoreUploadCourseRecordParam
+// and returns a pointer to the new copy
+func (dsucrp DataStoreUploadCourseRecordParam) CopyRef() types.RVTypePtr {
+	copied := dsucrp.Copy().(DataStoreUploadCourseRecordParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreUploadCourseRecordParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsucrp *DataStoreUploadCourseRecordParam) Deref() types.RVType {
+	return *dsucrp
+}
+
 // String returns the string representation of the DataStoreUploadCourseRecordParam
 func (dsucrp DataStoreUploadCourseRecordParam) String() string {
 	return dsucrp.FormatToString(0)

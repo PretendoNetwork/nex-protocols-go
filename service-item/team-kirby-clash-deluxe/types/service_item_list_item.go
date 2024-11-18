@@ -129,6 +129,20 @@ func (sili ServiceItemListItem) Equals(o types.RVType) bool {
 	return sili.Attributes.Equals(other.Attributes)
 }
 
+// CopyRef copies the current value of the ServiceItemListItem
+// and returns a pointer to the new copy
+func (sili ServiceItemListItem) CopyRef() types.RVTypePtr {
+	copied := sili.Copy().(ServiceItemListItem)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemListItem
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sili *ServiceItemListItem) Deref() types.RVType {
+	return *sili
+}
+
 // String returns the string representation of the ServiceItemListItem
 func (sili ServiceItemListItem) String() string {
 	return sili.FormatToString(0)

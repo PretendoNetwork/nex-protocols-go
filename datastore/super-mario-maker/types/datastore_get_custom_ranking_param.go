@@ -105,6 +105,20 @@ func (dsgcrp DataStoreGetCustomRankingParam) Equals(o types.RVType) bool {
 	return dsgcrp.ResultRange.Equals(other.ResultRange)
 }
 
+// CopyRef copies the current value of the DataStoreGetCustomRankingParam
+// and returns a pointer to the new copy
+func (dsgcrp DataStoreGetCustomRankingParam) CopyRef() types.RVTypePtr {
+	copied := dsgcrp.Copy().(DataStoreGetCustomRankingParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetCustomRankingParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgcrp *DataStoreGetCustomRankingParam) Deref() types.RVType {
+	return *dsgcrp
+}
+
 // String returns the string representation of the DataStoreGetCustomRankingParam
 func (dsgcrp DataStoreGetCustomRankingParam) String() string {
 	return dsgcrp.FormatToString(0)

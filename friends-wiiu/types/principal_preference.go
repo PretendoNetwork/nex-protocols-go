@@ -106,6 +106,20 @@ func (pp PrincipalPreference) Equals(o types.RVType) bool {
 	return pp.BlockFriendRequests.Equals(other.BlockFriendRequests)
 }
 
+// CopyRef copies the current value of the PrincipalPreference
+// and returns a pointer to the new copy
+func (pp PrincipalPreference) CopyRef() types.RVTypePtr {
+	copied := pp.Copy().(PrincipalPreference)
+	return &copied
+}
+
+// Deref takes a pointer to the PrincipalPreference
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pp *PrincipalPreference) Deref() types.RVType {
+	return *pp
+}
+
 // String returns the string representation of the PrincipalPreference
 func (pp PrincipalPreference) String() string {
 	return pp.FormatToString(0)

@@ -81,6 +81,20 @@ func (silm ServiceItemLawMessage) Equals(o types.RVType) bool {
 	return silm.LawMessage.Equals(other.LawMessage)
 }
 
+// CopyRef copies the current value of the ServiceItemLawMessage
+// and returns a pointer to the new copy
+func (silm ServiceItemLawMessage) CopyRef() types.RVTypePtr {
+	copied := silm.Copy().(ServiceItemLawMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemLawMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (silm *ServiceItemLawMessage) Deref() types.RVType {
+	return *silm
+}
+
 // String returns the string representation of the ServiceItemLawMessage
 func (silm ServiceItemLawMessage) String() string {
 	return silm.FormatToString(0)

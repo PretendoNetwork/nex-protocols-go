@@ -81,6 +81,20 @@ func (siui ServiceItemUserInfo) Equals(o types.RVType) bool {
 	return siui.ApplicationBuffer.Equals(other.ApplicationBuffer)
 }
 
+// CopyRef copies the current value of the ServiceItemUserInfo
+// and returns a pointer to the new copy
+func (siui ServiceItemUserInfo) CopyRef() types.RVTypePtr {
+	copied := siui.Copy().(ServiceItemUserInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemUserInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siui *ServiceItemUserInfo) Deref() types.RVType {
+	return *siui
+}
+
 // String returns the string representation of the ServiceItemUserInfo
 func (siui ServiceItemUserInfo) String() string {
 	return siui.FormatToString(0)

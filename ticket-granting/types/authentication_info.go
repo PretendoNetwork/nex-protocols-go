@@ -130,6 +130,20 @@ func (ai AuthenticationInfo) Equals(o types.RVType) bool {
 	return ai.ServerVersion.Equals(other.ServerVersion)
 }
 
+// CopyRef copies the current value of the AuthenticationInfo
+// and returns a pointer to the new copy
+func (ai AuthenticationInfo) CopyRef() types.RVTypePtr {
+	copied := ai.Copy().(AuthenticationInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the AuthenticationInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ai *AuthenticationInfo) Deref() types.RVType {
+	return *ai
+}
+
 // String returns the string representation of the AuthenticationInfo
 func (ai AuthenticationInfo) String() string {
 	return ai.FormatToString(0)

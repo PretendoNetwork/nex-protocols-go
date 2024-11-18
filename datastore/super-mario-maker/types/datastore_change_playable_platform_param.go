@@ -81,6 +81,20 @@ func (dscppp DataStoreChangePlayablePlatformParam) Equals(o types.RVType) bool {
 	return dscppp.PlayablePlatform.Equals(other.PlayablePlatform)
 }
 
+// CopyRef copies the current value of the DataStoreChangePlayablePlatformParam
+// and returns a pointer to the new copy
+func (dscppp DataStoreChangePlayablePlatformParam) CopyRef() types.RVTypePtr {
+	copied := dscppp.Copy().(DataStoreChangePlayablePlatformParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreChangePlayablePlatformParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscppp *DataStoreChangePlayablePlatformParam) Deref() types.RVType {
+	return *dscppp
+}
+
 // String returns the string representation of the DataStoreChangePlayablePlatformParam
 func (dscppp DataStoreChangePlayablePlatformParam) String() string {
 	return dscppp.FormatToString(0)

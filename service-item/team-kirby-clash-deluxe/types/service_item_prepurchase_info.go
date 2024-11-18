@@ -177,6 +177,20 @@ func (sipi ServiceItemPrepurchaseInfo) Equals(o types.RVType) bool {
 	return sipi.PostRightInfo.Equals(other.PostRightInfo)
 }
 
+// CopyRef copies the current value of the ServiceItemPrepurchaseInfo
+// and returns a pointer to the new copy
+func (sipi ServiceItemPrepurchaseInfo) CopyRef() types.RVTypePtr {
+	copied := sipi.Copy().(ServiceItemPrepurchaseInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPrepurchaseInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sipi *ServiceItemPrepurchaseInfo) Deref() types.RVType {
+	return *sipi
+}
+
 // String returns the string representation of the ServiceItemPrepurchaseInfo
 func (sipi ServiceItemPrepurchaseInfo) String() string {
 	return sipi.FormatToString(0)

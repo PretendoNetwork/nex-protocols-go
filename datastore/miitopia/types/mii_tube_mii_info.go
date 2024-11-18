@@ -89,6 +89,20 @@ func (mtmi MiiTubeMiiInfo) Equals(o types.RVType) bool {
 	return mtmi.RankingType.Equals(other.RankingType)
 }
 
+// CopyRef copies the current value of the MiiTubeMiiInfo
+// and returns a pointer to the new copy
+func (mtmi MiiTubeMiiInfo) CopyRef() types.RVTypePtr {
+	copied := mtmi.Copy().(MiiTubeMiiInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the MiiTubeMiiInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mtmi *MiiTubeMiiInfo) Deref() types.RVType {
+	return *mtmi
+}
+
 // String returns the string representation of the MiiTubeMiiInfo
 func (mtmi MiiTubeMiiInfo) String() string {
 	return mtmi.FormatToString(0)

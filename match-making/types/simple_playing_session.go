@@ -105,6 +105,20 @@ func (sps SimplePlayingSession) Equals(o types.RVType) bool {
 	return sps.Attribute0.Equals(other.Attribute0)
 }
 
+// CopyRef copies the current value of the SimplePlayingSession
+// and returns a pointer to the new copy
+func (sps SimplePlayingSession) CopyRef() types.RVTypePtr {
+	copied := sps.Copy().(SimplePlayingSession)
+	return &copied
+}
+
+// Deref takes a pointer to the SimplePlayingSession
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sps *SimplePlayingSession) Deref() types.RVType {
+	return *sps
+}
+
 // String returns the string representation of the SimplePlayingSession
 func (sps SimplePlayingSession) String() string {
 	return sps.FormatToString(0)

@@ -105,6 +105,20 @@ func (nneg NintendoNotificationEventGeneral) Equals(o types.RVType) bool {
 	return nneg.StrParam.Equals(other.StrParam)
 }
 
+// CopyRef copies the current value of the NintendoNotificationEventGeneral
+// and returns a pointer to the new copy
+func (nneg NintendoNotificationEventGeneral) CopyRef() types.RVTypePtr {
+	copied := nneg.Copy().(NintendoNotificationEventGeneral)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoNotificationEventGeneral
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (nneg *NintendoNotificationEventGeneral) Deref() types.RVType {
+	return *nneg
+}
+
 // String returns the string representation of the NintendoNotificationEventGeneral
 func (nneg NintendoNotificationEventGeneral) String() string {
 	return nneg.FormatToString(0)

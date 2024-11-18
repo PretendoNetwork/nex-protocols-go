@@ -118,6 +118,20 @@ func (ml MiiList) Equals(o types.RVType) bool {
 	return ml.MiiDataList.Equals(other.MiiDataList)
 }
 
+// CopyRef copies the current value of the MiiList
+// and returns a pointer to the new copy
+func (ml MiiList) CopyRef() types.RVTypePtr {
+	copied := ml.Copy().(MiiList)
+	return &copied
+}
+
+// Deref takes a pointer to the MiiList
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ml *MiiList) Deref() types.RVType {
+	return *ml
+}
+
 // String returns the string representation of the MiiList
 func (ml MiiList) String() string {
 	return ml.FormatToString(0)

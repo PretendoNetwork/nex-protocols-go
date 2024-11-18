@@ -105,6 +105,20 @@ func (dsrgnurli DataStoreReqGetNotificationURLInfo) Equals(o types.RVType) bool 
 	return dsrgnurli.RootCACert.Equals(other.RootCACert)
 }
 
+// CopyRef copies the current value of the DataStoreReqGetNotificationURLInfo
+// and returns a pointer to the new copy
+func (dsrgnurli DataStoreReqGetNotificationURLInfo) CopyRef() types.RVTypePtr {
+	copied := dsrgnurli.Copy().(DataStoreReqGetNotificationURLInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqGetNotificationURLInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrgnurli *DataStoreReqGetNotificationURLInfo) Deref() types.RVType {
+	return *dsrgnurli
+}
+
 // String returns the string representation of the DataStoreReqGetNotificationURLInfo
 func (dsrgnurli DataStoreReqGetNotificationURLInfo) String() string {
 	return dsrgnurli.FormatToString(0)

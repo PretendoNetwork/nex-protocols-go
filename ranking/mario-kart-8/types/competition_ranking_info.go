@@ -93,6 +93,20 @@ func (cri CompetitionRankingInfo) Equals(o types.RVType) bool {
 	return cri.Unknown3.Equals(other.Unknown3)
 }
 
+// CopyRef copies the current value of the CompetitionRankingInfo
+// and returns a pointer to the new copy
+func (cri CompetitionRankingInfo) CopyRef() types.RVTypePtr {
+	copied := cri.Copy().(CompetitionRankingInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the CompetitionRankingInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (cri *CompetitionRankingInfo) Deref() types.RVType {
+	return *cri
+}
+
 // String returns the string representation of the CompetitionRankingInfo
 func (cri CompetitionRankingInfo) String() string {
 	return cri.FormatToString(0)

@@ -261,6 +261,20 @@ func (umsp UpdateMatchmakeSessionParam) Equals(o types.RVType) bool {
 	return umsp.Codeword.Equals(other.Codeword)
 }
 
+// CopyRef copies the current value of the UpdateMatchmakeSessionParam
+// and returns a pointer to the new copy
+func (umsp UpdateMatchmakeSessionParam) CopyRef() types.RVTypePtr {
+	copied := umsp.Copy().(UpdateMatchmakeSessionParam)
+	return &copied
+}
+
+// Deref takes a pointer to the UpdateMatchmakeSessionParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (umsp *UpdateMatchmakeSessionParam) Deref() types.RVType {
+	return *umsp
+}
+
 // String returns the string representation of the UpdateMatchmakeSessionParam
 func (umsp UpdateMatchmakeSessionParam) String() string {
 	return umsp.FormatToString(0)

@@ -94,6 +94,20 @@ func (dscpsdp DataStoreCompletePostSharedDataParam) Equals(o types.RVType) bool 
 	return dscpsdp.PrepareParam.Equals(other.PrepareParam)
 }
 
+// CopyRef copies the current value of the DataStoreCompletePostSharedDataParam
+// and returns a pointer to the new copy
+func (dscpsdp DataStoreCompletePostSharedDataParam) CopyRef() types.RVTypePtr {
+	copied := dscpsdp.Copy().(DataStoreCompletePostSharedDataParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreCompletePostSharedDataParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscpsdp *DataStoreCompletePostSharedDataParam) Deref() types.RVType {
+	return *dscpsdp
+}
+
 // String returns the string representation of the DataStoreCompletePostSharedDataParam
 func (dscpsdp DataStoreCompletePostSharedDataParam) String() string {
 	return dscpsdp.FormatToString(0)

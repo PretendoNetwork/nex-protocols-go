@@ -93,6 +93,20 @@ func (fui FriendUserInfo) Equals(o types.RVType) bool {
 	return fui.Presence.Equals(other.Presence)
 }
 
+// CopyRef copies the current value of the FriendUserInfo
+// and returns a pointer to the new copy
+func (fui FriendUserInfo) CopyRef() types.RVTypePtr {
+	copied := fui.Copy().(FriendUserInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendUserInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fui *FriendUserInfo) Deref() types.RVType {
+	return *fui
+}
+
 // String returns the string representation of the FriendUserInfo
 func (fui FriendUserInfo) String() string {
 	return fui.FormatToString(0)

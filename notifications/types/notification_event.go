@@ -129,6 +129,20 @@ func (ne NotificationEvent) Equals(o types.RVType) bool {
 	return ne.Param3.Equals(other.Param3)
 }
 
+// CopyRef copies the current value of the NotificationEvent
+// and returns a pointer to the new copy
+func (ne NotificationEvent) CopyRef() types.RVTypePtr {
+	copied := ne.Copy().(NotificationEvent)
+	return &copied
+}
+
+// Deref takes a pointer to the NotificationEvent
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ne *NotificationEvent) Deref() types.RVType {
+	return *ne
+}
+
 // String returns the string representation of the NotificationEvent
 func (ne NotificationEvent) String() string {
 	return ne.FormatToString(0)

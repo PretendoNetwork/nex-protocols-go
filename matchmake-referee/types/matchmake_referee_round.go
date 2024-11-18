@@ -130,6 +130,20 @@ func (mrr MatchmakeRefereeRound) Equals(o types.RVType) bool {
 	return mrr.NormalizedPersonalRoundResults.Equals(other.NormalizedPersonalRoundResults)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeRound
+// and returns a pointer to the new copy
+func (mrr MatchmakeRefereeRound) CopyRef() types.RVTypePtr {
+	copied := mrr.Copy().(MatchmakeRefereeRound)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeRound
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrr *MatchmakeRefereeRound) Deref() types.RVType {
+	return *mrr
+}
+
 // String returns the string representation of the MatchmakeRefereeRound
 func (mrr MatchmakeRefereeRound) String() string {
 	return mrr.FormatToString(0)

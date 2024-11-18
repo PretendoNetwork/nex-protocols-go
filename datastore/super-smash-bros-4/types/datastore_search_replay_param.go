@@ -105,6 +105,20 @@ func (dssrp DataStoreSearchReplayParam) Equals(o types.RVType) bool {
 	return dssrp.ResultRange.Equals(other.ResultRange)
 }
 
+// CopyRef copies the current value of the DataStoreSearchReplayParam
+// and returns a pointer to the new copy
+func (dssrp DataStoreSearchReplayParam) CopyRef() types.RVTypePtr {
+	copied := dssrp.Copy().(DataStoreSearchReplayParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreSearchReplayParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dssrp *DataStoreSearchReplayParam) Deref() types.RVType {
+	return *dssrp
+}
+
 // String returns the string representation of the DataStoreSearchReplayParam
 func (dssrp DataStoreSearchReplayParam) String() string {
 	return dssrp.FormatToString(0)

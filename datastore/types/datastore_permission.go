@@ -81,6 +81,20 @@ func (dsp DataStorePermission) Equals(o types.RVType) bool {
 	return dsp.RecipientIDs.Equals(other.RecipientIDs)
 }
 
+// CopyRef copies the current value of the DataStorePermission
+// and returns a pointer to the new copy
+func (dsp DataStorePermission) CopyRef() types.RVTypePtr {
+	copied := dsp.Copy().(DataStorePermission)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePermission
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsp *DataStorePermission) Deref() types.RVType {
+	return *dsp
+}
+
 // String returns the string representation of the DataStorePermission
 func (dsp DataStorePermission) String() string {
 	return dsp.FormatToString(0)

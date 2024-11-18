@@ -141,6 +141,20 @@ func (dsgcrr DataStoreGetCourseRecordResult) Equals(o types.RVType) bool {
 	return dsgcrr.UpdatedTime.Equals(other.UpdatedTime)
 }
 
+// CopyRef copies the current value of the DataStoreGetCourseRecordResult
+// and returns a pointer to the new copy
+func (dsgcrr DataStoreGetCourseRecordResult) CopyRef() types.RVTypePtr {
+	copied := dsgcrr.Copy().(DataStoreGetCourseRecordResult)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetCourseRecordResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgcrr *DataStoreGetCourseRecordResult) Deref() types.RVType {
+	return *dsgcrr
+}
+
 // String returns the string representation of the DataStoreGetCourseRecordResult
 func (dsgcrr DataStoreGetCourseRecordResult) String() string {
 	return dsgcrr.FormatToString(0)

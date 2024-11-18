@@ -136,6 +136,20 @@ func (mtsp MiiTubeSearchParam) Equals(o types.RVType) bool {
 	return mtsp.ResultOption.Equals(other.ResultOption)
 }
 
+// CopyRef copies the current value of the MiiTubeSearchParam
+// and returns a pointer to the new copy
+func (mtsp MiiTubeSearchParam) CopyRef() types.RVTypePtr {
+	copied := mtsp.Copy().(MiiTubeSearchParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MiiTubeSearchParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mtsp *MiiTubeSearchParam) Deref() types.RVType {
+	return *mtsp
+}
+
 // String returns the string representation of the MiiTubeSearchParam
 func (mtsp MiiTubeSearchParam) String() string {
 	return mtsp.FormatToString(0)

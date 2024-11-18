@@ -106,6 +106,20 @@ func (fml FriendMiiList) Equals(o types.RVType) bool {
 	return fml.Unknown2.Equals(other.Unknown2)
 }
 
+// CopyRef copies the current value of the FriendMiiList
+// and returns a pointer to the new copy
+func (fml FriendMiiList) CopyRef() types.RVTypePtr {
+	copied := fml.Copy().(FriendMiiList)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendMiiList
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fml *FriendMiiList) Deref() types.RVType {
+	return *fml
+}
+
 // String returns the string representation of the FriendMiiList
 func (fml FriendMiiList) String() string {
 	return fml.FormatToString(0)

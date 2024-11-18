@@ -81,6 +81,20 @@ func (dsripws DataStoreRatingInitParamWithSlot) Equals(o types.RVType) bool {
 	return dsripws.Param.Equals(other.Param)
 }
 
+// CopyRef copies the current value of the DataStoreRatingInitParamWithSlot
+// and returns a pointer to the new copy
+func (dsripws DataStoreRatingInitParamWithSlot) CopyRef() types.RVTypePtr {
+	copied := dsripws.Copy().(DataStoreRatingInitParamWithSlot)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingInitParamWithSlot
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsripws *DataStoreRatingInitParamWithSlot) Deref() types.RVType {
+	return *dsripws
+}
+
 // String returns the string representation of the DataStoreRatingInitParamWithSlot
 func (dsripws DataStoreRatingInitParamWithSlot) String() string {
 	return dsripws.FormatToString(0)

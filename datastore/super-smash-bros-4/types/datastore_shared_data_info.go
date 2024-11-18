@@ -165,6 +165,20 @@ func (dssdi DataStoreSharedDataInfo) Equals(o types.RVType) bool {
 	return dssdi.Info.Equals(other.Info)
 }
 
+// CopyRef copies the current value of the DataStoreSharedDataInfo
+// and returns a pointer to the new copy
+func (dssdi DataStoreSharedDataInfo) CopyRef() types.RVTypePtr {
+	copied := dssdi.Copy().(DataStoreSharedDataInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreSharedDataInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dssdi *DataStoreSharedDataInfo) Deref() types.RVType {
+	return *dssdi
+}
+
 // String returns the string representation of the DataStoreSharedDataInfo
 func (dssdi DataStoreSharedDataInfo) String() string {
 	return dssdi.FormatToString(0)

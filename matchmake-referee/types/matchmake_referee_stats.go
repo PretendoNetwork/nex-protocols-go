@@ -262,6 +262,20 @@ func (mrs MatchmakeRefereeStats) Equals(o types.RVType) bool {
 	return mrs.RatingValue.Equals(other.RatingValue)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeStats
+// and returns a pointer to the new copy
+func (mrs MatchmakeRefereeStats) CopyRef() types.RVTypePtr {
+	copied := mrs.Copy().(MatchmakeRefereeStats)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeStats
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrs *MatchmakeRefereeStats) Deref() types.RVType {
+	return *mrs
+}
+
 // String returns the string representation of the MatchmakeRefereeStats
 func (mrs MatchmakeRefereeStats) String() string {
 	return mrs.FormatToString(0)

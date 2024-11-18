@@ -122,6 +122,20 @@ func (sigsirp ServiceItemGetServiceItemRightParam) Equals(o types.RVType) bool {
 	return sigsirp.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemGetServiceItemRightParam
+// and returns a pointer to the new copy
+func (sigsirp ServiceItemGetServiceItemRightParam) CopyRef() types.RVTypePtr {
+	copied := sigsirp.Copy().(ServiceItemGetServiceItemRightParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetServiceItemRightParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigsirp *ServiceItemGetServiceItemRightParam) Deref() types.RVType {
+	return *sigsirp
+}
+
 // String returns the string representation of the ServiceItemGetServiceItemRightParam
 func (sigsirp ServiceItemGetServiceItemRightParam) String() string {
 	return sigsirp.FormatToString(0)

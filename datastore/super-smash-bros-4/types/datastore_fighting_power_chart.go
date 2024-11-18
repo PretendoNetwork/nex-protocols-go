@@ -81,6 +81,20 @@ func (dsfpc DataStoreFightingPowerChart) Equals(o types.RVType) bool {
 	return dsfpc.Chart.Equals(other.Chart)
 }
 
+// CopyRef copies the current value of the DataStoreFightingPowerChart
+// and returns a pointer to the new copy
+func (dsfpc DataStoreFightingPowerChart) CopyRef() types.RVTypePtr {
+	copied := dsfpc.Copy().(DataStoreFightingPowerChart)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreFightingPowerChart
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsfpc *DataStoreFightingPowerChart) Deref() types.RVType {
+	return *dsfpc
+}
+
 // String returns the string representation of the DataStoreFightingPowerChart
 func (dsfpc DataStoreFightingPowerChart) String() string {
 	return dsfpc.FormatToString(0)

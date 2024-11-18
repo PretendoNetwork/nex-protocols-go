@@ -106,6 +106,20 @@ func (nnai NNAInfo) Equals(o types.RVType) bool {
 	return nnai.Unknown2.Equals(other.Unknown2)
 }
 
+// CopyRef copies the current value of the NNAInfo
+// and returns a pointer to the new copy
+func (nnai NNAInfo) CopyRef() types.RVTypePtr {
+	copied := nnai.Copy().(NNAInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the NNAInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (nnai *NNAInfo) Deref() types.RVType {
+	return *nnai
+}
+
 // String returns the string representation of the NNAInfo
 func (nnai NNAInfo) String() string {
 	return nnai.FormatToString(0)

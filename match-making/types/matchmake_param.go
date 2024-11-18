@@ -69,6 +69,20 @@ func (mp MatchmakeParam) Equals(o types.RVType) bool {
 	return mp.Params.Equals(other.Params)
 }
 
+// CopyRef copies the current value of the MatchmakeParam
+// and returns a pointer to the new copy
+func (mp MatchmakeParam) CopyRef() types.RVTypePtr {
+	copied := mp.Copy().(MatchmakeParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mp *MatchmakeParam) Deref() types.RVType {
+	return *mp
+}
+
 // String returns the string representation of the MatchmakeParam
 func (mp MatchmakeParam) String() string {
 	return mp.FormatToString(0)

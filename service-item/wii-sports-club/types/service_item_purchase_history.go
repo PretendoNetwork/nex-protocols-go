@@ -93,6 +93,20 @@ func (siph ServiceItemPurchaseHistory) Equals(o types.RVType) bool {
 	return siph.Transactions.Equals(other.Transactions)
 }
 
+// CopyRef copies the current value of the ServiceItemPurchaseHistory
+// and returns a pointer to the new copy
+func (siph ServiceItemPurchaseHistory) CopyRef() types.RVTypePtr {
+	copied := siph.Copy().(ServiceItemPurchaseHistory)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPurchaseHistory
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siph *ServiceItemPurchaseHistory) Deref() types.RVType {
+	return *siph
+}
+
 // String returns the string representation of the ServiceItemPurchaseHistory
 func (siph ServiceItemPurchaseHistory) String() string {
 	return siph.FormatToString(0)

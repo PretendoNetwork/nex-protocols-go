@@ -106,6 +106,20 @@ func (c Comment) Equals(o types.RVType) bool {
 	return c.LastChanged.Equals(other.LastChanged)
 }
 
+// CopyRef copies the current value of the Comment
+// and returns a pointer to the new copy
+func (c Comment) CopyRef() types.RVTypePtr {
+	copied := c.Copy().(Comment)
+	return &copied
+}
+
+// Deref takes a pointer to the Comment
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (c *Comment) Deref() types.RVType {
+	return *c
+}
+
 // String returns the string representation of the Comment
 func (c Comment) String() string {
 	return c.FormatToString(0)

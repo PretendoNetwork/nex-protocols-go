@@ -165,6 +165,20 @@ func (dsrmi DataStoreReplayMetaInfo) Equals(o types.RVType) bool {
 	return dsrmi.Winners.Equals(other.Winners)
 }
 
+// CopyRef copies the current value of the DataStoreReplayMetaInfo
+// and returns a pointer to the new copy
+func (dsrmi DataStoreReplayMetaInfo) CopyRef() types.RVTypePtr {
+	copied := dsrmi.Copy().(DataStoreReplayMetaInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReplayMetaInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrmi *DataStoreReplayMetaInfo) Deref() types.RVType {
+	return *dsrmi
+}
+
 // String returns the string representation of the DataStoreReplayMetaInfo
 func (dsrmi DataStoreReplayMetaInfo) String() string {
 	return dsrmi.FormatToString(0)

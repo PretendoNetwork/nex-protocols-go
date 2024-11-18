@@ -81,6 +81,20 @@ func (fmsbpr FindMatchmakeSessionByParticipantResult) Equals(o types.RVType) boo
 	return fmsbpr.Session.Equals(other.Session)
 }
 
+// CopyRef copies the current value of the FindMatchmakeSessionByParticipantResult
+// and returns a pointer to the new copy
+func (fmsbpr FindMatchmakeSessionByParticipantResult) CopyRef() types.RVTypePtr {
+	copied := fmsbpr.Copy().(FindMatchmakeSessionByParticipantResult)
+	return &copied
+}
+
+// Deref takes a pointer to the FindMatchmakeSessionByParticipantResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fmsbpr *FindMatchmakeSessionByParticipantResult) Deref() types.RVType {
+	return *fmsbpr
+}
+
 // String returns the string representation of the FindMatchmakeSessionByParticipantResult
 func (fmsbpr FindMatchmakeSessionByParticipantResult) String() string {
 	return fmsbpr.FormatToString(0)

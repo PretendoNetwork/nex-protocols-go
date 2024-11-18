@@ -81,6 +81,20 @@ func (gtsrk GlobalTradeStationRecordKey) Equals(o types.RVType) bool {
 	return gtsrk.Password.Equals(other.Password)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationRecordKey
+// and returns a pointer to the new copy
+func (gtsrk GlobalTradeStationRecordKey) CopyRef() types.RVTypePtr {
+	copied := gtsrk.Copy().(GlobalTradeStationRecordKey)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationRecordKey
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsrk *GlobalTradeStationRecordKey) Deref() types.RVType {
+	return *gtsrk
+}
+
 // String returns the string representation of the GlobalTradeStationRecordKey
 func (gtsrk GlobalTradeStationRecordKey) String() string {
 	return gtsrk.FormatToString(0)

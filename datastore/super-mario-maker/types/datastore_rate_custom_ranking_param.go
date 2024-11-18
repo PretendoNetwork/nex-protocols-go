@@ -105,6 +105,20 @@ func (dsrcrp DataStoreRateCustomRankingParam) Equals(o types.RVType) bool {
 	return dsrcrp.Period.Equals(other.Period)
 }
 
+// CopyRef copies the current value of the DataStoreRateCustomRankingParam
+// and returns a pointer to the new copy
+func (dsrcrp DataStoreRateCustomRankingParam) CopyRef() types.RVTypePtr {
+	copied := dsrcrp.Copy().(DataStoreRateCustomRankingParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRateCustomRankingParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrcrp *DataStoreRateCustomRankingParam) Deref() types.RVType {
+	return *dsrcrp
+}
+
 // String returns the string representation of the DataStoreRateCustomRankingParam
 func (dsrcrp DataStoreRateCustomRankingParam) String() string {
 	return dsrcrp.FormatToString(0)

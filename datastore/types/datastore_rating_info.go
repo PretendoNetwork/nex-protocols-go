@@ -93,6 +93,20 @@ func (dsri DataStoreRatingInfo) Equals(o types.RVType) bool {
 	return dsri.InitialValue.Equals(other.InitialValue)
 }
 
+// CopyRef copies the current value of the DataStoreRatingInfo
+// and returns a pointer to the new copy
+func (dsri DataStoreRatingInfo) CopyRef() types.RVTypePtr {
+	copied := dsri.Copy().(DataStoreRatingInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsri *DataStoreRatingInfo) Deref() types.RVType {
+	return *dsri
+}
+
 // String returns the string representation of the DataStoreRatingInfo
 func (dsri DataStoreRatingInfo) String() string {
 	return dsri.FormatToString(0)

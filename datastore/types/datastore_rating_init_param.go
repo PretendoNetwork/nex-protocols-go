@@ -153,6 +153,20 @@ func (dsrip DataStoreRatingInitParam) Equals(o types.RVType) bool {
 	return dsrip.PeriodDuration.Equals(other.PeriodDuration)
 }
 
+// CopyRef copies the current value of the DataStoreRatingInitParam
+// and returns a pointer to the new copy
+func (dsrip DataStoreRatingInitParam) CopyRef() types.RVTypePtr {
+	copied := dsrip.Copy().(DataStoreRatingInitParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingInitParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrip *DataStoreRatingInitParam) Deref() types.RVType {
+	return *dsrip
+}
+
 // String returns the string representation of the DataStoreRatingInitParam
 func (dsrip DataStoreRatingInitParam) String() string {
 	return dsrip.FormatToString(0)

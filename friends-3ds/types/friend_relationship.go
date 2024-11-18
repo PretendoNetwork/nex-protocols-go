@@ -106,6 +106,20 @@ func (fr FriendRelationship) Equals(o types.RVType) bool {
 	return fr.RelationshipType.Equals(other.RelationshipType)
 }
 
+// CopyRef copies the current value of the FriendRelationship
+// and returns a pointer to the new copy
+func (fr FriendRelationship) CopyRef() types.RVTypePtr {
+	copied := fr.Copy().(FriendRelationship)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendRelationship
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fr *FriendRelationship) Deref() types.RVType {
+	return *fr
+}
+
 // String returns the string representation of the FriendRelationship
 func (fr FriendRelationship) String() string {
 	return fr.FormatToString(0)

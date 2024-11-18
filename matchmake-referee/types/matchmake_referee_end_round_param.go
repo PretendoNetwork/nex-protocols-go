@@ -94,6 +94,20 @@ func (mrerp MatchmakeRefereeEndRoundParam) Equals(o types.RVType) bool {
 	return mrerp.PersonalRoundResults.Equals(other.PersonalRoundResults)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeEndRoundParam
+// and returns a pointer to the new copy
+func (mrerp MatchmakeRefereeEndRoundParam) CopyRef() types.RVTypePtr {
+	copied := mrerp.Copy().(MatchmakeRefereeEndRoundParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeEndRoundParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrerp *MatchmakeRefereeEndRoundParam) Deref() types.RVType {
+	return *mrerp
+}
+
 // String returns the string representation of the MatchmakeRefereeEndRoundParam
 func (mrerp MatchmakeRefereeEndRoundParam) String() string {
 	return mrerp.FormatToString(0)

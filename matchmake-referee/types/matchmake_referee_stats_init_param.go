@@ -94,6 +94,20 @@ func (mrsip MatchmakeRefereeStatsInitParam) Equals(o types.RVType) bool {
 	return mrsip.InitialRatingValue.Equals(other.InitialRatingValue)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeStatsInitParam
+// and returns a pointer to the new copy
+func (mrsip MatchmakeRefereeStatsInitParam) CopyRef() types.RVTypePtr {
+	copied := mrsip.Copy().(MatchmakeRefereeStatsInitParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeStatsInitParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrsip *MatchmakeRefereeStatsInitParam) Deref() types.RVType {
+	return *mrsip
+}
+
 // String returns the string representation of the MatchmakeRefereeStatsInitParam
 func (mrsip MatchmakeRefereeStatsInitParam) String() string {
 	return mrsip.FormatToString(0)

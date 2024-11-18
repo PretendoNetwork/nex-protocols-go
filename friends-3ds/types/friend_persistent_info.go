@@ -202,6 +202,20 @@ func (fpi FriendPersistentInfo) Equals(o types.RVType) bool {
 	return fpi.LastOnline.Equals(other.LastOnline)
 }
 
+// CopyRef copies the current value of the FriendPersistentInfo
+// and returns a pointer to the new copy
+func (fpi FriendPersistentInfo) CopyRef() types.RVTypePtr {
+	copied := fpi.Copy().(FriendPersistentInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendPersistentInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fpi *FriendPersistentInfo) Deref() types.RVType {
+	return *fpi
+}
+
 // String returns the string representation of the FriendPersistentInfo
 func (fpi FriendPersistentInfo) String() string {
 	return fpi.FormatToString(0)

@@ -153,6 +153,20 @@ func (amp AutoMatchmakeParam) Equals(o types.RVType) bool {
 	return amp.TargetGIDs.Equals(other.TargetGIDs)
 }
 
+// CopyRef copies the current value of the AutoMatchmakeParam
+// and returns a pointer to the new copy
+func (amp AutoMatchmakeParam) CopyRef() types.RVTypePtr {
+	copied := amp.Copy().(AutoMatchmakeParam)
+	return &copied
+}
+
+// Deref takes a pointer to the AutoMatchmakeParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (amp *AutoMatchmakeParam) Deref() types.RVType {
+	return *amp
+}
+
 // String returns the string representation of the AutoMatchmakeParam
 func (amp AutoMatchmakeParam) String() string {
 	return amp.FormatToString(0)

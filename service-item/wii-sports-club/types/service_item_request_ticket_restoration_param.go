@@ -81,6 +81,20 @@ func (sirtrp ServiceItemRequestTicketRestorationParam) Equals(o types.RVType) bo
 	return sirtrp.NumTicket.Equals(other.NumTicket)
 }
 
+// CopyRef copies the current value of the ServiceItemRequestTicketRestorationParam
+// and returns a pointer to the new copy
+func (sirtrp ServiceItemRequestTicketRestorationParam) CopyRef() types.RVTypePtr {
+	copied := sirtrp.Copy().(ServiceItemRequestTicketRestorationParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemRequestTicketRestorationParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sirtrp *ServiceItemRequestTicketRestorationParam) Deref() types.RVType {
+	return *sirtrp
+}
+
 // String returns the string representation of the ServiceItemRequestTicketRestorationParam
 func (sirtrp ServiceItemRequestTicketRestorationParam) String() string {
 	return sirtrp.FormatToString(0)

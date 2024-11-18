@@ -106,6 +106,20 @@ func (fc FriendComment) Equals(o types.RVType) bool {
 	return fc.ModifiedAt.Equals(other.ModifiedAt)
 }
 
+// CopyRef copies the current value of the FriendComment
+// and returns a pointer to the new copy
+func (fc FriendComment) CopyRef() types.RVTypePtr {
+	copied := fc.Copy().(FriendComment)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendComment
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fc *FriendComment) Deref() types.RVType {
+	return *fc
+}
+
 // String returns the string representation of the FriendComment
 func (fc FriendComment) String() string {
 	return fc.FormatToString(0)

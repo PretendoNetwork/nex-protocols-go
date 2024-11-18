@@ -106,6 +106,20 @@ func (siarc ServiceItemAccountRightConsumption) Equals(o types.RVType) bool {
 	return siarc.ExpiryCounts.Equals(other.ExpiryCounts)
 }
 
+// CopyRef copies the current value of the ServiceItemAccountRightConsumption
+// and returns a pointer to the new copy
+func (siarc ServiceItemAccountRightConsumption) CopyRef() types.RVTypePtr {
+	copied := siarc.Copy().(ServiceItemAccountRightConsumption)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAccountRightConsumption
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siarc *ServiceItemAccountRightConsumption) Deref() types.RVType {
+	return *siarc
+}
+
 // String returns the string representation of the ServiceItemAccountRightConsumption
 func (siarc ServiceItemAccountRightConsumption) String() string {
 	return siarc.FormatToString(0)

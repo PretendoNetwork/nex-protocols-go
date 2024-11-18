@@ -93,6 +93,20 @@ func (siscp ServiceItemStartChallengeParam) Equals(o types.RVType) bool {
 	return siscp.NumTicket.Equals(other.NumTicket)
 }
 
+// CopyRef copies the current value of the ServiceItemStartChallengeParam
+// and returns a pointer to the new copy
+func (siscp ServiceItemStartChallengeParam) CopyRef() types.RVTypePtr {
+	copied := siscp.Copy().(ServiceItemStartChallengeParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemStartChallengeParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siscp *ServiceItemStartChallengeParam) Deref() types.RVType {
+	return *siscp
+}
+
 // String returns the string representation of the ServiceItemStartChallengeParam
 func (siscp ServiceItemStartChallengeParam) String() string {
 	return siscp.FormatToString(0)

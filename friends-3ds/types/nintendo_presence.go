@@ -190,6 +190,20 @@ func (np NintendoPresence) Equals(o types.RVType) bool {
 	return np.ApplicationArg.Equals(other.ApplicationArg)
 }
 
+// CopyRef copies the current value of the NintendoPresence
+// and returns a pointer to the new copy
+func (np NintendoPresence) CopyRef() types.RVTypePtr {
+	copied := np.Copy().(NintendoPresence)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoPresence
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (np *NintendoPresence) Deref() types.RVType {
+	return *np
+}
+
 // String returns the string representation of the NintendoPresence
 func (np NintendoPresence) String() string {
 	return np.FormatToString(0)

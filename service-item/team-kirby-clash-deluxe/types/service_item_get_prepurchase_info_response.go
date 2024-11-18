@@ -82,6 +82,20 @@ func (sigpir ServiceItemGetPrepurchaseInfoResponse) Equals(o types.RVType) bool 
 	return sigpir.NullablePrepurchaseInfo.Equals(other.NullablePrepurchaseInfo)
 }
 
+// CopyRef copies the current value of the ServiceItemGetPrepurchaseInfoResponse
+// and returns a pointer to the new copy
+func (sigpir ServiceItemGetPrepurchaseInfoResponse) CopyRef() types.RVTypePtr {
+	copied := sigpir.Copy().(ServiceItemGetPrepurchaseInfoResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetPrepurchaseInfoResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigpir *ServiceItemGetPrepurchaseInfoResponse) Deref() types.RVType {
+	return *sigpir
+}
+
 // String returns the string representation of the ServiceItemGetPrepurchaseInfoResponse
 func (sigpir ServiceItemGetPrepurchaseInfoResponse) String() string {
 	return sigpir.FormatToString(0)

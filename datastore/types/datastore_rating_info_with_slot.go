@@ -81,6 +81,20 @@ func (dsriws DataStoreRatingInfoWithSlot) Equals(o types.RVType) bool {
 	return dsriws.Rating.Equals(other.Rating)
 }
 
+// CopyRef copies the current value of the DataStoreRatingInfoWithSlot
+// and returns a pointer to the new copy
+func (dsriws DataStoreRatingInfoWithSlot) CopyRef() types.RVTypePtr {
+	copied := dsriws.Copy().(DataStoreRatingInfoWithSlot)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingInfoWithSlot
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsriws *DataStoreRatingInfoWithSlot) Deref() types.RVType {
+	return *dsriws
+}
+
 // String returns the string representation of the DataStoreRatingInfoWithSlot
 func (dsriws DataStoreRatingInfoWithSlot) String() string {
 	return dsriws.FormatToString(0)

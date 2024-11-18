@@ -81,6 +81,20 @@ func (siti ServiceItemTicketInfo) Equals(o types.RVType) bool {
 	return siti.NumTotal.Equals(other.NumTotal)
 }
 
+// CopyRef copies the current value of the ServiceItemTicketInfo
+// and returns a pointer to the new copy
+func (siti ServiceItemTicketInfo) CopyRef() types.RVTypePtr {
+	copied := siti.Copy().(ServiceItemTicketInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemTicketInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siti *ServiceItemTicketInfo) Deref() types.RVType {
+	return *siti
+}
+
 // String returns the string representation of the ServiceItemTicketInfo
 func (siti ServiceItemTicketInfo) String() string {
 	return siti.FormatToString(0)

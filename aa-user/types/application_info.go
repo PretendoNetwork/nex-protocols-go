@@ -94,6 +94,20 @@ func (ai ApplicationInfo) Equals(o types.RVType) bool {
 	return ai.TitleVersion.Equals(other.TitleVersion)
 }
 
+// CopyRef copies the current value of the ApplicationInfo
+// and returns a pointer to the new copy
+func (ai ApplicationInfo) CopyRef() types.RVTypePtr {
+	copied := ai.Copy().(ApplicationInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ApplicationInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ai *ApplicationInfo) Deref() types.RVType {
+	return *ai
+}
+
 // String returns the string representation of the ApplicationInfo
 func (ai ApplicationInfo) String() string {
 	return ai.FormatToString(0)

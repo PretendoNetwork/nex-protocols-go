@@ -117,6 +117,20 @@ func (fd FriendData) Equals(o types.RVType) bool {
 	return fd.StrStatus.Equals(other.StrStatus)
 }
 
+// CopyRef copies the current value of the FriendData
+// and returns a pointer to the new copy
+func (fd FriendData) CopyRef() types.RVTypePtr {
+	copied := fd.Copy().(FriendData)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fd *FriendData) Deref() types.RVType {
+	return *fd
+}
+
 // String returns the string representation of the FriendData
 func (fd FriendData) String() string {
 	return fd.FormatToString(0)

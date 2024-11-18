@@ -165,6 +165,20 @@ func (rgp Ranking2GetParam) Equals(o types.RVType) bool {
 	return rgp.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack)
 }
 
+// CopyRef copies the current value of the Ranking2GetParam
+// and returns a pointer to the new copy
+func (rgp Ranking2GetParam) CopyRef() types.RVTypePtr {
+	copied := rgp.Copy().(Ranking2GetParam)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2GetParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rgp *Ranking2GetParam) Deref() types.RVType {
+	return *rgp
+}
+
 // String returns the string representation of the Ranking2GetParam
 func (rgp Ranking2GetParam) String() string {
 	return rgp.FormatToString(0)

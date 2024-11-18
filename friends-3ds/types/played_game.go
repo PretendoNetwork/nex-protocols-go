@@ -81,6 +81,20 @@ func (pg PlayedGame) Equals(o types.RVType) bool {
 	return pg.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the PlayedGame
+// and returns a pointer to the new copy
+func (pg PlayedGame) CopyRef() types.RVTypePtr {
+	copied := pg.Copy().(PlayedGame)
+	return &copied
+}
+
+// Deref takes a pointer to the PlayedGame
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pg *PlayedGame) Deref() types.RVType {
+	return *pg
+}
+
 // String returns the string representation of the PlayedGame
 func (pg PlayedGame) String() string {
 	return pg.FormatToString(0)

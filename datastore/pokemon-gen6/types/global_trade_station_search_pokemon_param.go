@@ -141,6 +141,20 @@ func (gtsspp GlobalTradeStationSearchPokemonParam) Equals(o types.RVType) bool {
 	return gtsspp.ResultRange.Equals(other.ResultRange)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationSearchPokemonParam
+// and returns a pointer to the new copy
+func (gtsspp GlobalTradeStationSearchPokemonParam) CopyRef() types.RVTypePtr {
+	copied := gtsspp.Copy().(GlobalTradeStationSearchPokemonParam)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationSearchPokemonParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsspp *GlobalTradeStationSearchPokemonParam) Deref() types.RVType {
+	return *gtsspp
+}
+
 // String returns the string representation of the GlobalTradeStationSearchPokemonParam
 func (gtsspp GlobalTradeStationSearchPokemonParam) String() string {
 	return gtsspp.FormatToString(0)

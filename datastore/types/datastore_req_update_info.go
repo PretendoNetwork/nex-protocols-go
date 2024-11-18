@@ -138,6 +138,20 @@ func (dsrui DataStoreReqUpdateInfo) Equals(o types.RVType) bool {
 	return dsrui.RootCACert.Equals(other.RootCACert)
 }
 
+// CopyRef copies the current value of the DataStoreReqUpdateInfo
+// and returns a pointer to the new copy
+func (dsrui DataStoreReqUpdateInfo) CopyRef() types.RVTypePtr {
+	copied := dsrui.Copy().(DataStoreReqUpdateInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqUpdateInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrui *DataStoreReqUpdateInfo) Deref() types.RVType {
+	return *dsrui
+}
+
 // String returns the string representation of the DataStoreReqUpdateInfo
 func (dsrui DataStoreReqUpdateInfo) String() string {
 	return dsrui.FormatToString(0)

@@ -319,6 +319,20 @@ func (ms MatchmakeSession) Equals(o types.RVType) bool {
 	return ms.CodeWord.Equals(other.CodeWord)
 }
 
+// CopyRef copies the current value of the MatchmakeSession
+// and returns a pointer to the new copy
+func (ms MatchmakeSession) CopyRef() types.RVTypePtr {
+	copied := ms.Copy().(MatchmakeSession)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeSession
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ms *MatchmakeSession) Deref() types.RVType {
+	return *ms
+}
+
 // String returns the string representation of the MatchmakeSession
 func (ms MatchmakeSession) String() string {
 	return ms.FormatToString(0)

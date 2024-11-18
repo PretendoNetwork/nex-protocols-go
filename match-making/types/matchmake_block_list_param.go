@@ -69,6 +69,20 @@ func (mblp MatchmakeBlockListParam) Equals(o types.RVType) bool {
 	return mblp.OptionFlag.Equals(other.OptionFlag)
 }
 
+// CopyRef copies the current value of the MatchmakeBlockListParam
+// and returns a pointer to the new copy
+func (mblp MatchmakeBlockListParam) CopyRef() types.RVTypePtr {
+	copied := mblp.Copy().(MatchmakeBlockListParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeBlockListParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mblp *MatchmakeBlockListParam) Deref() types.RVType {
+	return *mblp
+}
+
 // String returns the string representation of the MatchmakeBlockListParam
 func (mblp MatchmakeBlockListParam) String() string {
 	return mblp.FormatToString(0)

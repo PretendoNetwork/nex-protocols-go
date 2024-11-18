@@ -93,6 +93,20 @@ func (dspi DataStorePersistenceInfo) Equals(o types.RVType) bool {
 	return dspi.DataID.Equals(other.DataID)
 }
 
+// CopyRef copies the current value of the DataStorePersistenceInfo
+// and returns a pointer to the new copy
+func (dspi DataStorePersistenceInfo) CopyRef() types.RVTypePtr {
+	copied := dspi.Copy().(DataStorePersistenceInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePersistenceInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspi *DataStorePersistenceInfo) Deref() types.RVType {
+	return *dspi
+}
+
 // String returns the string representation of the DataStorePersistenceInfo
 func (dspi DataStorePersistenceInfo) String() string {
 	return dspi.FormatToString(0)

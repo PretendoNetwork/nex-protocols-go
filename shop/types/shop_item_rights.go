@@ -93,6 +93,20 @@ func (sir ShopItemRights) Equals(o types.RVType) bool {
 	return sir.Attribute.Equals(other.Attribute)
 }
 
+// CopyRef copies the current value of the ShopItemRights
+// and returns a pointer to the new copy
+func (sir ShopItemRights) CopyRef() types.RVTypePtr {
+	copied := sir.Copy().(ShopItemRights)
+	return &copied
+}
+
+// Deref takes a pointer to the ShopItemRights
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sir *ShopItemRights) Deref() types.RVType {
+	return *sir
+}
+
 // String returns the string representation of the ShopItemRights
 func (sir ShopItemRights) String() string {
 	return sir.FormatToString(0)

@@ -129,6 +129,20 @@ func (ssp SimpleSearchParam) Equals(o types.RVType) bool {
 	return ssp.Unknown4.Equals(other.Unknown4)
 }
 
+// CopyRef copies the current value of the SimpleSearchParam
+// and returns a pointer to the new copy
+func (ssp SimpleSearchParam) CopyRef() types.RVTypePtr {
+	copied := ssp.Copy().(SimpleSearchParam)
+	return &copied
+}
+
+// Deref takes a pointer to the SimpleSearchParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ssp *SimpleSearchParam) Deref() types.RVType {
+	return *ssp
+}
+
 // String returns the string representation of the SimpleSearchParam
 func (ssp SimpleSearchParam) String() string {
 	return ssp.FormatToString(0)

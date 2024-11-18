@@ -105,6 +105,20 @@ func (aei AccountExtraInfo) Equals(o types.RVType) bool {
 	return aei.NEXToken.Equals(other.NEXToken)
 }
 
+// CopyRef copies the current value of the AccountExtraInfo
+// and returns a pointer to the new copy
+func (aei AccountExtraInfo) CopyRef() types.RVTypePtr {
+	copied := aei.Copy().(AccountExtraInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the AccountExtraInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (aei *AccountExtraInfo) Deref() types.RVType {
+	return *aei
+}
+
 // String returns the string representation of the AccountExtraInfo
 func (aei AccountExtraInfo) String() string {
 	return aei.FormatToString(0)

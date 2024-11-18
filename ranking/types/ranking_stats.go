@@ -69,6 +69,20 @@ func (rs RankingStats) Equals(o types.RVType) bool {
 	return rs.StatsList.Equals(other.StatsList)
 }
 
+// CopyRef copies the current value of the RankingStats
+// and returns a pointer to the new copy
+func (rs RankingStats) CopyRef() types.RVTypePtr {
+	copied := rs.Copy().(RankingStats)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingStats
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rs *RankingStats) Deref() types.RVType {
+	return *rs
+}
+
 // String returns the string representation of the RankingStats
 func (rs RankingStats) String() string {
 	return rs.FormatToString(0)

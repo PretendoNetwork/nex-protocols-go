@@ -81,6 +81,20 @@ func (dsrop DataStoreRateObjectParam) Equals(o types.RVType) bool {
 	return dsrop.AccessPassword.Equals(other.AccessPassword)
 }
 
+// CopyRef copies the current value of the DataStoreRateObjectParam
+// and returns a pointer to the new copy
+func (dsrop DataStoreRateObjectParam) CopyRef() types.RVTypePtr {
+	copied := dsrop.Copy().(DataStoreRateObjectParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRateObjectParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrop *DataStoreRateObjectParam) Deref() types.RVType {
+	return *dsrop
+}
+
 // String returns the string representation of the DataStoreRateObjectParam
 func (dsrop DataStoreRateObjectParam) String() string {
 	return dsrop.FormatToString(0)

@@ -105,6 +105,20 @@ func (ri Ranking2Info) Equals(o types.RVType) bool {
 	return ri.Season.Equals(other.Season)
 }
 
+// CopyRef copies the current value of the Ranking2Info
+// and returns a pointer to the new copy
+func (ri Ranking2Info) CopyRef() types.RVTypePtr {
+	copied := ri.Copy().(Ranking2Info)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2Info
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ri *Ranking2Info) Deref() types.RVType {
+	return *ri
+}
+
 // String returns the string representation of the Ranking2Info
 func (ri Ranking2Info) String() string {
 	return ri.FormatToString(0)

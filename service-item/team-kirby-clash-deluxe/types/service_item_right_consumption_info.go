@@ -82,6 +82,20 @@ func (sirci ServiceItemRightConsumptionInfo) Equals(o types.RVType) bool {
 	return sirci.AccountRights.Equals(other.AccountRights)
 }
 
+// CopyRef copies the current value of the ServiceItemRightConsumptionInfo
+// and returns a pointer to the new copy
+func (sirci ServiceItemRightConsumptionInfo) CopyRef() types.RVTypePtr {
+	copied := sirci.Copy().(ServiceItemRightConsumptionInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemRightConsumptionInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sirci *ServiceItemRightConsumptionInfo) Deref() types.RVType {
+	return *sirci
+}
+
 // String returns the string representation of the ServiceItemRightConsumptionInfo
 func (sirci ServiceItemRightConsumptionInfo) String() string {
 	return sirci.FormatToString(0)

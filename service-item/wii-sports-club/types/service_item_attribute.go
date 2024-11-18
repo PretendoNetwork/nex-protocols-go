@@ -81,6 +81,20 @@ func (sia ServiceItemAttribute) Equals(o types.RVType) bool {
 	return sia.Value.Equals(other.Value)
 }
 
+// CopyRef copies the current value of the ServiceItemAttribute
+// and returns a pointer to the new copy
+func (sia ServiceItemAttribute) CopyRef() types.RVTypePtr {
+	copied := sia.Copy().(ServiceItemAttribute)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAttribute
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sia *ServiceItemAttribute) Deref() types.RVType {
+	return *sia
+}
+
 // String returns the string representation of the ServiceItemAttribute
 func (sia ServiceItemAttribute) String() string {
 	return sia.FormatToString(0)

@@ -81,6 +81,20 @@ func (sil ServiceItemLimitation) Equals(o types.RVType) bool {
 	return sil.LimitationValue.Equals(other.LimitationValue)
 }
 
+// CopyRef copies the current value of the ServiceItemLimitation
+// and returns a pointer to the new copy
+func (sil ServiceItemLimitation) CopyRef() types.RVTypePtr {
+	copied := sil.Copy().(ServiceItemLimitation)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemLimitation
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sil *ServiceItemLimitation) Deref() types.RVType {
+	return *sil
+}
+
 // String returns the string representation of the ServiceItemLimitation
 func (sil ServiceItemLimitation) String() string {
 	return sil.FormatToString(0)

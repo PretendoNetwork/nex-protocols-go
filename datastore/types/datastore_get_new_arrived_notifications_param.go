@@ -81,6 +81,20 @@ func (dsgnanp DataStoreGetNewArrivedNotificationsParam) Equals(o types.RVType) b
 	return dsgnanp.Limit.Equals(other.Limit)
 }
 
+// CopyRef copies the current value of the DataStoreGetNewArrivedNotificationsParam
+// and returns a pointer to the new copy
+func (dsgnanp DataStoreGetNewArrivedNotificationsParam) CopyRef() types.RVTypePtr {
+	copied := dsgnanp.Copy().(DataStoreGetNewArrivedNotificationsParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetNewArrivedNotificationsParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) Deref() types.RVType {
+	return *dsgnanp
+}
+
 // String returns the string representation of the DataStoreGetNewArrivedNotificationsParam
 func (dsgnanp DataStoreGetNewArrivedNotificationsParam) String() string {
 	return dsgnanp.FormatToString(0)

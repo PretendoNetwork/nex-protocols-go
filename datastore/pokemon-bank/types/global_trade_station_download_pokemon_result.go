@@ -93,6 +93,20 @@ func (gtsdpr GlobalTradeStationDownloadPokemonResult) Equals(o types.RVType) boo
 	return gtsdpr.PokemonData.Equals(other.PokemonData)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationDownloadPokemonResult
+// and returns a pointer to the new copy
+func (gtsdpr GlobalTradeStationDownloadPokemonResult) CopyRef() types.RVTypePtr {
+	copied := gtsdpr.Copy().(GlobalTradeStationDownloadPokemonResult)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationDownloadPokemonResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsdpr *GlobalTradeStationDownloadPokemonResult) Deref() types.RVType {
+	return *gtsdpr
+}
+
 // String returns the string representation of the GlobalTradeStationDownloadPokemonResult
 func (gtsdpr GlobalTradeStationDownloadPokemonResult) String() string {
 	return gtsdpr.FormatToString(0)

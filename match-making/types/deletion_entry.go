@@ -93,6 +93,20 @@ func (de DeletionEntry) Equals(o types.RVType) bool {
 	return de.UIReason.Equals(other.UIReason)
 }
 
+// CopyRef copies the current value of the DeletionEntry
+// and returns a pointer to the new copy
+func (de DeletionEntry) CopyRef() types.RVTypePtr {
+	copied := de.Copy().(DeletionEntry)
+	return &copied
+}
+
+// Deref takes a pointer to the DeletionEntry
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (de *DeletionEntry) Deref() types.RVType {
+	return *de
+}
+
 // String returns the string representation of the DeletionEntry
 func (de DeletionEntry) String() string {
 	return de.FormatToString(0)

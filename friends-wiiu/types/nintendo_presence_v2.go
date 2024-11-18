@@ -250,6 +250,20 @@ func (npv NintendoPresenceV2) Equals(o types.RVType) bool {
 	return npv.Unknown7.Equals(other.Unknown7)
 }
 
+// CopyRef copies the current value of the NintendoPresenceV2
+// and returns a pointer to the new copy
+func (npv NintendoPresenceV2) CopyRef() types.RVTypePtr {
+	copied := npv.Copy().(NintendoPresenceV2)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoPresenceV2
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (npv *NintendoPresenceV2) Deref() types.RVType {
+	return *npv
+}
+
 // String returns the string representation of the NintendoPresenceV2
 func (npv NintendoPresenceV2) String() string {
 	return npv.FormatToString(0)

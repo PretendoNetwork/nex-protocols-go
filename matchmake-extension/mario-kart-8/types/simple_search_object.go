@@ -141,6 +141,20 @@ func (sso SimpleSearchObject) Equals(o types.RVType) bool {
 	return sso.DatetimeAttribute.Equals(other.DatetimeAttribute)
 }
 
+// CopyRef copies the current value of the SimpleSearchObject
+// and returns a pointer to the new copy
+func (sso SimpleSearchObject) CopyRef() types.RVTypePtr {
+	copied := sso.Copy().(SimpleSearchObject)
+	return &copied
+}
+
+// Deref takes a pointer to the SimpleSearchObject
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sso *SimpleSearchObject) Deref() types.RVType {
+	return *sso
+}
+
 // String returns the string representation of the SimpleSearchObject
 func (sso SimpleSearchObject) String() string {
 	return sso.FormatToString(0)

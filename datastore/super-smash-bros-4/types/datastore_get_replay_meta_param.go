@@ -81,6 +81,20 @@ func (dsgrmp DataStoreGetReplayMetaParam) Equals(o types.RVType) bool {
 	return dsgrmp.MetaType.Equals(other.MetaType)
 }
 
+// CopyRef copies the current value of the DataStoreGetReplayMetaParam
+// and returns a pointer to the new copy
+func (dsgrmp DataStoreGetReplayMetaParam) CopyRef() types.RVTypePtr {
+	copied := dsgrmp.Copy().(DataStoreGetReplayMetaParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetReplayMetaParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgrmp *DataStoreGetReplayMetaParam) Deref() types.RVType {
+	return *dsgrmp
+}
+
 // String returns the string representation of the DataStoreGetReplayMetaParam
 func (dsgrmp DataStoreGetReplayMetaParam) String() string {
 	return dsgrmp.FormatToString(0)

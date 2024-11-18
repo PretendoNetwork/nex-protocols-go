@@ -106,6 +106,20 @@ func (fr FriendRequest) Equals(o types.RVType) bool {
 	return fr.SentOn.Equals(other.SentOn)
 }
 
+// CopyRef copies the current value of the FriendRequest
+// and returns a pointer to the new copy
+func (fr FriendRequest) CopyRef() types.RVTypePtr {
+	copied := fr.Copy().(FriendRequest)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendRequest
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fr *FriendRequest) Deref() types.RVType {
+	return *fr
+}
+
 // String returns the string representation of the FriendRequest
 func (fr FriendRequest) String() string {
 	return fr.FormatToString(0)

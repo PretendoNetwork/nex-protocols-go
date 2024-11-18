@@ -165,6 +165,20 @@ func (sit ServiceItemTransaction) Equals(o types.RVType) bool {
 	return sit.Limitation.Equals(other.Limitation)
 }
 
+// CopyRef copies the current value of the ServiceItemTransaction
+// and returns a pointer to the new copy
+func (sit ServiceItemTransaction) CopyRef() types.RVTypePtr {
+	copied := sit.Copy().(ServiceItemTransaction)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemTransaction
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sit *ServiceItemTransaction) Deref() types.RVType {
+	return *sit
+}
+
 // String returns the string representation of the ServiceItemTransaction
 func (sit ServiceItemTransaction) String() string {
 	return sit.FormatToString(0)

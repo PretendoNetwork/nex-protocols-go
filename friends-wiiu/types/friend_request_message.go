@@ -178,6 +178,20 @@ func (frm FriendRequestMessage) Equals(o types.RVType) bool {
 	return frm.ExpiresOn.Equals(other.ExpiresOn)
 }
 
+// CopyRef copies the current value of the FriendRequestMessage
+// and returns a pointer to the new copy
+func (frm FriendRequestMessage) CopyRef() types.RVTypePtr {
+	copied := frm.Copy().(FriendRequestMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendRequestMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (frm *FriendRequestMessage) Deref() types.RVType {
+	return *frm
+}
+
 // String returns the string representation of the FriendRequestMessage
 func (frm FriendRequestMessage) String() string {
 	return frm.FormatToString(0)

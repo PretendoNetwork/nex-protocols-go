@@ -81,6 +81,20 @@ func (sigbp ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
 	return sigbp.TitleID.Equals(other.TitleID)
 }
 
+// CopyRef copies the current value of the ServiceItemGetBalanceParam
+// and returns a pointer to the new copy
+func (sigbp ServiceItemGetBalanceParam) CopyRef() types.RVTypePtr {
+	copied := sigbp.Copy().(ServiceItemGetBalanceParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetBalanceParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigbp *ServiceItemGetBalanceParam) Deref() types.RVType {
+	return *sigbp
+}
+
 // String returns the string representation of the ServiceItemGetBalanceParam
 func (sigbp ServiceItemGetBalanceParam) String() string {
 	return sigbp.FormatToString(0)

@@ -69,6 +69,20 @@ func (fup FriendUserParam) Equals(o types.RVType) bool {
 	return fup.Name.Equals(other.Name)
 }
 
+// CopyRef copies the current value of the FriendUserParam
+// and returns a pointer to the new copy
+func (fup FriendUserParam) CopyRef() types.RVTypePtr {
+	copied := fup.Copy().(FriendUserParam)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendUserParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fup *FriendUserParam) Deref() types.RVType {
+	return *fup
+}
+
 // String returns the string representation of the FriendUserParam
 func (fup FriendUserParam) String() string {
 	return fup.FormatToString(0)

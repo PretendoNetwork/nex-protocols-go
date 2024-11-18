@@ -93,6 +93,20 @@ func (spplp ShopPostPlayLogParam) Equals(o types.RVType) bool {
 	return spplp.Unknown2.Equals(other.Unknown2)
 }
 
+// CopyRef copies the current value of the ShopPostPlayLogParam
+// and returns a pointer to the new copy
+func (spplp ShopPostPlayLogParam) CopyRef() types.RVTypePtr {
+	copied := spplp.Copy().(ShopPostPlayLogParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ShopPostPlayLogParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (spplp *ShopPostPlayLogParam) Deref() types.RVType {
+	return *spplp
+}
+
 // String returns the string representation of the ShopPostPlayLogParam
 func (spplp ShopPostPlayLogParam) String() string {
 	return spplp.FormatToString(0)

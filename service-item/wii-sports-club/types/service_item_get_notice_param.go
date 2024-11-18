@@ -69,6 +69,20 @@ func (signp ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
 	return signp.NoticeType.Equals(other.NoticeType)
 }
 
+// CopyRef copies the current value of the ServiceItemGetNoticeParam
+// and returns a pointer to the new copy
+func (signp ServiceItemGetNoticeParam) CopyRef() types.RVTypePtr {
+	copied := signp.Copy().(ServiceItemGetNoticeParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetNoticeParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (signp *ServiceItemGetNoticeParam) Deref() types.RVType {
+	return *signp
+}
+
 // String returns the string representation of the ServiceItemGetNoticeParam
 func (signp ServiceItemGetNoticeParam) String() string {
 	return signp.FormatToString(0)

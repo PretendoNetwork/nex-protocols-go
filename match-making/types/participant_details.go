@@ -105,6 +105,20 @@ func (pd ParticipantDetails) Equals(o types.RVType) bool {
 	return pd.UIParticipants.Equals(other.UIParticipants)
 }
 
+// CopyRef copies the current value of the ParticipantDetails
+// and returns a pointer to the new copy
+func (pd ParticipantDetails) CopyRef() types.RVTypePtr {
+	copied := pd.Copy().(ParticipantDetails)
+	return &copied
+}
+
+// Deref takes a pointer to the ParticipantDetails
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pd *ParticipantDetails) Deref() types.RVType {
+	return *pd
+}
+
 // String returns the string representation of the ParticipantDetails
 func (pd ParticipantDetails) String() string {
 	return pd.FormatToString(0)

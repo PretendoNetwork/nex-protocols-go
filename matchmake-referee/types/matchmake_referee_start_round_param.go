@@ -106,6 +106,20 @@ func (mrsrp MatchmakeRefereeStartRoundParam) Equals(o types.RVType) bool {
 	return mrsrp.PIDs.Equals(other.PIDs)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeStartRoundParam
+// and returns a pointer to the new copy
+func (mrsrp MatchmakeRefereeStartRoundParam) CopyRef() types.RVTypePtr {
+	copied := mrsrp.Copy().(MatchmakeRefereeStartRoundParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeStartRoundParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrsrp *MatchmakeRefereeStartRoundParam) Deref() types.RVType {
+	return *mrsrp
+}
+
 // String returns the string representation of the MatchmakeRefereeStartRoundParam
 func (mrsrp MatchmakeRefereeStartRoundParam) String() string {
 	return mrsrp.FormatToString(0)

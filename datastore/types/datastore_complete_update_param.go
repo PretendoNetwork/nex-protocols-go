@@ -107,11 +107,11 @@ func (dscup DataStoreCompleteUpdateParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreCompleteUpdateParam contains the same data as the current DataStoreCompleteUpdateParam
 func (dscup DataStoreCompleteUpdateParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreCompleteUpdateParam); !ok {
+	if _, ok := o.(DataStoreCompleteUpdateParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreCompleteUpdateParam)
+	other := o.(DataStoreCompleteUpdateParam)
 
 	if dscup.StructureVersion != other.StructureVersion {
 		return false

@@ -64,11 +64,11 @@ func (dspip DataStorePersistenceInitParam) Copy() types.RVType {
 
 // Equals checks if the given DataStorePersistenceInitParam contains the same data as the current DataStorePersistenceInitParam
 func (dspip DataStorePersistenceInitParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePersistenceInitParam); !ok {
+	if _, ok := o.(DataStorePersistenceInitParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePersistenceInitParam)
+	other := o.(DataStorePersistenceInitParam)
 
 	if dspip.StructureVersion != other.StructureVersion {
 		return false

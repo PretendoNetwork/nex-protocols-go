@@ -88,11 +88,11 @@ func (rd RelationshipData) Copy() types.RVType {
 
 // Equals checks if the given RelationshipData contains the same data as the current RelationshipData
 func (rd RelationshipData) Equals(o types.RVType) bool {
-	if _, ok := o.(*RelationshipData); !ok {
+	if _, ok := o.(RelationshipData); !ok {
 		return false
 	}
 
-	other := o.(*RelationshipData)
+	other := o.(RelationshipData)
 
 	if rd.StructureVersion != other.StructureVersion {
 		return false

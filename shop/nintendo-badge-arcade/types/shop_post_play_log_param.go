@@ -72,11 +72,11 @@ func (spplp ShopPostPlayLogParam) Copy() types.RVType {
 
 // Equals checks if the given ShopPostPlayLogParam contains the same data as the current ShopPostPlayLogParam
 func (spplp ShopPostPlayLogParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ShopPostPlayLogParam); !ok {
+	if _, ok := o.(ShopPostPlayLogParam); !ok {
 		return false
 	}
 
-	other := o.(*ShopPostPlayLogParam)
+	other := o.(ShopPostPlayLogParam)
 
 	if spplp.StructureVersion != other.StructureVersion {
 		return false

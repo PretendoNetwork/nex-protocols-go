@@ -93,11 +93,11 @@ func (sigsirp ServiceItemGetServiceItemRightParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetServiceItemRightParam contains the same data as the current ServiceItemGetServiceItemRightParam
 func (sigsirp ServiceItemGetServiceItemRightParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetServiceItemRightParam); !ok {
+	if _, ok := o.(ServiceItemGetServiceItemRightParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetServiceItemRightParam)
+	other := o.(ServiceItemGetServiceItemRightParam)
 
 	if sigsirp.StructureVersion != other.StructureVersion {
 		return false

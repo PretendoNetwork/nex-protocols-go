@@ -120,11 +120,11 @@ func (dsrp DataStoreReplayPlayer) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReplayPlayer contains the same data as the current DataStoreReplayPlayer
 func (dsrp DataStoreReplayPlayer) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReplayPlayer); !ok {
+	if _, ok := o.(DataStoreReplayPlayer); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReplayPlayer)
+	other := o.(DataStoreReplayPlayer)
 
 	if dsrp.StructureVersion != other.StructureVersion {
 		return false

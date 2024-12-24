@@ -73,11 +73,11 @@ func (prbs PrincipalRequestBlockSetting) Copy() types.RVType {
 
 // Equals checks if the given PrincipalRequestBlockSetting contains the same data as the current PrincipalRequestBlockSetting
 func (prbs PrincipalRequestBlockSetting) Equals(o types.RVType) bool {
-	if _, ok := o.(*PrincipalRequestBlockSetting); !ok {
+	if _, ok := o.(PrincipalRequestBlockSetting); !ok {
 		return false
 	}
 
-	other := o.(*PrincipalRequestBlockSetting)
+	other := o.(PrincipalRequestBlockSetting)
 
 	if prbs.StructureVersion != other.StructureVersion {
 		return false

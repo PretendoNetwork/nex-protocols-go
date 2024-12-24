@@ -64,11 +64,11 @@ func (pg PlayedGame) Copy() types.RVType {
 
 // Equals checks if the given PlayedGame contains the same data as the current PlayedGame
 func (pg PlayedGame) Equals(o types.RVType) bool {
-	if _, ok := o.(*PlayedGame); !ok {
+	if _, ok := o.(PlayedGame); !ok {
 		return false
 	}
 
-	other := o.(*PlayedGame)
+	other := o.(PlayedGame)
 
 	if pg.StructureVersion != other.StructureVersion {
 		return false

@@ -65,11 +65,11 @@ func (siglmr ServiceItemGetLawMessageResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetLawMessageResponse contains the same data as the current ServiceItemGetLawMessageResponse
 func (siglmr ServiceItemGetLawMessageResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetLawMessageResponse); !ok {
+	if _, ok := o.(ServiceItemGetLawMessageResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetLawMessageResponse)
+	other := o.(ServiceItemGetLawMessageResponse)
 
 	if siglmr.StructureVersion != other.StructureVersion {
 		return false

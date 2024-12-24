@@ -64,11 +64,11 @@ func (sia ServiceItemAttribute) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemAttribute contains the same data as the current ServiceItemAttribute
 func (sia ServiceItemAttribute) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAttribute); !ok {
+	if _, ok := o.(ServiceItemAttribute); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAttribute)
+	other := o.(ServiceItemAttribute)
 
 	if sia.StructureVersion != other.StructureVersion {
 		return false

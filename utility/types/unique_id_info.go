@@ -64,11 +64,11 @@ func (uidi UniqueIDInfo) Copy() types.RVType {
 
 // Equals checks if the given UniqueIDInfo contains the same data as the current UniqueIDInfo
 func (uidi UniqueIDInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*UniqueIDInfo); !ok {
+	if _, ok := o.(UniqueIDInfo); !ok {
 		return false
 	}
 
-	other := o.(*UniqueIDInfo)
+	other := o.(UniqueIDInfo)
 
 	if uidi.StructureVersion != other.StructureVersion {
 		return false

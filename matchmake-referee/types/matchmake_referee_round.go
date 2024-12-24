@@ -97,11 +97,11 @@ func (mrr MatchmakeRefereeRound) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeRefereeRound contains the same data as the current MatchmakeRefereeRound
 func (mrr MatchmakeRefereeRound) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeRound); !ok {
+	if _, ok := o.(MatchmakeRefereeRound); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeRound)
+	other := o.(MatchmakeRefereeRound)
 
 	if mrr.StructureVersion != other.StructureVersion {
 		return false

@@ -80,11 +80,11 @@ func (dsrgiv DataStoreReqGetInfoV1) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReqGetInfoV1 contains the same data as the current DataStoreReqGetInfoV1
 func (dsrgiv DataStoreReqGetInfoV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqGetInfoV1); !ok {
+	if _, ok := o.(DataStoreReqGetInfoV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqGetInfoV1)
+	other := o.(DataStoreReqGetInfoV1)
 
 	if dsrgiv.StructureVersion != other.StructureVersion {
 		return false

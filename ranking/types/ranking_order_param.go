@@ -96,11 +96,11 @@ func (rop RankingOrderParam) Copy() types.RVType {
 
 // Equals checks if the given RankingOrderParam contains the same data as the current RankingOrderParam
 func (rop RankingOrderParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*RankingOrderParam); !ok {
+	if _, ok := o.(RankingOrderParam); !ok {
 		return false
 	}
 
-	other := o.(*RankingOrderParam)
+	other := o.(RankingOrderParam)
 
 	if rop.StructureVersion != other.StructureVersion {
 		return false

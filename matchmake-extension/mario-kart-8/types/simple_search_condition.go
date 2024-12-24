@@ -64,11 +64,11 @@ func (ssc SimpleSearchCondition) Copy() types.RVType {
 
 // Equals checks if the given SimpleSearchCondition contains the same data as the current SimpleSearchCondition
 func (ssc SimpleSearchCondition) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimpleSearchCondition); !ok {
+	if _, ok := o.(SimpleSearchCondition); !ok {
 		return false
 	}
 
-	other := o.(*SimpleSearchCondition)
+	other := o.(SimpleSearchCondition)
 
 	if ssc.StructureVersion != other.StructureVersion {
 		return false

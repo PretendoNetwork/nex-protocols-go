@@ -64,11 +64,11 @@ func (dsgcrp DataStoreGetCourseRecordParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreGetCourseRecordParam contains the same data as the current DataStoreGetCourseRecordParam
 func (dsgcrp DataStoreGetCourseRecordParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetCourseRecordParam); !ok {
+	if _, ok := o.(DataStoreGetCourseRecordParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetCourseRecordParam)
+	other := o.(DataStoreGetCourseRecordParam)
 
 	if dsgcrp.StructureVersion != other.StructureVersion {
 		return false

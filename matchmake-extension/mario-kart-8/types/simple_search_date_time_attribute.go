@@ -96,11 +96,11 @@ func (ssdta SimpleSearchDateTimeAttribute) Copy() types.RVType {
 
 // Equals checks if the given SimpleSearchDateTimeAttribute contains the same data as the current SimpleSearchDateTimeAttribute
 func (ssdta SimpleSearchDateTimeAttribute) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimpleSearchDateTimeAttribute); !ok {
+	if _, ok := o.(SimpleSearchDateTimeAttribute); !ok {
 		return false
 	}
 
-	other := o.(*SimpleSearchDateTimeAttribute)
+	other := o.(SimpleSearchDateTimeAttribute)
 
 	if ssdta.StructureVersion != other.StructureVersion {
 		return false

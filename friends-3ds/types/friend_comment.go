@@ -81,11 +81,11 @@ func (fc FriendComment) Copy() types.RVType {
 
 // Equals checks if the given FriendComment contains the same data as the current FriendComment
 func (fc FriendComment) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendComment); !ok {
+	if _, ok := o.(FriendComment); !ok {
 		return false
 	}
 
-	other := o.(*FriendComment)
+	other := o.(FriendComment)
 
 	if fc.StructureVersion != other.StructureVersion {
 		return false

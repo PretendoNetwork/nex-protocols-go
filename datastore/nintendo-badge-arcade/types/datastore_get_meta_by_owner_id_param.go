@@ -80,11 +80,11 @@ func (dsgmboidp DataStoreGetMetaByOwnerIDParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreGetMetaByOwnerIDParam contains the same data as the current DataStoreGetMetaByOwnerIDParam
 func (dsgmboidp DataStoreGetMetaByOwnerIDParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetMetaByOwnerIDParam); !ok {
+	if _, ok := o.(DataStoreGetMetaByOwnerIDParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetMetaByOwnerIDParam)
+	other := o.(DataStoreGetMetaByOwnerIDParam)
 
 	if dsgmboidp.StructureVersion != other.StructureVersion {
 		return false

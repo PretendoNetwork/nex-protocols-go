@@ -72,11 +72,11 @@ func (cri CompetitionRankingInfo) Copy() types.RVType {
 
 // Equals checks if the given CompetitionRankingInfo contains the same data as the current CompetitionRankingInfo
 func (cri CompetitionRankingInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*CompetitionRankingInfo); !ok {
+	if _, ok := o.(CompetitionRankingInfo); !ok {
 		return false
 	}
 
-	other := o.(*CompetitionRankingInfo)
+	other := o.(CompetitionRankingInfo)
 
 	if cri.StructureVersion != other.StructureVersion {
 		return false

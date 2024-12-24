@@ -72,11 +72,11 @@ func (rsd Ranking2ScoreData) Copy() types.RVType {
 
 // Equals checks if the given Ranking2ScoreData contains the same data as the current Ranking2ScoreData
 func (rsd Ranking2ScoreData) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2ScoreData); !ok {
+	if _, ok := o.(Ranking2ScoreData); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2ScoreData)
+	other := o.(Ranking2ScoreData)
 
 	if rsd.StructureVersion != other.StructureVersion {
 		return false

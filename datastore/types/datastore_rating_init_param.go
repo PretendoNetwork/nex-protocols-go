@@ -112,11 +112,11 @@ func (dsrip DataStoreRatingInitParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreRatingInitParam contains the same data as the current DataStoreRatingInitParam
 func (dsrip DataStoreRatingInitParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRatingInitParam); !ok {
+	if _, ok := o.(DataStoreRatingInitParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRatingInitParam)
+	other := o.(DataStoreRatingInitParam)
 
 	if dsrip.StructureVersion != other.StructureVersion {
 		return false

@@ -81,11 +81,11 @@ func (bp BlacklistedPrincipal) Copy() types.RVType {
 
 // Equals checks if the given BlacklistedPrincipal contains the same data as the current BlacklistedPrincipal
 func (bp BlacklistedPrincipal) Equals(o types.RVType) bool {
-	if _, ok := o.(*BlacklistedPrincipal); !ok {
+	if _, ok := o.(BlacklistedPrincipal); !ok {
 		return false
 	}
 
-	other := o.(*BlacklistedPrincipal)
+	other := o.(BlacklistedPrincipal)
 
 	if bp.StructureVersion != other.StructureVersion {
 		return false

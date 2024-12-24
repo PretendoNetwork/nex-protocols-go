@@ -72,11 +72,11 @@ func (sic ServiceItemCatalog) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemCatalog contains the same data as the current ServiceItemCatalog
 func (sic ServiceItemCatalog) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemCatalog); !ok {
+	if _, ok := o.(ServiceItemCatalog); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemCatalog)
+	other := o.(ServiceItemCatalog)
 
 	if sic.StructureVersion != other.StructureVersion {
 		return false

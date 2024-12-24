@@ -104,11 +104,11 @@ func (sin ServiceItemNotice) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemNotice contains the same data as the current ServiceItemNotice
 func (sin ServiceItemNotice) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemNotice); !ok {
+	if _, ok := o.(ServiceItemNotice); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemNotice)
+	other := o.(ServiceItemNotice)
 
 	if sin.StructureVersion != other.StructureVersion {
 		return false

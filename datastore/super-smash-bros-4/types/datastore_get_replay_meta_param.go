@@ -64,11 +64,11 @@ func (dsgrmp DataStoreGetReplayMetaParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreGetReplayMetaParam contains the same data as the current DataStoreGetReplayMetaParam
 func (dsgrmp DataStoreGetReplayMetaParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetReplayMetaParam); !ok {
+	if _, ok := o.(DataStoreGetReplayMetaParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetReplayMetaParam)
+	other := o.(DataStoreGetReplayMetaParam)
 
 	if dsgrmp.StructureVersion != other.StructureVersion {
 		return false

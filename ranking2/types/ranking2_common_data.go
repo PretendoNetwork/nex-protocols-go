@@ -72,11 +72,11 @@ func (rcd Ranking2CommonData) Copy() types.RVType {
 
 // Equals checks if the given Ranking2CommonData contains the same data as the current Ranking2CommonData
 func (rcd Ranking2CommonData) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2CommonData); !ok {
+	if _, ok := o.(Ranking2CommonData); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2CommonData)
+	other := o.(Ranking2CommonData)
 
 	if rcd.StructureVersion != other.StructureVersion {
 		return false

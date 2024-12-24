@@ -64,11 +64,11 @@ func (fmsbpr FindMatchmakeSessionByParticipantResult) Copy() types.RVType {
 
 // Equals checks if the given FindMatchmakeSessionByParticipantResult contains the same data as the current FindMatchmakeSessionByParticipantResult
 func (fmsbpr FindMatchmakeSessionByParticipantResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*FindMatchmakeSessionByParticipantResult); !ok {
+	if _, ok := o.(FindMatchmakeSessionByParticipantResult); !ok {
 		return false
 	}
 
-	other := o.(*FindMatchmakeSessionByParticipantResult)
+	other := o.(FindMatchmakeSessionByParticipantResult)
 
 	if fmsbpr.StructureVersion != other.StructureVersion {
 		return false

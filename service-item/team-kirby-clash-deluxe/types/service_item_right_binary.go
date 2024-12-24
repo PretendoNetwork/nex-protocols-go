@@ -64,11 +64,11 @@ func (sirb ServiceItemRightBinary) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemRightBinary contains the same data as the current ServiceItemRightBinary
 func (sirb ServiceItemRightBinary) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemRightBinary); !ok {
+	if _, ok := o.(ServiceItemRightBinary); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemRightBinary)
+	other := o.(ServiceItemRightBinary)
 
 	if sirb.StructureVersion != other.StructureVersion {
 		return false

@@ -81,11 +81,11 @@ func (siarc ServiceItemAccountRightConsumption) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemAccountRightConsumption contains the same data as the current ServiceItemAccountRightConsumption
 func (siarc ServiceItemAccountRightConsumption) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAccountRightConsumption); !ok {
+	if _, ok := o.(ServiceItemAccountRightConsumption); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAccountRightConsumption)
+	other := o.(ServiceItemAccountRightConsumption)
 
 	if siarc.StructureVersion != other.StructureVersion {
 		return false

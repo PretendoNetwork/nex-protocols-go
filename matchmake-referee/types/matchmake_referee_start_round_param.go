@@ -81,11 +81,11 @@ func (mrsrp MatchmakeRefereeStartRoundParam) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeRefereeStartRoundParam contains the same data as the current MatchmakeRefereeStartRoundParam
 func (mrsrp MatchmakeRefereeStartRoundParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeStartRoundParam); !ok {
+	if _, ok := o.(MatchmakeRefereeStartRoundParam); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeStartRoundParam)
+	other := o.(MatchmakeRefereeStartRoundParam)
 
 	if mrsrp.StructureVersion != other.StructureVersion {
 		return false

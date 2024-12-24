@@ -56,11 +56,11 @@ func (gtsdopp GlobalTradeStationDownloadOtherPokemonParam) Copy() types.RVType {
 
 // Equals checks if the given GlobalTradeStationDownloadOtherPokemonParam contains the same data as the current GlobalTradeStationDownloadOtherPokemonParam
 func (gtsdopp GlobalTradeStationDownloadOtherPokemonParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationDownloadOtherPokemonParam); !ok {
+	if _, ok := o.(GlobalTradeStationDownloadOtherPokemonParam); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationDownloadOtherPokemonParam)
+	other := o.(GlobalTradeStationDownloadOtherPokemonParam)
 
 	if gtsdopp.StructureVersion != other.StructureVersion {
 		return false

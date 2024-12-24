@@ -72,11 +72,11 @@ func (nne NintendoNotificationEvent) Copy() types.RVType {
 
 // Equals checks if the given NintendoNotificationEvent contains the same data as the current NintendoNotificationEvent
 func (nne NintendoNotificationEvent) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoNotificationEvent); !ok {
+	if _, ok := o.(NintendoNotificationEvent); !ok {
 		return false
 	}
 
-	other := o.(*NintendoNotificationEvent)
+	other := o.(NintendoNotificationEvent)
 
 	if nne.StructureVersion != other.StructureVersion {
 		return false

@@ -64,11 +64,11 @@ func (dsriws DataStoreRatingInfoWithSlot) Copy() types.RVType {
 
 // Equals checks if the given DataStoreRatingInfoWithSlot contains the same data as the current DataStoreRatingInfoWithSlot
 func (dsriws DataStoreRatingInfoWithSlot) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRatingInfoWithSlot); !ok {
+	if _, ok := o.(DataStoreRatingInfoWithSlot); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRatingInfoWithSlot)
+	other := o.(DataStoreRatingInfoWithSlot)
 
 	if dsriws.StructureVersion != other.StructureVersion {
 		return false

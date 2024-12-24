@@ -64,11 +64,11 @@ func (dsdp DataStoreDeleteParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreDeleteParam contains the same data as the current DataStoreDeleteParam
 func (dsdp DataStoreDeleteParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreDeleteParam); !ok {
+	if _, ok := o.(DataStoreDeleteParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreDeleteParam)
+	other := o.(DataStoreDeleteParam)
 
 	if dsdp.StructureVersion != other.StructureVersion {
 		return false

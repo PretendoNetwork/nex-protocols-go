@@ -96,11 +96,11 @@ func (ne NotificationEvent) Copy() types.RVType {
 
 // Equals checks if the given NotificationEvent contains the same data as the current NotificationEvent
 func (ne NotificationEvent) Equals(o types.RVType) bool {
-	if _, ok := o.(*NotificationEvent); !ok {
+	if _, ok := o.(NotificationEvent); !ok {
 		return false
 	}
 
-	other := o.(*NotificationEvent)
+	other := o.(NotificationEvent)
 
 	if ne.StructureVersion != other.StructureVersion {
 		return false

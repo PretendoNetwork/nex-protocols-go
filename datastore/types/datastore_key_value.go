@@ -64,11 +64,11 @@ func (dskv DataStoreKeyValue) Copy() types.RVType {
 
 // Equals checks if the given DataStoreKeyValue contains the same data as the current DataStoreKeyValue
 func (dskv DataStoreKeyValue) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreKeyValue); !ok {
+	if _, ok := o.(DataStoreKeyValue); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreKeyValue)
+	other := o.(DataStoreKeyValue)
 
 	if dskv.StructureVersion != other.StructureVersion {
 		return false

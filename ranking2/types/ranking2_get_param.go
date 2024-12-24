@@ -120,11 +120,11 @@ func (rgp Ranking2GetParam) Copy() types.RVType {
 
 // Equals checks if the given Ranking2GetParam contains the same data as the current Ranking2GetParam
 func (rgp Ranking2GetParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2GetParam); !ok {
+	if _, ok := o.(Ranking2GetParam); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2GetParam)
+	other := o.(Ranking2GetParam)
 
 	if rgp.StructureVersion != other.StructureVersion {
 		return false

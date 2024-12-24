@@ -65,11 +65,11 @@ func (dsfsoi DataStoreFileServerObjectInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStoreFileServerObjectInfo contains the same data as the current DataStoreFileServerObjectInfo
 func (dsfsoi DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreFileServerObjectInfo); !ok {
+	if _, ok := o.(DataStoreFileServerObjectInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreFileServerObjectInfo)
+	other := o.(DataStoreFileServerObjectInfo)
 
 	if dsfsoi.StructureVersion != other.StructureVersion {
 		return false

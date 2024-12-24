@@ -72,11 +72,11 @@ func (resri Ranking2EstimateScoreRankInput) Copy() types.RVType {
 
 // Equals checks if the given Ranking2EstimateScoreRankInput contains the same data as the current Ranking2EstimateScoreRankInput
 func (resri Ranking2EstimateScoreRankInput) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2EstimateScoreRankInput); !ok {
+	if _, ok := o.(Ranking2EstimateScoreRankInput); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2EstimateScoreRankInput)
+	other := o.(Ranking2EstimateScoreRankInput)
 
 	if resri.StructureVersion != other.StructureVersion {
 		return false

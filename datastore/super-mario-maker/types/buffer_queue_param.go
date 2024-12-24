@@ -64,11 +64,11 @@ func (bqp BufferQueueParam) Copy() types.RVType {
 
 // Equals checks if the given BufferQueueParam contains the same data as the current BufferQueueParam
 func (bqp BufferQueueParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*BufferQueueParam); !ok {
+	if _, ok := o.(BufferQueueParam); !ok {
 		return false
 	}
 
-	other := o.(*BufferQueueParam)
+	other := o.(BufferQueueParam)
 
 	if bqp.StructureVersion != other.StructureVersion {
 		return false

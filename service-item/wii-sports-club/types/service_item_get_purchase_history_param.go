@@ -80,11 +80,11 @@ func (sigphp ServiceItemGetPurchaseHistoryParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetPurchaseHistoryParam contains the same data as the current ServiceItemGetPurchaseHistoryParam
 func (sigphp ServiceItemGetPurchaseHistoryParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetPurchaseHistoryParam); !ok {
+	if _, ok := o.(ServiceItemGetPurchaseHistoryParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetPurchaseHistoryParam)
+	other := o.(ServiceItemGetPurchaseHistoryParam)
 
 	if sigphp.StructureVersion != other.StructureVersion {
 		return false

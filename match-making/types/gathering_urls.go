@@ -64,11 +64,11 @@ func (gurl GatheringURLs) Copy() types.RVType {
 
 // Equals checks if the given GatheringURLs contains the same data as the current GatheringURLs
 func (gurl GatheringURLs) Equals(o types.RVType) bool {
-	if _, ok := o.(*GatheringURLs); !ok {
+	if _, ok := o.(GatheringURLs); !ok {
 		return false
 	}
 
-	other := o.(*GatheringURLs)
+	other := o.(GatheringURLs)
 
 	if gurl.StructureVersion != other.StructureVersion {
 		return false

@@ -64,11 +64,11 @@ func (dsfps DataStoreFightingPowerScore) Copy() types.RVType {
 
 // Equals checks if the given DataStoreFightingPowerScore contains the same data as the current DataStoreFightingPowerScore
 func (dsfps DataStoreFightingPowerScore) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreFightingPowerScore); !ok {
+	if _, ok := o.(DataStoreFightingPowerScore); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreFightingPowerScore)
+	other := o.(DataStoreFightingPowerScore)
 
 	if dsfps.StructureVersion != other.StructureVersion {
 		return false

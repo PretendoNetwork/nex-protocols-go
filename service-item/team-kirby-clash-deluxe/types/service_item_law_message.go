@@ -64,11 +64,11 @@ func (silm ServiceItemLawMessage) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemLawMessage contains the same data as the current ServiceItemLawMessage
 func (silm ServiceItemLawMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemLawMessage); !ok {
+	if _, ok := o.(ServiceItemLawMessage); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemLawMessage)
+	other := o.(ServiceItemLawMessage)
 
 	if silm.StructureVersion != other.StructureVersion {
 		return false

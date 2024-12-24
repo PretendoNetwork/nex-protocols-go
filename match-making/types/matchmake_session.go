@@ -242,11 +242,11 @@ func (ms MatchmakeSession) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeSession contains the same data as the current MatchmakeSession
 func (ms MatchmakeSession) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeSession); !ok {
+	if _, ok := o.(MatchmakeSession); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeSession)
+	other := o.(MatchmakeSession)
 
 	if ms.StructureVersion != other.StructureVersion {
 		return false

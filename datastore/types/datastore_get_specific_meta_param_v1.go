@@ -56,11 +56,11 @@ func (dsgsmpv DataStoreGetSpecificMetaParamV1) Copy() types.RVType {
 
 // Equals checks if the given DataStoreGetSpecificMetaParamV1 contains the same data as the current DataStoreGetSpecificMetaParamV1
 func (dsgsmpv DataStoreGetSpecificMetaParamV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetSpecificMetaParamV1); !ok {
+	if _, ok := o.(DataStoreGetSpecificMetaParamV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetSpecificMetaParamV1)
+	other := o.(DataStoreGetSpecificMetaParamV1)
 
 	if dsgsmpv.StructureVersion != other.StructureVersion {
 		return false

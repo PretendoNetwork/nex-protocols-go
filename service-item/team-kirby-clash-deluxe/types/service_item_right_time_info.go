@@ -65,11 +65,11 @@ func (sirti ServiceItemRightTimeInfo) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemRightTimeInfo contains the same data as the current ServiceItemRightTimeInfo
 func (sirti ServiceItemRightTimeInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemRightTimeInfo); !ok {
+	if _, ok := o.(ServiceItemRightTimeInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemRightTimeInfo)
+	other := o.(ServiceItemRightTimeInfo)
 
 	if sirti.StructureVersion != other.StructureVersion {
 		return false

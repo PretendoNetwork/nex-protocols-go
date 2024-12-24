@@ -64,11 +64,11 @@ func (sirtrp ServiceItemRequestTicketRestorationParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemRequestTicketRestorationParam contains the same data as the current ServiceItemRequestTicketRestorationParam
 func (sirtrp ServiceItemRequestTicketRestorationParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemRequestTicketRestorationParam); !ok {
+	if _, ok := o.(ServiceItemRequestTicketRestorationParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemRequestTicketRestorationParam)
+	other := o.(ServiceItemRequestTicketRestorationParam)
 
 	if sirtrp.StructureVersion != other.StructureVersion {
 		return false

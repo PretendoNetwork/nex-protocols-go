@@ -72,11 +72,11 @@ func (sigpip ServiceItemGetPrepurchaseInfoParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetPrepurchaseInfoParam contains the same data as the current ServiceItemGetPrepurchaseInfoParam
 func (sigpip ServiceItemGetPrepurchaseInfoParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetPrepurchaseInfoParam); !ok {
+	if _, ok := o.(ServiceItemGetPrepurchaseInfoParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetPrepurchaseInfoParam)
+	other := o.(ServiceItemGetPrepurchaseInfoParam)
 
 	if sigpip.StructureVersion != other.StructureVersion {
 		return false

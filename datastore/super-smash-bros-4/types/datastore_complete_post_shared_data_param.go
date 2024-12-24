@@ -73,11 +73,11 @@ func (dscpsdp DataStoreCompletePostSharedDataParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreCompletePostSharedDataParam contains the same data as the current DataStoreCompletePostSharedDataParam
 func (dscpsdp DataStoreCompletePostSharedDataParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreCompletePostSharedDataParam); !ok {
+	if _, ok := o.(DataStoreCompletePostSharedDataParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreCompletePostSharedDataParam)
+	other := o.(DataStoreCompletePostSharedDataParam)
 
 	if dscpsdp.StructureVersion != other.StructureVersion {
 		return false

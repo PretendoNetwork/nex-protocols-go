@@ -120,11 +120,11 @@ func (sit ServiceItemTransaction) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemTransaction contains the same data as the current ServiceItemTransaction
 func (sit ServiceItemTransaction) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemTransaction); !ok {
+	if _, ok := o.(ServiceItemTransaction); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemTransaction)
+	other := o.(ServiceItemTransaction)
 
 	if sit.StructureVersion != other.StructureVersion {
 		return false

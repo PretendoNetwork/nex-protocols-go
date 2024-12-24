@@ -56,11 +56,11 @@ func (dsgnurlp DataStoreGetNotificationURLParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreGetNotificationURLParam contains the same data as the current DataStoreGetNotificationURLParam
 func (dsgnurlp DataStoreGetNotificationURLParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetNotificationURLParam); !ok {
+	if _, ok := o.(DataStoreGetNotificationURLParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetNotificationURLParam)
+	other := o.(DataStoreGetNotificationURLParam)
 
 	if dsgnurlp.StructureVersion != other.StructureVersion {
 		return false

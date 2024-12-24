@@ -72,11 +72,11 @@ func (mr MessageRecipient) Copy() types.RVType {
 
 // Equals checks if the given MessageRecipient contains the same data as the current MessageRecipient
 func (mr MessageRecipient) Equals(o types.RVType) bool {
-	if _, ok := o.(*MessageRecipient); !ok {
+	if _, ok := o.(MessageRecipient); !ok {
 		return false
 	}
 
-	other := o.(*MessageRecipient)
+	other := o.(MessageRecipient)
 
 	if mr.StructureVersion != other.StructureVersion {
 		return false

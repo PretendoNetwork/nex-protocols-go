@@ -77,11 +77,11 @@ func (sigbp ServiceItemGetBalanceParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetBalanceParam contains the same data as the current ServiceItemGetBalanceParam
 func (sigbp ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetBalanceParam); !ok {
+	if _, ok := o.(ServiceItemGetBalanceParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetBalanceParam)
+	other := o.(ServiceItemGetBalanceParam)
 
 	if sigbp.StructureVersion != other.StructureVersion {
 		return false

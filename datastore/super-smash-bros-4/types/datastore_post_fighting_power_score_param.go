@@ -72,11 +72,11 @@ func (dspfpsp DataStorePostFightingPowerScoreParam) Copy() types.RVType {
 
 // Equals checks if the given DataStorePostFightingPowerScoreParam contains the same data as the current DataStorePostFightingPowerScoreParam
 func (dspfpsp DataStorePostFightingPowerScoreParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePostFightingPowerScoreParam); !ok {
+	if _, ok := o.(DataStorePostFightingPowerScoreParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePostFightingPowerScoreParam)
+	other := o.(DataStorePostFightingPowerScoreParam)
 
 	if dspfpsp.StructureVersion != other.StructureVersion {
 		return false

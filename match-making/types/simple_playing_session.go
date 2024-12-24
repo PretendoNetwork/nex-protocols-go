@@ -80,11 +80,11 @@ func (sps SimplePlayingSession) Copy() types.RVType {
 
 // Equals checks if the given SimplePlayingSession contains the same data as the current SimplePlayingSession
 func (sps SimplePlayingSession) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimplePlayingSession); !ok {
+	if _, ok := o.(SimplePlayingSession); !ok {
 		return false
 	}
 
-	other := o.(*SimplePlayingSession)
+	other := o.(SimplePlayingSession)
 
 	if sps.StructureVersion != other.StructureVersion {
 		return false

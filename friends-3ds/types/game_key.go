@@ -73,11 +73,11 @@ func (gk GameKey) Copy() types.RVType {
 
 // Equals checks if the given GameKey contains the same data as the current GameKey
 func (gk GameKey) Equals(o types.RVType) bool {
-	if _, ok := o.(*GameKey); !ok {
+	if _, ok := o.(GameKey); !ok {
 		return false
 	}
 
-	other := o.(*GameKey)
+	other := o.(GameKey)
 
 	if gk.StructureVersion != other.StructureVersion {
 		return false

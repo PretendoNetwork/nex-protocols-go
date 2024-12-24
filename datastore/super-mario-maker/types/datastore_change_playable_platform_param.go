@@ -64,11 +64,11 @@ func (dscppp DataStoreChangePlayablePlatformParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreChangePlayablePlatformParam contains the same data as the current DataStoreChangePlayablePlatformParam
 func (dscppp DataStoreChangePlayablePlatformParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreChangePlayablePlatformParam); !ok {
+	if _, ok := o.(DataStoreChangePlayablePlatformParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreChangePlayablePlatformParam)
+	other := o.(DataStoreChangePlayablePlatformParam)
 
 	if dscppp.StructureVersion != other.StructureVersion {
 		return false

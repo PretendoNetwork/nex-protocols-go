@@ -64,11 +64,11 @@ func (siui ServiceItemUsedInfo) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemUsedInfo contains the same data as the current ServiceItemUsedInfo
 func (siui ServiceItemUsedInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemUsedInfo); !ok {
+	if _, ok := o.(ServiceItemUsedInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemUsedInfo)
+	other := o.(ServiceItemUsedInfo)
 
 	if siui.StructureVersion != other.StructureVersion {
 		return false

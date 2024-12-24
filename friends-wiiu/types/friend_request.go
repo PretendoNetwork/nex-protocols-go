@@ -81,11 +81,11 @@ func (fr FriendRequest) Copy() types.RVType {
 
 // Equals checks if the given FriendRequest contains the same data as the current FriendRequest
 func (fr FriendRequest) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendRequest); !ok {
+	if _, ok := o.(FriendRequest); !ok {
 		return false
 	}
 
-	other := o.(*FriendRequest)
+	other := o.(FriendRequest)
 
 	if fr.StructureVersion != other.StructureVersion {
 		return false

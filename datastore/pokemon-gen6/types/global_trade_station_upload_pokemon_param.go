@@ -88,11 +88,11 @@ func (gtsupp GlobalTradeStationUploadPokemonParam) Copy() types.RVType {
 
 // Equals checks if the given GlobalTradeStationUploadPokemonParam contains the same data as the current GlobalTradeStationUploadPokemonParam
 func (gtsupp GlobalTradeStationUploadPokemonParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationUploadPokemonParam); !ok {
+	if _, ok := o.(GlobalTradeStationUploadPokemonParam); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationUploadPokemonParam)
+	other := o.(GlobalTradeStationUploadPokemonParam)
 
 	if gtsupp.StructureVersion != other.StructureVersion {
 		return false

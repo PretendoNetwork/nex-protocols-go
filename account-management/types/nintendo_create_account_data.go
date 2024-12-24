@@ -81,11 +81,11 @@ func (ncad NintendoCreateAccountData) Copy() types.RVType {
 
 // Equals checks if the given NintendoCreateAccountData contains the same data as the current NintendoCreateAccountData
 func (ncad NintendoCreateAccountData) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoCreateAccountData); !ok {
+	if _, ok := o.(NintendoCreateAccountData); !ok {
 		return false
 	}
 
-	other := o.(*NintendoCreateAccountData)
+	other := o.(NintendoCreateAccountData)
 
 	if ncad.StructureVersion != other.StructureVersion {
 		return false

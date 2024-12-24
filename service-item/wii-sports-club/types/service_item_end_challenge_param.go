@@ -64,11 +64,11 @@ func (siecp ServiceItemEndChallengeParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemEndChallengeParam contains the same data as the current ServiceItemEndChallengeParam
 func (siecp ServiceItemEndChallengeParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemEndChallengeParam); !ok {
+	if _, ok := o.(ServiceItemEndChallengeParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemEndChallengeParam)
+	other := o.(ServiceItemEndChallengeParam)
 
 	if siecp.StructureVersion != other.StructureVersion {
 		return false

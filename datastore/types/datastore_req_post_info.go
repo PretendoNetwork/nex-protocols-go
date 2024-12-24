@@ -88,11 +88,11 @@ func (dsrpi DataStoreReqPostInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReqPostInfo contains the same data as the current DataStoreReqPostInfo
 func (dsrpi DataStoreReqPostInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqPostInfo); !ok {
+	if _, ok := o.(DataStoreReqPostInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqPostInfo)
+	other := o.(DataStoreReqPostInfo)
 
 	if dsrpi.StructureVersion != other.StructureVersion {
 		return false

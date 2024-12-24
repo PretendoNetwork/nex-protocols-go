@@ -56,11 +56,11 @@ func (mblp MatchmakeBlockListParam) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeBlockListParam contains the same data as the current MatchmakeBlockListParam
 func (mblp MatchmakeBlockListParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeBlockListParam); !ok {
+	if _, ok := o.(MatchmakeBlockListParam); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeBlockListParam)
+	other := o.(MatchmakeBlockListParam)
 
 	if mblp.StructureVersion != other.StructureVersion {
 		return false

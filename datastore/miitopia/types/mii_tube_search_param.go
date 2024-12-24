@@ -103,11 +103,11 @@ func (mtsp MiiTubeSearchParam) Copy() types.RVType {
 
 // Equals checks if the given MiiTubeSearchParam contains the same data as the current MiiTubeSearchParam
 func (mtsp MiiTubeSearchParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MiiTubeSearchParam); !ok {
+	if _, ok := o.(MiiTubeSearchParam); !ok {
 		return false
 	}
 
-	other := o.(*MiiTubeSearchParam)
+	other := o.(MiiTubeSearchParam)
 
 	if !mtsp.Name.Equals(other.Name) {
 		return false

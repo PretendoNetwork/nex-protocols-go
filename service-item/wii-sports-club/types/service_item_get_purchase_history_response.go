@@ -65,11 +65,11 @@ func (sigphr ServiceItemGetPurchaseHistoryResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetPurchaseHistoryResponse contains the same data as the current ServiceItemGetPurchaseHistoryResponse
 func (sigphr ServiceItemGetPurchaseHistoryResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetPurchaseHistoryResponse); !ok {
+	if _, ok := o.(ServiceItemGetPurchaseHistoryResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetPurchaseHistoryResponse)
+	other := o.(ServiceItemGetPurchaseHistoryResponse)
 
 	if sigphr.StructureVersion != other.StructureVersion {
 		return false

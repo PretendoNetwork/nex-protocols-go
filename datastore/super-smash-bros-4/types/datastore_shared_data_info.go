@@ -120,11 +120,11 @@ func (dssdi DataStoreSharedDataInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStoreSharedDataInfo contains the same data as the current DataStoreSharedDataInfo
 func (dssdi DataStoreSharedDataInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSharedDataInfo); !ok {
+	if _, ok := o.(DataStoreSharedDataInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSharedDataInfo)
+	other := o.(DataStoreSharedDataInfo)
 
 	if dssdi.StructureVersion != other.StructureVersion {
 		return false

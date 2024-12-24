@@ -96,11 +96,11 @@ func (sc SubscriberContent) Copy() types.RVType {
 
 // Equals checks if the given SubscriberContent contains the same data as the current SubscriberContent
 func (sc SubscriberContent) Equals(o types.RVType) bool {
-	if _, ok := o.(*SubscriberContent); !ok {
+	if _, ok := o.(SubscriberContent); !ok {
 		return false
 	}
 
-	other := o.(*SubscriberContent)
+	other := o.(SubscriberContent)
 
 	if sc.StructureVersion != other.StructureVersion {
 		return false

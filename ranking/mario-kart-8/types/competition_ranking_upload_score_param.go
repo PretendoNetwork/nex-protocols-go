@@ -112,11 +112,11 @@ func (crusp CompetitionRankingUploadScoreParam) Copy() types.RVType {
 
 // Equals checks if the given CompetitionRankingUploadScoreParam contains the same data as the current CompetitionRankingUploadScoreParam
 func (crusp CompetitionRankingUploadScoreParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*CompetitionRankingUploadScoreParam); !ok {
+	if _, ok := o.(CompetitionRankingUploadScoreParam); !ok {
 		return false
 	}
 
-	other := o.(*CompetitionRankingUploadScoreParam)
+	other := o.(CompetitionRankingUploadScoreParam)
 
 	if crusp.StructureVersion != other.StructureVersion {
 		return false

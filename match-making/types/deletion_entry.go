@@ -72,11 +72,11 @@ func (de DeletionEntry) Copy() types.RVType {
 
 // Equals checks if the given DeletionEntry contains the same data as the current DeletionEntry
 func (de DeletionEntry) Equals(o types.RVType) bool {
-	if _, ok := o.(*DeletionEntry); !ok {
+	if _, ok := o.(DeletionEntry); !ok {
 		return false
 	}
 
-	other := o.(*DeletionEntry)
+	other := o.(DeletionEntry)
 
 	if de.StructureVersion != other.StructureVersion {
 		return false

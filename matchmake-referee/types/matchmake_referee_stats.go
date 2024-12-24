@@ -185,11 +185,11 @@ func (mrs MatchmakeRefereeStats) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeRefereeStats contains the same data as the current MatchmakeRefereeStats
 func (mrs MatchmakeRefereeStats) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeStats); !ok {
+	if _, ok := o.(MatchmakeRefereeStats); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeStats)
+	other := o.(MatchmakeRefereeStats)
 
 	if mrs.StructureVersion != other.StructureVersion {
 		return false

@@ -112,11 +112,11 @@ func (amp AutoMatchmakeParam) Copy() types.RVType {
 
 // Equals checks if the given AutoMatchmakeParam contains the same data as the current AutoMatchmakeParam
 func (amp AutoMatchmakeParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*AutoMatchmakeParam); !ok {
+	if _, ok := o.(AutoMatchmakeParam); !ok {
 		return false
 	}
 
-	other := o.(*AutoMatchmakeParam)
+	other := o.(AutoMatchmakeParam)
 
 	if amp.StructureVersion != other.StructureVersion {
 		return false

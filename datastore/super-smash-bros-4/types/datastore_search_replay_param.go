@@ -80,11 +80,11 @@ func (dssrp DataStoreSearchReplayParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreSearchReplayParam contains the same data as the current DataStoreSearchReplayParam
 func (dssrp DataStoreSearchReplayParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSearchReplayParam); !ok {
+	if _, ok := o.(DataStoreSearchReplayParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSearchReplayParam)
+	other := o.(DataStoreSearchReplayParam)
 
 	if dssrp.StructureVersion != other.StructureVersion {
 		return false

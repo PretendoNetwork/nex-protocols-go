@@ -129,11 +129,11 @@ func (um UserMessage) Copy() types.RVType {
 
 // Equals checks if the given UserMessage contains the same data as the current UserMessage
 func (um UserMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*UserMessage); !ok {
+	if _, ok := o.(UserMessage); !ok {
 		return false
 	}
 
-	other := o.(*UserMessage)
+	other := o.(UserMessage)
 
 	if um.StructureVersion != other.StructureVersion {
 		return false

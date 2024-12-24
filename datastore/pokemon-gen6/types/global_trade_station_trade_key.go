@@ -64,11 +64,11 @@ func (gtstk GlobalTradeStationTradeKey) Copy() types.RVType {
 
 // Equals checks if the given GlobalTradeStationTradeKey contains the same data as the current GlobalTradeStationTradeKey
 func (gtstk GlobalTradeStationTradeKey) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationTradeKey); !ok {
+	if _, ok := o.(GlobalTradeStationTradeKey); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationTradeKey)
+	other := o.(GlobalTradeStationTradeKey)
 
 	if gtstk.StructureVersion != other.StructureVersion {
 		return false

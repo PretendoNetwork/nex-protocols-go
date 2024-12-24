@@ -120,11 +120,11 @@ func (rcs Ranking2CategorySetting) Copy() types.RVType {
 
 // Equals checks if the given Ranking2CategorySetting contains the same data as the current Ranking2CategorySetting
 func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2CategorySetting); !ok {
+	if _, ok := o.(Ranking2CategorySetting); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2CategorySetting)
+	other := o.(Ranking2CategorySetting)
 
 	if rcs.StructureVersion != other.StructureVersion {
 		return false

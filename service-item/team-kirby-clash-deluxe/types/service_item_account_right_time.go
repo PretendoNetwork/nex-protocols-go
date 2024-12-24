@@ -56,11 +56,11 @@ func (siart ServiceItemAccountRightTime) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemAccountRightTime contains the same data as the current ServiceItemAccountRightTime
 func (siart ServiceItemAccountRightTime) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAccountRightTime); !ok {
+	if _, ok := o.(ServiceItemAccountRightTime); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAccountRightTime)
+	other := o.(ServiceItemAccountRightTime)
 
 	if siart.StructureVersion != other.StructureVersion {
 		return false

@@ -56,11 +56,11 @@ func (nld NintendoLoginData) Copy() types.RVType {
 
 // Equals checks if the given NintendoLoginData contains the same data as the current NintendoLoginData
 func (nld NintendoLoginData) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoLoginData); !ok {
+	if _, ok := o.(NintendoLoginData); !ok {
 		return false
 	}
 
-	other := o.(*NintendoLoginData)
+	other := o.(NintendoLoginData)
 
 	if nld.StructureVersion != other.StructureVersion {
 		return false

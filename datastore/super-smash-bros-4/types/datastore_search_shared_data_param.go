@@ -104,11 +104,11 @@ func (dsssdp DataStoreSearchSharedDataParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreSearchSharedDataParam contains the same data as the current DataStoreSearchSharedDataParam
 func (dsssdp DataStoreSearchSharedDataParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSearchSharedDataParam); !ok {
+	if _, ok := o.(DataStoreSearchSharedDataParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSearchSharedDataParam)
+	other := o.(DataStoreSearchSharedDataParam)
 
 	if dsssdp.StructureVersion != other.StructureVersion {
 		return false

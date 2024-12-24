@@ -88,11 +88,11 @@ func (gtsd GlobalTradeStationData) Copy() types.RVType {
 
 // Equals checks if the given GlobalTradeStationData contains the same data as the current GlobalTradeStationData
 func (gtsd GlobalTradeStationData) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationData); !ok {
+	if _, ok := o.(GlobalTradeStationData); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationData)
+	other := o.(GlobalTradeStationData)
 
 	if gtsd.StructureVersion != other.StructureVersion {
 		return false

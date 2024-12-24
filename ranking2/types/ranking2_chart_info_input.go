@@ -64,11 +64,11 @@ func (rcii Ranking2ChartInfoInput) Copy() types.RVType {
 
 // Equals checks if the given Ranking2ChartInfoInput contains the same data as the current Ranking2ChartInfoInput
 func (rcii Ranking2ChartInfoInput) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2ChartInfoInput); !ok {
+	if _, ok := o.(Ranking2ChartInfoInput); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2ChartInfoInput)
+	other := o.(Ranking2ChartInfoInput)
 
 	if rcii.StructureVersion != other.StructureVersion {
 		return false

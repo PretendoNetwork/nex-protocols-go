@@ -72,11 +72,11 @@ func (mtmi MiiTubeMiiInfo) Copy() types.RVType {
 
 // Equals checks if the given MiiTubeMiiInfo contains the same data as the current MiiTubeMiiInfo
 func (mtmi MiiTubeMiiInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*MiiTubeMiiInfo); !ok {
+	if _, ok := o.(MiiTubeMiiInfo); !ok {
 		return false
 	}
 
-	other := o.(*MiiTubeMiiInfo)
+	other := o.(MiiTubeMiiInfo)
 
 	if !mtmi.MetaInfo.Equals(other.MetaInfo) {
 		return false

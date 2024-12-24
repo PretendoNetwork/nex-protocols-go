@@ -65,11 +65,11 @@ func (sipsir ServiceItemPurchaseServiceItemResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemPurchaseServiceItemResponse contains the same data as the current ServiceItemPurchaseServiceItemResponse
 func (sipsir ServiceItemPurchaseServiceItemResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPurchaseServiceItemResponse); !ok {
+	if _, ok := o.(ServiceItemPurchaseServiceItemResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPurchaseServiceItemResponse)
+	other := o.(ServiceItemPurchaseServiceItemResponse)
 
 	if sipsir.StructureVersion != other.StructureVersion {
 		return false

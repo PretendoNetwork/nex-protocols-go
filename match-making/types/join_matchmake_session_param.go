@@ -153,11 +153,11 @@ func (jmsp JoinMatchmakeSessionParam) Copy() types.RVType {
 
 // Equals checks if the given JoinMatchmakeSessionParam contains the same data as the current JoinMatchmakeSessionParam
 func (jmsp JoinMatchmakeSessionParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*JoinMatchmakeSessionParam); !ok {
+	if _, ok := o.(JoinMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	other := o.(*JoinMatchmakeSessionParam)
+	other := o.(JoinMatchmakeSessionParam)
 
 	if jmsp.StructureVersion != other.StructureVersion {
 		return false

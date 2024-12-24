@@ -97,11 +97,11 @@ func (mrprr MatchmakeRefereePersonalRoundResult) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeRefereePersonalRoundResult contains the same data as the current MatchmakeRefereePersonalRoundResult
 func (mrprr MatchmakeRefereePersonalRoundResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereePersonalRoundResult); !ok {
+	if _, ok := o.(MatchmakeRefereePersonalRoundResult); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereePersonalRoundResult)
+	other := o.(MatchmakeRefereePersonalRoundResult)
 
 	if mrprr.StructureVersion != other.StructureVersion {
 		return false

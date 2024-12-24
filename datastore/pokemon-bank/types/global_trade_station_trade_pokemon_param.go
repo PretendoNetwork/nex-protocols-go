@@ -112,11 +112,11 @@ func (gtstpp GlobalTradeStationTradePokemonParam) Copy() types.RVType {
 
 // Equals checks if the given GlobalTradeStationTradePokemonParam contains the same data as the current GlobalTradeStationTradePokemonParam
 func (gtstpp GlobalTradeStationTradePokemonParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationTradePokemonParam); !ok {
+	if _, ok := o.(GlobalTradeStationTradePokemonParam); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationTradePokemonParam)
+	other := o.(GlobalTradeStationTradePokemonParam)
 
 	if gtstpp.StructureVersion != other.StructureVersion {
 		return false

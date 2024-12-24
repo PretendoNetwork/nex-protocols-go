@@ -64,11 +64,11 @@ func (sc SimpleCommunity) Copy() types.RVType {
 
 // Equals checks if the given SimpleCommunity contains the same data as the current SimpleCommunity
 func (sc SimpleCommunity) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimpleCommunity); !ok {
+	if _, ok := o.(SimpleCommunity); !ok {
 		return false
 	}
 
-	other := o.(*SimpleCommunity)
+	other := o.(SimpleCommunity)
 
 	if sc.StructureVersion != other.StructureVersion {
 		return false

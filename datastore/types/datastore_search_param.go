@@ -222,11 +222,11 @@ func (dssp DataStoreSearchParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreSearchParam contains the same data as the current DataStoreSearchParam
 func (dssp DataStoreSearchParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSearchParam); !ok {
+	if _, ok := o.(DataStoreSearchParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSearchParam)
+	other := o.(DataStoreSearchParam)
 
 	if dssp.StructureVersion != other.StructureVersion {
 		return false

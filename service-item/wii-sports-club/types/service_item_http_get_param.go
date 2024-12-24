@@ -56,11 +56,11 @@ func (sihttpgp ServiceItemHTTPGetParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemHTTPGetParam contains the same data as the current ServiceItemHTTPGetParam
 func (sihttpgp ServiceItemHTTPGetParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemHTTPGetParam); !ok {
+	if _, ok := o.(ServiceItemHTTPGetParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemHTTPGetParam)
+	other := o.(ServiceItemHTTPGetParam)
 
 	if sihttpgp.StructureVersion != other.StructureVersion {
 		return false

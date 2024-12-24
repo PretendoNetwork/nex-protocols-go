@@ -80,11 +80,11 @@ func (mtsr MiiTubeSearchResult) Copy() types.RVType {
 
 // Equals checks if the given MiiTubeSearchResult contains the same data as the current MiiTubeSearchResult
 func (mtsr MiiTubeSearchResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*MiiTubeSearchResult); !ok {
+	if _, ok := o.(MiiTubeSearchResult); !ok {
 		return false
 	}
 
-	other := o.(*MiiTubeSearchResult)
+	other := o.(MiiTubeSearchResult)
 
 	if !mtsr.Result.Equals(other.Result) {
 		return false

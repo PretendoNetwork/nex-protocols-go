@@ -80,11 +80,11 @@ func (aei AccountExtraInfo) Copy() types.RVType {
 
 // Equals checks if the given AccountExtraInfo contains the same data as the current AccountExtraInfo
 func (aei AccountExtraInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*AccountExtraInfo); !ok {
+	if _, ok := o.(AccountExtraInfo); !ok {
 		return false
 	}
 
-	other := o.(*AccountExtraInfo)
+	other := o.(AccountExtraInfo)
 
 	if aei.StructureVersion != other.StructureVersion {
 		return false

@@ -120,11 +120,11 @@ func (ad AccountData) Copy() types.RVType {
 
 // Equals checks if the given AccountData contains the same data as the current AccountData
 func (ad AccountData) Equals(o types.RVType) bool {
-	if _, ok := o.(*AccountData); !ok {
+	if _, ok := o.(AccountData); !ok {
 		return false
 	}
 
-	other := o.(*AccountData)
+	other := o.(AccountData)
 
 	if ad.StructureVersion != other.StructureVersion {
 		return false

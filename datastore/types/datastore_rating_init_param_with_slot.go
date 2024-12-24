@@ -64,11 +64,11 @@ func (dsripws DataStoreRatingInitParamWithSlot) Copy() types.RVType {
 
 // Equals checks if the given DataStoreRatingInitParamWithSlot contains the same data as the current DataStoreRatingInitParamWithSlot
 func (dsripws DataStoreRatingInitParamWithSlot) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRatingInitParamWithSlot); !ok {
+	if _, ok := o.(DataStoreRatingInitParamWithSlot); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRatingInitParamWithSlot)
+	other := o.(DataStoreRatingInitParamWithSlot)
 
 	if dsripws.StructureVersion != other.StructureVersion {
 		return false

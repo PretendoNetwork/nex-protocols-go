@@ -64,11 +64,11 @@ func (dsgnanp DataStoreGetNewArrivedNotificationsParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreGetNewArrivedNotificationsParam contains the same data as the current DataStoreGetNewArrivedNotificationsParam
 func (dsgnanp DataStoreGetNewArrivedNotificationsParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetNewArrivedNotificationsParam); !ok {
+	if _, ok := o.(DataStoreGetNewArrivedNotificationsParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetNewArrivedNotificationsParam)
+	other := o.(DataStoreGetNewArrivedNotificationsParam)
 
 	if dsgnanp.StructureVersion != other.StructureVersion {
 		return false

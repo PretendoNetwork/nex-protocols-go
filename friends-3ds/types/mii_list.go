@@ -89,11 +89,11 @@ func (ml MiiList) Copy() types.RVType {
 
 // Equals checks if the given MiiList contains the same data as the current MiiList
 func (ml MiiList) Equals(o types.RVType) bool {
-	if _, ok := o.(*MiiList); !ok {
+	if _, ok := o.(MiiList); !ok {
 		return false
 	}
 
-	other := o.(*MiiList)
+	other := o.(MiiList)
 
 	if ml.StructureVersion != other.StructureVersion {
 		return false

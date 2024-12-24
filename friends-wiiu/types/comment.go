@@ -81,11 +81,11 @@ func (c Comment) Copy() types.RVType {
 
 // Equals checks if the given Comment contains the same data as the current Comment
 func (c Comment) Equals(o types.RVType) bool {
-	if _, ok := o.(*Comment); !ok {
+	if _, ok := o.(Comment); !ok {
 		return false
 	}
 
-	other := o.(*Comment)
+	other := o.(Comment)
 
 	if c.StructureVersion != other.StructureVersion {
 		return false

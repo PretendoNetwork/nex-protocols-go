@@ -56,11 +56,11 @@ func (u Unknown) Copy() types.RVType {
 
 // Equals checks if the given Unknown contains the same data as the current Unknown
 func (u Unknown) Equals(o types.RVType) bool {
-	if _, ok := o.(*Unknown); !ok {
+	if _, ok := o.(Unknown); !ok {
 		return false
 	}
 
-	other := o.(*Unknown)
+	other := o.(Unknown)
 
 	if u.StructureVersion != other.StructureVersion {
 		return false

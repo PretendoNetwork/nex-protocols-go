@@ -72,11 +72,11 @@ func (dspi DataStorePasswordInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStorePasswordInfo contains the same data as the current DataStorePasswordInfo
 func (dspi DataStorePasswordInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePasswordInfo); !ok {
+	if _, ok := o.(DataStorePasswordInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePasswordInfo)
+	other := o.(DataStorePasswordInfo)
 
 	if dspi.StructureVersion != other.StructureVersion {
 		return false

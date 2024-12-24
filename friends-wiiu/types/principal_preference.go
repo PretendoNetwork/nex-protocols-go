@@ -81,11 +81,11 @@ func (pp PrincipalPreference) Copy() types.RVType {
 
 // Equals checks if the given PrincipalPreference contains the same data as the current PrincipalPreference
 func (pp PrincipalPreference) Equals(o types.RVType) bool {
-	if _, ok := o.(*PrincipalPreference); !ok {
+	if _, ok := o.(PrincipalPreference); !ok {
 		return false
 	}
 
-	other := o.(*PrincipalPreference)
+	other := o.(PrincipalPreference)
 
 	if pp.StructureVersion != other.StructureVersion {
 		return false

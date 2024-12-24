@@ -80,11 +80,11 @@ func (pd ParticipantDetails) Copy() types.RVType {
 
 // Equals checks if the given ParticipantDetails contains the same data as the current ParticipantDetails
 func (pd ParticipantDetails) Equals(o types.RVType) bool {
-	if _, ok := o.(*ParticipantDetails); !ok {
+	if _, ok := o.(ParticipantDetails); !ok {
 		return false
 	}
 
-	other := o.(*ParticipantDetails)
+	other := o.(ParticipantDetails)
 
 	if pd.StructureVersion != other.StructureVersion {
 		return false

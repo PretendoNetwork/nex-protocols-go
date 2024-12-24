@@ -64,11 +64,11 @@ func (crigp CompetitionRankingInfoGetParam) Copy() types.RVType {
 
 // Equals checks if the given CompetitionRankingInfoGetParam contains the same data as the current CompetitionRankingInfoGetParam
 func (crigp CompetitionRankingInfoGetParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*CompetitionRankingInfoGetParam); !ok {
+	if _, ok := o.(CompetitionRankingInfoGetParam); !ok {
 		return false
 	}
 
-	other := o.(*CompetitionRankingInfoGetParam)
+	other := o.(CompetitionRankingInfoGetParam)
 
 	if crigp.StructureVersion != other.StructureVersion {
 		return false

@@ -112,11 +112,11 @@ func (siusibap ServiceItemUseServiceItemByAccountParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemUseServiceItemByAccountParam contains the same data as the current ServiceItemUseServiceItemByAccountParam
 func (siusibap ServiceItemUseServiceItemByAccountParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemUseServiceItemByAccountParam); !ok {
+	if _, ok := o.(ServiceItemUseServiceItemByAccountParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemUseServiceItemByAccountParam)
+	other := o.(ServiceItemUseServiceItemByAccountParam)
 
 	if siusibap.StructureVersion != other.StructureVersion {
 		return false

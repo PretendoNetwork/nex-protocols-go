@@ -72,11 +72,11 @@ func (dsgcrbdidp DataStoreGetCustomRankingByDataIDParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreGetCustomRankingByDataIDParam contains the same data as the current DataStoreGetCustomRankingByDataIDParam
 func (dsgcrbdidp DataStoreGetCustomRankingByDataIDParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetCustomRankingByDataIDParam); !ok {
+	if _, ok := o.(DataStoreGetCustomRankingByDataIDParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetCustomRankingByDataIDParam)
+	other := o.(DataStoreGetCustomRankingByDataIDParam)
 
 	if dsgcrbdidp.StructureVersion != other.StructureVersion {
 		return false

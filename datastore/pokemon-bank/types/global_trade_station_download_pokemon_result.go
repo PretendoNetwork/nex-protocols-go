@@ -72,11 +72,11 @@ func (gtsdpr GlobalTradeStationDownloadPokemonResult) Copy() types.RVType {
 
 // Equals checks if the given GlobalTradeStationDownloadPokemonResult contains the same data as the current GlobalTradeStationDownloadPokemonResult
 func (gtsdpr GlobalTradeStationDownloadPokemonResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationDownloadPokemonResult); !ok {
+	if _, ok := o.(GlobalTradeStationDownloadPokemonResult); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationDownloadPokemonResult)
+	other := o.(GlobalTradeStationDownloadPokemonResult)
 
 	if gtsdpr.StructureVersion != other.StructureVersion {
 		return false

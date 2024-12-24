@@ -64,11 +64,11 @@ func (bmi BankMigrationInfo) Copy() types.RVType {
 
 // Equals checks if the given BankMigrationInfo contains the same data as the current BankMigrationInfo
 func (bmi BankMigrationInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*BankMigrationInfo); !ok {
+	if _, ok := o.(BankMigrationInfo); !ok {
 		return false
 	}
 
-	other := o.(*BankMigrationInfo)
+	other := o.(BankMigrationInfo)
 
 	if bmi.StructureVersion != other.StructureVersion {
 		return false

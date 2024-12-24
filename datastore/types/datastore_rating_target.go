@@ -64,11 +64,11 @@ func (dsrt DataStoreRatingTarget) Copy() types.RVType {
 
 // Equals checks if the given DataStoreRatingTarget contains the same data as the current DataStoreRatingTarget
 func (dsrt DataStoreRatingTarget) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRatingTarget); !ok {
+	if _, ok := o.(DataStoreRatingTarget); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRatingTarget)
+	other := o.(DataStoreRatingTarget)
 
 	if dsrt.StructureVersion != other.StructureVersion {
 		return false

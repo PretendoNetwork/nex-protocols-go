@@ -65,11 +65,11 @@ func (sigpir ServiceItemGetPrepurchaseInfoResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetPrepurchaseInfoResponse contains the same data as the current ServiceItemGetPrepurchaseInfoResponse
 func (sigpir ServiceItemGetPrepurchaseInfoResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetPrepurchaseInfoResponse); !ok {
+	if _, ok := o.(ServiceItemGetPrepurchaseInfoResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetPrepurchaseInfoResponse)
+	other := o.(ServiceItemGetPrepurchaseInfoResponse)
 
 	if sigpir.StructureVersion != other.StructureVersion {
 		return false

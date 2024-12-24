@@ -96,11 +96,11 @@ func (sili ServiceItemListItem) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemListItem contains the same data as the current ServiceItemListItem
 func (sili ServiceItemListItem) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemListItem); !ok {
+	if _, ok := o.(ServiceItemListItem); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemListItem)
+	other := o.(ServiceItemListItem)
 
 	if sili.StructureVersion != other.StructureVersion {
 		return false

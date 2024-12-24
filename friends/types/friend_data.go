@@ -88,11 +88,11 @@ func (fd FriendData) Copy() types.RVType {
 
 // Equals checks if the given FriendData contains the same data as the current FriendData
 func (fd FriendData) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendData); !ok {
+	if _, ok := o.(FriendData); !ok {
 		return false
 	}
 
-	other := o.(*FriendData)
+	other := o.(FriendData)
 
 	if fd.StructureVersion != other.StructureVersion {
 		return false

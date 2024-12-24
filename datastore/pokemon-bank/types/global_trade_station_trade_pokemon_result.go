@@ -64,11 +64,11 @@ func (gtstpr GlobalTradeStationTradePokemonResult) Copy() types.RVType {
 
 // Equals checks if the given GlobalTradeStationTradePokemonResult contains the same data as the current GlobalTradeStationTradePokemonResult
 func (gtstpr GlobalTradeStationTradePokemonResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationTradePokemonResult); !ok {
+	if _, ok := o.(GlobalTradeStationTradePokemonResult); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationTradePokemonResult)
+	other := o.(GlobalTradeStationTradePokemonResult)
 
 	if gtstpr.StructureVersion != other.StructureVersion {
 		return false

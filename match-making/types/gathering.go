@@ -128,11 +128,11 @@ func (g Gathering) Copy() types.RVType {
 
 // Equals checks if the given Gathering contains the same data as the current Gathering
 func (g Gathering) Equals(o types.RVType) bool {
-	if _, ok := o.(*Gathering); !ok {
+	if _, ok := o.(Gathering); !ok {
 		return false
 	}
 
-	other := o.(*Gathering)
+	other := o.(Gathering)
 
 	if g.StructureVersion != other.StructureVersion {
 		return false

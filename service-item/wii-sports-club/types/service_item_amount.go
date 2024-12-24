@@ -72,11 +72,11 @@ func (sia ServiceItemAmount) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemAmount contains the same data as the current ServiceItemAmount
 func (sia ServiceItemAmount) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAmount); !ok {
+	if _, ok := o.(ServiceItemAmount); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAmount)
+	other := o.(ServiceItemAmount)
 
 	if sia.StructureVersion != other.StructureVersion {
 		return false

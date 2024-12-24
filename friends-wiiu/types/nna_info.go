@@ -81,11 +81,11 @@ func (nnai NNAInfo) Copy() types.RVType {
 
 // Equals checks if the given NNAInfo contains the same data as the current NNAInfo
 func (nnai NNAInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*NNAInfo); !ok {
+	if _, ok := o.(NNAInfo); !ok {
 		return false
 	}
 
-	other := o.(*NNAInfo)
+	other := o.(NNAInfo)
 
 	if nnai.StructureVersion != other.StructureVersion {
 		return false

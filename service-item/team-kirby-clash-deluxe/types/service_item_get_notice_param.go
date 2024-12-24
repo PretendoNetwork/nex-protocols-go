@@ -56,11 +56,11 @@ func (signp ServiceItemGetNoticeParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetNoticeParam contains the same data as the current ServiceItemGetNoticeParam
 func (signp ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetNoticeParam); !ok {
+	if _, ok := o.(ServiceItemGetNoticeParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetNoticeParam)
+	other := o.(ServiceItemGetNoticeParam)
 
 	if signp.StructureVersion != other.StructureVersion {
 		return false

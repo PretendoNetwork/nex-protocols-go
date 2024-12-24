@@ -145,11 +145,11 @@ func (fpi FriendPersistentInfo) Copy() types.RVType {
 
 // Equals checks if the given FriendPersistentInfo contains the same data as the current FriendPersistentInfo
 func (fpi FriendPersistentInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendPersistentInfo); !ok {
+	if _, ok := o.(FriendPersistentInfo); !ok {
 		return false
 	}
 
-	other := o.(*FriendPersistentInfo)
+	other := o.(FriendPersistentInfo)
 
 	if fpi.StructureVersion != other.StructureVersion {
 		return false

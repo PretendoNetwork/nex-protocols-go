@@ -64,11 +64,11 @@ func (dspt DataStorePersistenceTarget) Copy() types.RVType {
 
 // Equals checks if the given DataStorePersistenceTarget contains the same data as the current DataStorePersistenceTarget
 func (dspt DataStorePersistenceTarget) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePersistenceTarget); !ok {
+	if _, ok := o.(DataStorePersistenceTarget); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePersistenceTarget)
+	other := o.(DataStorePersistenceTarget)
 
 	if dspt.StructureVersion != other.StructureVersion {
 		return false

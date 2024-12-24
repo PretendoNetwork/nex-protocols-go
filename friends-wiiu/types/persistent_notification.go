@@ -97,11 +97,11 @@ func (pn PersistentNotification) Copy() types.RVType {
 
 // Equals checks if the given PersistentNotification contains the same data as the current PersistentNotification
 func (pn PersistentNotification) Equals(o types.RVType) bool {
-	if _, ok := o.(*PersistentNotification); !ok {
+	if _, ok := o.(PersistentNotification); !ok {
 		return false
 	}
 
-	other := o.(*PersistentNotification)
+	other := o.(PersistentNotification)
 
 	if pn.StructureVersion != other.StructureVersion {
 		return false

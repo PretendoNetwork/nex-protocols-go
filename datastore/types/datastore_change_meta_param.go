@@ -165,11 +165,11 @@ func (dscmp DataStoreChangeMetaParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreChangeMetaParam contains the same data as the current DataStoreChangeMetaParam
 func (dscmp DataStoreChangeMetaParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreChangeMetaParam); !ok {
+	if _, ok := o.(DataStoreChangeMetaParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreChangeMetaParam)
+	other := o.(DataStoreChangeMetaParam)
 
 	if dscmp.StructureVersion != other.StructureVersion {
 		return false

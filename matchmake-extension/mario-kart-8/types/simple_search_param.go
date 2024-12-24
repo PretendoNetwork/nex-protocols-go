@@ -96,11 +96,11 @@ func (ssp SimpleSearchParam) Copy() types.RVType {
 
 // Equals checks if the given SimpleSearchParam contains the same data as the current SimpleSearchParam
 func (ssp SimpleSearchParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimpleSearchParam); !ok {
+	if _, ok := o.(SimpleSearchParam); !ok {
 		return false
 	}
 
-	other := o.(*SimpleSearchParam)
+	other := o.(SimpleSearchParam)
 
 	if ssp.StructureVersion != other.StructureVersion {
 		return false

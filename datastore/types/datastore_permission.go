@@ -64,11 +64,11 @@ func (dsp DataStorePermission) Copy() types.RVType {
 
 // Equals checks if the given DataStorePermission contains the same data as the current DataStorePermission
 func (dsp DataStorePermission) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePermission); !ok {
+	if _, ok := o.(DataStorePermission); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePermission)
+	other := o.(DataStorePermission)
 
 	if dsp.StructureVersion != other.StructureVersion {
 		return false

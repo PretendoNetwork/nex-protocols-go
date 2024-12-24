@@ -80,11 +80,11 @@ func (sipi ServiceItemPurchaseInfo) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemPurchaseInfo contains the same data as the current ServiceItemPurchaseInfo
 func (sipi ServiceItemPurchaseInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPurchaseInfo); !ok {
+	if _, ok := o.(ServiceItemPurchaseInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPurchaseInfo)
+	other := o.(ServiceItemPurchaseInfo)
 
 	if sipi.StructureVersion != other.StructureVersion {
 		return false

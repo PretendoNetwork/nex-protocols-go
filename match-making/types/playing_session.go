@@ -64,11 +64,11 @@ func (ps PlayingSession) Copy() types.RVType {
 
 // Equals checks if the given PlayingSession contains the same data as the current PlayingSession
 func (ps PlayingSession) Equals(o types.RVType) bool {
-	if _, ok := o.(*PlayingSession); !ok {
+	if _, ok := o.(PlayingSession); !ok {
 		return false
 	}
 
-	other := o.(*PlayingSession)
+	other := o.(PlayingSession)
 
 	if ps.StructureVersion != other.StructureVersion {
 		return false

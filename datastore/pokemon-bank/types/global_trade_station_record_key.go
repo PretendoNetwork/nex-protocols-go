@@ -64,11 +64,11 @@ func (gtsrk GlobalTradeStationRecordKey) Copy() types.RVType {
 
 // Equals checks if the given GlobalTradeStationRecordKey contains the same data as the current GlobalTradeStationRecordKey
 func (gtsrk GlobalTradeStationRecordKey) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationRecordKey); !ok {
+	if _, ok := o.(GlobalTradeStationRecordKey); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationRecordKey)
+	other := o.(GlobalTradeStationRecordKey)
 
 	if gtsrk.StructureVersion != other.StructureVersion {
 		return false

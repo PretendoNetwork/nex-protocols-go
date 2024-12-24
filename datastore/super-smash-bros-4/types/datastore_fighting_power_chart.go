@@ -64,11 +64,11 @@ func (dsfpc DataStoreFightingPowerChart) Copy() types.RVType {
 
 // Equals checks if the given DataStoreFightingPowerChart contains the same data as the current DataStoreFightingPowerChart
 func (dsfpc DataStoreFightingPowerChart) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreFightingPowerChart); !ok {
+	if _, ok := o.(DataStoreFightingPowerChart); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreFightingPowerChart)
+	other := o.(DataStoreFightingPowerChart)
 
 	if dsfpc.StructureVersion != other.StructureVersion {
 		return false

@@ -96,11 +96,11 @@ func (rgblp Ranking2GetByListParam) Copy() types.RVType {
 
 // Equals checks if the given Ranking2GetByListParam contains the same data as the current Ranking2GetByListParam
 func (rgblp Ranking2GetByListParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2GetByListParam); !ok {
+	if _, ok := o.(Ranking2GetByListParam); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2GetByListParam)
+	other := o.(Ranking2GetByListParam)
 
 	if rgblp.StructureVersion != other.StructureVersion {
 		return false

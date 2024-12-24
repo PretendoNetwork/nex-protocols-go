@@ -88,11 +88,11 @@ func (btp BankTransactionParam) Copy() types.RVType {
 
 // Equals checks if the given BankTransactionParam contains the same data as the current BankTransactionParam
 func (btp BankTransactionParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*BankTransactionParam); !ok {
+	if _, ok := o.(BankTransactionParam); !ok {
 		return false
 	}
 
-	other := o.(*BankTransactionParam)
+	other := o.(BankTransactionParam)
 
 	if btp.StructureVersion != other.StructureVersion {
 		return false

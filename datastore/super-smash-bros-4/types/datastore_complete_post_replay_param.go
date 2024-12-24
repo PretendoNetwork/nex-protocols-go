@@ -73,11 +73,11 @@ func (dscprp DataStoreCompletePostReplayParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreCompletePostReplayParam contains the same data as the current DataStoreCompletePostReplayParam
 func (dscprp DataStoreCompletePostReplayParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreCompletePostReplayParam); !ok {
+	if _, ok := o.(DataStoreCompletePostReplayParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreCompletePostReplayParam)
+	other := o.(DataStoreCompletePostReplayParam)
 
 	if dscprp.StructureVersion != other.StructureVersion {
 		return false

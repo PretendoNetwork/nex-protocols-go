@@ -112,11 +112,11 @@ func (sipsip ServiceItemPurchaseServiceItemParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemPurchaseServiceItemParam contains the same data as the current ServiceItemPurchaseServiceItemParam
 func (sipsip ServiceItemPurchaseServiceItemParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPurchaseServiceItemParam); !ok {
+	if _, ok := o.(ServiceItemPurchaseServiceItemParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPurchaseServiceItemParam)
+	other := o.(ServiceItemPurchaseServiceItemParam)
 
 	if sipsip.StructureVersion != other.StructureVersion {
 		return false

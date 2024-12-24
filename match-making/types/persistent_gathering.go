@@ -121,11 +121,11 @@ func (pg PersistentGathering) Copy() types.RVType {
 
 // Equals checks if the given PersistentGathering contains the same data as the current PersistentGathering
 func (pg PersistentGathering) Equals(o types.RVType) bool {
-	if _, ok := o.(*PersistentGathering); !ok {
+	if _, ok := o.(PersistentGathering); !ok {
 		return false
 	}
 
-	other := o.(*PersistentGathering)
+	other := o.(PersistentGathering)
 
 	if pg.StructureVersion != other.StructureVersion {
 		return false

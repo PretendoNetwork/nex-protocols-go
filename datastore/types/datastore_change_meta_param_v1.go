@@ -120,11 +120,11 @@ func (dscmpv DataStoreChangeMetaParamV1) Copy() types.RVType {
 
 // Equals checks if the given DataStoreChangeMetaParamV1 contains the same data as the current DataStoreChangeMetaParamV1
 func (dscmpv DataStoreChangeMetaParamV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreChangeMetaParamV1); !ok {
+	if _, ok := o.(DataStoreChangeMetaParamV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreChangeMetaParamV1)
+	other := o.(DataStoreChangeMetaParamV1)
 
 	if dscmpv.StructureVersion != other.StructureVersion {
 		return false

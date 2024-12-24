@@ -65,11 +65,11 @@ func (sirci ServiceItemRightConsumptionInfo) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemRightConsumptionInfo contains the same data as the current ServiceItemRightConsumptionInfo
 func (sirci ServiceItemRightConsumptionInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemRightConsumptionInfo); !ok {
+	if _, ok := o.(ServiceItemRightConsumptionInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemRightConsumptionInfo)
+	other := o.(ServiceItemRightConsumptionInfo)
 
 	if sirci.StructureVersion != other.StructureVersion {
 		return false

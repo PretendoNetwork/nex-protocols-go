@@ -234,11 +234,11 @@ func (mssc MatchmakeSessionSearchCriteria) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeSessionSearchCriteria contains the same data as the current MatchmakeSessionSearchCriteria
 func (mssc MatchmakeSessionSearchCriteria) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeSessionSearchCriteria); !ok {
+	if _, ok := o.(MatchmakeSessionSearchCriteria); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeSessionSearchCriteria)
+	other := o.(MatchmakeSessionSearchCriteria)
 
 	if mssc.StructureVersion != other.StructureVersion {
 		return false

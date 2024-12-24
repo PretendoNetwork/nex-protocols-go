@@ -72,11 +72,11 @@ func (siph ServiceItemPurchaseHistory) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemPurchaseHistory contains the same data as the current ServiceItemPurchaseHistory
 func (siph ServiceItemPurchaseHistory) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPurchaseHistory); !ok {
+	if _, ok := o.(ServiceItemPurchaseHistory); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPurchaseHistory)
+	other := o.(ServiceItemPurchaseHistory)
 
 	if siph.StructureVersion != other.StructureVersion {
 		return false

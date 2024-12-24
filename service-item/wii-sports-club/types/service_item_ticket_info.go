@@ -64,11 +64,11 @@ func (siti ServiceItemTicketInfo) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemTicketInfo contains the same data as the current ServiceItemTicketInfo
 func (siti ServiceItemTicketInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemTicketInfo); !ok {
+	if _, ok := o.(ServiceItemTicketInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemTicketInfo)
+	other := o.(ServiceItemTicketInfo)
 
 	if siti.StructureVersion != other.StructureVersion {
 		return false

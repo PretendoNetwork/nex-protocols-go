@@ -72,11 +72,11 @@ func (dsucrp DataStoreUploadCourseRecordParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreUploadCourseRecordParam contains the same data as the current DataStoreUploadCourseRecordParam
 func (dsucrp DataStoreUploadCourseRecordParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreUploadCourseRecordParam); !ok {
+	if _, ok := o.(DataStoreUploadCourseRecordParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreUploadCourseRecordParam)
+	other := o.(DataStoreUploadCourseRecordParam)
 
 	if dsucrp.StructureVersion != other.StructureVersion {
 		return false

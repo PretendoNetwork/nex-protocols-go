@@ -72,11 +72,11 @@ func (i Invitation) Copy() types.RVType {
 
 // Equals checks if the given Invitation contains the same data as the current Invitation
 func (i Invitation) Equals(o types.RVType) bool {
-	if _, ok := o.(*Invitation); !ok {
+	if _, ok := o.(Invitation); !ok {
 		return false
 	}
 
-	other := o.(*Invitation)
+	other := o.(Invitation)
 
 	if i.StructureVersion != other.StructureVersion {
 		return false

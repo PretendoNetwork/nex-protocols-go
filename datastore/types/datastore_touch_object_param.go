@@ -72,11 +72,11 @@ func (dstop DataStoreTouchObjectParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreTouchObjectParam contains the same data as the current DataStoreTouchObjectParam
 func (dstop DataStoreTouchObjectParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreTouchObjectParam); !ok {
+	if _, ok := o.(DataStoreTouchObjectParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreTouchObjectParam)
+	other := o.(DataStoreTouchObjectParam)
 
 	if dstop.StructureVersion != other.StructureVersion {
 		return false

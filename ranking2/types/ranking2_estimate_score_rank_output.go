@@ -96,11 +96,11 @@ func (resro Ranking2EstimateScoreRankOutput) Copy() types.RVType {
 
 // Equals checks if the given Ranking2EstimateScoreRankOutput contains the same data as the current Ranking2EstimateScoreRankOutput
 func (resro Ranking2EstimateScoreRankOutput) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2EstimateScoreRankOutput); !ok {
+	if _, ok := o.(Ranking2EstimateScoreRankOutput); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2EstimateScoreRankOutput)
+	other := o.(Ranking2EstimateScoreRankOutput)
 
 	if resro.StructureVersion != other.StructureVersion {
 		return false

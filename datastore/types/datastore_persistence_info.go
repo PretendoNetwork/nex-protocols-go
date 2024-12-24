@@ -72,11 +72,11 @@ func (dspi DataStorePersistenceInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStorePersistenceInfo contains the same data as the current DataStorePersistenceInfo
 func (dspi DataStorePersistenceInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePersistenceInfo); !ok {
+	if _, ok := o.(DataStorePersistenceInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePersistenceInfo)
+	other := o.(DataStorePersistenceInfo)
 
 	if dspi.StructureVersion != other.StructureVersion {
 		return false

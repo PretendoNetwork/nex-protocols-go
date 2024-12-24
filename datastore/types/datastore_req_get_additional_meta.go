@@ -80,11 +80,11 @@ func (dsrgam DataStoreReqGetAdditionalMeta) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReqGetAdditionalMeta contains the same data as the current DataStoreReqGetAdditionalMeta
 func (dsrgam DataStoreReqGetAdditionalMeta) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqGetAdditionalMeta); !ok {
+	if _, ok := o.(DataStoreReqGetAdditionalMeta); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqGetAdditionalMeta)
+	other := o.(DataStoreReqGetAdditionalMeta)
 
 	if dsrgam.StructureVersion != other.StructureVersion {
 		return false

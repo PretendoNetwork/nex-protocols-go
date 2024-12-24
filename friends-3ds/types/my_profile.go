@@ -121,11 +121,11 @@ func (mp MyProfile) Copy() types.RVType {
 
 // Equals checks if the given MyProfile contains the same data as the current MyProfile
 func (mp MyProfile) Equals(o types.RVType) bool {
-	if _, ok := o.(*MyProfile); !ok {
+	if _, ok := o.(MyProfile); !ok {
 		return false
 	}
 
-	other := o.(*MyProfile)
+	other := o.(MyProfile)
 
 	if mp.StructureVersion != other.StructureVersion {
 		return false

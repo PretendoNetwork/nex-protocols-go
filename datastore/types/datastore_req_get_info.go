@@ -100,11 +100,11 @@ func (dsrgi DataStoreReqGetInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReqGetInfo contains the same data as the current DataStoreReqGetInfo
 func (dsrgi DataStoreReqGetInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqGetInfo); !ok {
+	if _, ok := o.(DataStoreReqGetInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqGetInfo)
+	other := o.(DataStoreReqGetInfo)
 
 	if dsrgi.StructureVersion != other.StructureVersion {
 		return false

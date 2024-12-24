@@ -101,11 +101,11 @@ func (ai AuthenticationInfo) Copy() types.RVType {
 
 // Equals checks if the given AuthenticationInfo contains the same data as the current AuthenticationInfo
 func (ai AuthenticationInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*AuthenticationInfo); !ok {
+	if _, ok := o.(AuthenticationInfo); !ok {
 		return false
 	}
 
-	other := o.(*AuthenticationInfo)
+	other := o.(AuthenticationInfo)
 
 	if ai.StructureVersion != other.StructureVersion {
 		return false

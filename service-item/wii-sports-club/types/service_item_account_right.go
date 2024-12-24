@@ -64,11 +64,11 @@ func (siar ServiceItemAccountRight) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemAccountRight contains the same data as the current ServiceItemAccountRight
 func (siar ServiceItemAccountRight) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAccountRight); !ok {
+	if _, ok := o.(ServiceItemAccountRight); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAccountRight)
+	other := o.(ServiceItemAccountRight)
 
 	if siar.StructureVersion != other.StructureVersion {
 		return false

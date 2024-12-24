@@ -109,11 +109,11 @@ func (dsrui DataStoreReqUpdateInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReqUpdateInfo contains the same data as the current DataStoreReqUpdateInfo
 func (dsrui DataStoreReqUpdateInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqUpdateInfo); !ok {
+	if _, ok := o.(DataStoreReqUpdateInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqUpdateInfo)
+	other := o.(DataStoreReqUpdateInfo)
 
 	if dsrui.StructureVersion != other.StructureVersion {
 		return false

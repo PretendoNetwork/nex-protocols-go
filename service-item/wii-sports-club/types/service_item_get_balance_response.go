@@ -65,11 +65,11 @@ func (sigbr ServiceItemGetBalanceResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetBalanceResponse contains the same data as the current ServiceItemGetBalanceResponse
 func (sigbr ServiceItemGetBalanceResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetBalanceResponse); !ok {
+	if _, ok := o.(ServiceItemGetBalanceResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetBalanceResponse)
+	other := o.(ServiceItemGetBalanceResponse)
 
 	if sigbr.StructureVersion != other.StructureVersion {
 		return false

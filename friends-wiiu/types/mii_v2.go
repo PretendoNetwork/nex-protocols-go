@@ -97,11 +97,11 @@ func (mv MiiV2) Copy() types.RVType {
 
 // Equals checks if the given MiiV2 contains the same data as the current MiiV2
 func (mv MiiV2) Equals(o types.RVType) bool {
-	if _, ok := o.(*MiiV2); !ok {
+	if _, ok := o.(MiiV2); !ok {
 		return false
 	}
 
-	other := o.(*MiiV2)
+	other := o.(MiiV2)
 
 	if mv.StructureVersion != other.StructureVersion {
 		return false

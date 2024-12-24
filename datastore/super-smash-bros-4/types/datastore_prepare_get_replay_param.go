@@ -64,11 +64,11 @@ func (dspgrp DataStorePrepareGetReplayParam) Copy() types.RVType {
 
 // Equals checks if the given DataStorePrepareGetReplayParam contains the same data as the current DataStorePrepareGetReplayParam
 func (dspgrp DataStorePrepareGetReplayParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePrepareGetReplayParam); !ok {
+	if _, ok := o.(DataStorePrepareGetReplayParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePrepareGetReplayParam)
+	other := o.(DataStorePrepareGetReplayParam)
 
 	if dspgrp.StructureVersion != other.StructureVersion {
 		return false

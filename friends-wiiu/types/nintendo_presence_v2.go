@@ -177,11 +177,11 @@ func (npv NintendoPresenceV2) Copy() types.RVType {
 
 // Equals checks if the given NintendoPresenceV2 contains the same data as the current NintendoPresenceV2
 func (npv NintendoPresenceV2) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoPresenceV2); !ok {
+	if _, ok := o.(NintendoPresenceV2); !ok {
 		return false
 	}
 
-	other := o.(*NintendoPresenceV2)
+	other := o.(NintendoPresenceV2)
 
 	if npv.StructureVersion != other.StructureVersion {
 		return false

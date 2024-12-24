@@ -72,11 +72,11 @@ func (gs GatheringStats) Copy() types.RVType {
 
 // Equals checks if the given GatheringStats contains the same data as the current GatheringStats
 func (gs GatheringStats) Equals(o types.RVType) bool {
-	if _, ok := o.(*GatheringStats); !ok {
+	if _, ok := o.(GatheringStats); !ok {
 		return false
 	}
 
-	other := o.(*GatheringStats)
+	other := o.(GatheringStats)
 
 	if gs.StructureVersion != other.StructureVersion {
 		return false

@@ -89,11 +89,11 @@ func (pbi PrincipalBasicInfo) Copy() types.RVType {
 
 // Equals checks if the given PrincipalBasicInfo contains the same data as the current PrincipalBasicInfo
 func (pbi PrincipalBasicInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*PrincipalBasicInfo); !ok {
+	if _, ok := o.(PrincipalBasicInfo); !ok {
 		return false
 	}
 
-	other := o.(*PrincipalBasicInfo)
+	other := o.(PrincipalBasicInfo)
 
 	if pbi.StructureVersion != other.StructureVersion {
 		return false

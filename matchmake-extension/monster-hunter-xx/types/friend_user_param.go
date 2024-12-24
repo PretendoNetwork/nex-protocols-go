@@ -56,11 +56,11 @@ func (fup FriendUserParam) Copy() types.RVType {
 
 // Equals checks if the given FriendUserParam contains the same data as the current FriendUserParam
 func (fup FriendUserParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendUserParam); !ok {
+	if _, ok := o.(FriendUserParam); !ok {
 		return false
 	}
 
-	other := o.(*FriendUserParam)
+	other := o.(FriendUserParam)
 
 	if fup.StructureVersion != other.StructureVersion {
 		return false

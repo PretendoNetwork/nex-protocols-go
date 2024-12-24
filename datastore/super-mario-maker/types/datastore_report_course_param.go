@@ -80,11 +80,11 @@ func (dsrcp DataStoreReportCourseParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReportCourseParam contains the same data as the current DataStoreReportCourseParam
 func (dsrcp DataStoreReportCourseParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReportCourseParam); !ok {
+	if _, ok := o.(DataStoreReportCourseParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReportCourseParam)
+	other := o.(DataStoreReportCourseParam)
 
 	if dsrcp.StructureVersion != other.StructureVersion {
 		return false

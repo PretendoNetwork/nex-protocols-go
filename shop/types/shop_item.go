@@ -80,11 +80,11 @@ func (si ShopItem) Copy() types.RVType {
 
 // Equals checks if the given ShopItem contains the same data as the current ShopItem
 func (si ShopItem) Equals(o types.RVType) bool {
-	if _, ok := o.(*ShopItem); !ok {
+	if _, ok := o.(ShopItem); !ok {
 		return false
 	}
 
-	other := o.(*ShopItem)
+	other := o.(ShopItem)
 
 	if si.StructureVersion != other.StructureVersion {
 		return false

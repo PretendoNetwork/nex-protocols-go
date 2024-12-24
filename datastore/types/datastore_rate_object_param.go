@@ -64,11 +64,11 @@ func (dsrop DataStoreRateObjectParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreRateObjectParam contains the same data as the current DataStoreRateObjectParam
 func (dsrop DataStoreRateObjectParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRateObjectParam); !ok {
+	if _, ok := o.(DataStoreRateObjectParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRateObjectParam)
+	other := o.(DataStoreRateObjectParam)
 
 	if dsrop.StructureVersion != other.StructureVersion {
 		return false

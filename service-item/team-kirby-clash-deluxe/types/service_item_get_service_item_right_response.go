@@ -65,11 +65,11 @@ func (sigsirr ServiceItemGetServiceItemRightResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetServiceItemRightResponse contains the same data as the current ServiceItemGetServiceItemRightResponse
 func (sigsirr ServiceItemGetServiceItemRightResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetServiceItemRightResponse); !ok {
+	if _, ok := o.(ServiceItemGetServiceItemRightResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetServiceItemRightResponse)
+	other := o.(ServiceItemGetServiceItemRightResponse)
 
 	if sigsirr.StructureVersion != other.StructureVersion {
 		return false

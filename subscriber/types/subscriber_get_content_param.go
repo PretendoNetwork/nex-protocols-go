@@ -80,11 +80,11 @@ func (sgcp SubscriberGetContentParam) Copy() types.RVType {
 
 // Equals checks if the given SubscriberGetContentParam contains the same data as the current SubscriberGetContentParam
 func (sgcp SubscriberGetContentParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*SubscriberGetContentParam); !ok {
+	if _, ok := o.(SubscriberGetContentParam); !ok {
 		return false
 	}
 
-	other := o.(*SubscriberGetContentParam)
+	other := o.(SubscriberGetContentParam)
 
 	if sgcp.StructureVersion != other.StructureVersion {
 		return false

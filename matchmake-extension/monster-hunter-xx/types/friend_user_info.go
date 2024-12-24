@@ -72,11 +72,11 @@ func (fui FriendUserInfo) Copy() types.RVType {
 
 // Equals checks if the given FriendUserInfo contains the same data as the current FriendUserInfo
 func (fui FriendUserInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendUserInfo); !ok {
+	if _, ok := o.(FriendUserInfo); !ok {
 		return false
 	}
 
-	other := o.(*FriendUserInfo)
+	other := o.(FriendUserInfo)
 
 	if fui.StructureVersion != other.StructureVersion {
 		return false

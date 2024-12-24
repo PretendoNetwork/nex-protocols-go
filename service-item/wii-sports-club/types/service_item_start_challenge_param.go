@@ -72,11 +72,11 @@ func (siscp ServiceItemStartChallengeParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemStartChallengeParam contains the same data as the current ServiceItemStartChallengeParam
 func (siscp ServiceItemStartChallengeParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemStartChallengeParam); !ok {
+	if _, ok := o.(ServiceItemStartChallengeParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemStartChallengeParam)
+	other := o.(ServiceItemStartChallengeParam)
 
 	if siscp.StructureVersion != other.StructureVersion {
 		return false

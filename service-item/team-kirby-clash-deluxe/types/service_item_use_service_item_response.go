@@ -65,11 +65,11 @@ func (siusir ServiceItemUseServiceItemResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemUseServiceItemResponse contains the same data as the current ServiceItemUseServiceItemResponse
 func (siusir ServiceItemUseServiceItemResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemUseServiceItemResponse); !ok {
+	if _, ok := o.(ServiceItemUseServiceItemResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemUseServiceItemResponse)
+	other := o.(ServiceItemUseServiceItemResponse)
 
 	if siusir.StructureVersion != other.StructureVersion {
 		return false

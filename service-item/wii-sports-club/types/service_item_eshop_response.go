@@ -72,11 +72,11 @@ func (siesr ServiceItemEShopResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemEShopResponse contains the same data as the current ServiceItemEShopResponse
 func (siesr ServiceItemEShopResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemEShopResponse); !ok {
+	if _, ok := o.(ServiceItemEShopResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemEShopResponse)
+	other := o.(ServiceItemEShopResponse)
 
 	if siesr.StructureVersion != other.StructureVersion {
 		return false

@@ -72,11 +72,11 @@ func (rcap RankingChangeAttributesParam) Copy() types.RVType {
 
 // Equals checks if the given RankingChangeAttributesParam contains the same data as the current RankingChangeAttributesParam
 func (rcap RankingChangeAttributesParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*RankingChangeAttributesParam); !ok {
+	if _, ok := o.(RankingChangeAttributesParam); !ok {
 		return false
 	}
 
-	other := o.(*RankingChangeAttributesParam)
+	other := o.(RankingChangeAttributesParam)
 
 	if rcap.StructureVersion != other.StructureVersion {
 		return false

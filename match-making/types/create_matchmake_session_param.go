@@ -96,11 +96,11 @@ func (cmsp CreateMatchmakeSessionParam) Copy() types.RVType {
 
 // Equals checks if the given CreateMatchmakeSessionParam contains the same data as the current CreateMatchmakeSessionParam
 func (cmsp CreateMatchmakeSessionParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*CreateMatchmakeSessionParam); !ok {
+	if _, ok := o.(CreateMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	other := o.(*CreateMatchmakeSessionParam)
+	other := o.(CreateMatchmakeSessionParam)
 
 	if cmsp.StructureVersion != other.StructureVersion {
 		return false

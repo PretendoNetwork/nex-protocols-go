@@ -64,11 +64,11 @@ func (susi SubscriberUserStatusInfo) Copy() types.RVType {
 
 // Equals checks if the given SubscriberUserStatusInfo contains the same data as the current SubscriberUserStatusInfo
 func (susi SubscriberUserStatusInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*SubscriberUserStatusInfo); !ok {
+	if _, ok := o.(SubscriberUserStatusInfo); !ok {
 		return false
 	}
 
-	other := o.(*SubscriberUserStatusInfo)
+	other := o.(SubscriberUserStatusInfo)
 
 	if susi.StructureVersion != other.StructureVersion {
 		return false

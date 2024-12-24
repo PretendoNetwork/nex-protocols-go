@@ -72,11 +72,11 @@ func (sir ShopItemRights) Copy() types.RVType {
 
 // Equals checks if the given ShopItemRights contains the same data as the current ShopItemRights
 func (sir ShopItemRights) Equals(o types.RVType) bool {
-	if _, ok := o.(*ShopItemRights); !ok {
+	if _, ok := o.(ShopItemRights); !ok {
 		return false
 	}
 
-	other := o.(*ShopItemRights)
+	other := o.(ShopItemRights)
 
 	if sir.StructureVersion != other.StructureVersion {
 		return false

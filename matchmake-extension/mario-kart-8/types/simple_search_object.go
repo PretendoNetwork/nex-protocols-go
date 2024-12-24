@@ -104,11 +104,11 @@ func (sso SimpleSearchObject) Copy() types.RVType {
 
 // Equals checks if the given SimpleSearchObject contains the same data as the current SimpleSearchObject
 func (sso SimpleSearchObject) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimpleSearchObject); !ok {
+	if _, ok := o.(SimpleSearchObject); !ok {
 		return false
 	}
 
-	other := o.(*SimpleSearchObject)
+	other := o.(SimpleSearchObject)
 
 	if sso.StructureVersion != other.StructureVersion {
 		return false

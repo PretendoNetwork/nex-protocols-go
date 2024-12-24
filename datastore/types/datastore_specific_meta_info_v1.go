@@ -88,11 +88,11 @@ func (dssmiv DataStoreSpecificMetaInfoV1) Copy() types.RVType {
 
 // Equals checks if the given DataStoreSpecificMetaInfoV1 contains the same data as the current DataStoreSpecificMetaInfoV1
 func (dssmiv DataStoreSpecificMetaInfoV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSpecificMetaInfoV1); !ok {
+	if _, ok := o.(DataStoreSpecificMetaInfoV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSpecificMetaInfoV1)
+	other := o.(DataStoreSpecificMetaInfoV1)
 
 	if dssmiv.StructureVersion != other.StructureVersion {
 		return false

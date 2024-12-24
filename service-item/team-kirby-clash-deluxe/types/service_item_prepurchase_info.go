@@ -128,11 +128,11 @@ func (sipi ServiceItemPrepurchaseInfo) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemPrepurchaseInfo contains the same data as the current ServiceItemPrepurchaseInfo
 func (sipi ServiceItemPrepurchaseInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPrepurchaseInfo); !ok {
+	if _, ok := o.(ServiceItemPrepurchaseInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPrepurchaseInfo)
+	other := o.(ServiceItemPrepurchaseInfo)
 
 	if sipi.StructureVersion != other.StructureVersion {
 		return false

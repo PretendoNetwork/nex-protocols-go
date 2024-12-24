@@ -65,11 +65,11 @@ func (pnl PersistentNotificationList) Copy() types.RVType {
 
 // Equals checks if the given PersistentNotificationList contains the same data as the current PersistentNotificationList
 func (pnl PersistentNotificationList) Equals(o types.RVType) bool {
-	if _, ok := o.(*PersistentNotificationList); !ok {
+	if _, ok := o.(PersistentNotificationList); !ok {
 		return false
 	}
 
-	other := o.(*PersistentNotificationList)
+	other := o.(PersistentNotificationList)
 
 	if pnl.StructureVersion != other.StructureVersion {
 		return false

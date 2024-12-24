@@ -64,11 +64,11 @@ func (sigsidp ServiceItemGetSupportIDParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemGetSupportIDParam contains the same data as the current ServiceItemGetSupportIDParam
 func (sigsidp ServiceItemGetSupportIDParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetSupportIDParam); !ok {
+	if _, ok := o.(ServiceItemGetSupportIDParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetSupportIDParam)
+	other := o.(ServiceItemGetSupportIDParam)
 
 	if sigsidp.StructureVersion != other.StructureVersion {
 		return false

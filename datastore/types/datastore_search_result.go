@@ -72,11 +72,11 @@ func (dssr DataStoreSearchResult) Copy() types.RVType {
 
 // Equals checks if the given DataStoreSearchResult contains the same data as the current DataStoreSearchResult
 func (dssr DataStoreSearchResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSearchResult); !ok {
+	if _, ok := o.(DataStoreSearchResult); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSearchResult)
+	other := o.(DataStoreSearchResult)
 
 	if dssr.StructureVersion != other.StructureVersion {
 		return false

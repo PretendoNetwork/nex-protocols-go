@@ -164,11 +164,11 @@ func (dsppp DataStorePreparePostParam) Copy() types.RVType {
 
 // Equals checks if the given DataStorePreparePostParam contains the same data as the current DataStorePreparePostParam
 func (dsppp DataStorePreparePostParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePreparePostParam); !ok {
+	if _, ok := o.(DataStorePreparePostParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePreparePostParam)
+	other := o.(DataStorePreparePostParam)
 
 	if dsppp.StructureVersion != other.StructureVersion {
 		return false

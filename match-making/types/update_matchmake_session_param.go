@@ -184,11 +184,11 @@ func (umsp UpdateMatchmakeSessionParam) Copy() types.RVType {
 
 // Equals checks if the given UpdateMatchmakeSessionParam contains the same data as the current UpdateMatchmakeSessionParam
 func (umsp UpdateMatchmakeSessionParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*UpdateMatchmakeSessionParam); !ok {
+	if _, ok := o.(UpdateMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	other := o.(*UpdateMatchmakeSessionParam)
+	other := o.(UpdateMatchmakeSessionParam)
 
 	if umsp.StructureVersion != other.StructureVersion {
 		return false

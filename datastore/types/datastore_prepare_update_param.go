@@ -111,11 +111,11 @@ func (dspup DataStorePrepareUpdateParam) Copy() types.RVType {
 
 // Equals checks if the given DataStorePrepareUpdateParam contains the same data as the current DataStorePrepareUpdateParam
 func (dspup DataStorePrepareUpdateParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePrepareUpdateParam); !ok {
+	if _, ok := o.(DataStorePrepareUpdateParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePrepareUpdateParam)
+	other := o.(DataStorePrepareUpdateParam)
 
 	if dspup.StructureVersion != other.StructureVersion {
 		return false

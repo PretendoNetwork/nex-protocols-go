@@ -65,11 +65,11 @@ func (bm BinaryMessage) Copy() types.RVType {
 
 // Equals checks if the given BinaryMessage contains the same data as the current BinaryMessage
 func (bm BinaryMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*BinaryMessage); !ok {
+	if _, ok := o.(BinaryMessage); !ok {
 		return false
 	}
 
-	other := o.(*BinaryMessage)
+	other := o.(BinaryMessage)
 
 	if bm.StructureVersion != other.StructureVersion {
 		return false

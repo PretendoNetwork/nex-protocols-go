@@ -96,11 +96,11 @@ func (siprbbap ServiceItemPostRightBinaryByAccountParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemPostRightBinaryByAccountParam contains the same data as the current ServiceItemPostRightBinaryByAccountParam
 func (siprbbap ServiceItemPostRightBinaryByAccountParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPostRightBinaryByAccountParam); !ok {
+	if _, ok := o.(ServiceItemPostRightBinaryByAccountParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPostRightBinaryByAccountParam)
+	other := o.(ServiceItemPostRightBinaryByAccountParam)
 
 	if siprbbap.StructureVersion != other.StructureVersion {
 		return false

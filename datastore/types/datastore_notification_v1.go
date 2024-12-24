@@ -64,11 +64,11 @@ func (dsnv DataStoreNotificationV1) Copy() types.RVType {
 
 // Equals checks if the given DataStoreNotificationV1 contains the same data as the current DataStoreNotificationV1
 func (dsnv DataStoreNotificationV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreNotificationV1); !ok {
+	if _, ok := o.(DataStoreNotificationV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreNotificationV1)
+	other := o.(DataStoreNotificationV1)
 
 	if dsnv.StructureVersion != other.StructureVersion {
 		return false

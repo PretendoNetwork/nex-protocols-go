@@ -80,11 +80,11 @@ func (dsrl DataStoreRatingLog) Copy() types.RVType {
 
 // Equals checks if the given DataStoreRatingLog contains the same data as the current DataStoreRatingLog
 func (dsrl DataStoreRatingLog) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRatingLog); !ok {
+	if _, ok := o.(DataStoreRatingLog); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRatingLog)
+	other := o.(DataStoreRatingLog)
 
 	if dsrl.StructureVersion != other.StructureVersion {
 		return false

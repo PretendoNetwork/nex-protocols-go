@@ -56,11 +56,11 @@ func (sihttpgr ServiceItemHTTPGetResponse) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemHTTPGetResponse contains the same data as the current ServiceItemHTTPGetResponse
 func (sihttpgr ServiceItemHTTPGetResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemHTTPGetResponse); !ok {
+	if _, ok := o.(ServiceItemHTTPGetResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemHTTPGetResponse)
+	other := o.(ServiceItemHTTPGetResponse)
 
 	if sihttpgr.StructureVersion != other.StructureVersion {
 		return false

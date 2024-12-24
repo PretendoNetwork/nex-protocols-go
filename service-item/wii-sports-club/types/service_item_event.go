@@ -112,11 +112,11 @@ func (sie ServiceItemEvent) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemEvent contains the same data as the current ServiceItemEvent
 func (sie ServiceItemEvent) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemEvent); !ok {
+	if _, ok := o.(ServiceItemEvent); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemEvent)
+	other := o.(ServiceItemEvent)
 
 	if sie.StructureVersion != other.StructureVersion {
 		return false

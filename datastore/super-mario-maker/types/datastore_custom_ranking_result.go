@@ -73,11 +73,11 @@ func (dscrr DataStoreCustomRankingResult) Copy() types.RVType {
 
 // Equals checks if the given DataStoreCustomRankingResult contains the same data as the current DataStoreCustomRankingResult
 func (dscrr DataStoreCustomRankingResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreCustomRankingResult); !ok {
+	if _, ok := o.(DataStoreCustomRankingResult); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreCustomRankingResult)
+	other := o.(DataStoreCustomRankingResult)
 
 	if dscrr.StructureVersion != other.StructureVersion {
 		return false

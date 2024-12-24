@@ -81,11 +81,11 @@ func (fp FriendPicture) Copy() types.RVType {
 
 // Equals checks if the given FriendPicture contains the same data as the current FriendPicture
 func (fp FriendPicture) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendPicture); !ok {
+	if _, ok := o.(FriendPicture); !ok {
 		return false
 	}
 
-	other := o.(*FriendPicture)
+	other := o.(FriendPicture)
 
 	if fp.StructureVersion != other.StructureVersion {
 		return false

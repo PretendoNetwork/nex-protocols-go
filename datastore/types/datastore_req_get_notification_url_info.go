@@ -80,11 +80,11 @@ func (dsrgnurli DataStoreReqGetNotificationURLInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReqGetNotificationURLInfo contains the same data as the current DataStoreReqGetNotificationURLInfo
 func (dsrgnurli DataStoreReqGetNotificationURLInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqGetNotificationURLInfo); !ok {
+	if _, ok := o.(DataStoreReqGetNotificationURLInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqGetNotificationURLInfo)
+	other := o.(DataStoreReqGetNotificationURLInfo)
 
 	if dsrgnurli.StructureVersion != other.StructureVersion {
 		return false

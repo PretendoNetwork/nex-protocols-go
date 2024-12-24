@@ -88,11 +88,11 @@ func (siri ServiceItemRightInfos) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemRightInfos contains the same data as the current ServiceItemRightInfos
 func (siri ServiceItemRightInfos) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemRightInfos); !ok {
+	if _, ok := o.(ServiceItemRightInfos); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemRightInfos)
+	other := o.(ServiceItemRightInfos)
 
 	if siri.StructureVersion != other.StructureVersion {
 		return false

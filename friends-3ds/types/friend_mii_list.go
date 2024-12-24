@@ -81,11 +81,11 @@ func (fml FriendMiiList) Copy() types.RVType {
 
 // Equals checks if the given FriendMiiList contains the same data as the current FriendMiiList
 func (fml FriendMiiList) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendMiiList); !ok {
+	if _, ok := o.(FriendMiiList); !ok {
 		return false
 	}
 
-	other := o.(*FriendMiiList)
+	other := o.(FriendMiiList)
 
 	if fml.StructureVersion != other.StructureVersion {
 		return false

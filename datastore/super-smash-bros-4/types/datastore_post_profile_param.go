@@ -56,11 +56,11 @@ func (dsppp DataStorePostProfileParam) Copy() types.RVType {
 
 // Equals checks if the given DataStorePostProfileParam contains the same data as the current DataStorePostProfileParam
 func (dsppp DataStorePostProfileParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePostProfileParam); !ok {
+	if _, ok := o.(DataStorePostProfileParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePostProfileParam)
+	other := o.(DataStorePostProfileParam)
 
 	if dsppp.StructureVersion != other.StructureVersion {
 		return false

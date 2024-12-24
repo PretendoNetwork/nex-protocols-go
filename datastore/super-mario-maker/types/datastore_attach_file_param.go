@@ -73,11 +73,11 @@ func (dsafp DataStoreAttachFileParam) Copy() types.RVType {
 
 // Equals checks if the given DataStoreAttachFileParam contains the same data as the current DataStoreAttachFileParam
 func (dsafp DataStoreAttachFileParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreAttachFileParam); !ok {
+	if _, ok := o.(DataStoreAttachFileParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreAttachFileParam)
+	other := o.(DataStoreAttachFileParam)
 
 	if dsafp.StructureVersion != other.StructureVersion {
 		return false

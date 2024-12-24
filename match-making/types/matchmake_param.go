@@ -56,11 +56,11 @@ func (mp MatchmakeParam) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeParam contains the same data as the current MatchmakeParam
 func (mp MatchmakeParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeParam); !ok {
+	if _, ok := o.(MatchmakeParam); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeParam)
+	other := o.(MatchmakeParam)
 
 	if mp.StructureVersion != other.StructureVersion {
 		return false

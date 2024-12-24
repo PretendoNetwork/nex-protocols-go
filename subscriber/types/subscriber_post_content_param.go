@@ -72,11 +72,11 @@ func (spcp SubscriberPostContentParam) Copy() types.RVType {
 
 // Equals checks if the given SubscriberPostContentParam contains the same data as the current SubscriberPostContentParam
 func (spcp SubscriberPostContentParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*SubscriberPostContentParam); !ok {
+	if _, ok := o.(SubscriberPostContentParam); !ok {
 		return false
 	}
 
-	other := o.(*SubscriberPostContentParam)
+	other := o.(SubscriberPostContentParam)
 
 	if spcp.StructureVersion != other.StructureVersion {
 		return false

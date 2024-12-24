@@ -73,11 +73,11 @@ func (mrerp MatchmakeRefereeEndRoundParam) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeRefereeEndRoundParam contains the same data as the current MatchmakeRefereeEndRoundParam
 func (mrerp MatchmakeRefereeEndRoundParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeEndRoundParam); !ok {
+	if _, ok := o.(MatchmakeRefereeEndRoundParam); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeEndRoundParam)
+	other := o.(MatchmakeRefereeEndRoundParam)
 
 	if mrerp.StructureVersion != other.StructureVersion {
 		return false

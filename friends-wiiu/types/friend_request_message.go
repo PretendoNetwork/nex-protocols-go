@@ -129,11 +129,11 @@ func (frm FriendRequestMessage) Copy() types.RVType {
 
 // Equals checks if the given FriendRequestMessage contains the same data as the current FriendRequestMessage
 func (frm FriendRequestMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendRequestMessage); !ok {
+	if _, ok := o.(FriendRequestMessage); !ok {
 		return false
 	}
 
-	other := o.(*FriendRequestMessage)
+	other := o.(FriendRequestMessage)
 
 	if frm.StructureVersion != other.StructureVersion {
 		return false

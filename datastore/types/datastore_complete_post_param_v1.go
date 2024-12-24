@@ -64,11 +64,11 @@ func (dscppv DataStoreCompletePostParamV1) Copy() types.RVType {
 
 // Equals checks if the given DataStoreCompletePostParamV1 contains the same data as the current DataStoreCompletePostParamV1
 func (dscppv DataStoreCompletePostParamV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreCompletePostParamV1); !ok {
+	if _, ok := o.(DataStoreCompletePostParamV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreCompletePostParamV1)
+	other := o.(DataStoreCompletePostParamV1)
 
 	if dscppv.StructureVersion != other.StructureVersion {
 		return false

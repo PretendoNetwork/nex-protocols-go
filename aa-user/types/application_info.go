@@ -73,11 +73,11 @@ func (ai ApplicationInfo) Copy() types.RVType {
 
 // Equals checks if the given ApplicationInfo contains the same data as the current ApplicationInfo
 func (ai ApplicationInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ApplicationInfo); !ok {
+	if _, ok := o.(ApplicationInfo); !ok {
 		return false
 	}
 
-	other := o.(*ApplicationInfo)
+	other := o.(ApplicationInfo)
 
 	if ai.StructureVersion != other.StructureVersion {
 		return false

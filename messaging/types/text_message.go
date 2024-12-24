@@ -65,11 +65,11 @@ func (tm TextMessage) Copy() types.RVType {
 
 // Equals checks if the given TextMessage contains the same data as the current TextMessage
 func (tm TextMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*TextMessage); !ok {
+	if _, ok := o.(TextMessage); !ok {
 		return false
 	}
 
-	other := o.(*TextMessage)
+	other := o.(TextMessage)
 
 	if tm.StructureVersion != other.StructureVersion {
 		return false

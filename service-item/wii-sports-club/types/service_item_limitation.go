@@ -64,11 +64,11 @@ func (sil ServiceItemLimitation) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemLimitation contains the same data as the current ServiceItemLimitation
 func (sil ServiceItemLimitation) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemLimitation); !ok {
+	if _, ok := o.(ServiceItemLimitation); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemLimitation)
+	other := o.(ServiceItemLimitation)
 
 	if sil.StructureVersion != other.StructureVersion {
 		return false

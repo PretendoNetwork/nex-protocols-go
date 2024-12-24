@@ -96,11 +96,11 @@ func (rrd Ranking2RankData) Copy() types.RVType {
 
 // Equals checks if the given Ranking2RankData contains the same data as the current Ranking2RankData
 func (rrd Ranking2RankData) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2RankData); !ok {
+	if _, ok := o.(Ranking2RankData); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2RankData)
+	other := o.(Ranking2RankData)
 
 	if rrd.StructureVersion != other.StructureVersion {
 		return false

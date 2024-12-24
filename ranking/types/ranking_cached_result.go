@@ -81,11 +81,11 @@ func (rcr RankingCachedResult) Copy() types.RVType {
 
 // Equals checks if the given RankingCachedResult contains the same data as the current RankingCachedResult
 func (rcr RankingCachedResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*RankingCachedResult); !ok {
+	if _, ok := o.(RankingCachedResult); !ok {
 		return false
 	}
 
-	other := o.(*RankingCachedResult)
+	other := o.(RankingCachedResult)
 
 	if rcr.StructureVersion != other.StructureVersion {
 		return false

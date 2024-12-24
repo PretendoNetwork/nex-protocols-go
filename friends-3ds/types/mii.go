@@ -89,11 +89,11 @@ func (m Mii) Copy() types.RVType {
 
 // Equals checks if the given Mii contains the same data as the current Mii
 func (m Mii) Equals(o types.RVType) bool {
-	if _, ok := o.(*Mii); !ok {
+	if _, ok := o.(Mii); !ok {
 		return false
 	}
 
-	other := o.(*Mii)
+	other := o.(Mii)
 
 	if m.StructureVersion != other.StructureVersion {
 		return false

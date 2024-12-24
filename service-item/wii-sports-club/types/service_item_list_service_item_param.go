@@ -80,11 +80,11 @@ func (silsip ServiceItemListServiceItemParam) Copy() types.RVType {
 
 // Equals checks if the given ServiceItemListServiceItemParam contains the same data as the current ServiceItemListServiceItemParam
 func (silsip ServiceItemListServiceItemParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemListServiceItemParam); !ok {
+	if _, ok := o.(ServiceItemListServiceItemParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemListServiceItemParam)
+	other := o.(ServiceItemListServiceItemParam)
 
 	if silsip.StructureVersion != other.StructureVersion {
 		return false

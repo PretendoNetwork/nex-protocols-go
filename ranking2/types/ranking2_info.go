@@ -80,11 +80,11 @@ func (ri Ranking2Info) Copy() types.RVType {
 
 // Equals checks if the given Ranking2Info contains the same data as the current Ranking2Info
 func (ri Ranking2Info) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2Info); !ok {
+	if _, ok := o.(Ranking2Info); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2Info)
+	other := o.(Ranking2Info)
 
 	if ri.StructureVersion != other.StructureVersion {
 		return false

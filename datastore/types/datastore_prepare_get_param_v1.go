@@ -64,11 +64,11 @@ func (dspgpv DataStorePrepareGetParamV1) Copy() types.RVType {
 
 // Equals checks if the given DataStorePrepareGetParamV1 contains the same data as the current DataStorePrepareGetParamV1
 func (dspgpv DataStorePrepareGetParamV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePrepareGetParamV1); !ok {
+	if _, ok := o.(DataStorePrepareGetParamV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePrepareGetParamV1)
+	other := o.(DataStorePrepareGetParamV1)
 
 	if dspgpv.StructureVersion != other.StructureVersion {
 		return false

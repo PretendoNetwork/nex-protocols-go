@@ -64,11 +64,11 @@ func (bai BasicAccountInfo) Copy() types.RVType {
 
 // Equals checks if the given BasicAccountInfo contains the same data as the current BasicAccountInfo
 func (bai BasicAccountInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*BasicAccountInfo); !ok {
+	if _, ok := o.(BasicAccountInfo); !ok {
 		return false
 	}
 
-	other := o.(*BasicAccountInfo)
+	other := o.(BasicAccountInfo)
 
 	if bai.StructureVersion != other.StructureVersion {
 		return false

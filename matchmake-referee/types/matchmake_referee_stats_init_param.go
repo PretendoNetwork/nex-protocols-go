@@ -73,11 +73,11 @@ func (mrsip MatchmakeRefereeStatsInitParam) Copy() types.RVType {
 
 // Equals checks if the given MatchmakeRefereeStatsInitParam contains the same data as the current MatchmakeRefereeStatsInitParam
 func (mrsip MatchmakeRefereeStatsInitParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeStatsInitParam); !ok {
+	if _, ok := o.(MatchmakeRefereeStatsInitParam); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeStatsInitParam)
+	other := o.(MatchmakeRefereeStatsInitParam)
 
 	if mrsip.StructureVersion != other.StructureVersion {
 		return false

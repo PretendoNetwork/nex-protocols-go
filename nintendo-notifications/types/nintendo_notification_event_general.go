@@ -80,11 +80,11 @@ func (nneg NintendoNotificationEventGeneral) Copy() types.RVType {
 
 // Equals checks if the given NintendoNotificationEventGeneral contains the same data as the current NintendoNotificationEventGeneral
 func (nneg NintendoNotificationEventGeneral) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoNotificationEventGeneral); !ok {
+	if _, ok := o.(NintendoNotificationEventGeneral); !ok {
 		return false
 	}
 
-	other := o.(*NintendoNotificationEventGeneral)
+	other := o.(NintendoNotificationEventGeneral)
 
 	if nneg.StructureVersion != other.StructureVersion {
 		return false

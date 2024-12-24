@@ -120,11 +120,11 @@ func (dsrmi DataStoreReplayMetaInfo) Copy() types.RVType {
 
 // Equals checks if the given DataStoreReplayMetaInfo contains the same data as the current DataStoreReplayMetaInfo
 func (dsrmi DataStoreReplayMetaInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReplayMetaInfo); !ok {
+	if _, ok := o.(DataStoreReplayMetaInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReplayMetaInfo)
+	other := o.(DataStoreReplayMetaInfo)
 
 	if dsrmi.StructureVersion != other.StructureVersion {
 		return false

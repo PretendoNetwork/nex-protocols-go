@@ -18,6 +18,16 @@ type NintendoCreateAccountData struct {
 	Unknown  types.UInt64
 }
 
+// ObjectID returns the object identifier of the type
+func (ncad NintendoCreateAccountData) ObjectID() types.RVType {
+	return ncad.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (ncad NintendoCreateAccountData) DataObjectID() types.RVType {
+	return types.NewString("NintendoCreateAccountData")
+}
+
 // WriteTo writes the NintendoCreateAccountData to the given writable
 func (ncad NintendoCreateAccountData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()

@@ -27,8 +27,8 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	var strKey types.String
 	var strEmail types.String
-	var oPublicData types.AnyDataHolder
-	var oPrivateData types.AnyDataHolder
+	var oPublicData types.DataHolder
+	var oPrivateData types.DataHolder
 
 	var err error
 

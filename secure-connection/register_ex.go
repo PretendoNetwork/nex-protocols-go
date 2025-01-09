@@ -26,7 +26,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var vecMyURLs types.List[types.StationURL]
-	var hCustomData types.AnyDataHolder
+	var hCustomData types.DataHolder
 
 	var err error
 

@@ -151,10 +151,10 @@ const (
 // Protocol stores all the RMC method handlers for the MatchMaking protocol and listens for requests
 type Protocol struct {
 	endpoint                    nex.EndpointInterface
-	RegisterGathering           func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	RegisterGathering           func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error)
 	UnregisterGathering         func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32) (*nex.RMCMessage, *nex.Error)
 	UnregisterGatherings        func(err error, packet nex.PacketInterface, callID uint32, lstGatherings types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
-	UpdateGathering             func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	UpdateGathering             func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error)
 	Invite                      func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, lstPrincipals types.List[types.PID], strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	AcceptInvitation            func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	DeclineInvitation           func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error)
@@ -203,10 +203,10 @@ type Protocol struct {
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
-	SetHandlerRegisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRegisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUnregisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUnregisterGatherings(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUpdateGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error))
 	SetHandlerInvite(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, lstPrincipals types.List[types.PID], strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAcceptInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerDeclineInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error))
@@ -260,7 +260,7 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // SetHandlerRegisterGathering sets the handler for the RegisterGathering method
-func (protocol *Protocol) SetHandlerRegisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerRegisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RegisterGathering = handler
 }
 
@@ -275,7 +275,7 @@ func (protocol *Protocol) SetHandlerUnregisterGatherings(handler func(err error,
 }
 
 // SetHandlerUpdateGathering sets the handler for the UpdateGathering method
-func (protocol *Protocol) SetHandlerUpdateGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUpdateGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateGathering = handler
 }
 

@@ -43,7 +43,7 @@ type Protocol struct {
 	InsertItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, bufData types.Buffer, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)
 	RemoveItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)
 	GetItem             func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)
-	InsertCustomItem    func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.AnyDataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)
+	InsertCustomItem    func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.DataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)
 	GetCustomItem       func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error)
 	FindItemsBySQLQuery func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, strQuery types.String) (*nex.RMCMessage, *nex.Error)
 	Patches             nex.ServiceProtocol
@@ -58,7 +58,7 @@ type Interface interface {
 	SetHandlerInsertItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, bufData types.Buffer, bReplace types.Bool) (*nex.RMCMessage, *nex.Error))
 	SetHandlerRemoveItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerInsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.AnyDataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerInsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.DataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerFindItemsBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, strQuery types.String) (*nex.RMCMessage, *nex.Error))
 }
@@ -94,7 +94,7 @@ func (protocol *Protocol) SetHandlerGetItem(handler func(err error, packet nex.P
 }
 
 // SetHandlerInsertCustomItem sets the handler for the InsertCustomItem method
-func (protocol *Protocol) SetHandlerInsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.AnyDataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerInsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup types.UInt32, strTag types.String, hData types.DataHolder, bReplace types.Bool) (*nex.RMCMessage, *nex.Error)) {
 	protocol.InsertCustomItem = handler
 }
 

@@ -19,6 +19,16 @@ type AuthenticationInfo struct {
 	ServerVersion types.UInt32
 }
 
+// ObjectID returns the object identifier of the type
+func (ai AuthenticationInfo) ObjectID() types.RVType {
+	return ai.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (ai AuthenticationInfo) DataObjectID() types.RVType {
+	return types.NewString("AuthenticationInfo")
+}
+
 // WriteTo writes the AuthenticationInfo to the given writable
 func (ai AuthenticationInfo) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)

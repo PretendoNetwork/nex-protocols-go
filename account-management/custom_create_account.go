@@ -29,7 +29,7 @@ func (protocol *Protocol) handleCustomCreateAccount(packet nex.PacketInterface) 
 	var strKey types.String
 	var uiGroups types.UInt32
 	var strEmail types.String
-	var oAuthData types.AnyDataHolder
+	var oAuthData types.DataHolder
 
 	var err error
 

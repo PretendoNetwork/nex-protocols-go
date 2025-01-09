@@ -29,8 +29,8 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 	var strKey types.String
 	var uiGroups types.UInt32
 	var strEmail types.String
-	var oPublicData types.AnyDataHolder
-	var oPrivateData types.AnyDataHolder
+	var oPublicData types.DataHolder
+	var oPrivateData types.DataHolder
 
 	var err error
 

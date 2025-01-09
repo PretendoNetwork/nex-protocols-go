@@ -8,6 +8,21 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
+// DataInterface defines an interface to track types which have Gathering anywhere
+// in their parent tree.
+type GatheringInterface interface {
+	types.HoldableObject
+	GatheringObjectID() types.RVType // Returns the object identifier of the type embedding Gathering
+}
+
+// GatheringHolder is an AnyObjectHolder for types which embed Gathering
+type GatheringHolder = types.AnyObjectHolder[GatheringInterface]
+
+// NewGatheringHolder returns a new GatheringHolder
+func NewGatheringHolder() GatheringHolder {
+	return GatheringHolder{}
+}
+
 // Gathering is a type within the Matchmaking protocol
 type Gathering struct {
 	types.Structure
@@ -21,6 +36,16 @@ type Gathering struct {
 	Flags               types.UInt32
 	State               types.UInt32
 	Description         types.String
+}
+
+// ObjectID returns the object identifier of the type
+func (g Gathering) ObjectID() types.RVType {
+	return g.GatheringObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Gathering
+func (g Gathering) GatheringObjectID() types.RVType {
+	return types.NewString("Gathering")
 }
 
 // WriteTo writes the Gathering to the given writable

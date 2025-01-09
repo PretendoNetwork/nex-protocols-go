@@ -17,6 +17,16 @@ type AccountExtraInfo struct {
 	NEXToken types.String
 }
 
+// ObjectID returns the object identifier of the type
+func (aei AccountExtraInfo) ObjectID() types.RVType {
+	return aei.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (aei AccountExtraInfo) DataObjectID() types.RVType {
+	return types.NewString("AccountExtraInfo")
+}
+
 // WriteTo writes the AccountExtraInfo to the given writable
 func (aei AccountExtraInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()

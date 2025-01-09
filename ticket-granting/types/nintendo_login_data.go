@@ -14,6 +14,16 @@ type NintendoLoginData struct {
 	Token types.String
 }
 
+// ObjectID returns the object identifier of the type
+func (nld NintendoLoginData) ObjectID() types.RVType {
+	return nld.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (nld NintendoLoginData) DataObjectID() types.RVType {
+	return types.NewString("NintendoLoginData")
+}
+
 // WriteTo writes the NintendoLoginData to the given writable
 func (nld NintendoLoginData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()

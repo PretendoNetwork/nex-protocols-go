@@ -27,7 +27,7 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 
 	var uiGroup types.UInt32
 	var strTag types.String
-	var hData types.AnyDataHolder
+	var hData types.DataHolder
 	var bReplace types.Bool
 
 	var err error

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var strUserName types.String
-	var oExtraData types.AnyDataHolder
+	var oExtraData types.DataHolder
 
 	var err error
 

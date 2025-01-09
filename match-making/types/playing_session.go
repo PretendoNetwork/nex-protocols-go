@@ -12,7 +12,7 @@ import (
 type PlayingSession struct {
 	types.Structure
 	PrincipalID types.PID
-	Gathering   types.AnyDataHolder
+	Gathering   GatheringHolder
 }
 
 // WriteTo writes the PlayingSession to the given writable
@@ -57,7 +57,7 @@ func (ps PlayingSession) Copy() types.RVType {
 
 	copied.StructureVersion = ps.StructureVersion
 	copied.PrincipalID = ps.PrincipalID.Copy().(types.PID)
-	copied.Gathering = ps.Gathering.Copy().(types.AnyDataHolder)
+	copied.Gathering = ps.Gathering.Copy().(GatheringHolder)
 
 	return copied
 }
@@ -119,7 +119,7 @@ func (ps PlayingSession) FormatToString(indentationLevel int) string {
 func NewPlayingSession() PlayingSession {
 	return PlayingSession{
 		PrincipalID: types.NewPID(0),
-		Gathering:   types.NewAnyDataHolder(),
+		Gathering:   NewGatheringHolder(),
 	}
 
 }

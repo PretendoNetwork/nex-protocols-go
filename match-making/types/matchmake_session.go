@@ -31,6 +31,16 @@ type MatchmakeSession struct {
 	CodeWord              types.String   // * NEX v4.0.0
 }
 
+// ObjectID returns the object identifier of the type
+func (ms MatchmakeSession) ObjectID() types.RVType {
+	return ms.GatheringObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Gathering
+func (ms MatchmakeSession) GatheringObjectID() types.RVType {
+	return types.NewString("MatchmakeSession")
+}
+
 // WriteTo writes the MatchmakeSession to the given writable
 func (ms MatchmakeSession) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)

@@ -25,8 +25,8 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var oPublicData types.AnyDataHolder
-	var oPrivateData types.AnyDataHolder
+	var oPublicData types.DataHolder
+	var oPrivateData types.DataHolder
 
 	var err error
 

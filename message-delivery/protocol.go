@@ -21,7 +21,7 @@ const (
 // Protocol stores all the RMC method handlers for the Message Delivery protocol and listens for requests
 type Protocol struct {
 	endpoint       nex.EndpointInterface
-	DeliverMessage func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	DeliverMessage func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)
 	Patches        nex.ServiceProtocol
 	PatchedMethods []uint32
 }
@@ -30,7 +30,7 @@ type Protocol struct {
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
-	SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -44,7 +44,7 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // SetHandlerDeliverMessage sets the handler for the DeliverMessage method
-func (protocol *Protocol) SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DeliverMessage = handler
 }
 

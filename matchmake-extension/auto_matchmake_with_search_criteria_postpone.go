@@ -27,7 +27,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet n
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria]
-	var anyGathering types.AnyDataHolder
+	var anyGathering match_making_types.GatheringHolder
 	var strMessage types.String
 
 	var err error

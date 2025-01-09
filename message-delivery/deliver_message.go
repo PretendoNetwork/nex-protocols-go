@@ -25,7 +25,7 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var oUserMessage types.AnyDataHolder
+	var oUserMessage types.DataHolder
 
 	err := oUserMessage.ExtractFrom(parametersStream)
 	if err != nil {

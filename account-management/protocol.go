@@ -120,7 +120,7 @@ type Protocol struct {
 	GetMultiplePublicData       func(err error, packet nex.PacketInterface, callID uint32, lstPrincipals types.List[types.PID]) (*nex.RMCMessage, *nex.Error)
 	UpdateAccountName           func(err error, packet nex.PacketInterface, callID uint32, strName types.String) (*nex.RMCMessage, *nex.Error)
 	UpdateAccountEmail          func(err error, packet nex.PacketInterface, callID uint32, strName types.String) (*nex.RMCMessage, *nex.Error)
-	UpdateCustomData            func(err error, packet nex.PacketInterface, callID uint32, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	UpdateCustomData            func(err error, packet nex.PacketInterface, callID uint32, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error)
 	FindByNameRegex             func(err error, packet nex.PacketInterface, callID uint32, uiGroups types.UInt32, strRegex types.String, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error)
 	UpdateAccountExpiryDate     func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID, dtExpiry types.DateTime, strExpiredMessage types.String) (*nex.RMCMessage, *nex.Error)
 	UpdateAccountEffectiveDate  func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID, dtEffectiveFrom types.DateTime, strNotEffectiveMessage types.String) (*nex.RMCMessage, *nex.Error)
@@ -128,14 +128,14 @@ type Protocol struct {
 	GetStatus                   func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID) (*nex.RMCMessage, *nex.Error)
 	GetLastConnectionStats      func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID) (*nex.RMCMessage, *nex.Error)
 	ResetPassword               func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
-	CreateAccountWithCustomData func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	CreateAccountWithCustomData func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error)
 	RetrieveAccount             func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
-	UpdateAccount               func(err error, packet nex.PacketInterface, callID uint32, strKey types.String, strEmail types.String, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	UpdateAccount               func(err error, packet nex.PacketInterface, callID uint32, strKey types.String, strEmail types.String, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error)
 	ChangePasswordByGuest       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, strEmail types.String) (*nex.RMCMessage, *nex.Error)
 	FindByNameLike              func(err error, packet nex.PacketInterface, callID uint32, uiGroups types.UInt32, strLike types.String, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error)
-	CustomCreateAccount         func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
-	NintendoCreateAccount       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
-	LookupOrCreateAccount       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	CustomCreateAccount         func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error)
+	NintendoCreateAccount       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error)
+	LookupOrCreateAccount       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error)
 	DisconnectPrincipal         func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID) (*nex.RMCMessage, *nex.Error)
 	DisconnectAllPrincipals     func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 	Patches                     nex.ServiceProtocol
@@ -158,7 +158,7 @@ type Interface interface {
 	SetHandlerGetMultiplePublicData(handler func(err error, packet nex.PacketInterface, callID uint32, lstPrincipals types.List[types.PID]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateAccountName(handler func(err error, packet nex.PacketInterface, callID uint32, strName types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateAccountEmail(handler func(err error, packet nex.PacketInterface, callID uint32, strName types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUpdateCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error))
 	SetHandlerFindByNameRegex(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroups types.UInt32, strRegex types.String, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateAccountExpiryDate(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID, dtExpiry types.DateTime, strExpiredMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateAccountEffectiveDate(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID, dtEffectiveFrom types.DateTime, strNotEffectiveMessage types.String) (*nex.RMCMessage, *nex.Error))
@@ -166,14 +166,14 @@ type Interface interface {
 	SetHandlerGetStatus(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetLastConnectionStats(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerResetPassword(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerCreateAccountWithCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerCreateAccountWithCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error))
 	SetHandlerRetrieveAccount(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUpdateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strKey types.String, strEmail types.String, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strKey types.String, strEmail types.String, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error))
 	SetHandlerChangePasswordByGuest(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, strEmail types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerFindByNameLike(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroups types.UInt32, strLike types.String, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error))
-	SetHandlerCustomCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
-	SetHandlerNintendoCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
-	SetHandlerLookupOrCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerCustomCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerNintendoCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerLookupOrCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error))
 	SetHandlerDisconnectPrincipal(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerDisconnectAllPrincipals(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 }
@@ -249,7 +249,7 @@ func (protocol *Protocol) SetHandlerUpdateAccountEmail(handler func(err error, p
 }
 
 // SetHandlerUpdateCustomData sets the handler for the UpdateCustomData method
-func (protocol *Protocol) SetHandlerUpdateCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUpdateCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateCustomData = handler
 }
 
@@ -289,7 +289,7 @@ func (protocol *Protocol) SetHandlerResetPassword(handler func(err error, packet
 }
 
 // SetHandlerCreateAccountWithCustomData sets the handler for the CreateAccountWithCustomData method
-func (protocol *Protocol) SetHandlerCreateAccountWithCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerCreateAccountWithCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.CreateAccountWithCustomData = handler
 }
 
@@ -299,7 +299,7 @@ func (protocol *Protocol) SetHandlerRetrieveAccount(handler func(err error, pack
 }
 
 // SetHandlerUpdateAccount sets the handler for the UpdateAccount method
-func (protocol *Protocol) SetHandlerUpdateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strKey types.String, strEmail types.String, oPublicData types.AnyDataHolder, oPrivateData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUpdateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strKey types.String, strEmail types.String, oPublicData types.DataHolder, oPrivateData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateAccount = handler
 }
 
@@ -314,17 +314,17 @@ func (protocol *Protocol) SetHandlerFindByNameLike(handler func(err error, packe
 }
 
 // SetHandlerCustomCreateAccount sets the handler for the CustomCreateAccount method
-func (protocol *Protocol) SetHandlerCustomCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerCustomCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.CustomCreateAccount = handler
 }
 
 // SetHandlerNintendoCreateAccount sets the handler for the NintendoCreateAccount method
-func (protocol *Protocol) SetHandlerNintendoCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerNintendoCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.NintendoCreateAccount = handler
 }
 
 // SetHandlerLookupOrCreateAccount sets the handler for the LookupOrCreateAccount method
-func (protocol *Protocol) SetHandlerLookupOrCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerLookupOrCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName types.String, strKey types.String, uiGroups types.UInt32, strEmail types.String, oAuthData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.LookupOrCreateAccount = handler
 }
 

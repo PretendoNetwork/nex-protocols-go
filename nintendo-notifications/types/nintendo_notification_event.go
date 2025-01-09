@@ -13,7 +13,7 @@ type NintendoNotificationEvent struct {
 	types.Structure
 	Type       types.UInt32
 	SenderPID  types.PID
-	DataHolder types.AnyDataHolder
+	DataHolder types.DataHolder
 }
 
 // WriteTo writes the NintendoNotificationEvent to the given writable
@@ -65,7 +65,7 @@ func (nne NintendoNotificationEvent) Copy() types.RVType {
 	copied.StructureVersion = nne.StructureVersion
 	copied.Type = nne.Type.Copy().(types.UInt32)
 	copied.SenderPID = nne.SenderPID.Copy().(types.PID)
-	copied.DataHolder = nne.DataHolder.Copy().(types.AnyDataHolder)
+	copied.DataHolder = nne.DataHolder.Copy().(types.DataHolder)
 
 	return copied
 }
@@ -133,7 +133,7 @@ func NewNintendoNotificationEvent() NintendoNotificationEvent {
 	return NintendoNotificationEvent{
 		Type:       types.NewUInt32(0),
 		SenderPID:  types.NewPID(0),
-		DataHolder: types.NewAnyDataHolder(),
+		DataHolder: types.NewDataHolder(),
 	}
 
 }

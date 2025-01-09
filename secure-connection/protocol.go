@@ -45,7 +45,7 @@ type Protocol struct {
 	Register              func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL]) (*nex.RMCMessage, *nex.Error)
 	RequestConnectionData func(err error, packet nex.PacketInterface, callID uint32, cidTarget types.UInt32, pidTarget types.PID) (*nex.RMCMessage, *nex.Error)
 	RequestURLs           func(err error, packet nex.PacketInterface, callID uint32, cidTarget types.UInt32, pidTarget types.PID) (*nex.RMCMessage, *nex.Error)
-	RegisterEx            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL], hCustomData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	RegisterEx            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL], hCustomData types.DataHolder) (*nex.RMCMessage, *nex.Error)
 	TestConnectivity      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 	UpdateURLs            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL]) (*nex.RMCMessage, *nex.Error)
 	ReplaceURL            func(err error, packet nex.PacketInterface, callID uint32, target types.StationURL, url types.StationURL) (*nex.RMCMessage, *nex.Error)
@@ -61,7 +61,7 @@ type Interface interface {
 	SetHandlerRegister(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerRequestConnectionData(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget types.UInt32, pidTarget types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerRequestURLs(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget types.UInt32, pidTarget types.PID) (*nex.RMCMessage, *nex.Error))
-	SetHandlerRegisterEx(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL], hCustomData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRegisterEx(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL], hCustomData types.DataHolder) (*nex.RMCMessage, *nex.Error))
 	SetHandlerTestConnectivity(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateURLs(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerReplaceURL(handler func(err error, packet nex.PacketInterface, callID uint32, target types.StationURL, url types.StationURL) (*nex.RMCMessage, *nex.Error))
@@ -94,7 +94,7 @@ func (protocol *Protocol) SetHandlerRequestURLs(handler func(err error, packet n
 }
 
 // SetHandlerRegisterEx sets the handler for the RegisterEx method
-func (protocol *Protocol) SetHandlerRegisterEx(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL], hCustomData types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerRegisterEx(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs types.List[types.StationURL], hCustomData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RegisterEx = handler
 }
 

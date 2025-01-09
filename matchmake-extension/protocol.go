@@ -183,10 +183,10 @@ type Protocol struct {
 	endpoint                                                nex.EndpointInterface
 	CloseParticipation                                      func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error)
 	OpenParticipation                                       func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error)
-	AutoMatchmakePostpone                                   func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder, message types.String) (*nex.RMCMessage, *nex.Error)
+	AutoMatchmakePostpone                                   func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String) (*nex.RMCMessage, *nex.Error)
 	BrowseMatchmakeSession                                  func(err error, packet nex.PacketInterface, callID uint32, searchCriteria match_making_types.MatchmakeSessionSearchCriteria, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error)
 	BrowseMatchmakeSessionWithHostURLs                      func(err error, packet nex.PacketInterface, callID uint32, searchCriteria match_making_types.MatchmakeSessionSearchCriteria, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error)
-	CreateMatchmakeSession                                  func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error)
+	CreateMatchmakeSession                                  func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error)
 	JoinMatchmakeSession                                    func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	ModifyCurrentGameAttribute                              func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribIndex types.UInt32, newValue types.UInt32) (*nex.RMCMessage, *nex.Error)
 	UpdateNotificationData                                  func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt32, uiParam2 types.UInt32, strParam types.String) (*nex.RMCMessage, *nex.Error)
@@ -194,8 +194,8 @@ type Protocol struct {
 	UpdateApplicationBuffer                                 func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, applicationBuffer types.Buffer) (*nex.RMCMessage, *nex.Error)
 	UpdateMatchmakeSessionAttribute                         func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribs types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
 	GetlstFriendNotificationData                            func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
-	UpdateMatchmakeSession                                  func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
-	AutoMatchmakeWithSearchCriteriaPostpone                 func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria], anyGathering types.AnyDataHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)
+	UpdateMatchmakeSession                                  func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error)
+	AutoMatchmakeWithSearchCriteriaPostpone                 func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	GetPlayingSession                                       func(err error, packet nex.PacketInterface, callID uint32, lstPID types.List[types.PID]) (*nex.RMCMessage, *nex.Error)
 	CreateCommunity                                         func(err error, packet nex.PacketInterface, callID uint32, community match_making_types.PersistentGathering, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	UpdateCommunity                                         func(err error, packet nex.PacketInterface, callID uint32, community match_making_types.PersistentGathering) (*nex.RMCMessage, *nex.Error)
@@ -213,7 +213,7 @@ type Protocol struct {
 	JoinMatchmakeSessionEx                                  func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String, dontCareMyBlockList types.Bool, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error)
 	GetSimplePlayingSession                                 func(err error, packet nex.PacketInterface, callID uint32, listPID types.List[types.PID], includeLoginUser types.Bool) (*nex.RMCMessage, *nex.Error)
 	GetSimpleCommunity                                      func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
-	AutoMatchmakeWithGatheringIDPostpone                    func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering types.AnyDataHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)
+	AutoMatchmakeWithGatheringIDPostpone                    func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	UpdateProgressScore                                     func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, progressScore types.UInt8) (*nex.RMCMessage, *nex.Error)
 	DebugNotifyEvent                                        func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType types.UInt32, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)
 	GenerateMatchmakeSessionSystemPassword                  func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error)
@@ -245,10 +245,10 @@ type Interface interface {
 	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerCloseParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerOpenParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerAutoMatchmakePostpone(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder, message types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAutoMatchmakePostpone(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerBrowseMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, searchCriteria match_making_types.MatchmakeSessionSearchCriteria, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error))
 	SetHandlerBrowseMatchmakeSessionWithHostURLs(handler func(err error, packet nex.PacketInterface, callID uint32, searchCriteria match_making_types.MatchmakeSessionSearchCriteria, resultRange types.ResultRange) (*nex.RMCMessage, *nex.Error))
-	SetHandlerCreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error))
+	SetHandlerCreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error))
 	SetHandlerJoinMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerModifyCurrentGameAttribute(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribIndex types.UInt32, newValue types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt32, uiParam2 types.UInt32, strParam types.String) (*nex.RMCMessage, *nex.Error))
@@ -256,8 +256,8 @@ type Interface interface {
 	SetHandlerUpdateApplicationBuffer(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, applicationBuffer types.Buffer) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateMatchmakeSessionAttribute(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribs types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetlstFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUpdateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
-	SetHandlerAutoMatchmakeWithSearchCriteriaPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria], anyGathering types.AnyDataHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAutoMatchmakeWithSearchCriteriaPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetPlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, lstPID types.List[types.PID]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerCreateCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, community match_making_types.PersistentGathering, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, community match_making_types.PersistentGathering) (*nex.RMCMessage, *nex.Error))
@@ -275,7 +275,7 @@ type Interface interface {
 	SetHandlerJoinMatchmakeSessionEx(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String, dontCareMyBlockList types.Bool, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetSimplePlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, listPID types.List[types.PID], includeLoginUser types.Bool) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetSimpleCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerAutoMatchmakeWithGatheringIDPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering types.AnyDataHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAutoMatchmakeWithGatheringIDPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateProgressScore(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, progressScore types.UInt8) (*nex.RMCMessage, *nex.Error))
 	SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType types.UInt32, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGenerateMatchmakeSessionSystemPassword(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error))
@@ -320,7 +320,7 @@ func (protocol *Protocol) SetHandlerOpenParticipation(handler func(err error, pa
 }
 
 // SetHandlerAutoMatchmakePostpone sets the handler for the AutoMatchmakePostpone method
-func (protocol *Protocol) SetHandlerAutoMatchmakePostpone(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder, message types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerAutoMatchmakePostpone(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.AutoMatchmakePostpone = handler
 }
 
@@ -335,7 +335,7 @@ func (protocol *Protocol) SetHandlerBrowseMatchmakeSessionWithHostURLs(handler f
 }
 
 // SetHandlerCreateMatchmakeSession sets the handler for the CreateMatchmakeSession method
-func (protocol *Protocol) SetHandlerCreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerCreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error)) {
 	protocol.CreateMatchmakeSession = handler
 }
 
@@ -375,12 +375,12 @@ func (protocol *Protocol) SetHandlerGetlstFriendNotificationData(handler func(er
 }
 
 // SetHandlerUpdateMatchmakeSession sets the handler for the UpdateMatchmakeSession method
-func (protocol *Protocol) SetHandlerUpdateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUpdateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateMatchmakeSession = handler
 }
 
 // SetHandlerAutoMatchmakeWithSearchCriteriaPostpone sets the handler for the AutoMatchmakeWithSearchCriteriaPostpone method
-func (protocol *Protocol) SetHandlerAutoMatchmakeWithSearchCriteriaPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria], anyGathering types.AnyDataHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerAutoMatchmakeWithSearchCriteriaPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.AutoMatchmakeWithSearchCriteriaPostpone = handler
 }
 
@@ -470,7 +470,7 @@ func (protocol *Protocol) SetHandlerGetSimpleCommunity(handler func(err error, p
 }
 
 // SetHandlerAutoMatchmakeWithGatheringIDPostpone sets the handler for the AutoMatchmakeWithGatheringIDPostpone method
-func (protocol *Protocol) SetHandlerAutoMatchmakeWithGatheringIDPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering types.AnyDataHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerAutoMatchmakeWithGatheringIDPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.AutoMatchmakeWithGatheringIDPostpone = handler
 }
 

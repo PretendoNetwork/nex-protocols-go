@@ -16,12 +16,13 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 	case nex.PRUDPPacketInterface:
 		var prudpPacket nex.PRUDPPacketInterface
 
-		endpoint := sender.(*nex.PRUDPConnection).Endpoint()
+		connection := sender.(*nex.PRUDPConnection)
+		endpoint := connection.Endpoint()
 		server := endpoint.(*nex.PRUDPEndPoint).Server
 		if packet.Version() == 1 {
-			prudpPacket, _ = nex.NewPRUDPPacketV1(server, sender.(*nex.PRUDPConnection), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV1(server, connection, nil)
 		} else {
-			prudpPacket, _ = nex.NewPRUDPPacketV0(server, sender.(*nex.PRUDPConnection), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV0(server, connection, nil)
 		}
 
 		prudpPacket.SetType(constants.DataPacket)
@@ -39,12 +40,22 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 
 		responsePacket = prudpPacket
 		responsePacket.SetPayload(message.Bytes())
+
+		sender.Endpoint().Send(responsePacket)
+
+		connection.QueuedOutboundPackets.Clear(func(packet *nex.PRUDPPacketInterface) {
+			server.Send(*packet)
+		});
 	case *nex.HPPPacket:
 		// * We reuse the same packet from input and replace
 		// * the RMC message so that it can be delivered back
 		responsePacket = packet
 		responsePacket.SetRMCMessage(message)
+
+		sender.Endpoint().Send(responsePacket)
 	}
 
-	sender.Endpoint().Send(responsePacket)
+	if message.OnAfterSend != nil {
+		message.OnAfterSend()
+	}
 }

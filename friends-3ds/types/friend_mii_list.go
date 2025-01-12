@@ -11,14 +11,14 @@ import (
 // FriendMiiList is a type within the Friends3DS protocol
 type FriendMiiList struct {
 	types.Structure
-	*types.Data
-	Unknown1 *types.PrimitiveU32
-	MiiList  *MiiList
-	Unknown2 *types.DateTime
+	types.Data
+	Unknown1 types.UInt32
+	MiiList  MiiList
+	Unknown2 types.DateTime
 }
 
 // WriteTo writes the FriendMiiList to the given writable
-func (fml *FriendMiiList) WriteTo(writable types.Writable) {
+func (fml FriendMiiList) WriteTo(writable types.Writable) {
 	fml.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,25 +67,25 @@ func (fml *FriendMiiList) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendMiiList
-func (fml *FriendMiiList) Copy() types.RVType {
+func (fml FriendMiiList) Copy() types.RVType {
 	copied := NewFriendMiiList()
 
 	copied.StructureVersion = fml.StructureVersion
-	copied.Data = fml.Data.Copy().(*types.Data)
-	copied.Unknown1 = fml.Unknown1.Copy().(*types.PrimitiveU32)
-	copied.MiiList = fml.MiiList.Copy().(*MiiList)
-	copied.Unknown2 = fml.Unknown2.Copy().(*types.DateTime)
+	copied.Data = fml.Data.Copy().(types.Data)
+	copied.Unknown1 = fml.Unknown1.Copy().(types.UInt32)
+	copied.MiiList = fml.MiiList.Copy().(MiiList)
+	copied.Unknown2 = fml.Unknown2.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given FriendMiiList contains the same data as the current FriendMiiList
-func (fml *FriendMiiList) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendMiiList); !ok {
+func (fml FriendMiiList) Equals(o types.RVType) bool {
+	if _, ok := o.(FriendMiiList); !ok {
 		return false
 	}
 
-	other := o.(*FriendMiiList)
+	other := o.(FriendMiiList)
 
 	if fml.StructureVersion != other.StructureVersion {
 		return false
@@ -106,13 +106,27 @@ func (fml *FriendMiiList) Equals(o types.RVType) bool {
 	return fml.Unknown2.Equals(other.Unknown2)
 }
 
+// CopyRef copies the current value of the FriendMiiList
+// and returns a pointer to the new copy
+func (fml FriendMiiList) CopyRef() types.RVTypePtr {
+	copied := fml.Copy().(FriendMiiList)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendMiiList
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fml *FriendMiiList) Deref() types.RVType {
+	return *fml
+}
+
 // String returns the string representation of the FriendMiiList
-func (fml *FriendMiiList) String() string {
+func (fml FriendMiiList) String() string {
 	return fml.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendMiiList using the provided indentation level
-func (fml *FriendMiiList) FormatToString(indentationLevel int) string {
+func (fml FriendMiiList) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +143,12 @@ func (fml *FriendMiiList) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendMiiList returns a new FriendMiiList
-func NewFriendMiiList() *FriendMiiList {
-	fml := &FriendMiiList{
+func NewFriendMiiList() FriendMiiList {
+	return FriendMiiList{
 		Data:     types.NewData(),
-		Unknown1: types.NewPrimitiveU32(0),
+		Unknown1: types.NewUInt32(0),
 		MiiList:  NewMiiList(),
 		Unknown2: types.NewDateTime(0),
 	}
 
-	return fml
 }

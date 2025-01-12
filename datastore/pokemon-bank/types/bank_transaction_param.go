@@ -11,15 +11,15 @@ import (
 // BankTransactionParam is a type within the DataStore protocol
 type BankTransactionParam struct {
 	types.Structure
-	DataID              *types.PrimitiveU64
-	CurVersion          *types.PrimitiveU32
-	UpdateVersion       *types.PrimitiveU32
-	Size                *types.PrimitiveU32
-	TransactionPassword *types.PrimitiveU64
+	DataID              types.UInt64
+	CurVersion          types.UInt32
+	UpdateVersion       types.UInt32
+	Size                types.UInt32
+	TransactionPassword types.UInt64
 }
 
 // WriteTo writes the BankTransactionParam to the given writable
-func (btp *BankTransactionParam) WriteTo(writable types.Writable) {
+func (btp BankTransactionParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	btp.DataID.WriteTo(contentWritable)
@@ -73,26 +73,26 @@ func (btp *BankTransactionParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of BankTransactionParam
-func (btp *BankTransactionParam) Copy() types.RVType {
+func (btp BankTransactionParam) Copy() types.RVType {
 	copied := NewBankTransactionParam()
 
 	copied.StructureVersion = btp.StructureVersion
-	copied.DataID = btp.DataID.Copy().(*types.PrimitiveU64)
-	copied.CurVersion = btp.CurVersion.Copy().(*types.PrimitiveU32)
-	copied.UpdateVersion = btp.UpdateVersion.Copy().(*types.PrimitiveU32)
-	copied.Size = btp.Size.Copy().(*types.PrimitiveU32)
-	copied.TransactionPassword = btp.TransactionPassword.Copy().(*types.PrimitiveU64)
+	copied.DataID = btp.DataID.Copy().(types.UInt64)
+	copied.CurVersion = btp.CurVersion.Copy().(types.UInt32)
+	copied.UpdateVersion = btp.UpdateVersion.Copy().(types.UInt32)
+	copied.Size = btp.Size.Copy().(types.UInt32)
+	copied.TransactionPassword = btp.TransactionPassword.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given BankTransactionParam contains the same data as the current BankTransactionParam
-func (btp *BankTransactionParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*BankTransactionParam); !ok {
+func (btp BankTransactionParam) Equals(o types.RVType) bool {
+	if _, ok := o.(BankTransactionParam); !ok {
 		return false
 	}
 
-	other := o.(*BankTransactionParam)
+	other := o.(BankTransactionParam)
 
 	if btp.StructureVersion != other.StructureVersion {
 		return false
@@ -117,13 +117,27 @@ func (btp *BankTransactionParam) Equals(o types.RVType) bool {
 	return btp.TransactionPassword.Equals(other.TransactionPassword)
 }
 
+// CopyRef copies the current value of the BankTransactionParam
+// and returns a pointer to the new copy
+func (btp BankTransactionParam) CopyRef() types.RVTypePtr {
+	copied := btp.Copy().(BankTransactionParam)
+	return &copied
+}
+
+// Deref takes a pointer to the BankTransactionParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (btp *BankTransactionParam) Deref() types.RVType {
+	return *btp
+}
+
 // String returns the string representation of the BankTransactionParam
-func (btp *BankTransactionParam) String() string {
+func (btp BankTransactionParam) String() string {
 	return btp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the BankTransactionParam using the provided indentation level
-func (btp *BankTransactionParam) FormatToString(indentationLevel int) string {
+func (btp BankTransactionParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,14 +155,13 @@ func (btp *BankTransactionParam) FormatToString(indentationLevel int) string {
 }
 
 // NewBankTransactionParam returns a new BankTransactionParam
-func NewBankTransactionParam() *BankTransactionParam {
-	btp := &BankTransactionParam{
-		DataID:              types.NewPrimitiveU64(0),
-		CurVersion:          types.NewPrimitiveU32(0),
-		UpdateVersion:       types.NewPrimitiveU32(0),
-		Size:                types.NewPrimitiveU32(0),
-		TransactionPassword: types.NewPrimitiveU64(0),
+func NewBankTransactionParam() BankTransactionParam {
+	return BankTransactionParam{
+		DataID:              types.NewUInt64(0),
+		CurVersion:          types.NewUInt32(0),
+		UpdateVersion:       types.NewUInt32(0),
+		Size:                types.NewUInt32(0),
+		TransactionPassword: types.NewUInt64(0),
 	}
 
-	return btp
 }

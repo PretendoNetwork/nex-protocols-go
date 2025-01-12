@@ -11,21 +11,21 @@ import (
 // DataStorePreparePostParamV1 is a type within the DataStore protocol
 type DataStorePreparePostParamV1 struct {
 	types.Structure
-	Size             *types.PrimitiveU32
-	Name             *types.String
-	DataType         *types.PrimitiveU16
-	MetaBinary       *types.QBuffer
-	Permission       *DataStorePermission
-	DelPermission    *DataStorePermission
-	Flag             *types.PrimitiveU32
-	Period           *types.PrimitiveU16
-	ReferDataID      *types.PrimitiveU32
-	Tags             *types.List[*types.String]
-	RatingInitParams *types.List[*DataStoreRatingInitParamWithSlot]
+	Size             types.UInt32
+	Name             types.String
+	DataType         types.UInt16
+	MetaBinary       types.QBuffer
+	Permission       DataStorePermission
+	DelPermission    DataStorePermission
+	Flag             types.UInt32
+	Period           types.UInt16
+	ReferDataID      types.UInt32
+	Tags             types.List[types.String]
+	RatingInitParams types.List[DataStoreRatingInitParamWithSlot]
 }
 
 // WriteTo writes the DataStorePreparePostParamV1 to the given writable
-func (dspppv *DataStorePreparePostParamV1) WriteTo(writable types.Writable) {
+func (dspppv DataStorePreparePostParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspppv.Size.WriteTo(contentWritable)
@@ -115,32 +115,32 @@ func (dspppv *DataStorePreparePostParamV1) ExtractFrom(readable types.Readable) 
 }
 
 // Copy returns a new copied instance of DataStorePreparePostParamV1
-func (dspppv *DataStorePreparePostParamV1) Copy() types.RVType {
+func (dspppv DataStorePreparePostParamV1) Copy() types.RVType {
 	copied := NewDataStorePreparePostParamV1()
 
 	copied.StructureVersion = dspppv.StructureVersion
-	copied.Size = dspppv.Size.Copy().(*types.PrimitiveU32)
-	copied.Name = dspppv.Name.Copy().(*types.String)
-	copied.DataType = dspppv.DataType.Copy().(*types.PrimitiveU16)
-	copied.MetaBinary = dspppv.MetaBinary.Copy().(*types.QBuffer)
-	copied.Permission = dspppv.Permission.Copy().(*DataStorePermission)
-	copied.DelPermission = dspppv.DelPermission.Copy().(*DataStorePermission)
-	copied.Flag = dspppv.Flag.Copy().(*types.PrimitiveU32)
-	copied.Period = dspppv.Period.Copy().(*types.PrimitiveU16)
-	copied.ReferDataID = dspppv.ReferDataID.Copy().(*types.PrimitiveU32)
-	copied.Tags = dspppv.Tags.Copy().(*types.List[*types.String])
-	copied.RatingInitParams = dspppv.RatingInitParams.Copy().(*types.List[*DataStoreRatingInitParamWithSlot])
+	copied.Size = dspppv.Size.Copy().(types.UInt32)
+	copied.Name = dspppv.Name.Copy().(types.String)
+	copied.DataType = dspppv.DataType.Copy().(types.UInt16)
+	copied.MetaBinary = dspppv.MetaBinary.Copy().(types.QBuffer)
+	copied.Permission = dspppv.Permission.Copy().(DataStorePermission)
+	copied.DelPermission = dspppv.DelPermission.Copy().(DataStorePermission)
+	copied.Flag = dspppv.Flag.Copy().(types.UInt32)
+	copied.Period = dspppv.Period.Copy().(types.UInt16)
+	copied.ReferDataID = dspppv.ReferDataID.Copy().(types.UInt32)
+	copied.Tags = dspppv.Tags.Copy().(types.List[types.String])
+	copied.RatingInitParams = dspppv.RatingInitParams.Copy().(types.List[DataStoreRatingInitParamWithSlot])
 
 	return copied
 }
 
 // Equals checks if the given DataStorePreparePostParamV1 contains the same data as the current DataStorePreparePostParamV1
-func (dspppv *DataStorePreparePostParamV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePreparePostParamV1); !ok {
+func (dspppv DataStorePreparePostParamV1) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStorePreparePostParamV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePreparePostParamV1)
+	other := o.(DataStorePreparePostParamV1)
 
 	if dspppv.StructureVersion != other.StructureVersion {
 		return false
@@ -189,13 +189,27 @@ func (dspppv *DataStorePreparePostParamV1) Equals(o types.RVType) bool {
 	return dspppv.RatingInitParams.Equals(other.RatingInitParams)
 }
 
+// CopyRef copies the current value of the DataStorePreparePostParamV1
+// and returns a pointer to the new copy
+func (dspppv DataStorePreparePostParamV1) CopyRef() types.RVTypePtr {
+	copied := dspppv.Copy().(DataStorePreparePostParamV1)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePreparePostParamV1
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspppv *DataStorePreparePostParamV1) Deref() types.RVType {
+	return *dspppv
+}
+
 // String returns the string representation of the DataStorePreparePostParamV1
-func (dspppv *DataStorePreparePostParamV1) String() string {
+func (dspppv DataStorePreparePostParamV1) String() string {
 	return dspppv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePreparePostParamV1 using the provided indentation level
-func (dspppv *DataStorePreparePostParamV1) FormatToString(indentationLevel int) string {
+func (dspppv DataStorePreparePostParamV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -219,23 +233,19 @@ func (dspppv *DataStorePreparePostParamV1) FormatToString(indentationLevel int) 
 }
 
 // NewDataStorePreparePostParamV1 returns a new DataStorePreparePostParamV1
-func NewDataStorePreparePostParamV1() *DataStorePreparePostParamV1 {
-	dspppv := &DataStorePreparePostParamV1{
-		Size:             types.NewPrimitiveU32(0),
+func NewDataStorePreparePostParamV1() DataStorePreparePostParamV1 {
+	return DataStorePreparePostParamV1{
+		Size:             types.NewUInt32(0),
 		Name:             types.NewString(""),
-		DataType:         types.NewPrimitiveU16(0),
+		DataType:         types.NewUInt16(0),
 		MetaBinary:       types.NewQBuffer(nil),
 		Permission:       NewDataStorePermission(),
 		DelPermission:    NewDataStorePermission(),
-		Flag:             types.NewPrimitiveU32(0),
-		Period:           types.NewPrimitiveU16(0),
-		ReferDataID:      types.NewPrimitiveU32(0),
-		Tags:             types.NewList[*types.String](),
-		RatingInitParams: types.NewList[*DataStoreRatingInitParamWithSlot](),
+		Flag:             types.NewUInt32(0),
+		Period:           types.NewUInt16(0),
+		ReferDataID:      types.NewUInt32(0),
+		Tags:             types.NewList[types.String](),
+		RatingInitParams: types.NewList[DataStoreRatingInitParamWithSlot](),
 	}
 
-	dspppv.Tags.Type = types.NewString("")
-	dspppv.RatingInitParams.Type = NewDataStoreRatingInitParamWithSlot()
-
-	return dspppv
 }

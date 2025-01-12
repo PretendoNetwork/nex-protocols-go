@@ -11,12 +11,12 @@ import (
 // DataStorePersistenceInitParam is a type within the DataStore protocol
 type DataStorePersistenceInitParam struct {
 	types.Structure
-	PersistenceSlotID *types.PrimitiveU16
-	DeleteLastObject  *types.PrimitiveBool
+	PersistenceSlotID types.UInt16
+	DeleteLastObject  types.Bool
 }
 
 // WriteTo writes the DataStorePersistenceInitParam to the given writable
-func (dspip *DataStorePersistenceInitParam) WriteTo(writable types.Writable) {
+func (dspip DataStorePersistenceInitParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspip.PersistenceSlotID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (dspip *DataStorePersistenceInitParam) ExtractFrom(readable types.Readable)
 }
 
 // Copy returns a new copied instance of DataStorePersistenceInitParam
-func (dspip *DataStorePersistenceInitParam) Copy() types.RVType {
+func (dspip DataStorePersistenceInitParam) Copy() types.RVType {
 	copied := NewDataStorePersistenceInitParam()
 
 	copied.StructureVersion = dspip.StructureVersion
-	copied.PersistenceSlotID = dspip.PersistenceSlotID.Copy().(*types.PrimitiveU16)
-	copied.DeleteLastObject = dspip.DeleteLastObject.Copy().(*types.PrimitiveBool)
+	copied.PersistenceSlotID = dspip.PersistenceSlotID.Copy().(types.UInt16)
+	copied.DeleteLastObject = dspip.DeleteLastObject.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given DataStorePersistenceInitParam contains the same data as the current DataStorePersistenceInitParam
-func (dspip *DataStorePersistenceInitParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePersistenceInitParam); !ok {
+func (dspip DataStorePersistenceInitParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStorePersistenceInitParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePersistenceInitParam)
+	other := o.(DataStorePersistenceInitParam)
 
 	if dspip.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (dspip *DataStorePersistenceInitParam) Equals(o types.RVType) bool {
 	return dspip.DeleteLastObject.Equals(other.DeleteLastObject)
 }
 
+// CopyRef copies the current value of the DataStorePersistenceInitParam
+// and returns a pointer to the new copy
+func (dspip DataStorePersistenceInitParam) CopyRef() types.RVTypePtr {
+	copied := dspip.Copy().(DataStorePersistenceInitParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePersistenceInitParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspip *DataStorePersistenceInitParam) Deref() types.RVType {
+	return *dspip
+}
+
 // String returns the string representation of the DataStorePersistenceInitParam
-func (dspip *DataStorePersistenceInitParam) String() string {
+func (dspip DataStorePersistenceInitParam) String() string {
 	return dspip.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePersistenceInitParam using the provided indentation level
-func (dspip *DataStorePersistenceInitParam) FormatToString(indentationLevel int) string {
+func (dspip DataStorePersistenceInitParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (dspip *DataStorePersistenceInitParam) FormatToString(indentationLevel int)
 }
 
 // NewDataStorePersistenceInitParam returns a new DataStorePersistenceInitParam
-func NewDataStorePersistenceInitParam() *DataStorePersistenceInitParam {
-	dspip := &DataStorePersistenceInitParam{
-		PersistenceSlotID: types.NewPrimitiveU16(0),
-		DeleteLastObject:  types.NewPrimitiveBool(false),
+func NewDataStorePersistenceInitParam() DataStorePersistenceInitParam {
+	return DataStorePersistenceInitParam{
+		PersistenceSlotID: types.NewUInt16(0),
+		DeleteLastObject:  types.NewBool(false),
 	}
 
-	return dspip
 }

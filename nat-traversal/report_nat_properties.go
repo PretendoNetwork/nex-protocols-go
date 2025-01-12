@@ -25,15 +25,15 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	natmapping := types.NewPrimitiveU32(0)
-	natfiltering := types.NewPrimitiveU32(0)
-	rtt := types.NewPrimitiveU32(0)
+	var natmapping types.UInt32
+	var natfiltering types.UInt32
+	var rtt types.UInt32
 
 	var err error
 
 	err = natmapping.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	err = natfiltering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	err = rtt.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

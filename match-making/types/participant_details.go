@@ -11,14 +11,14 @@ import (
 // ParticipantDetails is a type within the Matchmaking protocol
 type ParticipantDetails struct {
 	types.Structure
-	IDParticipant  *types.PID
-	StrName        *types.String
-	StrMessage     *types.String
-	UIParticipants *types.PrimitiveU16
+	IDParticipant  types.PID
+	StrName        types.String
+	StrMessage     types.String
+	UIParticipants types.UInt16
 }
 
 // WriteTo writes the ParticipantDetails to the given writable
-func (pd *ParticipantDetails) WriteTo(writable types.Writable) {
+func (pd ParticipantDetails) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	pd.IDParticipant.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (pd *ParticipantDetails) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ParticipantDetails
-func (pd *ParticipantDetails) Copy() types.RVType {
+func (pd ParticipantDetails) Copy() types.RVType {
 	copied := NewParticipantDetails()
 
 	copied.StructureVersion = pd.StructureVersion
-	copied.IDParticipant = pd.IDParticipant.Copy().(*types.PID)
-	copied.StrName = pd.StrName.Copy().(*types.String)
-	copied.StrMessage = pd.StrMessage.Copy().(*types.String)
-	copied.UIParticipants = pd.UIParticipants.Copy().(*types.PrimitiveU16)
+	copied.IDParticipant = pd.IDParticipant.Copy().(types.PID)
+	copied.StrName = pd.StrName.Copy().(types.String)
+	copied.StrMessage = pd.StrMessage.Copy().(types.String)
+	copied.UIParticipants = pd.UIParticipants.Copy().(types.UInt16)
 
 	return copied
 }
 
 // Equals checks if the given ParticipantDetails contains the same data as the current ParticipantDetails
-func (pd *ParticipantDetails) Equals(o types.RVType) bool {
-	if _, ok := o.(*ParticipantDetails); !ok {
+func (pd ParticipantDetails) Equals(o types.RVType) bool {
+	if _, ok := o.(ParticipantDetails); !ok {
 		return false
 	}
 
-	other := o.(*ParticipantDetails)
+	other := o.(ParticipantDetails)
 
 	if pd.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (pd *ParticipantDetails) Equals(o types.RVType) bool {
 	return pd.UIParticipants.Equals(other.UIParticipants)
 }
 
+// CopyRef copies the current value of the ParticipantDetails
+// and returns a pointer to the new copy
+func (pd ParticipantDetails) CopyRef() types.RVTypePtr {
+	copied := pd.Copy().(ParticipantDetails)
+	return &copied
+}
+
+// Deref takes a pointer to the ParticipantDetails
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pd *ParticipantDetails) Deref() types.RVType {
+	return *pd
+}
+
 // String returns the string representation of the ParticipantDetails
-func (pd *ParticipantDetails) String() string {
+func (pd ParticipantDetails) String() string {
 	return pd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ParticipantDetails using the provided indentation level
-func (pd *ParticipantDetails) FormatToString(indentationLevel int) string {
+func (pd ParticipantDetails) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +142,12 @@ func (pd *ParticipantDetails) FormatToString(indentationLevel int) string {
 }
 
 // NewParticipantDetails returns a new ParticipantDetails
-func NewParticipantDetails() *ParticipantDetails {
-	pd := &ParticipantDetails{
+func NewParticipantDetails() ParticipantDetails {
+	return ParticipantDetails{
 		IDParticipant:  types.NewPID(0),
 		StrName:        types.NewString(""),
 		StrMessage:     types.NewString(""),
-		UIParticipants: types.NewPrimitiveU16(0),
+		UIParticipants: types.NewUInt16(0),
 	}
 
-	return pd
 }

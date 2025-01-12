@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 
 	err := getNoticeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetNotice(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetNotice(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, getNoticeParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

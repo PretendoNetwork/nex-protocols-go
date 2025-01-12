@@ -25,14 +25,14 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	reportID := types.NewPrimitiveU32(0)
-	reportData := types.NewQBuffer(nil)
+	var reportID types.UInt32
+	var reportData types.QBuffer
 
 	var err error
 
 	err = reportID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, reportID, reportData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 
 	err = reportData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, reportID, reportData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

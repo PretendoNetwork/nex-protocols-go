@@ -11,14 +11,14 @@ import (
 // FriendPicture is a type within the Friends3DS protocol
 type FriendPicture struct {
 	types.Structure
-	*types.Data
-	Unknown1    *types.PrimitiveU32
-	PictureData *types.Buffer
-	Unknown2    *types.DateTime
+	types.Data
+	Unknown1    types.UInt32
+	PictureData types.Buffer
+	Unknown2    types.DateTime
 }
 
 // WriteTo writes the FriendPicture to the given writable
-func (fp *FriendPicture) WriteTo(writable types.Writable) {
+func (fp FriendPicture) WriteTo(writable types.Writable) {
 	fp.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,25 +67,25 @@ func (fp *FriendPicture) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendPicture
-func (fp *FriendPicture) Copy() types.RVType {
+func (fp FriendPicture) Copy() types.RVType {
 	copied := NewFriendPicture()
 
 	copied.StructureVersion = fp.StructureVersion
-	copied.Data = fp.Data.Copy().(*types.Data)
-	copied.Unknown1 = fp.Unknown1.Copy().(*types.PrimitiveU32)
-	copied.PictureData = fp.PictureData.Copy().(*types.Buffer)
-	copied.Unknown2 = fp.Unknown2.Copy().(*types.DateTime)
+	copied.Data = fp.Data.Copy().(types.Data)
+	copied.Unknown1 = fp.Unknown1.Copy().(types.UInt32)
+	copied.PictureData = fp.PictureData.Copy().(types.Buffer)
+	copied.Unknown2 = fp.Unknown2.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given FriendPicture contains the same data as the current FriendPicture
-func (fp *FriendPicture) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendPicture); !ok {
+func (fp FriendPicture) Equals(o types.RVType) bool {
+	if _, ok := o.(FriendPicture); !ok {
 		return false
 	}
 
-	other := o.(*FriendPicture)
+	other := o.(FriendPicture)
 
 	if fp.StructureVersion != other.StructureVersion {
 		return false
@@ -106,13 +106,27 @@ func (fp *FriendPicture) Equals(o types.RVType) bool {
 	return fp.Unknown2.Equals(other.Unknown2)
 }
 
+// CopyRef copies the current value of the FriendPicture
+// and returns a pointer to the new copy
+func (fp FriendPicture) CopyRef() types.RVTypePtr {
+	copied := fp.Copy().(FriendPicture)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendPicture
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fp *FriendPicture) Deref() types.RVType {
+	return *fp
+}
+
 // String returns the string representation of the FriendPicture
-func (fp *FriendPicture) String() string {
+func (fp FriendPicture) String() string {
 	return fp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendPicture using the provided indentation level
-func (fp *FriendPicture) FormatToString(indentationLevel int) string {
+func (fp FriendPicture) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +143,12 @@ func (fp *FriendPicture) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendPicture returns a new FriendPicture
-func NewFriendPicture() *FriendPicture {
-	fp := &FriendPicture{
+func NewFriendPicture() FriendPicture {
+	return FriendPicture{
 		Data:        types.NewData(),
-		Unknown1:    types.NewPrimitiveU32(0),
+		Unknown1:    types.NewUInt32(0),
 		PictureData: types.NewBuffer(nil),
 		Unknown2:    types.NewDateTime(0),
 	}
 
-	return fp
 }

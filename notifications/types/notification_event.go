@@ -11,16 +11,16 @@ import (
 // NotificationEvent is a type within the Notifications protocol
 type NotificationEvent struct {
 	types.Structure
-	PIDSource *types.PID
-	Type      *types.PrimitiveU32
-	Param1    *types.PrimitiveU32
-	Param2    *types.PrimitiveU32
-	StrParam  *types.String
-	Param3    *types.PrimitiveU32
+	PIDSource types.PID
+	Type      types.UInt32
+	Param1    types.UInt32
+	Param2    types.UInt32
+	StrParam  types.String
+	Param3    types.UInt32
 }
 
 // WriteTo writes the NotificationEvent to the given writable
-func (ne *NotificationEvent) WriteTo(writable types.Writable) {
+func (ne NotificationEvent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	ne.PIDSource.WriteTo(contentWritable)
@@ -80,27 +80,27 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of NotificationEvent
-func (ne *NotificationEvent) Copy() types.RVType {
+func (ne NotificationEvent) Copy() types.RVType {
 	copied := NewNotificationEvent()
 
 	copied.StructureVersion = ne.StructureVersion
-	copied.PIDSource = ne.PIDSource.Copy().(*types.PID)
-	copied.Type = ne.Type.Copy().(*types.PrimitiveU32)
-	copied.Param1 = ne.Param1.Copy().(*types.PrimitiveU32)
-	copied.Param2 = ne.Param2.Copy().(*types.PrimitiveU32)
-	copied.StrParam = ne.StrParam.Copy().(*types.String)
-	copied.Param3 = ne.Param3.Copy().(*types.PrimitiveU32)
+	copied.PIDSource = ne.PIDSource.Copy().(types.PID)
+	copied.Type = ne.Type.Copy().(types.UInt32)
+	copied.Param1 = ne.Param1.Copy().(types.UInt32)
+	copied.Param2 = ne.Param2.Copy().(types.UInt32)
+	copied.StrParam = ne.StrParam.Copy().(types.String)
+	copied.Param3 = ne.Param3.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given NotificationEvent contains the same data as the current NotificationEvent
-func (ne *NotificationEvent) Equals(o types.RVType) bool {
-	if _, ok := o.(*NotificationEvent); !ok {
+func (ne NotificationEvent) Equals(o types.RVType) bool {
+	if _, ok := o.(NotificationEvent); !ok {
 		return false
 	}
 
-	other := o.(*NotificationEvent)
+	other := o.(NotificationEvent)
 
 	if ne.StructureVersion != other.StructureVersion {
 		return false
@@ -129,13 +129,27 @@ func (ne *NotificationEvent) Equals(o types.RVType) bool {
 	return ne.Param3.Equals(other.Param3)
 }
 
+// CopyRef copies the current value of the NotificationEvent
+// and returns a pointer to the new copy
+func (ne NotificationEvent) CopyRef() types.RVTypePtr {
+	copied := ne.Copy().(NotificationEvent)
+	return &copied
+}
+
+// Deref takes a pointer to the NotificationEvent
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ne *NotificationEvent) Deref() types.RVType {
+	return *ne
+}
+
 // String returns the string representation of the NotificationEvent
-func (ne *NotificationEvent) String() string {
+func (ne NotificationEvent) String() string {
 	return ne.FormatToString(0)
 }
 
 // FormatToString pretty-prints the NotificationEvent using the provided indentation level
-func (ne *NotificationEvent) FormatToString(indentationLevel int) string {
+func (ne NotificationEvent) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,15 +168,14 @@ func (ne *NotificationEvent) FormatToString(indentationLevel int) string {
 }
 
 // NewNotificationEvent returns a new NotificationEvent
-func NewNotificationEvent() *NotificationEvent {
-	ne := &NotificationEvent{
+func NewNotificationEvent() NotificationEvent {
+	return NotificationEvent{
 		PIDSource: types.NewPID(0),
-		Type:      types.NewPrimitiveU32(0),
-		Param1:    types.NewPrimitiveU32(0),
-		Param2:    types.NewPrimitiveU32(0),
+		Type:      types.NewUInt32(0),
+		Param1:    types.NewUInt32(0),
+		Param2:    types.NewUInt32(0),
 		StrParam:  types.NewString(""),
-		Param3:    types.NewPrimitiveU32(0),
+		Param3:    types.NewUInt32(0),
 	}
 
-	return ne
 }

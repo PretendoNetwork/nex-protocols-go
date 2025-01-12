@@ -11,16 +11,16 @@ import (
 // ServiceItemPostRightBinaryByAccountParam is a type within the ServiceItem protocol
 type ServiceItemPostRightBinaryByAccountParam struct {
 	types.Structure
-	ReferenceID *types.String
-	UseType     *types.PrimitiveU8
-	RightBinary *types.QBuffer
-	LogMessage  *types.String
-	UniqueID    *types.PrimitiveU32
-	Platform    *types.PrimitiveU8
+	ReferenceID types.String
+	UseType     types.UInt8
+	RightBinary types.QBuffer
+	LogMessage  types.String
+	UniqueID    types.UInt32
+	Platform    types.UInt8
 }
 
 // WriteTo writes the ServiceItemPostRightBinaryByAccountParam to the given writable
-func (siprbbap *ServiceItemPostRightBinaryByAccountParam) WriteTo(writable types.Writable) {
+func (siprbbap ServiceItemPostRightBinaryByAccountParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siprbbap.ReferenceID.WriteTo(contentWritable)
@@ -80,27 +80,27 @@ func (siprbbap *ServiceItemPostRightBinaryByAccountParam) ExtractFrom(readable t
 }
 
 // Copy returns a new copied instance of ServiceItemPostRightBinaryByAccountParam
-func (siprbbap *ServiceItemPostRightBinaryByAccountParam) Copy() types.RVType {
+func (siprbbap ServiceItemPostRightBinaryByAccountParam) Copy() types.RVType {
 	copied := NewServiceItemPostRightBinaryByAccountParam()
 
 	copied.StructureVersion = siprbbap.StructureVersion
-	copied.ReferenceID = siprbbap.ReferenceID.Copy().(*types.String)
-	copied.UseType = siprbbap.UseType.Copy().(*types.PrimitiveU8)
-	copied.RightBinary = siprbbap.RightBinary.Copy().(*types.QBuffer)
-	copied.LogMessage = siprbbap.LogMessage.Copy().(*types.String)
-	copied.UniqueID = siprbbap.UniqueID.Copy().(*types.PrimitiveU32)
-	copied.Platform = siprbbap.Platform.Copy().(*types.PrimitiveU8)
+	copied.ReferenceID = siprbbap.ReferenceID.Copy().(types.String)
+	copied.UseType = siprbbap.UseType.Copy().(types.UInt8)
+	copied.RightBinary = siprbbap.RightBinary.Copy().(types.QBuffer)
+	copied.LogMessage = siprbbap.LogMessage.Copy().(types.String)
+	copied.UniqueID = siprbbap.UniqueID.Copy().(types.UInt32)
+	copied.Platform = siprbbap.Platform.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemPostRightBinaryByAccountParam contains the same data as the current ServiceItemPostRightBinaryByAccountParam
-func (siprbbap *ServiceItemPostRightBinaryByAccountParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPostRightBinaryByAccountParam); !ok {
+func (siprbbap ServiceItemPostRightBinaryByAccountParam) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemPostRightBinaryByAccountParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPostRightBinaryByAccountParam)
+	other := o.(ServiceItemPostRightBinaryByAccountParam)
 
 	if siprbbap.StructureVersion != other.StructureVersion {
 		return false
@@ -129,13 +129,27 @@ func (siprbbap *ServiceItemPostRightBinaryByAccountParam) Equals(o types.RVType)
 	return siprbbap.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemPostRightBinaryByAccountParam
+// and returns a pointer to the new copy
+func (siprbbap ServiceItemPostRightBinaryByAccountParam) CopyRef() types.RVTypePtr {
+	copied := siprbbap.Copy().(ServiceItemPostRightBinaryByAccountParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPostRightBinaryByAccountParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siprbbap *ServiceItemPostRightBinaryByAccountParam) Deref() types.RVType {
+	return *siprbbap
+}
+
 // String returns the string representation of the ServiceItemPostRightBinaryByAccountParam
-func (siprbbap *ServiceItemPostRightBinaryByAccountParam) String() string {
+func (siprbbap ServiceItemPostRightBinaryByAccountParam) String() string {
 	return siprbbap.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemPostRightBinaryByAccountParam using the provided indentation level
-func (siprbbap *ServiceItemPostRightBinaryByAccountParam) FormatToString(indentationLevel int) string {
+func (siprbbap ServiceItemPostRightBinaryByAccountParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,15 +168,14 @@ func (siprbbap *ServiceItemPostRightBinaryByAccountParam) FormatToString(indenta
 }
 
 // NewServiceItemPostRightBinaryByAccountParam returns a new ServiceItemPostRightBinaryByAccountParam
-func NewServiceItemPostRightBinaryByAccountParam() *ServiceItemPostRightBinaryByAccountParam {
-	siprbbap := &ServiceItemPostRightBinaryByAccountParam{
+func NewServiceItemPostRightBinaryByAccountParam() ServiceItemPostRightBinaryByAccountParam {
+	return ServiceItemPostRightBinaryByAccountParam{
 		ReferenceID: types.NewString(""),
-		UseType:     types.NewPrimitiveU8(0),
+		UseType:     types.NewUInt8(0),
 		RightBinary: types.NewQBuffer(nil),
 		LogMessage:  types.NewString(""),
-		UniqueID:    types.NewPrimitiveU32(0),
-		Platform:    types.NewPrimitiveU8(0),
+		UniqueID:    types.NewUInt32(0),
+		Platform:    types.NewUInt8(0),
 	}
 
-	return siprbbap
 }

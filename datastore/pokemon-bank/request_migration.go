@@ -25,15 +25,14 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	oneTimePassword := types.NewString("")
-	boxes := types.NewList[*types.PrimitiveU32]()
-	boxes.Type = types.NewPrimitiveU32(0)
+	var oneTimePassword types.String
+	var boxes types.List[types.UInt32]
 
 	var err error
 
 	err = oneTimePassword.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, oneTimePassword, boxes)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 
 	err = boxes.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, oneTimePassword, boxes)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

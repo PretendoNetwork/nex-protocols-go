@@ -11,20 +11,20 @@ import (
 // UserMessage is a type within the MessageDelivery protocol
 type UserMessage struct {
 	types.Structure
-	*types.Data
-	UIID             *types.PrimitiveU32
-	UIParentID       *types.PrimitiveU32
-	PIDSender        *types.PID
-	Receptiontime    *types.DateTime
-	UILifeTime       *types.PrimitiveU32
-	UIFlags          *types.PrimitiveU32
-	StrSubject       *types.String
-	StrSender        *types.String
-	MessageRecipient *MessageRecipient
+	types.Data
+	UIID             types.UInt32
+	UIParentID       types.UInt32
+	PIDSender        types.PID
+	Receptiontime    types.DateTime
+	UILifeTime       types.UInt32
+	UIFlags          types.UInt32
+	StrSubject       types.String
+	StrSender        types.String
+	MessageRecipient MessageRecipient
 }
 
 // WriteTo writes the UserMessage to the given writable
-func (um *UserMessage) WriteTo(writable types.Writable) {
+func (um UserMessage) WriteTo(writable types.Writable) {
 	um.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -109,31 +109,31 @@ func (um *UserMessage) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of UserMessage
-func (um *UserMessage) Copy() types.RVType {
+func (um UserMessage) Copy() types.RVType {
 	copied := NewUserMessage()
 
 	copied.StructureVersion = um.StructureVersion
-	copied.Data = um.Data.Copy().(*types.Data)
-	copied.UIID = um.UIID.Copy().(*types.PrimitiveU32)
-	copied.UIParentID = um.UIParentID.Copy().(*types.PrimitiveU32)
-	copied.PIDSender = um.PIDSender.Copy().(*types.PID)
-	copied.Receptiontime = um.Receptiontime.Copy().(*types.DateTime)
-	copied.UILifeTime = um.UILifeTime.Copy().(*types.PrimitiveU32)
-	copied.UIFlags = um.UIFlags.Copy().(*types.PrimitiveU32)
-	copied.StrSubject = um.StrSubject.Copy().(*types.String)
-	copied.StrSender = um.StrSender.Copy().(*types.String)
-	copied.MessageRecipient = um.MessageRecipient.Copy().(*MessageRecipient)
+	copied.Data = um.Data.Copy().(types.Data)
+	copied.UIID = um.UIID.Copy().(types.UInt32)
+	copied.UIParentID = um.UIParentID.Copy().(types.UInt32)
+	copied.PIDSender = um.PIDSender.Copy().(types.PID)
+	copied.Receptiontime = um.Receptiontime.Copy().(types.DateTime)
+	copied.UILifeTime = um.UILifeTime.Copy().(types.UInt32)
+	copied.UIFlags = um.UIFlags.Copy().(types.UInt32)
+	copied.StrSubject = um.StrSubject.Copy().(types.String)
+	copied.StrSender = um.StrSender.Copy().(types.String)
+	copied.MessageRecipient = um.MessageRecipient.Copy().(MessageRecipient)
 
 	return copied
 }
 
 // Equals checks if the given UserMessage contains the same data as the current UserMessage
-func (um *UserMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*UserMessage); !ok {
+func (um UserMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(UserMessage); !ok {
 		return false
 	}
 
-	other := o.(*UserMessage)
+	other := o.(UserMessage)
 
 	if um.StructureVersion != other.StructureVersion {
 		return false
@@ -178,13 +178,27 @@ func (um *UserMessage) Equals(o types.RVType) bool {
 	return um.MessageRecipient.Equals(other.MessageRecipient)
 }
 
+// CopyRef copies the current value of the UserMessage
+// and returns a pointer to the new copy
+func (um UserMessage) CopyRef() types.RVTypePtr {
+	copied := um.Copy().(UserMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the UserMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (um *UserMessage) Deref() types.RVType {
+	return *um
+}
+
 // String returns the string representation of the UserMessage
-func (um *UserMessage) String() string {
+func (um UserMessage) String() string {
 	return um.FormatToString(0)
 }
 
 // FormatToString pretty-prints the UserMessage using the provided indentation level
-func (um *UserMessage) FormatToString(indentationLevel int) string {
+func (um UserMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -207,19 +221,18 @@ func (um *UserMessage) FormatToString(indentationLevel int) string {
 }
 
 // NewUserMessage returns a new UserMessage
-func NewUserMessage() *UserMessage {
-	um := &UserMessage{
+func NewUserMessage() UserMessage {
+	return UserMessage{
 		Data:             types.NewData(),
-		UIID:             types.NewPrimitiveU32(0),
-		UIParentID:       types.NewPrimitiveU32(0),
+		UIID:             types.NewUInt32(0),
+		UIParentID:       types.NewUInt32(0),
 		PIDSender:        types.NewPID(0),
 		Receptiontime:    types.NewDateTime(0),
-		UILifeTime:       types.NewPrimitiveU32(0),
-		UIFlags:          types.NewPrimitiveU32(0),
+		UILifeTime:       types.NewUInt32(0),
+		UIFlags:          types.NewUInt32(0),
 		StrSubject:       types.NewString(""),
 		StrSender:        types.NewString(""),
 		MessageRecipient: NewMessageRecipient(),
 	}
 
-	return um
 }

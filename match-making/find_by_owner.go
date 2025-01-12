@@ -25,14 +25,14 @@ func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	id := types.NewPID(0)
-	resultRange := types.NewResultRange()
+	var id types.PID
+	var resultRange types.ResultRange
 
 	var err error
 
 	err = id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByOwner(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindByOwner(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, id, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.FindByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, id, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

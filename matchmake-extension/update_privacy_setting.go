@@ -25,14 +25,14 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	onlineStatus := types.NewPrimitiveBool(false)
-	participationCommunity := types.NewPrimitiveBool(false)
+	var onlineStatus types.Bool
+	var participationCommunity types.Bool
 
 	var err error
 
 	err = onlineStatus.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, onlineStatus, participationCommunity)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 
 	err = participationCommunity.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, onlineStatus, participationCommunity)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

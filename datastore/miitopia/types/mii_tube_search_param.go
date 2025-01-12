@@ -11,17 +11,17 @@ import (
 // MiiTubeSearchParam is a type within the DataStoreMiitopia protocol
 type MiiTubeSearchParam struct {
 	types.Structure
-	Name         *types.String
-	Page         *types.PrimitiveU32
-	Category     *types.PrimitiveU8
-	Gender       *types.PrimitiveU8
-	Country      *types.PrimitiveU8
-	SearchType   *types.PrimitiveU8
-	ResultOption *types.PrimitiveU8
+	Name         types.String
+	Page         types.UInt32
+	Category     types.UInt8
+	Gender       types.UInt8
+	Country      types.UInt8
+	SearchType   types.UInt8
+	ResultOption types.UInt8
 }
 
 // WriteTo writes the MiiTubeSearchParam to the given variable
-func (mtsp *MiiTubeSearchParam) WriteTo(writable types.Writable) {
+func (mtsp MiiTubeSearchParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	mtsp.Name.WriteTo(contentWritable)
@@ -87,7 +87,7 @@ func (mtsp *MiiTubeSearchParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MiiTubeSearchParam
-func (mtsp *MiiTubeSearchParam) Copy() types.RVType {
+func (mtsp MiiTubeSearchParam) Copy() types.RVType {
 	copied := NewMiiTubeSearchParam()
 
 	copied.Name = mtsp.Name
@@ -102,12 +102,12 @@ func (mtsp *MiiTubeSearchParam) Copy() types.RVType {
 }
 
 // Equals checks if the given MiiTubeSearchParam contains the same data as the current MiiTubeSearchParam
-func (mtsp *MiiTubeSearchParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MiiTubeSearchParam); !ok {
+func (mtsp MiiTubeSearchParam) Equals(o types.RVType) bool {
+	if _, ok := o.(MiiTubeSearchParam); !ok {
 		return false
 	}
 
-	other := o.(*MiiTubeSearchParam)
+	other := o.(MiiTubeSearchParam)
 
 	if !mtsp.Name.Equals(other.Name) {
 		return false
@@ -136,13 +136,27 @@ func (mtsp *MiiTubeSearchParam) Equals(o types.RVType) bool {
 	return mtsp.ResultOption.Equals(other.ResultOption)
 }
 
+// CopyRef copies the current value of the MiiTubeSearchParam
+// and returns a pointer to the new copy
+func (mtsp MiiTubeSearchParam) CopyRef() types.RVTypePtr {
+	copied := mtsp.Copy().(MiiTubeSearchParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MiiTubeSearchParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mtsp *MiiTubeSearchParam) Deref() types.RVType {
+	return *mtsp
+}
+
 // String returns the string representation of the MiiTubeSearchParam
-func (mtsp *MiiTubeSearchParam) String() string {
+func (mtsp MiiTubeSearchParam) String() string {
 	return mtsp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MiiTubeSearchParam using the provided indentation level
-func (mtsp *MiiTubeSearchParam) FormatToString(indentationLevel int) string {
+func (mtsp MiiTubeSearchParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -162,16 +176,15 @@ func (mtsp *MiiTubeSearchParam) FormatToString(indentationLevel int) string {
 }
 
 // NewMiiTubeSearchParam returns a new MiiTubeSearchParam
-func NewMiiTubeSearchParam() *MiiTubeSearchParam {
-	mtsp := &MiiTubeSearchParam{
+func NewMiiTubeSearchParam() MiiTubeSearchParam {
+	return MiiTubeSearchParam{
 		Name:         types.NewString(""),
-		Page:         types.NewPrimitiveU32(0),
-		Category:     types.NewPrimitiveU8(0),
-		Gender:       types.NewPrimitiveU8(0),
-		Country:      types.NewPrimitiveU8(0),
-		SearchType:   types.NewPrimitiveU8(0),
-		ResultOption: types.NewPrimitiveU8(0),
+		Page:         types.NewUInt32(0),
+		Category:     types.NewUInt8(0),
+		Gender:       types.NewUInt8(0),
+		Country:      types.NewUInt8(0),
+		SearchType:   types.NewUInt8(0),
+		ResultOption: types.NewUInt8(0),
 	}
 
-	return mtsp
 }

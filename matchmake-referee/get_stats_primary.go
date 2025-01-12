@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetStatsPrimary(packet nex.PacketInterface) {
 
 	err := target.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStatsPrimary(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetStatsPrimary(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, target)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

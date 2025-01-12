@@ -11,16 +11,16 @@ import (
 // PersistentNotification is a type within the FriendsWiiU protocol
 type PersistentNotification struct {
 	types.Structure
-	*types.Data
-	Unknown1 *types.PrimitiveU64
-	Unknown2 *types.PrimitiveU32
-	Unknown3 *types.PrimitiveU32
-	Unknown4 *types.PrimitiveU32
-	Unknown5 *types.String
+	types.Data
+	Unknown1 types.UInt64
+	Unknown2 types.UInt32
+	Unknown3 types.UInt32
+	Unknown4 types.UInt32
+	Unknown5 types.String
 }
 
 // WriteTo writes the PersistentNotification to the given writable
-func (pn *PersistentNotification) WriteTo(writable types.Writable) {
+func (pn PersistentNotification) WriteTo(writable types.Writable) {
 	pn.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -81,27 +81,27 @@ func (pn *PersistentNotification) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of PersistentNotification
-func (pn *PersistentNotification) Copy() types.RVType {
+func (pn PersistentNotification) Copy() types.RVType {
 	copied := NewPersistentNotification()
 
 	copied.StructureVersion = pn.StructureVersion
-	copied.Data = pn.Data.Copy().(*types.Data)
-	copied.Unknown1 = pn.Unknown1.Copy().(*types.PrimitiveU64)
-	copied.Unknown2 = pn.Unknown2.Copy().(*types.PrimitiveU32)
-	copied.Unknown3 = pn.Unknown3.Copy().(*types.PrimitiveU32)
-	copied.Unknown4 = pn.Unknown4.Copy().(*types.PrimitiveU32)
-	copied.Unknown5 = pn.Unknown5.Copy().(*types.String)
+	copied.Data = pn.Data.Copy().(types.Data)
+	copied.Unknown1 = pn.Unknown1.Copy().(types.UInt64)
+	copied.Unknown2 = pn.Unknown2.Copy().(types.UInt32)
+	copied.Unknown3 = pn.Unknown3.Copy().(types.UInt32)
+	copied.Unknown4 = pn.Unknown4.Copy().(types.UInt32)
+	copied.Unknown5 = pn.Unknown5.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given PersistentNotification contains the same data as the current PersistentNotification
-func (pn *PersistentNotification) Equals(o types.RVType) bool {
-	if _, ok := o.(*PersistentNotification); !ok {
+func (pn PersistentNotification) Equals(o types.RVType) bool {
+	if _, ok := o.(PersistentNotification); !ok {
 		return false
 	}
 
-	other := o.(*PersistentNotification)
+	other := o.(PersistentNotification)
 
 	if pn.StructureVersion != other.StructureVersion {
 		return false
@@ -130,13 +130,27 @@ func (pn *PersistentNotification) Equals(o types.RVType) bool {
 	return pn.Unknown5.Equals(other.Unknown5)
 }
 
+// CopyRef copies the current value of the PersistentNotification
+// and returns a pointer to the new copy
+func (pn PersistentNotification) CopyRef() types.RVTypePtr {
+	copied := pn.Copy().(PersistentNotification)
+	return &copied
+}
+
+// Deref takes a pointer to the PersistentNotification
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pn *PersistentNotification) Deref() types.RVType {
+	return *pn
+}
+
 // String returns the string representation of the PersistentNotification
-func (pn *PersistentNotification) String() string {
+func (pn PersistentNotification) String() string {
 	return pn.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PersistentNotification using the provided indentation level
-func (pn *PersistentNotification) FormatToString(indentationLevel int) string {
+func (pn PersistentNotification) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -155,15 +169,14 @@ func (pn *PersistentNotification) FormatToString(indentationLevel int) string {
 }
 
 // NewPersistentNotification returns a new PersistentNotification
-func NewPersistentNotification() *PersistentNotification {
-	pn := &PersistentNotification{
+func NewPersistentNotification() PersistentNotification {
+	return PersistentNotification{
 		Data:     types.NewData(),
-		Unknown1: types.NewPrimitiveU64(0),
-		Unknown2: types.NewPrimitiveU32(0),
-		Unknown3: types.NewPrimitiveU32(0),
-		Unknown4: types.NewPrimitiveU32(0),
+		Unknown1: types.NewUInt64(0),
+		Unknown2: types.NewUInt32(0),
+		Unknown3: types.NewUInt32(0),
+		Unknown4: types.NewUInt32(0),
 		Unknown5: types.NewString(""),
 	}
 
-	return pn
 }

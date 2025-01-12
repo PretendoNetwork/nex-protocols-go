@@ -25,11 +25,11 @@ func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	titleID := types.NewPrimitiveU64(0)
+	var titleID types.UInt64
 
 	err := titleID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RegisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.RegisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, titleID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

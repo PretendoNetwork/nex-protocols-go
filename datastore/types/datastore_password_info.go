@@ -11,13 +11,13 @@ import (
 // DataStorePasswordInfo is a type within the DataStore protocol
 type DataStorePasswordInfo struct {
 	types.Structure
-	DataID         *types.PrimitiveU64
-	AccessPassword *types.PrimitiveU64
-	UpdatePassword *types.PrimitiveU64
+	DataID         types.UInt64
+	AccessPassword types.UInt64
+	UpdatePassword types.UInt64
 }
 
 // WriteTo writes the DataStorePasswordInfo to the given writable
-func (dspi *DataStorePasswordInfo) WriteTo(writable types.Writable) {
+func (dspi DataStorePasswordInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspi.DataID.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (dspi *DataStorePasswordInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStorePasswordInfo
-func (dspi *DataStorePasswordInfo) Copy() types.RVType {
+func (dspi DataStorePasswordInfo) Copy() types.RVType {
 	copied := NewDataStorePasswordInfo()
 
 	copied.StructureVersion = dspi.StructureVersion
-	copied.DataID = dspi.DataID.Copy().(*types.PrimitiveU64)
-	copied.AccessPassword = dspi.AccessPassword.Copy().(*types.PrimitiveU64)
-	copied.UpdatePassword = dspi.UpdatePassword.Copy().(*types.PrimitiveU64)
+	copied.DataID = dspi.DataID.Copy().(types.UInt64)
+	copied.AccessPassword = dspi.AccessPassword.Copy().(types.UInt64)
+	copied.UpdatePassword = dspi.UpdatePassword.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given DataStorePasswordInfo contains the same data as the current DataStorePasswordInfo
-func (dspi *DataStorePasswordInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePasswordInfo); !ok {
+func (dspi DataStorePasswordInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStorePasswordInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePasswordInfo)
+	other := o.(DataStorePasswordInfo)
 
 	if dspi.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (dspi *DataStorePasswordInfo) Equals(o types.RVType) bool {
 	return dspi.UpdatePassword.Equals(other.UpdatePassword)
 }
 
+// CopyRef copies the current value of the DataStorePasswordInfo
+// and returns a pointer to the new copy
+func (dspi DataStorePasswordInfo) CopyRef() types.RVTypePtr {
+	copied := dspi.Copy().(DataStorePasswordInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePasswordInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspi *DataStorePasswordInfo) Deref() types.RVType {
+	return *dspi
+}
+
 // String returns the string representation of the DataStorePasswordInfo
-func (dspi *DataStorePasswordInfo) String() string {
+func (dspi DataStorePasswordInfo) String() string {
 	return dspi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePasswordInfo using the provided indentation level
-func (dspi *DataStorePasswordInfo) FormatToString(indentationLevel int) string {
+func (dspi DataStorePasswordInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +129,11 @@ func (dspi *DataStorePasswordInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStorePasswordInfo returns a new DataStorePasswordInfo
-func NewDataStorePasswordInfo() *DataStorePasswordInfo {
-	dspi := &DataStorePasswordInfo{
-		DataID:         types.NewPrimitiveU64(0),
-		AccessPassword: types.NewPrimitiveU64(0),
-		UpdatePassword: types.NewPrimitiveU64(0),
+func NewDataStorePasswordInfo() DataStorePasswordInfo {
+	return DataStorePasswordInfo{
+		DataID:         types.NewUInt64(0),
+		AccessPassword: types.NewUInt64(0),
+		UpdatePassword: types.NewUInt64(0),
 	}
 
-	return dspi
 }

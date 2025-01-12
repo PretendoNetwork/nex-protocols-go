@@ -25,11 +25,11 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strStatus := types.NewString("")
+	var strStatus types.String
 
 	err := strStatus.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateStatus(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateStatus(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), packet, callID, strStatus)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

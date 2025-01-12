@@ -11,13 +11,13 @@ import (
 // ServiceItemAccountRight is a type within the ServiceItem protocol
 type ServiceItemAccountRight struct {
 	types.Structure
-	PID           *types.PID
-	Limitation    *ServiceItemLimitation
-	RightBinaries *types.List[*ServiceItemRightBinary]
+	PID           types.PID
+	Limitation    ServiceItemLimitation
+	RightBinaries types.List[ServiceItemRightBinary]
 }
 
 // WriteTo writes the ServiceItemAccountRight to the given writable
-func (siar *ServiceItemAccountRight) WriteTo(writable types.Writable) {
+func (siar ServiceItemAccountRight) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siar.PID.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (siar *ServiceItemAccountRight) ExtractFrom(readable types.Readable) error 
 }
 
 // Copy returns a new copied instance of ServiceItemAccountRight
-func (siar *ServiceItemAccountRight) Copy() types.RVType {
+func (siar ServiceItemAccountRight) Copy() types.RVType {
 	copied := NewServiceItemAccountRight()
 
 	copied.StructureVersion = siar.StructureVersion
-	copied.PID = siar.PID.Copy().(*types.PID)
-	copied.Limitation = siar.Limitation.Copy().(*ServiceItemLimitation)
-	copied.RightBinaries = siar.RightBinaries.Copy().(*types.List[*ServiceItemRightBinary])
+	copied.PID = siar.PID.Copy().(types.PID)
+	copied.Limitation = siar.Limitation.Copy().(ServiceItemLimitation)
+	copied.RightBinaries = siar.RightBinaries.Copy().(types.List[ServiceItemRightBinary])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemAccountRight contains the same data as the current ServiceItemAccountRight
-func (siar *ServiceItemAccountRight) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAccountRight); !ok {
+func (siar ServiceItemAccountRight) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemAccountRight); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAccountRight)
+	other := o.(ServiceItemAccountRight)
 
 	if siar.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (siar *ServiceItemAccountRight) Equals(o types.RVType) bool {
 	return siar.RightBinaries.Equals(other.RightBinaries)
 }
 
+// CopyRef copies the current value of the ServiceItemAccountRight
+// and returns a pointer to the new copy
+func (siar ServiceItemAccountRight) CopyRef() types.RVTypePtr {
+	copied := siar.Copy().(ServiceItemAccountRight)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAccountRight
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siar *ServiceItemAccountRight) Deref() types.RVType {
+	return *siar
+}
+
 // String returns the string representation of the ServiceItemAccountRight
-func (siar *ServiceItemAccountRight) String() string {
+func (siar ServiceItemAccountRight) String() string {
 	return siar.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemAccountRight using the provided indentation level
-func (siar *ServiceItemAccountRight) FormatToString(indentationLevel int) string {
+func (siar ServiceItemAccountRight) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +129,11 @@ func (siar *ServiceItemAccountRight) FormatToString(indentationLevel int) string
 }
 
 // NewServiceItemAccountRight returns a new ServiceItemAccountRight
-func NewServiceItemAccountRight() *ServiceItemAccountRight {
-	siar := &ServiceItemAccountRight{
+func NewServiceItemAccountRight() ServiceItemAccountRight {
+	return ServiceItemAccountRight{
 		PID:           types.NewPID(0),
 		Limitation:    NewServiceItemLimitation(),
-		RightBinaries: types.NewList[*ServiceItemRightBinary](),
+		RightBinaries: types.NewList[ServiceItemRightBinary](),
 	}
 
-	siar.RightBinaries.Type = NewServiceItemRightBinary()
-
-	return siar
 }

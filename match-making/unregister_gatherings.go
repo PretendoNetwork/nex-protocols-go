@@ -25,12 +25,11 @@ func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface)
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lstGatherings := types.NewList[*types.PrimitiveU32]()
-	lstGatherings.Type = types.NewPrimitiveU32(0)
+	var lstGatherings types.List[types.UInt32]
 
 	err := lstGatherings.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, lstGatherings)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

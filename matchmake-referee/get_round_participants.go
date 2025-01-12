@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface)
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	roundID := types.NewPrimitiveU64(0)
+	var roundID types.UInt64
 
 	err := roundID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRoundParticipants(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetRoundParticipants(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, roundID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

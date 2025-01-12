@@ -25,15 +25,14 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	listPID := types.NewList[*types.PID]()
-	listPID.Type = types.NewPID(0)
-	includeLoginUser := types.NewPrimitiveBool(false)
+	var listPID types.List[types.PID]
+	var includeLoginUser types.Bool
 
 	var err error
 
 	err = listPID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, listPID, includeLoginUser)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 
 	err = includeLoginUser.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, listPID, includeLoginUser)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

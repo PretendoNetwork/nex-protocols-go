@@ -25,15 +25,14 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	targetList := types.NewList[*types.String]()
-	targetList.Type = types.NewString("")
-	stationToProbe := types.NewString("")
+	var targetList types.List[types.String]
+	var stationToProbe types.String
 
 	var err error
 
 	err = targetList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, targetList, stationToProbe)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 
 	err = stationToProbe.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, targetList, stationToProbe)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

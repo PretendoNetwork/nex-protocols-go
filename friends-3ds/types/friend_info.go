@@ -11,12 +11,12 @@ import (
 // FriendInfo is a type within the Friends3DS protocol
 type FriendInfo struct {
 	types.Structure
-	PID     *types.PID
-	Unknown *types.DateTime
+	PID     types.PID
+	Unknown types.DateTime
 }
 
 // WriteTo writes the FriendInfo to the given writable
-func (fi *FriendInfo) WriteTo(writable types.Writable) {
+func (fi FriendInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	fi.PID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (fi *FriendInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendInfo
-func (fi *FriendInfo) Copy() types.RVType {
+func (fi FriendInfo) Copy() types.RVType {
 	copied := NewFriendInfo()
 
 	copied.StructureVersion = fi.StructureVersion
-	copied.PID = fi.PID.Copy().(*types.PID)
-	copied.Unknown = fi.Unknown.Copy().(*types.DateTime)
+	copied.PID = fi.PID.Copy().(types.PID)
+	copied.Unknown = fi.Unknown.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given FriendInfo contains the same data as the current FriendInfo
-func (fi *FriendInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendInfo); !ok {
+func (fi FriendInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(FriendInfo); !ok {
 		return false
 	}
 
-	other := o.(*FriendInfo)
+	other := o.(FriendInfo)
 
 	if fi.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (fi *FriendInfo) Equals(o types.RVType) bool {
 	return fi.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the FriendInfo
+// and returns a pointer to the new copy
+func (fi FriendInfo) CopyRef() types.RVTypePtr {
+	copied := fi.Copy().(FriendInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fi *FriendInfo) Deref() types.RVType {
+	return *fi
+}
+
 // String returns the string representation of the FriendInfo
-func (fi *FriendInfo) String() string {
+func (fi FriendInfo) String() string {
 	return fi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendInfo using the provided indentation level
-func (fi *FriendInfo) FormatToString(indentationLevel int) string {
+func (fi FriendInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (fi *FriendInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendInfo returns a new FriendInfo
-func NewFriendInfo() *FriendInfo {
-	fi := &FriendInfo{
+func NewFriendInfo() FriendInfo {
+	return FriendInfo{
 		PID:     types.NewPID(0),
 		Unknown: types.NewDateTime(0),
 	}
 
-	return fi
 }

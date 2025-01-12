@@ -29,7 +29,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 
 	err := listServiceItemParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, listServiceItemParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

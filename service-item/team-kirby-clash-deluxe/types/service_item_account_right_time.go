@@ -11,11 +11,11 @@ import (
 // ServiceItemAccountRightTime is a type within the ServiceItem protocol
 type ServiceItemAccountRightTime struct {
 	types.Structure
-	*ServiceItemAccountRight
+	ServiceItemAccountRight
 }
 
 // WriteTo writes the ServiceItemAccountRightTime to the given writable
-func (siart *ServiceItemAccountRightTime) WriteTo(writable types.Writable) {
+func (siart ServiceItemAccountRightTime) WriteTo(writable types.Writable) {
 	siart.ServiceItemAccountRight.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -45,22 +45,22 @@ func (siart *ServiceItemAccountRightTime) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of ServiceItemAccountRightTime
-func (siart *ServiceItemAccountRightTime) Copy() types.RVType {
+func (siart ServiceItemAccountRightTime) Copy() types.RVType {
 	copied := NewServiceItemAccountRightTime()
 
 	copied.StructureVersion = siart.StructureVersion
-	copied.ServiceItemAccountRight = siart.ServiceItemAccountRight.Copy().(*ServiceItemAccountRight)
+	copied.ServiceItemAccountRight = siart.ServiceItemAccountRight.Copy().(ServiceItemAccountRight)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemAccountRightTime contains the same data as the current ServiceItemAccountRightTime
-func (siart *ServiceItemAccountRightTime) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAccountRightTime); !ok {
+func (siart ServiceItemAccountRightTime) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemAccountRightTime); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAccountRightTime)
+	other := o.(ServiceItemAccountRightTime)
 
 	if siart.StructureVersion != other.StructureVersion {
 		return false
@@ -73,13 +73,27 @@ func (siart *ServiceItemAccountRightTime) Equals(o types.RVType) bool {
 	return true
 }
 
+// CopyRef copies the current value of the ServiceItemAccountRightTime
+// and returns a pointer to the new copy
+func (siart ServiceItemAccountRightTime) CopyRef() types.RVTypePtr {
+	copied := siart.Copy().(ServiceItemAccountRightTime)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAccountRightTime
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siart *ServiceItemAccountRightTime) Deref() types.RVType {
+	return *siart
+}
+
 // String returns the string representation of the ServiceItemAccountRightTime
-func (siart *ServiceItemAccountRightTime) String() string {
+func (siart ServiceItemAccountRightTime) String() string {
 	return siart.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemAccountRightTime using the provided indentation level
-func (siart *ServiceItemAccountRightTime) FormatToString(indentationLevel int) string {
+func (siart ServiceItemAccountRightTime) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -93,10 +107,9 @@ func (siart *ServiceItemAccountRightTime) FormatToString(indentationLevel int) s
 }
 
 // NewServiceItemAccountRightTime returns a new ServiceItemAccountRightTime
-func NewServiceItemAccountRightTime() *ServiceItemAccountRightTime {
-	siart := &ServiceItemAccountRightTime{
+func NewServiceItemAccountRightTime() ServiceItemAccountRightTime {
+	return ServiceItemAccountRightTime{
 		ServiceItemAccountRight: NewServiceItemAccountRight(),
 	}
 
-	return siart
 }

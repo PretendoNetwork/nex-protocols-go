@@ -11,15 +11,15 @@ import (
 // ServiceItemRightInfos is a type within the ServiceItem protocol
 type ServiceItemRightInfos struct {
 	types.Structure
-	SupportID                       *types.String
-	ConsumptionRightInfos           *types.List[*ServiceItemRightConsumptionInfo]
-	AdditionalTimeRightInfos        *types.List[*ServiceItemRightTimeInfo]
-	PermanentRightInfos             *types.List[*ServiceItemRightTimeInfo]
-	AlreadyPurchasedInitialOnlyItem *types.PrimitiveBool
+	SupportID                       types.String
+	ConsumptionRightInfos           types.List[ServiceItemRightConsumptionInfo]
+	AdditionalTimeRightInfos        types.List[ServiceItemRightTimeInfo]
+	PermanentRightInfos             types.List[ServiceItemRightTimeInfo]
+	AlreadyPurchasedInitialOnlyItem types.Bool
 }
 
 // WriteTo writes the ServiceItemRightInfos to the given writable
-func (siri *ServiceItemRightInfos) WriteTo(writable types.Writable) {
+func (siri ServiceItemRightInfos) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siri.SupportID.WriteTo(contentWritable)
@@ -73,26 +73,26 @@ func (siri *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemRightInfos
-func (siri *ServiceItemRightInfos) Copy() types.RVType {
+func (siri ServiceItemRightInfos) Copy() types.RVType {
 	copied := NewServiceItemRightInfos()
 
 	copied.StructureVersion = siri.StructureVersion
-	copied.SupportID = siri.SupportID.Copy().(*types.String)
-	copied.ConsumptionRightInfos = siri.ConsumptionRightInfos.Copy().(*types.List[*ServiceItemRightConsumptionInfo])
-	copied.AdditionalTimeRightInfos = siri.AdditionalTimeRightInfos.Copy().(*types.List[*ServiceItemRightTimeInfo])
-	copied.PermanentRightInfos = siri.PermanentRightInfos.Copy().(*types.List[*ServiceItemRightTimeInfo])
-	copied.AlreadyPurchasedInitialOnlyItem = siri.AlreadyPurchasedInitialOnlyItem.Copy().(*types.PrimitiveBool)
+	copied.SupportID = siri.SupportID.Copy().(types.String)
+	copied.ConsumptionRightInfos = siri.ConsumptionRightInfos.Copy().(types.List[ServiceItemRightConsumptionInfo])
+	copied.AdditionalTimeRightInfos = siri.AdditionalTimeRightInfos.Copy().(types.List[ServiceItemRightTimeInfo])
+	copied.PermanentRightInfos = siri.PermanentRightInfos.Copy().(types.List[ServiceItemRightTimeInfo])
+	copied.AlreadyPurchasedInitialOnlyItem = siri.AlreadyPurchasedInitialOnlyItem.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemRightInfos contains the same data as the current ServiceItemRightInfos
-func (siri *ServiceItemRightInfos) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemRightInfos); !ok {
+func (siri ServiceItemRightInfos) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemRightInfos); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemRightInfos)
+	other := o.(ServiceItemRightInfos)
 
 	if siri.StructureVersion != other.StructureVersion {
 		return false
@@ -117,13 +117,27 @@ func (siri *ServiceItemRightInfos) Equals(o types.RVType) bool {
 	return siri.AlreadyPurchasedInitialOnlyItem.Equals(other.AlreadyPurchasedInitialOnlyItem)
 }
 
+// CopyRef copies the current value of the ServiceItemRightInfos
+// and returns a pointer to the new copy
+func (siri ServiceItemRightInfos) CopyRef() types.RVTypePtr {
+	copied := siri.Copy().(ServiceItemRightInfos)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemRightInfos
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siri *ServiceItemRightInfos) Deref() types.RVType {
+	return *siri
+}
+
 // String returns the string representation of the ServiceItemRightInfos
-func (siri *ServiceItemRightInfos) String() string {
+func (siri ServiceItemRightInfos) String() string {
 	return siri.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemRightInfos using the provided indentation level
-func (siri *ServiceItemRightInfos) FormatToString(indentationLevel int) string {
+func (siri ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,18 +155,13 @@ func (siri *ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemRightInfos returns a new ServiceItemRightInfos
-func NewServiceItemRightInfos() *ServiceItemRightInfos {
-	siri := &ServiceItemRightInfos{
+func NewServiceItemRightInfos() ServiceItemRightInfos {
+	return ServiceItemRightInfos{
 		SupportID:                       types.NewString(""),
-		ConsumptionRightInfos:           types.NewList[*ServiceItemRightConsumptionInfo](),
-		AdditionalTimeRightInfos:        types.NewList[*ServiceItemRightTimeInfo](),
-		PermanentRightInfos:             types.NewList[*ServiceItemRightTimeInfo](),
-		AlreadyPurchasedInitialOnlyItem: types.NewPrimitiveBool(false),
+		ConsumptionRightInfos:           types.NewList[ServiceItemRightConsumptionInfo](),
+		AdditionalTimeRightInfos:        types.NewList[ServiceItemRightTimeInfo](),
+		PermanentRightInfos:             types.NewList[ServiceItemRightTimeInfo](),
+		AlreadyPurchasedInitialOnlyItem: types.NewBool(false),
 	}
 
-	siri.ConsumptionRightInfos.Type = NewServiceItemRightConsumptionInfo()
-	siri.AdditionalTimeRightInfos.Type = NewServiceItemRightTimeInfo()
-	siri.PermanentRightInfos.Type = NewServiceItemRightTimeInfo()
-
-	return siri
 }

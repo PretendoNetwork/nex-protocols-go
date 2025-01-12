@@ -25,11 +25,11 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	comment := types.NewString("")
+	var comment types.String
 
 	err := comment.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, comment)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

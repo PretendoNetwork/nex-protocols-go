@@ -11,12 +11,12 @@ import (
 // PlayingSession is a type within the Matchmaking protocol
 type PlayingSession struct {
 	types.Structure
-	PrincipalID *types.PID
-	Gathering   *types.AnyDataHolder
+	PrincipalID types.PID
+	Gathering   GatheringHolder
 }
 
 // WriteTo writes the PlayingSession to the given writable
-func (ps *PlayingSession) WriteTo(writable types.Writable) {
+func (ps PlayingSession) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	ps.PrincipalID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (ps *PlayingSession) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of PlayingSession
-func (ps *PlayingSession) Copy() types.RVType {
+func (ps PlayingSession) Copy() types.RVType {
 	copied := NewPlayingSession()
 
 	copied.StructureVersion = ps.StructureVersion
-	copied.PrincipalID = ps.PrincipalID.Copy().(*types.PID)
-	copied.Gathering = ps.Gathering.Copy().(*types.AnyDataHolder)
+	copied.PrincipalID = ps.PrincipalID.Copy().(types.PID)
+	copied.Gathering = ps.Gathering.Copy().(GatheringHolder)
 
 	return copied
 }
 
 // Equals checks if the given PlayingSession contains the same data as the current PlayingSession
-func (ps *PlayingSession) Equals(o types.RVType) bool {
-	if _, ok := o.(*PlayingSession); !ok {
+func (ps PlayingSession) Equals(o types.RVType) bool {
+	if _, ok := o.(PlayingSession); !ok {
 		return false
 	}
 
-	other := o.(*PlayingSession)
+	other := o.(PlayingSession)
 
 	if ps.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (ps *PlayingSession) Equals(o types.RVType) bool {
 	return ps.Gathering.Equals(other.Gathering)
 }
 
+// CopyRef copies the current value of the PlayingSession
+// and returns a pointer to the new copy
+func (ps PlayingSession) CopyRef() types.RVTypePtr {
+	copied := ps.Copy().(PlayingSession)
+	return &copied
+}
+
+// Deref takes a pointer to the PlayingSession
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ps *PlayingSession) Deref() types.RVType {
+	return *ps
+}
+
 // String returns the string representation of the PlayingSession
-func (ps *PlayingSession) String() string {
+func (ps PlayingSession) String() string {
 	return ps.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PlayingSession using the provided indentation level
-func (ps *PlayingSession) FormatToString(indentationLevel int) string {
+func (ps PlayingSession) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (ps *PlayingSession) FormatToString(indentationLevel int) string {
 }
 
 // NewPlayingSession returns a new PlayingSession
-func NewPlayingSession() *PlayingSession {
-	ps := &PlayingSession{
+func NewPlayingSession() PlayingSession {
+	return PlayingSession{
 		PrincipalID: types.NewPID(0),
-		Gathering:   types.NewAnyDataHolder(),
+		Gathering:   NewGatheringHolder(),
 	}
 
-	return ps
 }

@@ -11,12 +11,12 @@ import (
 // ServiceItemLawMessage is a type within the ServiceItem protocol
 type ServiceItemLawMessage struct {
 	types.Structure
-	IsMessageRequired *types.PrimitiveBool
-	LawMessage        *types.String
+	IsMessageRequired types.Bool
+	LawMessage        types.String
 }
 
 // WriteTo writes the ServiceItemLawMessage to the given writable
-func (silm *ServiceItemLawMessage) WriteTo(writable types.Writable) {
+func (silm ServiceItemLawMessage) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	silm.IsMessageRequired.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (silm *ServiceItemLawMessage) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemLawMessage
-func (silm *ServiceItemLawMessage) Copy() types.RVType {
+func (silm ServiceItemLawMessage) Copy() types.RVType {
 	copied := NewServiceItemLawMessage()
 
 	copied.StructureVersion = silm.StructureVersion
-	copied.IsMessageRequired = silm.IsMessageRequired.Copy().(*types.PrimitiveBool)
-	copied.LawMessage = silm.LawMessage.Copy().(*types.String)
+	copied.IsMessageRequired = silm.IsMessageRequired.Copy().(types.Bool)
+	copied.LawMessage = silm.LawMessage.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemLawMessage contains the same data as the current ServiceItemLawMessage
-func (silm *ServiceItemLawMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemLawMessage); !ok {
+func (silm ServiceItemLawMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemLawMessage); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemLawMessage)
+	other := o.(ServiceItemLawMessage)
 
 	if silm.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (silm *ServiceItemLawMessage) Equals(o types.RVType) bool {
 	return silm.LawMessage.Equals(other.LawMessage)
 }
 
+// CopyRef copies the current value of the ServiceItemLawMessage
+// and returns a pointer to the new copy
+func (silm ServiceItemLawMessage) CopyRef() types.RVTypePtr {
+	copied := silm.Copy().(ServiceItemLawMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemLawMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (silm *ServiceItemLawMessage) Deref() types.RVType {
+	return *silm
+}
+
 // String returns the string representation of the ServiceItemLawMessage
-func (silm *ServiceItemLawMessage) String() string {
+func (silm ServiceItemLawMessage) String() string {
 	return silm.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemLawMessage using the provided indentation level
-func (silm *ServiceItemLawMessage) FormatToString(indentationLevel int) string {
+func (silm ServiceItemLawMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (silm *ServiceItemLawMessage) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemLawMessage returns a new ServiceItemLawMessage
-func NewServiceItemLawMessage() *ServiceItemLawMessage {
-	silm := &ServiceItemLawMessage{
-		IsMessageRequired: types.NewPrimitiveBool(false),
+func NewServiceItemLawMessage() ServiceItemLawMessage {
+	return ServiceItemLawMessage{
+		IsMessageRequired: types.NewBool(false),
 		LawMessage:        types.NewString(""),
 	}
 
-	return silm
 }

@@ -11,14 +11,14 @@ import (
 // ServiceItemAccountRightConsumption is a type within the ServiceItem protocol
 type ServiceItemAccountRightConsumption struct {
 	types.Structure
-	*ServiceItemAccountRight
-	UsedCount    *types.PrimitiveU32
-	ExpiredCount *types.PrimitiveU32
-	ExpiryCounts *types.List[*types.PrimitiveU32]
+	ServiceItemAccountRight
+	UsedCount    types.UInt32
+	ExpiredCount types.UInt32
+	ExpiryCounts types.List[types.UInt32]
 }
 
 // WriteTo writes the ServiceItemAccountRightConsumption to the given writable
-func (siarc *ServiceItemAccountRightConsumption) WriteTo(writable types.Writable) {
+func (siarc ServiceItemAccountRightConsumption) WriteTo(writable types.Writable) {
 	siarc.ServiceItemAccountRight.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,25 +67,25 @@ func (siarc *ServiceItemAccountRightConsumption) ExtractFrom(readable types.Read
 }
 
 // Copy returns a new copied instance of ServiceItemAccountRightConsumption
-func (siarc *ServiceItemAccountRightConsumption) Copy() types.RVType {
+func (siarc ServiceItemAccountRightConsumption) Copy() types.RVType {
 	copied := NewServiceItemAccountRightConsumption()
 
 	copied.StructureVersion = siarc.StructureVersion
-	copied.ServiceItemAccountRight = siarc.ServiceItemAccountRight.Copy().(*ServiceItemAccountRight)
-	copied.UsedCount = siarc.UsedCount.Copy().(*types.PrimitiveU32)
-	copied.ExpiredCount = siarc.ExpiredCount.Copy().(*types.PrimitiveU32)
-	copied.ExpiryCounts = siarc.ExpiryCounts.Copy().(*types.List[*types.PrimitiveU32])
+	copied.ServiceItemAccountRight = siarc.ServiceItemAccountRight.Copy().(ServiceItemAccountRight)
+	copied.UsedCount = siarc.UsedCount.Copy().(types.UInt32)
+	copied.ExpiredCount = siarc.ExpiredCount.Copy().(types.UInt32)
+	copied.ExpiryCounts = siarc.ExpiryCounts.Copy().(types.List[types.UInt32])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemAccountRightConsumption contains the same data as the current ServiceItemAccountRightConsumption
-func (siarc *ServiceItemAccountRightConsumption) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAccountRightConsumption); !ok {
+func (siarc ServiceItemAccountRightConsumption) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemAccountRightConsumption); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAccountRightConsumption)
+	other := o.(ServiceItemAccountRightConsumption)
 
 	if siarc.StructureVersion != other.StructureVersion {
 		return false
@@ -106,13 +106,27 @@ func (siarc *ServiceItemAccountRightConsumption) Equals(o types.RVType) bool {
 	return siarc.ExpiryCounts.Equals(other.ExpiryCounts)
 }
 
+// CopyRef copies the current value of the ServiceItemAccountRightConsumption
+// and returns a pointer to the new copy
+func (siarc ServiceItemAccountRightConsumption) CopyRef() types.RVTypePtr {
+	copied := siarc.Copy().(ServiceItemAccountRightConsumption)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAccountRightConsumption
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siarc *ServiceItemAccountRightConsumption) Deref() types.RVType {
+	return *siarc
+}
+
 // String returns the string representation of the ServiceItemAccountRightConsumption
-func (siarc *ServiceItemAccountRightConsumption) String() string {
+func (siarc ServiceItemAccountRightConsumption) String() string {
 	return siarc.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemAccountRightConsumption using the provided indentation level
-func (siarc *ServiceItemAccountRightConsumption) FormatToString(indentationLevel int) string {
+func (siarc ServiceItemAccountRightConsumption) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,15 +143,12 @@ func (siarc *ServiceItemAccountRightConsumption) FormatToString(indentationLevel
 }
 
 // NewServiceItemAccountRightConsumption returns a new ServiceItemAccountRightConsumption
-func NewServiceItemAccountRightConsumption() *ServiceItemAccountRightConsumption {
-	siarc := &ServiceItemAccountRightConsumption{
+func NewServiceItemAccountRightConsumption() ServiceItemAccountRightConsumption {
+	return ServiceItemAccountRightConsumption{
 		ServiceItemAccountRight: NewServiceItemAccountRight(),
-		UsedCount:               types.NewPrimitiveU32(0),
-		ExpiredCount:            types.NewPrimitiveU32(0),
-		ExpiryCounts:            types.NewList[*types.PrimitiveU32](),
+		UsedCount:               types.NewUInt32(0),
+		ExpiredCount:            types.NewUInt32(0),
+		ExpiryCounts:            types.NewList[types.UInt32](),
 	}
 
-	siarc.ExpiryCounts.Type = types.NewPrimitiveU32(0)
-
-	return siarc
 }

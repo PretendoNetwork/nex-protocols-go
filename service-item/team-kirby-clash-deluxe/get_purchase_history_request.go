@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 
 	err := getPurchaseHistoryParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPurchaseHistoryRequest(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetPurchaseHistoryRequest(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), packet, callID, getPurchaseHistoryParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

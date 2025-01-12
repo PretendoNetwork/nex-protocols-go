@@ -11,19 +11,19 @@ import (
 // Ranking2CategorySetting is a type within the Ranking2 protocol
 type Ranking2CategorySetting struct {
 	types.Structure
-	MinScore           *types.PrimitiveU32
-	MaxScore           *types.PrimitiveU32
-	LowestRank         *types.PrimitiveU32
-	ResetMonth         *types.PrimitiveU16
-	ResetDay           *types.PrimitiveU8
-	ResetHour          *types.PrimitiveU8
-	ResetMode          *types.PrimitiveU8
-	MaxSeasonsToGoBack *types.PrimitiveU8
-	ScoreOrder         *types.PrimitiveBool
+	MinScore           types.UInt32
+	MaxScore           types.UInt32
+	LowestRank         types.UInt32
+	ResetMonth         types.UInt16
+	ResetDay           types.UInt8
+	ResetHour          types.UInt8
+	ResetMode          types.UInt8
+	MaxSeasonsToGoBack types.UInt8
+	ScoreOrder         types.Bool
 }
 
 // WriteTo writes the Ranking2CategorySetting to the given writable
-func (rcs *Ranking2CategorySetting) WriteTo(writable types.Writable) {
+func (rcs Ranking2CategorySetting) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rcs.MinScore.WriteTo(contentWritable)
@@ -101,30 +101,30 @@ func (rcs *Ranking2CategorySetting) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Ranking2CategorySetting
-func (rcs *Ranking2CategorySetting) Copy() types.RVType {
+func (rcs Ranking2CategorySetting) Copy() types.RVType {
 	copied := NewRanking2CategorySetting()
 
 	copied.StructureVersion = rcs.StructureVersion
-	copied.MinScore = rcs.MinScore.Copy().(*types.PrimitiveU32)
-	copied.MaxScore = rcs.MaxScore.Copy().(*types.PrimitiveU32)
-	copied.LowestRank = rcs.LowestRank.Copy().(*types.PrimitiveU32)
-	copied.ResetMonth = rcs.ResetMonth.Copy().(*types.PrimitiveU16)
-	copied.ResetDay = rcs.ResetDay.Copy().(*types.PrimitiveU8)
-	copied.ResetHour = rcs.ResetHour.Copy().(*types.PrimitiveU8)
-	copied.ResetMode = rcs.ResetMode.Copy().(*types.PrimitiveU8)
-	copied.MaxSeasonsToGoBack = rcs.MaxSeasonsToGoBack.Copy().(*types.PrimitiveU8)
-	copied.ScoreOrder = rcs.ScoreOrder.Copy().(*types.PrimitiveBool)
+	copied.MinScore = rcs.MinScore.Copy().(types.UInt32)
+	copied.MaxScore = rcs.MaxScore.Copy().(types.UInt32)
+	copied.LowestRank = rcs.LowestRank.Copy().(types.UInt32)
+	copied.ResetMonth = rcs.ResetMonth.Copy().(types.UInt16)
+	copied.ResetDay = rcs.ResetDay.Copy().(types.UInt8)
+	copied.ResetHour = rcs.ResetHour.Copy().(types.UInt8)
+	copied.ResetMode = rcs.ResetMode.Copy().(types.UInt8)
+	copied.MaxSeasonsToGoBack = rcs.MaxSeasonsToGoBack.Copy().(types.UInt8)
+	copied.ScoreOrder = rcs.ScoreOrder.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2CategorySetting contains the same data as the current Ranking2CategorySetting
-func (rcs *Ranking2CategorySetting) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2CategorySetting); !ok {
+func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
+	if _, ok := o.(Ranking2CategorySetting); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2CategorySetting)
+	other := o.(Ranking2CategorySetting)
 
 	if rcs.StructureVersion != other.StructureVersion {
 		return false
@@ -165,13 +165,27 @@ func (rcs *Ranking2CategorySetting) Equals(o types.RVType) bool {
 	return rcs.ScoreOrder.Equals(other.ScoreOrder)
 }
 
+// CopyRef copies the current value of the Ranking2CategorySetting
+// and returns a pointer to the new copy
+func (rcs Ranking2CategorySetting) CopyRef() types.RVTypePtr {
+	copied := rcs.Copy().(Ranking2CategorySetting)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2CategorySetting
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rcs *Ranking2CategorySetting) Deref() types.RVType {
+	return *rcs
+}
+
 // String returns the string representation of the Ranking2CategorySetting
-func (rcs *Ranking2CategorySetting) String() string {
+func (rcs Ranking2CategorySetting) String() string {
 	return rcs.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2CategorySetting using the provided indentation level
-func (rcs *Ranking2CategorySetting) FormatToString(indentationLevel int) string {
+func (rcs Ranking2CategorySetting) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,18 +207,17 @@ func (rcs *Ranking2CategorySetting) FormatToString(indentationLevel int) string 
 }
 
 // NewRanking2CategorySetting returns a new Ranking2CategorySetting
-func NewRanking2CategorySetting() *Ranking2CategorySetting {
-	rcs := &Ranking2CategorySetting{
-		MinScore:           types.NewPrimitiveU32(0),
-		MaxScore:           types.NewPrimitiveU32(0),
-		LowestRank:         types.NewPrimitiveU32(0),
-		ResetMonth:         types.NewPrimitiveU16(0),
-		ResetDay:           types.NewPrimitiveU8(0),
-		ResetHour:          types.NewPrimitiveU8(0),
-		ResetMode:          types.NewPrimitiveU8(0),
-		MaxSeasonsToGoBack: types.NewPrimitiveU8(0),
-		ScoreOrder:         types.NewPrimitiveBool(false),
+func NewRanking2CategorySetting() Ranking2CategorySetting {
+	return Ranking2CategorySetting{
+		MinScore:           types.NewUInt32(0),
+		MaxScore:           types.NewUInt32(0),
+		LowestRank:         types.NewUInt32(0),
+		ResetMonth:         types.NewUInt16(0),
+		ResetDay:           types.NewUInt8(0),
+		ResetHour:          types.NewUInt8(0),
+		ResetMode:          types.NewUInt8(0),
+		MaxSeasonsToGoBack: types.NewUInt8(0),
+		ScoreOrder:         types.NewBool(false),
 	}
 
-	return rcs
 }

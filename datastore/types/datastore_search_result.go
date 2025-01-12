@@ -11,13 +11,13 @@ import (
 // DataStoreSearchResult is a type within the DataStore protocol
 type DataStoreSearchResult struct {
 	types.Structure
-	TotalCount     *types.PrimitiveU32
-	Result         *types.List[*DataStoreMetaInfo]
-	TotalCountType *types.PrimitiveU8
+	TotalCount     types.UInt32
+	Result         types.List[DataStoreMetaInfo]
+	TotalCountType types.UInt8
 }
 
 // WriteTo writes the DataStoreSearchResult to the given writable
-func (dssr *DataStoreSearchResult) WriteTo(writable types.Writable) {
+func (dssr DataStoreSearchResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dssr.TotalCount.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (dssr *DataStoreSearchResult) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreSearchResult
-func (dssr *DataStoreSearchResult) Copy() types.RVType {
+func (dssr DataStoreSearchResult) Copy() types.RVType {
 	copied := NewDataStoreSearchResult()
 
 	copied.StructureVersion = dssr.StructureVersion
-	copied.TotalCount = dssr.TotalCount.Copy().(*types.PrimitiveU32)
-	copied.Result = dssr.Result.Copy().(*types.List[*DataStoreMetaInfo])
-	copied.TotalCountType = dssr.TotalCountType.Copy().(*types.PrimitiveU8)
+	copied.TotalCount = dssr.TotalCount.Copy().(types.UInt32)
+	copied.Result = dssr.Result.Copy().(types.List[DataStoreMetaInfo])
+	copied.TotalCountType = dssr.TotalCountType.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreSearchResult contains the same data as the current DataStoreSearchResult
-func (dssr *DataStoreSearchResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSearchResult); !ok {
+func (dssr DataStoreSearchResult) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreSearchResult); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSearchResult)
+	other := o.(DataStoreSearchResult)
 
 	if dssr.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (dssr *DataStoreSearchResult) Equals(o types.RVType) bool {
 	return dssr.TotalCountType.Equals(other.TotalCountType)
 }
 
+// CopyRef copies the current value of the DataStoreSearchResult
+// and returns a pointer to the new copy
+func (dssr DataStoreSearchResult) CopyRef() types.RVTypePtr {
+	copied := dssr.Copy().(DataStoreSearchResult)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreSearchResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dssr *DataStoreSearchResult) Deref() types.RVType {
+	return *dssr
+}
+
 // String returns the string representation of the DataStoreSearchResult
-func (dssr *DataStoreSearchResult) String() string {
+func (dssr DataStoreSearchResult) String() string {
 	return dssr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreSearchResult using the provided indentation level
-func (dssr *DataStoreSearchResult) FormatToString(indentationLevel int) string {
+func (dssr DataStoreSearchResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +129,11 @@ func (dssr *DataStoreSearchResult) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreSearchResult returns a new DataStoreSearchResult
-func NewDataStoreSearchResult() *DataStoreSearchResult {
-	dssr := &DataStoreSearchResult{
-		TotalCount:     types.NewPrimitiveU32(0),
-		Result:         types.NewList[*DataStoreMetaInfo](),
-		TotalCountType: types.NewPrimitiveU8(0),
+func NewDataStoreSearchResult() DataStoreSearchResult {
+	return DataStoreSearchResult{
+		TotalCount:     types.NewUInt32(0),
+		Result:         types.NewList[DataStoreMetaInfo](),
+		TotalCountType: types.NewUInt8(0),
 	}
 
-	dssr.Result.Type = NewDataStoreMetaInfo()
-
-	return dssr
 }

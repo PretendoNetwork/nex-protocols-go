@@ -25,11 +25,11 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strLine := types.NewString("")
+	var strLine types.String
 
 	err := strLine.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, strLine)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

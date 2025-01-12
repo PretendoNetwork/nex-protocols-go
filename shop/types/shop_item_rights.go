@@ -11,13 +11,13 @@ import (
 // ShopItemRights is a type within the Shop protocol
 type ShopItemRights struct {
 	types.Structure
-	ReferenceID *types.QBuffer
-	ItemType    *types.PrimitiveS8
-	Attribute   *types.PrimitiveU32
+	ReferenceID types.QBuffer
+	ItemType    types.Int8
+	Attribute   types.UInt32
 }
 
 // WriteTo writes the ShopItemRights to the given writable
-func (sir *ShopItemRights) WriteTo(writable types.Writable) {
+func (sir ShopItemRights) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sir.ReferenceID.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (sir *ShopItemRights) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ShopItemRights
-func (sir *ShopItemRights) Copy() types.RVType {
+func (sir ShopItemRights) Copy() types.RVType {
 	copied := NewShopItemRights()
 
 	copied.StructureVersion = sir.StructureVersion
-	copied.ReferenceID = sir.ReferenceID.Copy().(*types.QBuffer)
-	copied.ItemType = sir.ItemType.Copy().(*types.PrimitiveS8)
-	copied.Attribute = sir.Attribute.Copy().(*types.PrimitiveU32)
+	copied.ReferenceID = sir.ReferenceID.Copy().(types.QBuffer)
+	copied.ItemType = sir.ItemType.Copy().(types.Int8)
+	copied.Attribute = sir.Attribute.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ShopItemRights contains the same data as the current ShopItemRights
-func (sir *ShopItemRights) Equals(o types.RVType) bool {
-	if _, ok := o.(*ShopItemRights); !ok {
+func (sir ShopItemRights) Equals(o types.RVType) bool {
+	if _, ok := o.(ShopItemRights); !ok {
 		return false
 	}
 
-	other := o.(*ShopItemRights)
+	other := o.(ShopItemRights)
 
 	if sir.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (sir *ShopItemRights) Equals(o types.RVType) bool {
 	return sir.Attribute.Equals(other.Attribute)
 }
 
+// CopyRef copies the current value of the ShopItemRights
+// and returns a pointer to the new copy
+func (sir ShopItemRights) CopyRef() types.RVTypePtr {
+	copied := sir.Copy().(ShopItemRights)
+	return &copied
+}
+
+// Deref takes a pointer to the ShopItemRights
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sir *ShopItemRights) Deref() types.RVType {
+	return *sir
+}
+
 // String returns the string representation of the ShopItemRights
-func (sir *ShopItemRights) String() string {
+func (sir ShopItemRights) String() string {
 	return sir.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ShopItemRights using the provided indentation level
-func (sir *ShopItemRights) FormatToString(indentationLevel int) string {
+func (sir ShopItemRights) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +129,11 @@ func (sir *ShopItemRights) FormatToString(indentationLevel int) string {
 }
 
 // NewShopItemRights returns a new ShopItemRights
-func NewShopItemRights() *ShopItemRights {
-	sir := &ShopItemRights{
+func NewShopItemRights() ShopItemRights {
+	return ShopItemRights{
 		ReferenceID: types.NewQBuffer(nil),
-		ItemType:    types.NewPrimitiveS8(0),
-		Attribute:   types.NewPrimitiveU32(0),
+		ItemType:    types.NewInt8(0),
+		Attribute:   types.NewUInt32(0),
 	}
 
-	return sir
 }

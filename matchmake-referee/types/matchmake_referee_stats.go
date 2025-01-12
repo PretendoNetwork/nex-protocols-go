@@ -11,27 +11,27 @@ import (
 // MatchmakeRefereeStats is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStats struct {
 	types.Structure
-	*types.Data
-	UniqueID            *types.PrimitiveU64
-	Category            *types.PrimitiveU32
-	PID                 *types.PID
-	RecentDisconnection *types.PrimitiveU32
-	RecentViolation     *types.PrimitiveU32
-	RecentMismatch      *types.PrimitiveU32
-	RecentWin           *types.PrimitiveU32
-	RecentLoss          *types.PrimitiveU32
-	RecentDraw          *types.PrimitiveU32
-	TotalDisconnect     *types.PrimitiveU32
-	TotalViolation      *types.PrimitiveU32
-	TotalMismatch       *types.PrimitiveU32
-	TotalWin            *types.PrimitiveU32
-	TotalLoss           *types.PrimitiveU32
-	TotalDraw           *types.PrimitiveU32
-	RatingValue         *types.PrimitiveU32
+	types.Data
+	UniqueID            types.UInt64
+	Category            types.UInt32
+	PID                 types.PID
+	RecentDisconnection types.UInt32
+	RecentViolation     types.UInt32
+	RecentMismatch      types.UInt32
+	RecentWin           types.UInt32
+	RecentLoss          types.UInt32
+	RecentDraw          types.UInt32
+	TotalDisconnect     types.UInt32
+	TotalViolation      types.UInt32
+	TotalMismatch       types.UInt32
+	TotalWin            types.UInt32
+	TotalLoss           types.UInt32
+	TotalDraw           types.UInt32
+	RatingValue         types.UInt32
 }
 
 // WriteTo writes the MatchmakeRefereeStats to the given writable
-func (mrs *MatchmakeRefereeStats) WriteTo(writable types.Writable) {
+func (mrs MatchmakeRefereeStats) WriteTo(writable types.Writable) {
 	mrs.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -158,38 +158,38 @@ func (mrs *MatchmakeRefereeStats) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeStats
-func (mrs *MatchmakeRefereeStats) Copy() types.RVType {
+func (mrs MatchmakeRefereeStats) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStats()
 
 	copied.StructureVersion = mrs.StructureVersion
-	copied.Data = mrs.Data.Copy().(*types.Data)
-	copied.UniqueID = mrs.UniqueID.Copy().(*types.PrimitiveU64)
-	copied.Category = mrs.Category.Copy().(*types.PrimitiveU32)
-	copied.PID = mrs.PID.Copy().(*types.PID)
-	copied.RecentDisconnection = mrs.RecentDisconnection.Copy().(*types.PrimitiveU32)
-	copied.RecentViolation = mrs.RecentViolation.Copy().(*types.PrimitiveU32)
-	copied.RecentMismatch = mrs.RecentMismatch.Copy().(*types.PrimitiveU32)
-	copied.RecentWin = mrs.RecentWin.Copy().(*types.PrimitiveU32)
-	copied.RecentLoss = mrs.RecentLoss.Copy().(*types.PrimitiveU32)
-	copied.RecentDraw = mrs.RecentDraw.Copy().(*types.PrimitiveU32)
-	copied.TotalDisconnect = mrs.TotalDisconnect.Copy().(*types.PrimitiveU32)
-	copied.TotalViolation = mrs.TotalViolation.Copy().(*types.PrimitiveU32)
-	copied.TotalMismatch = mrs.TotalMismatch.Copy().(*types.PrimitiveU32)
-	copied.TotalWin = mrs.TotalWin.Copy().(*types.PrimitiveU32)
-	copied.TotalLoss = mrs.TotalLoss.Copy().(*types.PrimitiveU32)
-	copied.TotalDraw = mrs.TotalDraw.Copy().(*types.PrimitiveU32)
-	copied.RatingValue = mrs.RatingValue.Copy().(*types.PrimitiveU32)
+	copied.Data = mrs.Data.Copy().(types.Data)
+	copied.UniqueID = mrs.UniqueID.Copy().(types.UInt64)
+	copied.Category = mrs.Category.Copy().(types.UInt32)
+	copied.PID = mrs.PID.Copy().(types.PID)
+	copied.RecentDisconnection = mrs.RecentDisconnection.Copy().(types.UInt32)
+	copied.RecentViolation = mrs.RecentViolation.Copy().(types.UInt32)
+	copied.RecentMismatch = mrs.RecentMismatch.Copy().(types.UInt32)
+	copied.RecentWin = mrs.RecentWin.Copy().(types.UInt32)
+	copied.RecentLoss = mrs.RecentLoss.Copy().(types.UInt32)
+	copied.RecentDraw = mrs.RecentDraw.Copy().(types.UInt32)
+	copied.TotalDisconnect = mrs.TotalDisconnect.Copy().(types.UInt32)
+	copied.TotalViolation = mrs.TotalViolation.Copy().(types.UInt32)
+	copied.TotalMismatch = mrs.TotalMismatch.Copy().(types.UInt32)
+	copied.TotalWin = mrs.TotalWin.Copy().(types.UInt32)
+	copied.TotalLoss = mrs.TotalLoss.Copy().(types.UInt32)
+	copied.TotalDraw = mrs.TotalDraw.Copy().(types.UInt32)
+	copied.RatingValue = mrs.RatingValue.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeRefereeStats contains the same data as the current MatchmakeRefereeStats
-func (mrs *MatchmakeRefereeStats) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeStats); !ok {
+func (mrs MatchmakeRefereeStats) Equals(o types.RVType) bool {
+	if _, ok := o.(MatchmakeRefereeStats); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeStats)
+	other := o.(MatchmakeRefereeStats)
 
 	if mrs.StructureVersion != other.StructureVersion {
 		return false
@@ -262,13 +262,27 @@ func (mrs *MatchmakeRefereeStats) Equals(o types.RVType) bool {
 	return mrs.RatingValue.Equals(other.RatingValue)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeStats
+// and returns a pointer to the new copy
+func (mrs MatchmakeRefereeStats) CopyRef() types.RVTypePtr {
+	copied := mrs.Copy().(MatchmakeRefereeStats)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeStats
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrs *MatchmakeRefereeStats) Deref() types.RVType {
+	return *mrs
+}
+
 // String returns the string representation of the MatchmakeRefereeStats
-func (mrs *MatchmakeRefereeStats) String() string {
+func (mrs MatchmakeRefereeStats) String() string {
 	return mrs.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeRefereeStats using the provided indentation level
-func (mrs *MatchmakeRefereeStats) FormatToString(indentationLevel int) string {
+func (mrs MatchmakeRefereeStats) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -298,26 +312,25 @@ func (mrs *MatchmakeRefereeStats) FormatToString(indentationLevel int) string {
 }
 
 // NewMatchmakeRefereeStats returns a new MatchmakeRefereeStats
-func NewMatchmakeRefereeStats() *MatchmakeRefereeStats {
-	mrs := &MatchmakeRefereeStats{
+func NewMatchmakeRefereeStats() MatchmakeRefereeStats {
+	return MatchmakeRefereeStats{
 		Data:                types.NewData(),
-		UniqueID:            types.NewPrimitiveU64(0),
-		Category:            types.NewPrimitiveU32(0),
+		UniqueID:            types.NewUInt64(0),
+		Category:            types.NewUInt32(0),
 		PID:                 types.NewPID(0),
-		RecentDisconnection: types.NewPrimitiveU32(0),
-		RecentViolation:     types.NewPrimitiveU32(0),
-		RecentMismatch:      types.NewPrimitiveU32(0),
-		RecentWin:           types.NewPrimitiveU32(0),
-		RecentLoss:          types.NewPrimitiveU32(0),
-		RecentDraw:          types.NewPrimitiveU32(0),
-		TotalDisconnect:     types.NewPrimitiveU32(0),
-		TotalViolation:      types.NewPrimitiveU32(0),
-		TotalMismatch:       types.NewPrimitiveU32(0),
-		TotalWin:            types.NewPrimitiveU32(0),
-		TotalLoss:           types.NewPrimitiveU32(0),
-		TotalDraw:           types.NewPrimitiveU32(0),
-		RatingValue:         types.NewPrimitiveU32(0),
+		RecentDisconnection: types.NewUInt32(0),
+		RecentViolation:     types.NewUInt32(0),
+		RecentMismatch:      types.NewUInt32(0),
+		RecentWin:           types.NewUInt32(0),
+		RecentLoss:          types.NewUInt32(0),
+		RecentDraw:          types.NewUInt32(0),
+		TotalDisconnect:     types.NewUInt32(0),
+		TotalViolation:      types.NewUInt32(0),
+		TotalMismatch:       types.NewUInt32(0),
+		TotalWin:            types.NewUInt32(0),
+		TotalLoss:           types.NewUInt32(0),
+		TotalDraw:           types.NewUInt32(0),
+		RatingValue:         types.NewUInt32(0),
 	}
 
-	return mrs
 }

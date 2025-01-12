@@ -25,14 +25,14 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	id := types.NewPrimitiveU32(0)
-	descr := types.NewString("")
+	var id types.UInt32
+	var descr types.String
 
 	var err error
 
 	err = id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, id, descr)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	err = descr.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, id, descr)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

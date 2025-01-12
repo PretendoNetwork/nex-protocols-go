@@ -11,14 +11,24 @@ import (
 // AccountExtraInfo is a type within the AccountManagement protocol
 type AccountExtraInfo struct {
 	types.Structure
-	Unknown  *types.PrimitiveU32
-	Unknown2 *types.PrimitiveU32
-	Unknown3 *types.PrimitiveU32
-	NEXToken *types.String
+	Unknown  types.UInt32
+	Unknown2 types.UInt32
+	Unknown3 types.UInt32
+	NEXToken types.String
+}
+
+// ObjectID returns the object identifier of the type
+func (aei AccountExtraInfo) ObjectID() types.RVType {
+	return aei.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (aei AccountExtraInfo) DataObjectID() types.RVType {
+	return types.NewString("AccountExtraInfo")
 }
 
 // WriteTo writes the AccountExtraInfo to the given writable
-func (aei *AccountExtraInfo) WriteTo(writable types.Writable) {
+func (aei AccountExtraInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	aei.Unknown.WriteTo(contentWritable)
@@ -66,25 +76,25 @@ func (aei *AccountExtraInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of AccountExtraInfo
-func (aei *AccountExtraInfo) Copy() types.RVType {
+func (aei AccountExtraInfo) Copy() types.RVType {
 	copied := NewAccountExtraInfo()
 
 	copied.StructureVersion = aei.StructureVersion
-	copied.Unknown = aei.Unknown.Copy().(*types.PrimitiveU32)
-	copied.Unknown2 = aei.Unknown2.Copy().(*types.PrimitiveU32)
-	copied.Unknown3 = aei.Unknown3.Copy().(*types.PrimitiveU32)
-	copied.NEXToken = aei.NEXToken.Copy().(*types.String)
+	copied.Unknown = aei.Unknown.Copy().(types.UInt32)
+	copied.Unknown2 = aei.Unknown2.Copy().(types.UInt32)
+	copied.Unknown3 = aei.Unknown3.Copy().(types.UInt32)
+	copied.NEXToken = aei.NEXToken.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given AccountExtraInfo contains the same data as the current AccountExtraInfo
-func (aei *AccountExtraInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*AccountExtraInfo); !ok {
+func (aei AccountExtraInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(AccountExtraInfo); !ok {
 		return false
 	}
 
-	other := o.(*AccountExtraInfo)
+	other := o.(AccountExtraInfo)
 
 	if aei.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +115,27 @@ func (aei *AccountExtraInfo) Equals(o types.RVType) bool {
 	return aei.NEXToken.Equals(other.NEXToken)
 }
 
+// CopyRef copies the current value of the AccountExtraInfo
+// and returns a pointer to the new copy
+func (aei AccountExtraInfo) CopyRef() types.RVTypePtr {
+	copied := aei.Copy().(AccountExtraInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the AccountExtraInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (aei *AccountExtraInfo) Deref() types.RVType {
+	return *aei
+}
+
 // String returns the string representation of the AccountExtraInfo
-func (aei *AccountExtraInfo) String() string {
+func (aei AccountExtraInfo) String() string {
 	return aei.FormatToString(0)
 }
 
 // FormatToString pretty-prints the AccountExtraInfo using the provided indentation level
-func (aei *AccountExtraInfo) FormatToString(indentationLevel int) string {
+func (aei AccountExtraInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +152,12 @@ func (aei *AccountExtraInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewAccountExtraInfo returns a new AccountExtraInfo
-func NewAccountExtraInfo() *AccountExtraInfo {
-	aei := &AccountExtraInfo{
-		Unknown:  types.NewPrimitiveU32(0),
-		Unknown2: types.NewPrimitiveU32(0),
-		Unknown3: types.NewPrimitiveU32(0),
+func NewAccountExtraInfo() AccountExtraInfo {
+	return AccountExtraInfo{
+		Unknown:  types.NewUInt32(0),
+		Unknown2: types.NewUInt32(0),
+		Unknown3: types.NewUInt32(0),
 		NEXToken: types.NewString(""),
 	}
 
-	return aei
 }

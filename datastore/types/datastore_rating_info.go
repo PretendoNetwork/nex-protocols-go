@@ -11,13 +11,13 @@ import (
 // DataStoreRatingInfo is a type within the DataStore protocol
 type DataStoreRatingInfo struct {
 	types.Structure
-	TotalValue   *types.PrimitiveS64
-	Count        *types.PrimitiveU32
-	InitialValue *types.PrimitiveS64
+	TotalValue   types.Int64
+	Count        types.UInt32
+	InitialValue types.Int64
 }
 
 // WriteTo writes the DataStoreRatingInfo to the given writable
-func (dsri *DataStoreRatingInfo) WriteTo(writable types.Writable) {
+func (dsri DataStoreRatingInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsri.TotalValue.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (dsri *DataStoreRatingInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreRatingInfo
-func (dsri *DataStoreRatingInfo) Copy() types.RVType {
+func (dsri DataStoreRatingInfo) Copy() types.RVType {
 	copied := NewDataStoreRatingInfo()
 
 	copied.StructureVersion = dsri.StructureVersion
-	copied.TotalValue = dsri.TotalValue.Copy().(*types.PrimitiveS64)
-	copied.Count = dsri.Count.Copy().(*types.PrimitiveU32)
-	copied.InitialValue = dsri.InitialValue.Copy().(*types.PrimitiveS64)
+	copied.TotalValue = dsri.TotalValue.Copy().(types.Int64)
+	copied.Count = dsri.Count.Copy().(types.UInt32)
+	copied.InitialValue = dsri.InitialValue.Copy().(types.Int64)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreRatingInfo contains the same data as the current DataStoreRatingInfo
-func (dsri *DataStoreRatingInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRatingInfo); !ok {
+func (dsri DataStoreRatingInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreRatingInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRatingInfo)
+	other := o.(DataStoreRatingInfo)
 
 	if dsri.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (dsri *DataStoreRatingInfo) Equals(o types.RVType) bool {
 	return dsri.InitialValue.Equals(other.InitialValue)
 }
 
+// CopyRef copies the current value of the DataStoreRatingInfo
+// and returns a pointer to the new copy
+func (dsri DataStoreRatingInfo) CopyRef() types.RVTypePtr {
+	copied := dsri.Copy().(DataStoreRatingInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsri *DataStoreRatingInfo) Deref() types.RVType {
+	return *dsri
+}
+
 // String returns the string representation of the DataStoreRatingInfo
-func (dsri *DataStoreRatingInfo) String() string {
+func (dsri DataStoreRatingInfo) String() string {
 	return dsri.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreRatingInfo using the provided indentation level
-func (dsri *DataStoreRatingInfo) FormatToString(indentationLevel int) string {
+func (dsri DataStoreRatingInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +129,11 @@ func (dsri *DataStoreRatingInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreRatingInfo returns a new DataStoreRatingInfo
-func NewDataStoreRatingInfo() *DataStoreRatingInfo {
-	dsri := &DataStoreRatingInfo{
-		TotalValue:   types.NewPrimitiveS64(0),
-		Count:        types.NewPrimitiveU32(0),
-		InitialValue: types.NewPrimitiveS64(0),
+func NewDataStoreRatingInfo() DataStoreRatingInfo {
+	return DataStoreRatingInfo{
+		TotalValue:   types.NewInt64(0),
+		Count:        types.NewUInt32(0),
+		InitialValue: types.NewInt64(0),
 	}
 
-	return dsri
 }

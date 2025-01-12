@@ -11,14 +11,14 @@ import (
 // DataStoreGetMetaByOwnerIDParam is a type within the DataStoreNintendoBadgeArcade protocol
 type DataStoreGetMetaByOwnerIDParam struct {
 	types.Structure
-	OwnerIDs     *types.List[*types.PID]
-	DataTypes    *types.List[*types.PrimitiveU16]
-	ResultOption *types.PrimitiveU8
-	ResultRange  *types.ResultRange
+	OwnerIDs     types.List[types.PID]
+	DataTypes    types.List[types.UInt16]
+	ResultOption types.UInt8
+	ResultRange  types.ResultRange
 }
 
 // WriteTo writes the DataStoreGetMetaByOwnerIDParam to the given writable
-func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) WriteTo(writable types.Writable) {
+func (dsgmboidp DataStoreGetMetaByOwnerIDParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsgmboidp.OwnerIDs.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) ExtractFrom(readable types.Read
 }
 
 // Copy returns a new copied instance of DataStoreGetMetaByOwnerIDParam
-func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) Copy() types.RVType {
+func (dsgmboidp DataStoreGetMetaByOwnerIDParam) Copy() types.RVType {
 	copied := NewDataStoreGetMetaByOwnerIDParam()
 
 	copied.StructureVersion = dsgmboidp.StructureVersion
-	copied.OwnerIDs = dsgmboidp.OwnerIDs.Copy().(*types.List[*types.PID])
-	copied.DataTypes = dsgmboidp.DataTypes.Copy().(*types.List[*types.PrimitiveU16])
-	copied.ResultOption = dsgmboidp.ResultOption.Copy().(*types.PrimitiveU8)
-	copied.ResultRange = dsgmboidp.ResultRange.Copy().(*types.ResultRange)
+	copied.OwnerIDs = dsgmboidp.OwnerIDs.Copy().(types.List[types.PID])
+	copied.DataTypes = dsgmboidp.DataTypes.Copy().(types.List[types.UInt16])
+	copied.ResultOption = dsgmboidp.ResultOption.Copy().(types.UInt8)
+	copied.ResultRange = dsgmboidp.ResultRange.Copy().(types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreGetMetaByOwnerIDParam contains the same data as the current DataStoreGetMetaByOwnerIDParam
-func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetMetaByOwnerIDParam); !ok {
+func (dsgmboidp DataStoreGetMetaByOwnerIDParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreGetMetaByOwnerIDParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetMetaByOwnerIDParam)
+	other := o.(DataStoreGetMetaByOwnerIDParam)
 
 	if dsgmboidp.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) Equals(o types.RVType) bool {
 	return dsgmboidp.ResultRange.Equals(other.ResultRange)
 }
 
+// CopyRef copies the current value of the DataStoreGetMetaByOwnerIDParam
+// and returns a pointer to the new copy
+func (dsgmboidp DataStoreGetMetaByOwnerIDParam) CopyRef() types.RVTypePtr {
+	copied := dsgmboidp.Copy().(DataStoreGetMetaByOwnerIDParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetMetaByOwnerIDParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) Deref() types.RVType {
+	return *dsgmboidp
+}
+
 // String returns the string representation of the DataStoreGetMetaByOwnerIDParam
-func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) String() string {
+func (dsgmboidp DataStoreGetMetaByOwnerIDParam) String() string {
 	return dsgmboidp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreGetMetaByOwnerIDParam using the provided indentation level
-func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) FormatToString(indentationLevel int) string {
+func (dsgmboidp DataStoreGetMetaByOwnerIDParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,16 +142,12 @@ func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) FormatToString(indentationLevel
 }
 
 // NewDataStoreGetMetaByOwnerIDParam returns a new DataStoreGetMetaByOwnerIDParam
-func NewDataStoreGetMetaByOwnerIDParam() *DataStoreGetMetaByOwnerIDParam {
-	dsgmboidp := &DataStoreGetMetaByOwnerIDParam{
-		OwnerIDs:     types.NewList[*types.PID](),
-		DataTypes:    types.NewList[*types.PrimitiveU16](),
-		ResultOption: types.NewPrimitiveU8(0),
+func NewDataStoreGetMetaByOwnerIDParam() DataStoreGetMetaByOwnerIDParam {
+	return DataStoreGetMetaByOwnerIDParam{
+		OwnerIDs:     types.NewList[types.PID](),
+		DataTypes:    types.NewList[types.UInt16](),
+		ResultOption: types.NewUInt8(0),
 		ResultRange:  types.NewResultRange(),
 	}
 
-	dsgmboidp.OwnerIDs.Type = types.NewPID(0)
-	dsgmboidp.DataTypes.Type = types.NewPrimitiveU16(0)
-
-	return dsgmboidp
 }

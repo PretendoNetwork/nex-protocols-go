@@ -11,13 +11,13 @@ import (
 // MatchmakeRefereeStatsTarget is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStatsTarget struct {
 	types.Structure
-	*types.Data
-	PID      *types.PID
-	Category *types.PrimitiveU32
+	types.Data
+	PID      types.PID
+	Category types.UInt32
 }
 
 // WriteTo writes the MatchmakeRefereeStatsTarget to the given writable
-func (mrst *MatchmakeRefereeStatsTarget) WriteTo(writable types.Writable) {
+func (mrst MatchmakeRefereeStatsTarget) WriteTo(writable types.Writable) {
 	mrst.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -60,24 +60,24 @@ func (mrst *MatchmakeRefereeStatsTarget) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeStatsTarget
-func (mrst *MatchmakeRefereeStatsTarget) Copy() types.RVType {
+func (mrst MatchmakeRefereeStatsTarget) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStatsTarget()
 
 	copied.StructureVersion = mrst.StructureVersion
-	copied.Data = mrst.Data.Copy().(*types.Data)
-	copied.PID = mrst.PID.Copy().(*types.PID)
-	copied.Category = mrst.Category.Copy().(*types.PrimitiveU32)
+	copied.Data = mrst.Data.Copy().(types.Data)
+	copied.PID = mrst.PID.Copy().(types.PID)
+	copied.Category = mrst.Category.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeRefereeStatsTarget contains the same data as the current MatchmakeRefereeStatsTarget
-func (mrst *MatchmakeRefereeStatsTarget) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeStatsTarget); !ok {
+func (mrst MatchmakeRefereeStatsTarget) Equals(o types.RVType) bool {
+	if _, ok := o.(MatchmakeRefereeStatsTarget); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeStatsTarget)
+	other := o.(MatchmakeRefereeStatsTarget)
 
 	if mrst.StructureVersion != other.StructureVersion {
 		return false
@@ -94,13 +94,27 @@ func (mrst *MatchmakeRefereeStatsTarget) Equals(o types.RVType) bool {
 	return mrst.Category.Equals(other.Category)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeStatsTarget
+// and returns a pointer to the new copy
+func (mrst MatchmakeRefereeStatsTarget) CopyRef() types.RVTypePtr {
+	copied := mrst.Copy().(MatchmakeRefereeStatsTarget)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeStatsTarget
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrst *MatchmakeRefereeStatsTarget) Deref() types.RVType {
+	return *mrst
+}
+
 // String returns the string representation of the MatchmakeRefereeStatsTarget
-func (mrst *MatchmakeRefereeStatsTarget) String() string {
+func (mrst MatchmakeRefereeStatsTarget) String() string {
 	return mrst.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeRefereeStatsTarget using the provided indentation level
-func (mrst *MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) string {
+func (mrst MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,12 +130,11 @@ func (mrst *MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) st
 }
 
 // NewMatchmakeRefereeStatsTarget returns a new MatchmakeRefereeStatsTarget
-func NewMatchmakeRefereeStatsTarget() *MatchmakeRefereeStatsTarget {
-	mrst := &MatchmakeRefereeStatsTarget{
+func NewMatchmakeRefereeStatsTarget() MatchmakeRefereeStatsTarget {
+	return MatchmakeRefereeStatsTarget{
 		Data:     types.NewData(),
 		PID:      types.NewPID(0),
-		Category: types.NewPrimitiveU32(0),
+		Category: types.NewUInt32(0),
 	}
 
-	return mrst
 }

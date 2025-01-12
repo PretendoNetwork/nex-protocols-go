@@ -11,13 +11,13 @@ import (
 // ApplicationInfo is a type within the AAUser protocol
 type ApplicationInfo struct {
 	types.Structure
-	*types.Data
-	TitleID      *types.PrimitiveU64
-	TitleVersion *types.PrimitiveU16
+	types.Data
+	TitleID      types.UInt64
+	TitleVersion types.UInt16
 }
 
 // WriteTo writes the ApplicationInfo to the given writable
-func (ai *ApplicationInfo) WriteTo(writable types.Writable) {
+func (ai ApplicationInfo) WriteTo(writable types.Writable) {
 	ai.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -60,24 +60,24 @@ func (ai *ApplicationInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ApplicationInfo
-func (ai *ApplicationInfo) Copy() types.RVType {
+func (ai ApplicationInfo) Copy() types.RVType {
 	copied := NewApplicationInfo()
 
 	copied.StructureVersion = ai.StructureVersion
-	copied.Data = ai.Data.Copy().(*types.Data)
-	copied.TitleID = ai.TitleID.Copy().(*types.PrimitiveU64)
-	copied.TitleVersion = ai.TitleVersion.Copy().(*types.PrimitiveU16)
+	copied.Data = ai.Data.Copy().(types.Data)
+	copied.TitleID = ai.TitleID.Copy().(types.UInt64)
+	copied.TitleVersion = ai.TitleVersion.Copy().(types.UInt16)
 
 	return copied
 }
 
 // Equals checks if the given ApplicationInfo contains the same data as the current ApplicationInfo
-func (ai *ApplicationInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ApplicationInfo); !ok {
+func (ai ApplicationInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(ApplicationInfo); !ok {
 		return false
 	}
 
-	other := o.(*ApplicationInfo)
+	other := o.(ApplicationInfo)
 
 	if ai.StructureVersion != other.StructureVersion {
 		return false
@@ -94,13 +94,27 @@ func (ai *ApplicationInfo) Equals(o types.RVType) bool {
 	return ai.TitleVersion.Equals(other.TitleVersion)
 }
 
+// CopyRef copies the current value of the ApplicationInfo
+// and returns a pointer to the new copy
+func (ai ApplicationInfo) CopyRef() types.RVTypePtr {
+	copied := ai.Copy().(ApplicationInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ApplicationInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ai *ApplicationInfo) Deref() types.RVType {
+	return *ai
+}
+
 // String returns the string representation of the ApplicationInfo
-func (ai *ApplicationInfo) String() string {
+func (ai ApplicationInfo) String() string {
 	return ai.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ApplicationInfo using the provided indentation level
-func (ai *ApplicationInfo) FormatToString(indentationLevel int) string {
+func (ai ApplicationInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,11 +130,11 @@ func (ai *ApplicationInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewApplicationInfo returns a new ApplicationInfo
-func NewApplicationInfo() *ApplicationInfo {
-	ai := &ApplicationInfo{
+func NewApplicationInfo() ApplicationInfo {
+	ai := ApplicationInfo{
 		Data:         types.NewData(),
-		TitleID:      types.NewPrimitiveU64(0),
-		TitleVersion: types.NewPrimitiveU16(0),
+		TitleID:      types.NewUInt64(0),
+		TitleVersion: types.NewUInt16(0),
 	}
 
 	return ai

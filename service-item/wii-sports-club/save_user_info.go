@@ -29,7 +29,7 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 
 	err := userInfo.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SaveUserInfo(fmt.Errorf("Failed to read userInfo from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.SaveUserInfo(fmt.Errorf("Failed to read userInfo from parameters. %s", err.Error()), packet, callID, userInfo)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

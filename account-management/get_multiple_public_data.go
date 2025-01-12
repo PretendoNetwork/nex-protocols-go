@@ -25,12 +25,11 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lstPrincipals := types.NewList[*types.PID]()
-	lstPrincipals.Type = types.NewPID(0)
+	var lstPrincipals types.List[types.PID]
 
 	err := lstPrincipals.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMultiplePublicData(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetMultiplePublicData(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, lstPrincipals)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

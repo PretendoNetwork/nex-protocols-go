@@ -64,21 +64,21 @@ const (
 // Protocol stores all the RMC method handlers for the Ranking protocol and listens for requests
 type Protocol struct {
 	endpoint                 nex.EndpointInterface
-	UploadScore              func(err error, packet nex.PacketInterface, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	DeleteScore              func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	DeleteAllScores          func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	UploadCommonData         func(err error, packet nex.PacketInterface, callID uint32, commonData *types.Buffer, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	DeleteCommonData         func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	GetCommonData            func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	ChangeAttributes         func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	ChangeAllAttributes      func(err error, packet nex.PacketInterface, callID uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	GetRanking               func(err error, packet nex.PacketInterface, callID uint32, rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64, principalID *types.PID) (*nex.RMCMessage, *nex.Error)
-	GetApproxOrder           func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, score *types.PrimitiveU32, uniqueID *types.PrimitiveU64, principalID *types.PID) (*nex.RMCMessage, *nex.Error)
-	GetStats                 func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, flags *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
-	GetRankingByPIDList      func(err error, packet nex.PacketInterface, callID uint32, principalIDList *types.List[*types.PID], rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	GetRankingByUniqueIDList func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList *types.List[*types.PrimitiveU64], rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
-	GetCachedTopXRanking     func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)
-	GetCachedTopXRankings    func(err error, packet nex.PacketInterface, callID uint32, categories *types.List[*types.PrimitiveU32], orderParams *types.List[*ranking_types.RankingOrderParam]) (*nex.RMCMessage, *nex.Error)
+	UploadScore              func(err error, packet nex.PacketInterface, callID uint32, scoreData ranking_types.RankingScoreData, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	DeleteScore              func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	DeleteAllScores          func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	UploadCommonData         func(err error, packet nex.PacketInterface, callID uint32, commonData types.Buffer, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	DeleteCommonData         func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	GetCommonData            func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	ChangeAttributes         func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, changeParam ranking_types.RankingChangeAttributesParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	ChangeAllAttributes      func(err error, packet nex.PacketInterface, callID uint32, changeParam ranking_types.RankingChangeAttributesParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	GetRanking               func(err error, packet nex.PacketInterface, callID uint32, rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64, principalID types.PID) (*nex.RMCMessage, *nex.Error)
+	GetApproxOrder           func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam, score types.UInt32, uniqueID types.UInt64, principalID types.PID) (*nex.RMCMessage, *nex.Error)
+	GetStats                 func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam, flags types.UInt32) (*nex.RMCMessage, *nex.Error)
+	GetRankingByPIDList      func(err error, packet nex.PacketInterface, callID uint32, principalIDList types.List[types.PID], rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	GetRankingByUniqueIDList func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList types.List[types.UInt64], rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	GetCachedTopXRanking     func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)
+	GetCachedTopXRankings    func(err error, packet nex.PacketInterface, callID uint32, categories types.List[types.UInt32], orderParams types.List[ranking_types.RankingOrderParam]) (*nex.RMCMessage, *nex.Error)
 	Patches                  nex.ServiceProtocol
 	PatchedMethods           []uint32
 }
@@ -87,21 +87,21 @@ type Protocol struct {
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
-	SetHandlerUploadScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerDeleteScore(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerDeleteAllScores(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUploadCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, commonData *types.Buffer, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerDeleteCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerChangeAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerChangeAllAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetRanking(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64, principalID *types.PID) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetApproxOrder(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, score *types.PrimitiveU32, uniqueID *types.PrimitiveU64, principalID *types.PID) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetStats(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, flags *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetRankingByPIDList(handler func(err error, packet nex.PacketInterface, callID uint32, principalIDList *types.List[*types.PID], rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetRankingByUniqueIDList(handler func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList *types.List[*types.PrimitiveU64], rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetCachedTopXRanking(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetCachedTopXRankings(handler func(err error, packet nex.PacketInterface, callID uint32, categories *types.List[*types.PrimitiveU32], orderParams *types.List[*ranking_types.RankingOrderParam]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUploadScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreData ranking_types.RankingScoreData, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeleteScore(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeleteAllScores(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUploadCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, commonData types.Buffer, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeleteCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerChangeAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, changeParam ranking_types.RankingChangeAttributesParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerChangeAllAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, changeParam ranking_types.RankingChangeAttributesParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetRanking(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64, principalID types.PID) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetApproxOrder(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam, score types.UInt32, uniqueID types.UInt64, principalID types.PID) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetStats(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam, flags types.UInt32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetRankingByPIDList(handler func(err error, packet nex.PacketInterface, callID uint32, principalIDList types.List[types.PID], rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetRankingByUniqueIDList(handler func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList types.List[types.UInt64], rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetCachedTopXRanking(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetCachedTopXRankings(handler func(err error, packet nex.PacketInterface, callID uint32, categories types.List[types.UInt32], orderParams types.List[ranking_types.RankingOrderParam]) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -115,77 +115,77 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // SetHandlerUploadScore sets the handler for the UploadScore method
-func (protocol *Protocol) SetHandlerUploadScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUploadScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreData ranking_types.RankingScoreData, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UploadScore = handler
 }
 
 // SetHandlerDeleteScore sets the handler for the DeleteScore method
-func (protocol *Protocol) SetHandlerDeleteScore(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerDeleteScore(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DeleteScore = handler
 }
 
 // SetHandlerDeleteAllScores sets the handler for the DeleteAllScores method
-func (protocol *Protocol) SetHandlerDeleteAllScores(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerDeleteAllScores(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DeleteAllScores = handler
 }
 
 // SetHandlerUploadCommonData sets the handler for the UploadCommonData method
-func (protocol *Protocol) SetHandlerUploadCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, commonData *types.Buffer, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUploadCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, commonData types.Buffer, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UploadCommonData = handler
 }
 
 // SetHandlerDeleteCommonData sets the handler for the DeleteCommonData method
-func (protocol *Protocol) SetHandlerDeleteCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerDeleteCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DeleteCommonData = handler
 }
 
 // SetHandlerGetCommonData sets the handler for the GetCommonData method
-func (protocol *Protocol) SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetCommonData = handler
 }
 
 // SetHandlerChangeAttributes sets the handler for the ChangeAttributes method
-func (protocol *Protocol) SetHandlerChangeAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerChangeAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, changeParam ranking_types.RankingChangeAttributesParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ChangeAttributes = handler
 }
 
 // SetHandlerChangeAllAttributes sets the handler for the ChangeAllAttributes method
-func (protocol *Protocol) SetHandlerChangeAllAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerChangeAllAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, changeParam ranking_types.RankingChangeAttributesParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ChangeAllAttributes = handler
 }
 
 // SetHandlerGetRanking sets the handler for the GetRanking method
-func (protocol *Protocol) SetHandlerGetRanking(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64, principalID *types.PID) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetRanking(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64, principalID types.PID) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetRanking = handler
 }
 
 // SetHandlerGetApproxOrder sets the handler for the GetApproxOrder method
-func (protocol *Protocol) SetHandlerGetApproxOrder(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, score *types.PrimitiveU32, uniqueID *types.PrimitiveU64, principalID *types.PID) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetApproxOrder(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam, score types.UInt32, uniqueID types.UInt64, principalID types.PID) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetApproxOrder = handler
 }
 
 // SetHandlerGetStats sets the handler for the GetStats method
-func (protocol *Protocol) SetHandlerGetStats(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, flags *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetStats(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam, flags types.UInt32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetStats = handler
 }
 
 // SetHandlerGetRankingByPIDList sets the handler for the GetRankingByPIDList method
-func (protocol *Protocol) SetHandlerGetRankingByPIDList(handler func(err error, packet nex.PacketInterface, callID uint32, principalIDList *types.List[*types.PID], rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetRankingByPIDList(handler func(err error, packet nex.PacketInterface, callID uint32, principalIDList types.List[types.PID], rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetRankingByPIDList = handler
 }
 
 // SetHandlerGetRankingByUniqueIDList sets the handler for the GetRankingByUniqueIDList method
-func (protocol *Protocol) SetHandlerGetRankingByUniqueIDList(handler func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList *types.List[*types.PrimitiveU64], rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetRankingByUniqueIDList(handler func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList types.List[types.UInt64], rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, uniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetRankingByUniqueIDList = handler
 }
 
 // SetHandlerGetCachedTopXRanking sets the handler for the GetCachedTopXRanking method
-func (protocol *Protocol) SetHandlerGetCachedTopXRanking(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetCachedTopXRanking(handler func(err error, packet nex.PacketInterface, callID uint32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetCachedTopXRanking = handler
 }
 
 // SetHandlerGetCachedTopXRankings sets the handler for the GetCachedTopXRankings method
-func (protocol *Protocol) SetHandlerGetCachedTopXRankings(handler func(err error, packet nex.PacketInterface, callID uint32, categories *types.List[*types.PrimitiveU32], orderParams *types.List[*ranking_types.RankingOrderParam]) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetCachedTopXRankings(handler func(err error, packet nex.PacketInterface, callID uint32, categories types.List[types.UInt32], orderParams types.List[ranking_types.RankingOrderParam]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetCachedTopXRankings = handler
 }
 

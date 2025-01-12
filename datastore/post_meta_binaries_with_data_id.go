@@ -26,17 +26,15 @@ func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInte
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	dataIDs := types.NewList[*types.PrimitiveU64]()
-	dataIDs.Type = types.NewPrimitiveU64(0)
-	params := types.NewList[*datastore_types.DataStorePreparePostParam]()
-	params.Type = datastore_types.NewDataStorePreparePostParam()
-	transactional := types.NewPrimitiveBool(false)
+	var dataIDs types.List[types.UInt64]
+	var params types.List[datastore_types.DataStorePreparePostParam]
+	var transactional types.Bool
 
 	var err error
 
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -46,7 +44,7 @@ func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInte
 
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -56,7 +54,7 @@ func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInte
 
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

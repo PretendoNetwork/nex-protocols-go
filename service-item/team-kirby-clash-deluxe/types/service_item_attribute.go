@@ -11,12 +11,12 @@ import (
 // ServiceItemAttribute is a type within the ServiceItem protocol
 type ServiceItemAttribute struct {
 	types.Structure
-	Name  *types.String
-	Value *types.String
+	Name  types.String
+	Value types.String
 }
 
 // WriteTo writes the ServiceItemAttribute to the given writable
-func (sia *ServiceItemAttribute) WriteTo(writable types.Writable) {
+func (sia ServiceItemAttribute) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sia.Name.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (sia *ServiceItemAttribute) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemAttribute
-func (sia *ServiceItemAttribute) Copy() types.RVType {
+func (sia ServiceItemAttribute) Copy() types.RVType {
 	copied := NewServiceItemAttribute()
 
 	copied.StructureVersion = sia.StructureVersion
-	copied.Name = sia.Name.Copy().(*types.String)
-	copied.Value = sia.Value.Copy().(*types.String)
+	copied.Name = sia.Name.Copy().(types.String)
+	copied.Value = sia.Value.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemAttribute contains the same data as the current ServiceItemAttribute
-func (sia *ServiceItemAttribute) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAttribute); !ok {
+func (sia ServiceItemAttribute) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemAttribute); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAttribute)
+	other := o.(ServiceItemAttribute)
 
 	if sia.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (sia *ServiceItemAttribute) Equals(o types.RVType) bool {
 	return sia.Value.Equals(other.Value)
 }
 
+// CopyRef copies the current value of the ServiceItemAttribute
+// and returns a pointer to the new copy
+func (sia ServiceItemAttribute) CopyRef() types.RVTypePtr {
+	copied := sia.Copy().(ServiceItemAttribute)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAttribute
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sia *ServiceItemAttribute) Deref() types.RVType {
+	return *sia
+}
+
 // String returns the string representation of the ServiceItemAttribute
-func (sia *ServiceItemAttribute) String() string {
+func (sia ServiceItemAttribute) String() string {
 	return sia.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemAttribute using the provided indentation level
-func (sia *ServiceItemAttribute) FormatToString(indentationLevel int) string {
+func (sia ServiceItemAttribute) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (sia *ServiceItemAttribute) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemAttribute returns a new ServiceItemAttribute
-func NewServiceItemAttribute() *ServiceItemAttribute {
-	sia := &ServiceItemAttribute{
+func NewServiceItemAttribute() ServiceItemAttribute {
+	return ServiceItemAttribute{
 		Name:  types.NewString(""),
 		Value: types.NewString(""),
 	}
 
-	return sia
 }

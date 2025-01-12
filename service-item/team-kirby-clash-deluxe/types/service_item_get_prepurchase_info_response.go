@@ -11,12 +11,12 @@ import (
 // ServiceItemGetPrepurchaseInfoResponse is a type within the ServiceItem protocol
 type ServiceItemGetPrepurchaseInfoResponse struct {
 	types.Structure
-	*ServiceItemEShopResponse
-	NullablePrepurchaseInfo *types.List[*ServiceItemPrepurchaseInfo]
+	ServiceItemEShopResponse
+	NullablePrepurchaseInfo types.List[ServiceItemPrepurchaseInfo]
 }
 
 // WriteTo writes the ServiceItemGetPrepurchaseInfoResponse to the given writable
-func (sigpir *ServiceItemGetPrepurchaseInfoResponse) WriteTo(writable types.Writable) {
+func (sigpir ServiceItemGetPrepurchaseInfoResponse) WriteTo(writable types.Writable) {
 	sigpir.ServiceItemEShopResponse.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (sigpir *ServiceItemGetPrepurchaseInfoResponse) ExtractFrom(readable types.
 }
 
 // Copy returns a new copied instance of ServiceItemGetPrepurchaseInfoResponse
-func (sigpir *ServiceItemGetPrepurchaseInfoResponse) Copy() types.RVType {
+func (sigpir ServiceItemGetPrepurchaseInfoResponse) Copy() types.RVType {
 	copied := NewServiceItemGetPrepurchaseInfoResponse()
 
 	copied.StructureVersion = sigpir.StructureVersion
-	copied.ServiceItemEShopResponse = sigpir.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.NullablePrepurchaseInfo = sigpir.NullablePrepurchaseInfo.Copy().(*types.List[*ServiceItemPrepurchaseInfo])
+	copied.ServiceItemEShopResponse = sigpir.ServiceItemEShopResponse.Copy().(ServiceItemEShopResponse)
+	copied.NullablePrepurchaseInfo = sigpir.NullablePrepurchaseInfo.Copy().(types.List[ServiceItemPrepurchaseInfo])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetPrepurchaseInfoResponse contains the same data as the current ServiceItemGetPrepurchaseInfoResponse
-func (sigpir *ServiceItemGetPrepurchaseInfoResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetPrepurchaseInfoResponse); !ok {
+func (sigpir ServiceItemGetPrepurchaseInfoResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemGetPrepurchaseInfoResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetPrepurchaseInfoResponse)
+	other := o.(ServiceItemGetPrepurchaseInfoResponse)
 
 	if sigpir.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (sigpir *ServiceItemGetPrepurchaseInfoResponse) Equals(o types.RVType) bool
 	return sigpir.NullablePrepurchaseInfo.Equals(other.NullablePrepurchaseInfo)
 }
 
+// CopyRef copies the current value of the ServiceItemGetPrepurchaseInfoResponse
+// and returns a pointer to the new copy
+func (sigpir ServiceItemGetPrepurchaseInfoResponse) CopyRef() types.RVTypePtr {
+	copied := sigpir.Copy().(ServiceItemGetPrepurchaseInfoResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetPrepurchaseInfoResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigpir *ServiceItemGetPrepurchaseInfoResponse) Deref() types.RVType {
+	return *sigpir
+}
+
 // String returns the string representation of the ServiceItemGetPrepurchaseInfoResponse
-func (sigpir *ServiceItemGetPrepurchaseInfoResponse) String() string {
+func (sigpir ServiceItemGetPrepurchaseInfoResponse) String() string {
 	return sigpir.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetPrepurchaseInfoResponse using the provided indentation level
-func (sigpir *ServiceItemGetPrepurchaseInfoResponse) FormatToString(indentationLevel int) string {
+func (sigpir ServiceItemGetPrepurchaseInfoResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +117,10 @@ func (sigpir *ServiceItemGetPrepurchaseInfoResponse) FormatToString(indentationL
 }
 
 // NewServiceItemGetPrepurchaseInfoResponse returns a new ServiceItemGetPrepurchaseInfoResponse
-func NewServiceItemGetPrepurchaseInfoResponse() *ServiceItemGetPrepurchaseInfoResponse {
-	sigpir := &ServiceItemGetPrepurchaseInfoResponse{
+func NewServiceItemGetPrepurchaseInfoResponse() ServiceItemGetPrepurchaseInfoResponse {
+	return ServiceItemGetPrepurchaseInfoResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullablePrepurchaseInfo:  types.NewList[*ServiceItemPrepurchaseInfo](),
+		NullablePrepurchaseInfo:  types.NewList[ServiceItemPrepurchaseInfo](),
 	}
 
-	sigpir.NullablePrepurchaseInfo.Type = NewServiceItemPrepurchaseInfo()
-
-	return sigpir
 }

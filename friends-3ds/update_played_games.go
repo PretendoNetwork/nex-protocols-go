@@ -26,12 +26,11 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	playedGames := types.NewList[*friends_3ds_types.PlayedGame]()
-	playedGames.Type = friends_3ds_types.NewPlayedGame()
+	var playedGames types.List[friends_3ds_types.PlayedGame]
 
 	err := playedGames.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, playedGames)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

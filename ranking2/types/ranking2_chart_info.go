@@ -11,28 +11,28 @@ import (
 // Ranking2ChartInfo is a type within the Ranking2 protocol
 type Ranking2ChartInfo struct {
 	types.Structure
-	CreateTime           *types.DateTime
-	Index                *types.PrimitiveU32
-	Category             *types.PrimitiveU32
-	Season               *types.PrimitiveS32
-	BinsSize             *types.PrimitiveU8
-	SamplingRate         *types.PrimitiveU8
-	ScoreOrder           *types.PrimitiveBool
-	EstimateLength       *types.PrimitiveU32
-	EstimateHighestScore *types.PrimitiveU32
-	EstimateLowestScore  *types.PrimitiveU32
-	EstimateMedianScore  *types.PrimitiveU32
-	EstimateAverageScore *types.PrimitiveF64
-	HighestBinsScore     *types.PrimitiveU32
-	LowestBinsScore      *types.PrimitiveU32
-	BinsWidth            *types.PrimitiveU32
-	Attribute1           *types.PrimitiveU32
-	Attribute2           *types.PrimitiveU32
-	Quantities           *types.List[*types.PrimitiveU32]
+	CreateTime           types.DateTime
+	Index                types.UInt32
+	Category             types.UInt32
+	Season               types.Int32
+	BinsSize             types.UInt8
+	SamplingRate         types.UInt8
+	ScoreOrder           types.Bool
+	EstimateLength       types.UInt32
+	EstimateHighestScore types.UInt32
+	EstimateLowestScore  types.UInt32
+	EstimateMedianScore  types.UInt32
+	EstimateAverageScore types.Double
+	HighestBinsScore     types.UInt32
+	LowestBinsScore      types.UInt32
+	BinsWidth            types.UInt32
+	Attribute1           types.UInt32
+	Attribute2           types.UInt32
+	Quantities           types.List[types.UInt32]
 }
 
 // WriteTo writes the Ranking2ChartInfo to the given writable
-func (rci *Ranking2ChartInfo) WriteTo(writable types.Writable) {
+func (rci Ranking2ChartInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rci.CreateTime.WriteTo(contentWritable)
@@ -164,39 +164,39 @@ func (rci *Ranking2ChartInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Ranking2ChartInfo
-func (rci *Ranking2ChartInfo) Copy() types.RVType {
+func (rci Ranking2ChartInfo) Copy() types.RVType {
 	copied := NewRanking2ChartInfo()
 
 	copied.StructureVersion = rci.StructureVersion
-	copied.CreateTime = rci.CreateTime.Copy().(*types.DateTime)
-	copied.Index = rci.Index.Copy().(*types.PrimitiveU32)
-	copied.Category = rci.Category.Copy().(*types.PrimitiveU32)
-	copied.Season = rci.Season.Copy().(*types.PrimitiveS32)
-	copied.BinsSize = rci.BinsSize.Copy().(*types.PrimitiveU8)
-	copied.SamplingRate = rci.SamplingRate.Copy().(*types.PrimitiveU8)
-	copied.ScoreOrder = rci.ScoreOrder.Copy().(*types.PrimitiveBool)
-	copied.EstimateLength = rci.EstimateLength.Copy().(*types.PrimitiveU32)
-	copied.EstimateHighestScore = rci.EstimateHighestScore.Copy().(*types.PrimitiveU32)
-	copied.EstimateLowestScore = rci.EstimateLowestScore.Copy().(*types.PrimitiveU32)
-	copied.EstimateMedianScore = rci.EstimateMedianScore.Copy().(*types.PrimitiveU32)
-	copied.EstimateAverageScore = rci.EstimateAverageScore.Copy().(*types.PrimitiveF64)
-	copied.HighestBinsScore = rci.HighestBinsScore.Copy().(*types.PrimitiveU32)
-	copied.LowestBinsScore = rci.LowestBinsScore.Copy().(*types.PrimitiveU32)
-	copied.BinsWidth = rci.BinsWidth.Copy().(*types.PrimitiveU32)
-	copied.Attribute1 = rci.Attribute1.Copy().(*types.PrimitiveU32)
-	copied.Attribute2 = rci.Attribute2.Copy().(*types.PrimitiveU32)
-	copied.Quantities = rci.Quantities.Copy().(*types.List[*types.PrimitiveU32])
+	copied.CreateTime = rci.CreateTime.Copy().(types.DateTime)
+	copied.Index = rci.Index.Copy().(types.UInt32)
+	copied.Category = rci.Category.Copy().(types.UInt32)
+	copied.Season = rci.Season.Copy().(types.Int32)
+	copied.BinsSize = rci.BinsSize.Copy().(types.UInt8)
+	copied.SamplingRate = rci.SamplingRate.Copy().(types.UInt8)
+	copied.ScoreOrder = rci.ScoreOrder.Copy().(types.Bool)
+	copied.EstimateLength = rci.EstimateLength.Copy().(types.UInt32)
+	copied.EstimateHighestScore = rci.EstimateHighestScore.Copy().(types.UInt32)
+	copied.EstimateLowestScore = rci.EstimateLowestScore.Copy().(types.UInt32)
+	copied.EstimateMedianScore = rci.EstimateMedianScore.Copy().(types.UInt32)
+	copied.EstimateAverageScore = rci.EstimateAverageScore.Copy().(types.Double)
+	copied.HighestBinsScore = rci.HighestBinsScore.Copy().(types.UInt32)
+	copied.LowestBinsScore = rci.LowestBinsScore.Copy().(types.UInt32)
+	copied.BinsWidth = rci.BinsWidth.Copy().(types.UInt32)
+	copied.Attribute1 = rci.Attribute1.Copy().(types.UInt32)
+	copied.Attribute2 = rci.Attribute2.Copy().(types.UInt32)
+	copied.Quantities = rci.Quantities.Copy().(types.List[types.UInt32])
 
 	return copied
 }
 
 // Equals checks if the given Ranking2ChartInfo contains the same data as the current Ranking2ChartInfo
-func (rci *Ranking2ChartInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2ChartInfo); !ok {
+func (rci Ranking2ChartInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(Ranking2ChartInfo); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2ChartInfo)
+	other := o.(Ranking2ChartInfo)
 
 	if rci.StructureVersion != other.StructureVersion {
 		return false
@@ -273,13 +273,27 @@ func (rci *Ranking2ChartInfo) Equals(o types.RVType) bool {
 	return rci.Quantities.Equals(other.Quantities)
 }
 
+// CopyRef copies the current value of the Ranking2ChartInfo
+// and returns a pointer to the new copy
+func (rci Ranking2ChartInfo) CopyRef() types.RVTypePtr {
+	copied := rci.Copy().(Ranking2ChartInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2ChartInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rci *Ranking2ChartInfo) Deref() types.RVType {
+	return *rci
+}
+
 // String returns the string representation of the Ranking2ChartInfo
-func (rci *Ranking2ChartInfo) String() string {
+func (rci Ranking2ChartInfo) String() string {
 	return rci.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2ChartInfo using the provided indentation level
-func (rci *Ranking2ChartInfo) FormatToString(indentationLevel int) string {
+func (rci Ranking2ChartInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -310,29 +324,26 @@ func (rci *Ranking2ChartInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewRanking2ChartInfo returns a new Ranking2ChartInfo
-func NewRanking2ChartInfo() *Ranking2ChartInfo {
-	rci := &Ranking2ChartInfo{
+func NewRanking2ChartInfo() Ranking2ChartInfo {
+	return Ranking2ChartInfo{
 		CreateTime:           types.NewDateTime(0),
-		Index:                types.NewPrimitiveU32(0),
-		Category:             types.NewPrimitiveU32(0),
-		Season:               types.NewPrimitiveS32(0),
-		BinsSize:             types.NewPrimitiveU8(0),
-		SamplingRate:         types.NewPrimitiveU8(0),
-		ScoreOrder:           types.NewPrimitiveBool(false),
-		EstimateLength:       types.NewPrimitiveU32(0),
-		EstimateHighestScore: types.NewPrimitiveU32(0),
-		EstimateLowestScore:  types.NewPrimitiveU32(0),
-		EstimateMedianScore:  types.NewPrimitiveU32(0),
-		EstimateAverageScore: types.NewPrimitiveF64(0),
-		HighestBinsScore:     types.NewPrimitiveU32(0),
-		LowestBinsScore:      types.NewPrimitiveU32(0),
-		BinsWidth:            types.NewPrimitiveU32(0),
-		Attribute1:           types.NewPrimitiveU32(0),
-		Attribute2:           types.NewPrimitiveU32(0),
-		Quantities:           types.NewList[*types.PrimitiveU32](),
+		Index:                types.NewUInt32(0),
+		Category:             types.NewUInt32(0),
+		Season:               types.NewInt32(0),
+		BinsSize:             types.NewUInt8(0),
+		SamplingRate:         types.NewUInt8(0),
+		ScoreOrder:           types.NewBool(false),
+		EstimateLength:       types.NewUInt32(0),
+		EstimateHighestScore: types.NewUInt32(0),
+		EstimateLowestScore:  types.NewUInt32(0),
+		EstimateMedianScore:  types.NewUInt32(0),
+		EstimateAverageScore: types.NewDouble(0),
+		HighestBinsScore:     types.NewUInt32(0),
+		LowestBinsScore:      types.NewUInt32(0),
+		BinsWidth:            types.NewUInt32(0),
+		Attribute1:           types.NewUInt32(0),
+		Attribute2:           types.NewUInt32(0),
+		Quantities:           types.NewList[types.UInt32](),
 	}
 
-	rci.Quantities.Type = types.NewPrimitiveU32(0)
-
-	return rci
 }

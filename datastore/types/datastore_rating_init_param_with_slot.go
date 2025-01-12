@@ -11,12 +11,12 @@ import (
 // DataStoreRatingInitParamWithSlot is a type within the DataStore protocol
 type DataStoreRatingInitParamWithSlot struct {
 	types.Structure
-	Slot  *types.PrimitiveS8
-	Param *DataStoreRatingInitParam
+	Slot  types.Int8
+	Param DataStoreRatingInitParam
 }
 
 // WriteTo writes the DataStoreRatingInitParamWithSlot to the given writable
-func (dsripws *DataStoreRatingInitParamWithSlot) WriteTo(writable types.Writable) {
+func (dsripws DataStoreRatingInitParamWithSlot) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsripws.Slot.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (dsripws *DataStoreRatingInitParamWithSlot) ExtractFrom(readable types.Read
 }
 
 // Copy returns a new copied instance of DataStoreRatingInitParamWithSlot
-func (dsripws *DataStoreRatingInitParamWithSlot) Copy() types.RVType {
+func (dsripws DataStoreRatingInitParamWithSlot) Copy() types.RVType {
 	copied := NewDataStoreRatingInitParamWithSlot()
 
 	copied.StructureVersion = dsripws.StructureVersion
-	copied.Slot = dsripws.Slot.Copy().(*types.PrimitiveS8)
-	copied.Param = dsripws.Param.Copy().(*DataStoreRatingInitParam)
+	copied.Slot = dsripws.Slot.Copy().(types.Int8)
+	copied.Param = dsripws.Param.Copy().(DataStoreRatingInitParam)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreRatingInitParamWithSlot contains the same data as the current DataStoreRatingInitParamWithSlot
-func (dsripws *DataStoreRatingInitParamWithSlot) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRatingInitParamWithSlot); !ok {
+func (dsripws DataStoreRatingInitParamWithSlot) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreRatingInitParamWithSlot); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRatingInitParamWithSlot)
+	other := o.(DataStoreRatingInitParamWithSlot)
 
 	if dsripws.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (dsripws *DataStoreRatingInitParamWithSlot) Equals(o types.RVType) bool {
 	return dsripws.Param.Equals(other.Param)
 }
 
+// CopyRef copies the current value of the DataStoreRatingInitParamWithSlot
+// and returns a pointer to the new copy
+func (dsripws DataStoreRatingInitParamWithSlot) CopyRef() types.RVTypePtr {
+	copied := dsripws.Copy().(DataStoreRatingInitParamWithSlot)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingInitParamWithSlot
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsripws *DataStoreRatingInitParamWithSlot) Deref() types.RVType {
+	return *dsripws
+}
+
 // String returns the string representation of the DataStoreRatingInitParamWithSlot
-func (dsripws *DataStoreRatingInitParamWithSlot) String() string {
+func (dsripws DataStoreRatingInitParamWithSlot) String() string {
 	return dsripws.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreRatingInitParamWithSlot using the provided indentation level
-func (dsripws *DataStoreRatingInitParamWithSlot) FormatToString(indentationLevel int) string {
+func (dsripws DataStoreRatingInitParamWithSlot) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (dsripws *DataStoreRatingInitParamWithSlot) FormatToString(indentationLevel
 }
 
 // NewDataStoreRatingInitParamWithSlot returns a new DataStoreRatingInitParamWithSlot
-func NewDataStoreRatingInitParamWithSlot() *DataStoreRatingInitParamWithSlot {
-	dsripws := &DataStoreRatingInitParamWithSlot{
-		Slot:  types.NewPrimitiveS8(0),
+func NewDataStoreRatingInitParamWithSlot() DataStoreRatingInitParamWithSlot {
+	return DataStoreRatingInitParamWithSlot{
+		Slot:  types.NewInt8(0),
 		Param: NewDataStoreRatingInitParam(),
 	}
 
-	return dsripws
 }

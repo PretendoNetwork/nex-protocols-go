@@ -30,7 +30,7 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
-	GetMetaByOwnerID func(err error, packet nex.PacketInterface, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, *nex.Error)
+	GetMetaByOwnerID func(err error, packet nex.PacketInterface, callID uint32, param datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler

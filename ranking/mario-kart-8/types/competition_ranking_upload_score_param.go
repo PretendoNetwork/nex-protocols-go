@@ -11,18 +11,18 @@ import (
 // CompetitionRankingUploadScoreParam is a type within the Ranking protocol
 type CompetitionRankingUploadScoreParam struct {
 	types.Structure
-	Unknown  *types.PrimitiveU32
-	Unknown2 *types.PrimitiveU32
-	Unknown3 *types.PrimitiveU32
-	Unknown4 *types.PrimitiveU32
-	Unknown5 *types.PrimitiveU8
-	Unknown6 *types.PrimitiveU32
-	Unknown7 *types.PrimitiveBool
-	Metadata *types.QBuffer
+	Unknown  types.UInt32
+	Unknown2 types.UInt32
+	Unknown3 types.UInt32
+	Unknown4 types.UInt32
+	Unknown5 types.UInt8
+	Unknown6 types.UInt32
+	Unknown7 types.Bool
+	Metadata types.QBuffer
 }
 
 // WriteTo writes the CompetitionRankingUploadScoreParam to the given writable
-func (crusp *CompetitionRankingUploadScoreParam) WriteTo(writable types.Writable) {
+func (crusp CompetitionRankingUploadScoreParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	crusp.Unknown.WriteTo(contentWritable)
@@ -94,29 +94,29 @@ func (crusp *CompetitionRankingUploadScoreParam) ExtractFrom(readable types.Read
 }
 
 // Copy returns a new copied instance of CompetitionRankingUploadScoreParam
-func (crusp *CompetitionRankingUploadScoreParam) Copy() types.RVType {
+func (crusp CompetitionRankingUploadScoreParam) Copy() types.RVType {
 	copied := NewCompetitionRankingUploadScoreParam()
 
 	copied.StructureVersion = crusp.StructureVersion
-	copied.Unknown = crusp.Unknown.Copy().(*types.PrimitiveU32)
-	copied.Unknown2 = crusp.Unknown2.Copy().(*types.PrimitiveU32)
-	copied.Unknown3 = crusp.Unknown3.Copy().(*types.PrimitiveU32)
-	copied.Unknown4 = crusp.Unknown4.Copy().(*types.PrimitiveU32)
-	copied.Unknown5 = crusp.Unknown5.Copy().(*types.PrimitiveU8)
-	copied.Unknown6 = crusp.Unknown6.Copy().(*types.PrimitiveU32)
-	copied.Unknown7 = crusp.Unknown7.Copy().(*types.PrimitiveBool)
-	copied.Metadata = crusp.Metadata.Copy().(*types.QBuffer)
+	copied.Unknown = crusp.Unknown.Copy().(types.UInt32)
+	copied.Unknown2 = crusp.Unknown2.Copy().(types.UInt32)
+	copied.Unknown3 = crusp.Unknown3.Copy().(types.UInt32)
+	copied.Unknown4 = crusp.Unknown4.Copy().(types.UInt32)
+	copied.Unknown5 = crusp.Unknown5.Copy().(types.UInt8)
+	copied.Unknown6 = crusp.Unknown6.Copy().(types.UInt32)
+	copied.Unknown7 = crusp.Unknown7.Copy().(types.Bool)
+	copied.Metadata = crusp.Metadata.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given CompetitionRankingUploadScoreParam contains the same data as the current CompetitionRankingUploadScoreParam
-func (crusp *CompetitionRankingUploadScoreParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*CompetitionRankingUploadScoreParam); !ok {
+func (crusp CompetitionRankingUploadScoreParam) Equals(o types.RVType) bool {
+	if _, ok := o.(CompetitionRankingUploadScoreParam); !ok {
 		return false
 	}
 
-	other := o.(*CompetitionRankingUploadScoreParam)
+	other := o.(CompetitionRankingUploadScoreParam)
 
 	if crusp.StructureVersion != other.StructureVersion {
 		return false
@@ -153,13 +153,27 @@ func (crusp *CompetitionRankingUploadScoreParam) Equals(o types.RVType) bool {
 	return crusp.Metadata.Equals(other.Metadata)
 }
 
+// CopyRef copies the current value of the CompetitionRankingUploadScoreParam
+// and returns a pointer to the new copy
+func (crusp CompetitionRankingUploadScoreParam) CopyRef() types.RVTypePtr {
+	copied := crusp.Copy().(CompetitionRankingUploadScoreParam)
+	return &copied
+}
+
+// Deref takes a pointer to the CompetitionRankingUploadScoreParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (crusp *CompetitionRankingUploadScoreParam) Deref() types.RVType {
+	return *crusp
+}
+
 // String returns the string representation of the CompetitionRankingUploadScoreParam
-func (crusp *CompetitionRankingUploadScoreParam) String() string {
+func (crusp CompetitionRankingUploadScoreParam) String() string {
 	return crusp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the CompetitionRankingUploadScoreParam using the provided indentation level
-func (crusp *CompetitionRankingUploadScoreParam) FormatToString(indentationLevel int) string {
+func (crusp CompetitionRankingUploadScoreParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -180,17 +194,16 @@ func (crusp *CompetitionRankingUploadScoreParam) FormatToString(indentationLevel
 }
 
 // NewCompetitionRankingUploadScoreParam returns a new CompetitionRankingUploadScoreParam
-func NewCompetitionRankingUploadScoreParam() *CompetitionRankingUploadScoreParam {
-	crusp := &CompetitionRankingUploadScoreParam{
-		Unknown:  types.NewPrimitiveU32(0),
-		Unknown2: types.NewPrimitiveU32(0),
-		Unknown3: types.NewPrimitiveU32(0),
-		Unknown4: types.NewPrimitiveU32(0),
-		Unknown5: types.NewPrimitiveU8(0),
-		Unknown6: types.NewPrimitiveU32(0),
-		Unknown7: types.NewPrimitiveBool(false),
+func NewCompetitionRankingUploadScoreParam() CompetitionRankingUploadScoreParam {
+	return CompetitionRankingUploadScoreParam{
+		Unknown:  types.NewUInt32(0),
+		Unknown2: types.NewUInt32(0),
+		Unknown3: types.NewUInt32(0),
+		Unknown4: types.NewUInt32(0),
+		Unknown5: types.NewUInt8(0),
+		Unknown6: types.NewUInt32(0),
+		Unknown7: types.NewBool(false),
 		Metadata: types.NewQBuffer(nil),
 	}
 
-	return crusp
 }

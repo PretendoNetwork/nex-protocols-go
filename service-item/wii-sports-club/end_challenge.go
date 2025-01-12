@@ -29,7 +29,7 @@ func (protocol *Protocol) handleEndChallenge(packet nex.PacketInterface) {
 
 	err := endChallengeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.EndChallenge(fmt.Errorf("Failed to read endChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.EndChallenge(fmt.Errorf("Failed to read endChallengeParam from parameters. %s", err.Error()), packet, callID, endChallengeParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

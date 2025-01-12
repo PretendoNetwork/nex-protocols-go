@@ -26,12 +26,11 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	applicationInfo := types.NewList[*aauser_types.ApplicationInfo]()
-	applicationInfo.Type = aauser_types.NewApplicationInfo()
+	var applicationInfo types.List[aauser_types.ApplicationInfo]
 
 	err := applicationInfo.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetApplicationInfo(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.SetApplicationInfo(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, applicationInfo)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

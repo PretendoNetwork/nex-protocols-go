@@ -12,21 +12,21 @@ import (
 // JoinMatchmakeSessionParam is a type within the Matchmaking protocol
 type JoinMatchmakeSessionParam struct {
 	types.Structure
-	GID                          *types.PrimitiveU32
-	AdditionalParticipants       *types.List[*types.PID]
-	GIDForParticipationCheck     *types.PrimitiveU32
-	JoinMatchmakeSessionOption   *types.PrimitiveU32
-	JoinMatchmakeSessionBehavior *types.PrimitiveU8
-	StrUserPassword              *types.String
-	StrSystemPassword            *types.String
-	JoinMessage                  *types.String
-	ParticipationCount           *types.PrimitiveU16
-	ExtraParticipants            *types.PrimitiveU16 // * Revision 1 or NEX v4.0
-	BlockListParam               *MatchmakeBlockListParam // * NEX v4.0
+	GID                          types.UInt32
+	AdditionalParticipants       types.List[types.PID]
+	GIDForParticipationCheck     types.UInt32
+	JoinMatchmakeSessionOption   types.UInt32
+	JoinMatchmakeSessionBehavior types.UInt8
+	StrUserPassword              types.String
+	StrSystemPassword            types.String
+	JoinMessage                  types.String
+	ParticipationCount           types.UInt16
+	ExtraParticipants            types.UInt16            // * Revision 1 or NEX v4.0
+	BlockListParam               MatchmakeBlockListParam // * NEX v4.0
 }
 
 // WriteTo writes the JoinMatchmakeSessionParam to the given writable
-func (jmsp *JoinMatchmakeSessionParam) WriteTo(writable types.Writable) {
+func (jmsp JoinMatchmakeSessionParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
@@ -132,32 +132,32 @@ func (jmsp *JoinMatchmakeSessionParam) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of JoinMatchmakeSessionParam
-func (jmsp *JoinMatchmakeSessionParam) Copy() types.RVType {
+func (jmsp JoinMatchmakeSessionParam) Copy() types.RVType {
 	copied := NewJoinMatchmakeSessionParam()
 
 	copied.StructureVersion = jmsp.StructureVersion
-	copied.GID = jmsp.GID.Copy().(*types.PrimitiveU32)
-	copied.AdditionalParticipants = jmsp.AdditionalParticipants.Copy().(*types.List[*types.PID])
-	copied.GIDForParticipationCheck = jmsp.GIDForParticipationCheck.Copy().(*types.PrimitiveU32)
-	copied.JoinMatchmakeSessionOption = jmsp.JoinMatchmakeSessionOption.Copy().(*types.PrimitiveU32)
-	copied.JoinMatchmakeSessionBehavior = jmsp.JoinMatchmakeSessionBehavior.Copy().(*types.PrimitiveU8)
-	copied.StrUserPassword = jmsp.StrUserPassword.Copy().(*types.String)
-	copied.StrSystemPassword = jmsp.StrSystemPassword.Copy().(*types.String)
-	copied.JoinMessage = jmsp.JoinMessage.Copy().(*types.String)
-	copied.ParticipationCount = jmsp.ParticipationCount.Copy().(*types.PrimitiveU16)
-	copied.ExtraParticipants = jmsp.ExtraParticipants.Copy().(*types.PrimitiveU16)
-	copied.BlockListParam = jmsp.BlockListParam.Copy().(*MatchmakeBlockListParam)
+	copied.GID = jmsp.GID.Copy().(types.UInt32)
+	copied.AdditionalParticipants = jmsp.AdditionalParticipants.Copy().(types.List[types.PID])
+	copied.GIDForParticipationCheck = jmsp.GIDForParticipationCheck.Copy().(types.UInt32)
+	copied.JoinMatchmakeSessionOption = jmsp.JoinMatchmakeSessionOption.Copy().(types.UInt32)
+	copied.JoinMatchmakeSessionBehavior = jmsp.JoinMatchmakeSessionBehavior.Copy().(types.UInt8)
+	copied.StrUserPassword = jmsp.StrUserPassword.Copy().(types.String)
+	copied.StrSystemPassword = jmsp.StrSystemPassword.Copy().(types.String)
+	copied.JoinMessage = jmsp.JoinMessage.Copy().(types.String)
+	copied.ParticipationCount = jmsp.ParticipationCount.Copy().(types.UInt16)
+	copied.ExtraParticipants = jmsp.ExtraParticipants.Copy().(types.UInt16)
+	copied.BlockListParam = jmsp.BlockListParam.Copy().(MatchmakeBlockListParam)
 
 	return copied
 }
 
 // Equals checks if the given JoinMatchmakeSessionParam contains the same data as the current JoinMatchmakeSessionParam
-func (jmsp *JoinMatchmakeSessionParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*JoinMatchmakeSessionParam); !ok {
+func (jmsp JoinMatchmakeSessionParam) Equals(o types.RVType) bool {
+	if _, ok := o.(JoinMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	other := o.(*JoinMatchmakeSessionParam)
+	other := o.(JoinMatchmakeSessionParam)
 
 	if jmsp.StructureVersion != other.StructureVersion {
 		return false
@@ -206,13 +206,27 @@ func (jmsp *JoinMatchmakeSessionParam) Equals(o types.RVType) bool {
 	return jmsp.BlockListParam.Equals(other.BlockListParam)
 }
 
+// CopyRef copies the current value of the JoinMatchmakeSessionParam
+// and returns a pointer to the new copy
+func (jmsp JoinMatchmakeSessionParam) CopyRef() types.RVTypePtr {
+	copied := jmsp.Copy().(JoinMatchmakeSessionParam)
+	return &copied
+}
+
+// Deref takes a pointer to the JoinMatchmakeSessionParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (jmsp *JoinMatchmakeSessionParam) Deref() types.RVType {
+	return *jmsp
+}
+
 // String returns the string representation of the JoinMatchmakeSessionParam
-func (jmsp *JoinMatchmakeSessionParam) String() string {
+func (jmsp JoinMatchmakeSessionParam) String() string {
 	return jmsp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the JoinMatchmakeSessionParam using the provided indentation level
-func (jmsp *JoinMatchmakeSessionParam) FormatToString(indentationLevel int) string {
+func (jmsp JoinMatchmakeSessionParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -236,22 +250,19 @@ func (jmsp *JoinMatchmakeSessionParam) FormatToString(indentationLevel int) stri
 }
 
 // NewJoinMatchmakeSessionParam returns a new JoinMatchmakeSessionParam
-func NewJoinMatchmakeSessionParam() *JoinMatchmakeSessionParam {
-	jmsp := &JoinMatchmakeSessionParam{
-		GID:                          types.NewPrimitiveU32(0),
-		AdditionalParticipants:       types.NewList[*types.PID](),
-		GIDForParticipationCheck:     types.NewPrimitiveU32(0),
-		JoinMatchmakeSessionOption:   types.NewPrimitiveU32(0),
-		JoinMatchmakeSessionBehavior: types.NewPrimitiveU8(0),
+func NewJoinMatchmakeSessionParam() JoinMatchmakeSessionParam {
+	return JoinMatchmakeSessionParam{
+		GID:                          types.NewUInt32(0),
+		AdditionalParticipants:       types.NewList[types.PID](),
+		GIDForParticipationCheck:     types.NewUInt32(0),
+		JoinMatchmakeSessionOption:   types.NewUInt32(0),
+		JoinMatchmakeSessionBehavior: types.NewUInt8(0),
 		StrUserPassword:              types.NewString(""),
 		StrSystemPassword:            types.NewString(""),
 		JoinMessage:                  types.NewString(""),
-		ParticipationCount:           types.NewPrimitiveU16(0),
-		ExtraParticipants:            types.NewPrimitiveU16(0),
+		ParticipationCount:           types.NewUInt16(0),
+		ExtraParticipants:            types.NewUInt16(0),
 		BlockListParam:               NewMatchmakeBlockListParam(),
 	}
 
-	jmsp.AdditionalParticipants.Type = types.NewPID(0)
-
-	return jmsp
 }

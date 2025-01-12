@@ -11,19 +11,19 @@ import (
 // DataStoreSharedDataInfo is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreSharedDataInfo struct {
 	types.Structure
-	DataID      *types.PrimitiveU64
-	OwnerID     *types.PrimitiveU32
-	DataType    *types.PrimitiveU8
-	Comment     *types.String
-	MetaBinary  *types.QBuffer
-	Profile     *types.QBuffer
-	Rating      *types.PrimitiveS64
-	CreatedTime *types.DateTime
-	Info        *DataStoreFileServerObjectInfo
+	DataID      types.UInt64
+	OwnerID     types.UInt32
+	DataType    types.UInt8
+	Comment     types.String
+	MetaBinary  types.QBuffer
+	Profile     types.QBuffer
+	Rating      types.Int64
+	CreatedTime types.DateTime
+	Info        DataStoreFileServerObjectInfo
 }
 
 // WriteTo writes the DataStoreSharedDataInfo to the given writable
-func (dssdi *DataStoreSharedDataInfo) WriteTo(writable types.Writable) {
+func (dssdi DataStoreSharedDataInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dssdi.DataID.WriteTo(contentWritable)
@@ -101,30 +101,30 @@ func (dssdi *DataStoreSharedDataInfo) ExtractFrom(readable types.Readable) error
 }
 
 // Copy returns a new copied instance of DataStoreSharedDataInfo
-func (dssdi *DataStoreSharedDataInfo) Copy() types.RVType {
+func (dssdi DataStoreSharedDataInfo) Copy() types.RVType {
 	copied := NewDataStoreSharedDataInfo()
 
 	copied.StructureVersion = dssdi.StructureVersion
-	copied.DataID = dssdi.DataID.Copy().(*types.PrimitiveU64)
-	copied.OwnerID = dssdi.OwnerID.Copy().(*types.PrimitiveU32)
-	copied.DataType = dssdi.DataType.Copy().(*types.PrimitiveU8)
-	copied.Comment = dssdi.Comment.Copy().(*types.String)
-	copied.MetaBinary = dssdi.MetaBinary.Copy().(*types.QBuffer)
-	copied.Profile = dssdi.Profile.Copy().(*types.QBuffer)
-	copied.Rating = dssdi.Rating.Copy().(*types.PrimitiveS64)
-	copied.CreatedTime = dssdi.CreatedTime.Copy().(*types.DateTime)
-	copied.Info = dssdi.Info.Copy().(*DataStoreFileServerObjectInfo)
+	copied.DataID = dssdi.DataID.Copy().(types.UInt64)
+	copied.OwnerID = dssdi.OwnerID.Copy().(types.UInt32)
+	copied.DataType = dssdi.DataType.Copy().(types.UInt8)
+	copied.Comment = dssdi.Comment.Copy().(types.String)
+	copied.MetaBinary = dssdi.MetaBinary.Copy().(types.QBuffer)
+	copied.Profile = dssdi.Profile.Copy().(types.QBuffer)
+	copied.Rating = dssdi.Rating.Copy().(types.Int64)
+	copied.CreatedTime = dssdi.CreatedTime.Copy().(types.DateTime)
+	copied.Info = dssdi.Info.Copy().(DataStoreFileServerObjectInfo)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreSharedDataInfo contains the same data as the current DataStoreSharedDataInfo
-func (dssdi *DataStoreSharedDataInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSharedDataInfo); !ok {
+func (dssdi DataStoreSharedDataInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreSharedDataInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSharedDataInfo)
+	other := o.(DataStoreSharedDataInfo)
 
 	if dssdi.StructureVersion != other.StructureVersion {
 		return false
@@ -165,13 +165,27 @@ func (dssdi *DataStoreSharedDataInfo) Equals(o types.RVType) bool {
 	return dssdi.Info.Equals(other.Info)
 }
 
+// CopyRef copies the current value of the DataStoreSharedDataInfo
+// and returns a pointer to the new copy
+func (dssdi DataStoreSharedDataInfo) CopyRef() types.RVTypePtr {
+	copied := dssdi.Copy().(DataStoreSharedDataInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreSharedDataInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dssdi *DataStoreSharedDataInfo) Deref() types.RVType {
+	return *dssdi
+}
+
 // String returns the string representation of the DataStoreSharedDataInfo
-func (dssdi *DataStoreSharedDataInfo) String() string {
+func (dssdi DataStoreSharedDataInfo) String() string {
 	return dssdi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreSharedDataInfo using the provided indentation level
-func (dssdi *DataStoreSharedDataInfo) FormatToString(indentationLevel int) string {
+func (dssdi DataStoreSharedDataInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,18 +207,17 @@ func (dssdi *DataStoreSharedDataInfo) FormatToString(indentationLevel int) strin
 }
 
 // NewDataStoreSharedDataInfo returns a new DataStoreSharedDataInfo
-func NewDataStoreSharedDataInfo() *DataStoreSharedDataInfo {
-	dssdi := &DataStoreSharedDataInfo{
-		DataID:      types.NewPrimitiveU64(0),
-		OwnerID:     types.NewPrimitiveU32(0),
-		DataType:    types.NewPrimitiveU8(0),
+func NewDataStoreSharedDataInfo() DataStoreSharedDataInfo {
+	return DataStoreSharedDataInfo{
+		DataID:      types.NewUInt64(0),
+		OwnerID:     types.NewUInt32(0),
+		DataType:    types.NewUInt8(0),
 		Comment:     types.NewString(""),
 		MetaBinary:  types.NewQBuffer(nil),
 		Profile:     types.NewQBuffer(nil),
-		Rating:      types.NewPrimitiveS64(0),
+		Rating:      types.NewInt64(0),
 		CreatedTime: types.NewDateTime(0),
 		Info:        NewDataStoreFileServerObjectInfo(),
 	}
 
-	return dssdi
 }

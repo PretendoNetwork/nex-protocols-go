@@ -11,15 +11,15 @@ import (
 // PrincipalBasicInfo is a type within the FriendsWiiU protocol
 type PrincipalBasicInfo struct {
 	types.Structure
-	*types.Data
-	PID     *types.PID
-	NNID    *types.String
-	Mii     *MiiV2
-	Unknown *types.PrimitiveU8
+	types.Data
+	PID     types.PID
+	NNID    types.String
+	Mii     MiiV2
+	Unknown types.UInt8
 }
 
 // WriteTo writes the PrincipalBasicInfo to the given writable
-func (pbi *PrincipalBasicInfo) WriteTo(writable types.Writable) {
+func (pbi PrincipalBasicInfo) WriteTo(writable types.Writable) {
 	pbi.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -74,26 +74,26 @@ func (pbi *PrincipalBasicInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of PrincipalBasicInfo
-func (pbi *PrincipalBasicInfo) Copy() types.RVType {
+func (pbi PrincipalBasicInfo) Copy() types.RVType {
 	copied := NewPrincipalBasicInfo()
 
 	copied.StructureVersion = pbi.StructureVersion
-	copied.Data = pbi.Data.Copy().(*types.Data)
-	copied.PID = pbi.PID.Copy().(*types.PID)
-	copied.NNID = pbi.NNID.Copy().(*types.String)
-	copied.Mii = pbi.Mii.Copy().(*MiiV2)
-	copied.Unknown = pbi.Unknown.Copy().(*types.PrimitiveU8)
+	copied.Data = pbi.Data.Copy().(types.Data)
+	copied.PID = pbi.PID.Copy().(types.PID)
+	copied.NNID = pbi.NNID.Copy().(types.String)
+	copied.Mii = pbi.Mii.Copy().(MiiV2)
+	copied.Unknown = pbi.Unknown.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given PrincipalBasicInfo contains the same data as the current PrincipalBasicInfo
-func (pbi *PrincipalBasicInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*PrincipalBasicInfo); !ok {
+func (pbi PrincipalBasicInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(PrincipalBasicInfo); !ok {
 		return false
 	}
 
-	other := o.(*PrincipalBasicInfo)
+	other := o.(PrincipalBasicInfo)
 
 	if pbi.StructureVersion != other.StructureVersion {
 		return false
@@ -118,13 +118,27 @@ func (pbi *PrincipalBasicInfo) Equals(o types.RVType) bool {
 	return pbi.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the PrincipalBasicInfo
+// and returns a pointer to the new copy
+func (pbi PrincipalBasicInfo) CopyRef() types.RVTypePtr {
+	copied := pbi.Copy().(PrincipalBasicInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the PrincipalBasicInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pbi *PrincipalBasicInfo) Deref() types.RVType {
+	return *pbi
+}
+
 // String returns the string representation of the PrincipalBasicInfo
-func (pbi *PrincipalBasicInfo) String() string {
+func (pbi PrincipalBasicInfo) String() string {
 	return pbi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PrincipalBasicInfo using the provided indentation level
-func (pbi *PrincipalBasicInfo) FormatToString(indentationLevel int) string {
+func (pbi PrincipalBasicInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -142,14 +156,13 @@ func (pbi *PrincipalBasicInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewPrincipalBasicInfo returns a new PrincipalBasicInfo
-func NewPrincipalBasicInfo() *PrincipalBasicInfo {
-	pbi := &PrincipalBasicInfo{
+func NewPrincipalBasicInfo() PrincipalBasicInfo {
+	return PrincipalBasicInfo{
 		Data:    types.NewData(),
 		PID:     types.NewPID(0),
 		NNID:    types.NewString(""),
 		Mii:     NewMiiV2(),
-		Unknown: types.NewPrimitiveU8(0),
+		Unknown: types.NewUInt8(0),
 	}
 
-	return pbi
 }

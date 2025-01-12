@@ -11,11 +11,11 @@ import (
 // RankingStats is a type within the Ranking protocol
 type RankingStats struct {
 	types.Structure
-	StatsList *types.List[*types.PrimitiveF64]
+	StatsList types.List[types.Double]
 }
 
 // WriteTo writes the RankingStats to the given writable
-func (rs *RankingStats) WriteTo(writable types.Writable) {
+func (rs RankingStats) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rs.StatsList.WriteTo(contentWritable)
@@ -45,22 +45,22 @@ func (rs *RankingStats) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of RankingStats
-func (rs *RankingStats) Copy() types.RVType {
+func (rs RankingStats) Copy() types.RVType {
 	copied := NewRankingStats()
 
 	copied.StructureVersion = rs.StructureVersion
-	copied.StatsList = rs.StatsList.Copy().(*types.List[*types.PrimitiveF64])
+	copied.StatsList = rs.StatsList.Copy().(types.List[types.Double])
 
 	return copied
 }
 
 // Equals checks if the given RankingStats contains the same data as the current RankingStats
-func (rs *RankingStats) Equals(o types.RVType) bool {
-	if _, ok := o.(*RankingStats); !ok {
+func (rs RankingStats) Equals(o types.RVType) bool {
+	if _, ok := o.(RankingStats); !ok {
 		return false
 	}
 
-	other := o.(*RankingStats)
+	other := o.(RankingStats)
 
 	if rs.StructureVersion != other.StructureVersion {
 		return false
@@ -69,13 +69,27 @@ func (rs *RankingStats) Equals(o types.RVType) bool {
 	return rs.StatsList.Equals(other.StatsList)
 }
 
+// CopyRef copies the current value of the RankingStats
+// and returns a pointer to the new copy
+func (rs RankingStats) CopyRef() types.RVTypePtr {
+	copied := rs.Copy().(RankingStats)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingStats
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rs *RankingStats) Deref() types.RVType {
+	return *rs
+}
+
 // String returns the string representation of the RankingStats
-func (rs *RankingStats) String() string {
+func (rs RankingStats) String() string {
 	return rs.FormatToString(0)
 }
 
 // FormatToString pretty-prints the RankingStats using the provided indentation level
-func (rs *RankingStats) FormatToString(indentationLevel int) string {
+func (rs RankingStats) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,12 +103,9 @@ func (rs *RankingStats) FormatToString(indentationLevel int) string {
 }
 
 // NewRankingStats returns a new RankingStats
-func NewRankingStats() *RankingStats {
-	rs := &RankingStats{
-		StatsList: types.NewList[*types.PrimitiveF64](),
+func NewRankingStats() RankingStats {
+	return RankingStats{
+		StatsList: types.NewList[types.Double](),
 	}
 
-	rs.StatsList.Type = types.NewPrimitiveF64(0)
-
-	return rs
 }

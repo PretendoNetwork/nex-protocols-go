@@ -12,15 +12,15 @@ import (
 // DataStoreReqUpdateInfo is a type within the DataStore protocol
 type DataStoreReqUpdateInfo struct {
 	types.Structure
-	Version        *types.PrimitiveU32
-	URL            *types.String
-	RequestHeaders *types.List[*DataStoreKeyValue]
-	FormFields     *types.List[*DataStoreKeyValue]
-	RootCACert     *types.Buffer
+	Version        types.UInt32
+	URL            types.String
+	RequestHeaders types.List[DataStoreKeyValue]
+	FormFields     types.List[DataStoreKeyValue]
+	RootCACert     types.Buffer
 }
 
 // WriteTo writes the DataStoreReqUpdateInfo to the given writable
-func (dsrui *DataStoreReqUpdateInfo) WriteTo(writable types.Writable) {
+func (dsrui DataStoreReqUpdateInfo) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.DataStore
 
@@ -29,7 +29,7 @@ func (dsrui *DataStoreReqUpdateInfo) WriteTo(writable types.Writable) {
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		dsrui.Version.WriteTo(contentWritable)
 	} else {
-		contentWritable.WritePrimitiveUInt16LE(uint16(dsrui.Version.Value))
+		contentWritable.WriteUInt16LE(uint16(dsrui.Version))
 	}
 
 	dsrui.URL.WriteTo(contentWritable)
@@ -62,12 +62,12 @@ func (dsrui *DataStoreReqUpdateInfo) ExtractFrom(readable types.Readable) error 
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 	} else {
-		version, err := readable.ReadPrimitiveUInt16LE()
+		version, err := readable.ReadUInt16LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 
-		dsrui.Version.Value = uint32(version)
+		dsrui.Version = types.UInt32(version)
 	}
 
 	err = dsrui.URL.ExtractFrom(readable)
@@ -94,26 +94,26 @@ func (dsrui *DataStoreReqUpdateInfo) ExtractFrom(readable types.Readable) error 
 }
 
 // Copy returns a new copied instance of DataStoreReqUpdateInfo
-func (dsrui *DataStoreReqUpdateInfo) Copy() types.RVType {
+func (dsrui DataStoreReqUpdateInfo) Copy() types.RVType {
 	copied := NewDataStoreReqUpdateInfo()
 
 	copied.StructureVersion = dsrui.StructureVersion
-	copied.Version = dsrui.Version.Copy().(*types.PrimitiveU32)
-	copied.URL = dsrui.URL.Copy().(*types.String)
-	copied.RequestHeaders = dsrui.RequestHeaders.Copy().(*types.List[*DataStoreKeyValue])
-	copied.FormFields = dsrui.FormFields.Copy().(*types.List[*DataStoreKeyValue])
-	copied.RootCACert = dsrui.RootCACert.Copy().(*types.Buffer)
+	copied.Version = dsrui.Version.Copy().(types.UInt32)
+	copied.URL = dsrui.URL.Copy().(types.String)
+	copied.RequestHeaders = dsrui.RequestHeaders.Copy().(types.List[DataStoreKeyValue])
+	copied.FormFields = dsrui.FormFields.Copy().(types.List[DataStoreKeyValue])
+	copied.RootCACert = dsrui.RootCACert.Copy().(types.Buffer)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReqUpdateInfo contains the same data as the current DataStoreReqUpdateInfo
-func (dsrui *DataStoreReqUpdateInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqUpdateInfo); !ok {
+func (dsrui DataStoreReqUpdateInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreReqUpdateInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqUpdateInfo)
+	other := o.(DataStoreReqUpdateInfo)
 
 	if dsrui.StructureVersion != other.StructureVersion {
 		return false
@@ -138,13 +138,27 @@ func (dsrui *DataStoreReqUpdateInfo) Equals(o types.RVType) bool {
 	return dsrui.RootCACert.Equals(other.RootCACert)
 }
 
+// CopyRef copies the current value of the DataStoreReqUpdateInfo
+// and returns a pointer to the new copy
+func (dsrui DataStoreReqUpdateInfo) CopyRef() types.RVTypePtr {
+	copied := dsrui.Copy().(DataStoreReqUpdateInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqUpdateInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrui *DataStoreReqUpdateInfo) Deref() types.RVType {
+	return *dsrui
+}
+
 // String returns the string representation of the DataStoreReqUpdateInfo
-func (dsrui *DataStoreReqUpdateInfo) String() string {
+func (dsrui DataStoreReqUpdateInfo) String() string {
 	return dsrui.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReqUpdateInfo using the provided indentation level
-func (dsrui *DataStoreReqUpdateInfo) FormatToString(indentationLevel int) string {
+func (dsrui DataStoreReqUpdateInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -162,17 +176,13 @@ func (dsrui *DataStoreReqUpdateInfo) FormatToString(indentationLevel int) string
 }
 
 // NewDataStoreReqUpdateInfo returns a new DataStoreReqUpdateInfo
-func NewDataStoreReqUpdateInfo() *DataStoreReqUpdateInfo {
-	dsrui := &DataStoreReqUpdateInfo{
-		Version:        types.NewPrimitiveU32(0),
+func NewDataStoreReqUpdateInfo() DataStoreReqUpdateInfo {
+	return DataStoreReqUpdateInfo{
+		Version:        types.NewUInt32(0),
 		URL:            types.NewString(""),
-		RequestHeaders: types.NewList[*DataStoreKeyValue](),
-		FormFields:     types.NewList[*DataStoreKeyValue](),
+		RequestHeaders: types.NewList[DataStoreKeyValue](),
+		FormFields:     types.NewList[DataStoreKeyValue](),
 		RootCACert:     types.NewBuffer(nil),
 	}
 
-	dsrui.RequestHeaders.Type = NewDataStoreKeyValue()
-	dsrui.FormFields.Type = NewDataStoreKeyValue()
-
-	return dsrui
 }

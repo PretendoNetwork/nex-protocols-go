@@ -6,6 +6,7 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
@@ -25,14 +26,14 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	anyGathering := types.NewAnyDataHolder()
-	strMessage := types.NewString("")
+	var anyGathering match_making_types.GatheringHolder
+	var strMessage types.String
 
 	var err error
 
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +43,7 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

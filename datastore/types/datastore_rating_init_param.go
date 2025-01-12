@@ -11,18 +11,18 @@ import (
 // DataStoreRatingInitParam is a type within the DataStore protocol
 type DataStoreRatingInitParam struct {
 	types.Structure
-	Flag           *types.PrimitiveU8
-	InternalFlag   *types.PrimitiveU8
-	LockType       *types.PrimitiveU8
-	InitialValue   *types.PrimitiveS64
-	RangeMin       *types.PrimitiveS32
-	RangeMax       *types.PrimitiveS32
-	PeriodHour     *types.PrimitiveS8
-	PeriodDuration *types.PrimitiveS16
+	Flag           types.UInt8
+	InternalFlag   types.UInt8
+	LockType       types.UInt8
+	InitialValue   types.Int64
+	RangeMin       types.Int32
+	RangeMax       types.Int32
+	PeriodHour     types.Int8
+	PeriodDuration types.Int16
 }
 
 // WriteTo writes the DataStoreRatingInitParam to the given writable
-func (dsrip *DataStoreRatingInitParam) WriteTo(writable types.Writable) {
+func (dsrip DataStoreRatingInitParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrip.Flag.WriteTo(contentWritable)
@@ -94,29 +94,29 @@ func (dsrip *DataStoreRatingInitParam) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of DataStoreRatingInitParam
-func (dsrip *DataStoreRatingInitParam) Copy() types.RVType {
+func (dsrip DataStoreRatingInitParam) Copy() types.RVType {
 	copied := NewDataStoreRatingInitParam()
 
 	copied.StructureVersion = dsrip.StructureVersion
-	copied.Flag = dsrip.Flag.Copy().(*types.PrimitiveU8)
-	copied.InternalFlag = dsrip.InternalFlag.Copy().(*types.PrimitiveU8)
-	copied.LockType = dsrip.LockType.Copy().(*types.PrimitiveU8)
-	copied.InitialValue = dsrip.InitialValue.Copy().(*types.PrimitiveS64)
-	copied.RangeMin = dsrip.RangeMin.Copy().(*types.PrimitiveS32)
-	copied.RangeMax = dsrip.RangeMax.Copy().(*types.PrimitiveS32)
-	copied.PeriodHour = dsrip.PeriodHour.Copy().(*types.PrimitiveS8)
-	copied.PeriodDuration = dsrip.PeriodDuration.Copy().(*types.PrimitiveS16)
+	copied.Flag = dsrip.Flag.Copy().(types.UInt8)
+	copied.InternalFlag = dsrip.InternalFlag.Copy().(types.UInt8)
+	copied.LockType = dsrip.LockType.Copy().(types.UInt8)
+	copied.InitialValue = dsrip.InitialValue.Copy().(types.Int64)
+	copied.RangeMin = dsrip.RangeMin.Copy().(types.Int32)
+	copied.RangeMax = dsrip.RangeMax.Copy().(types.Int32)
+	copied.PeriodHour = dsrip.PeriodHour.Copy().(types.Int8)
+	copied.PeriodDuration = dsrip.PeriodDuration.Copy().(types.Int16)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreRatingInitParam contains the same data as the current DataStoreRatingInitParam
-func (dsrip *DataStoreRatingInitParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRatingInitParam); !ok {
+func (dsrip DataStoreRatingInitParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreRatingInitParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRatingInitParam)
+	other := o.(DataStoreRatingInitParam)
 
 	if dsrip.StructureVersion != other.StructureVersion {
 		return false
@@ -153,13 +153,27 @@ func (dsrip *DataStoreRatingInitParam) Equals(o types.RVType) bool {
 	return dsrip.PeriodDuration.Equals(other.PeriodDuration)
 }
 
+// CopyRef copies the current value of the DataStoreRatingInitParam
+// and returns a pointer to the new copy
+func (dsrip DataStoreRatingInitParam) CopyRef() types.RVTypePtr {
+	copied := dsrip.Copy().(DataStoreRatingInitParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRatingInitParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrip *DataStoreRatingInitParam) Deref() types.RVType {
+	return *dsrip
+}
+
 // String returns the string representation of the DataStoreRatingInitParam
-func (dsrip *DataStoreRatingInitParam) String() string {
+func (dsrip DataStoreRatingInitParam) String() string {
 	return dsrip.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreRatingInitParam using the provided indentation level
-func (dsrip *DataStoreRatingInitParam) FormatToString(indentationLevel int) string {
+func (dsrip DataStoreRatingInitParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -180,17 +194,16 @@ func (dsrip *DataStoreRatingInitParam) FormatToString(indentationLevel int) stri
 }
 
 // NewDataStoreRatingInitParam returns a new DataStoreRatingInitParam
-func NewDataStoreRatingInitParam() *DataStoreRatingInitParam {
-	dsrip := &DataStoreRatingInitParam{
-		Flag:           types.NewPrimitiveU8(0),
-		InternalFlag:   types.NewPrimitiveU8(0),
-		LockType:       types.NewPrimitiveU8(0),
-		InitialValue:   types.NewPrimitiveS64(0),
-		RangeMin:       types.NewPrimitiveS32(0),
-		RangeMax:       types.NewPrimitiveS32(0),
-		PeriodHour:     types.NewPrimitiveS8(0),
-		PeriodDuration: types.NewPrimitiveS16(0),
+func NewDataStoreRatingInitParam() DataStoreRatingInitParam {
+	return DataStoreRatingInitParam{
+		Flag:           types.NewUInt8(0),
+		InternalFlag:   types.NewUInt8(0),
+		LockType:       types.NewUInt8(0),
+		InitialValue:   types.NewInt64(0),
+		RangeMin:       types.NewInt32(0),
+		RangeMax:       types.NewInt32(0),
+		PeriodHour:     types.NewInt8(0),
+		PeriodDuration: types.NewInt16(0),
 	}
 
-	return dsrip
 }

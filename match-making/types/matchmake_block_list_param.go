@@ -11,11 +11,11 @@ import (
 // MatchmakeBlockListParam is a type within the Matchmaking protocol
 type MatchmakeBlockListParam struct {
 	types.Structure
-	OptionFlag *types.PrimitiveU32
+	OptionFlag types.UInt32
 }
 
 // WriteTo writes the MatchmakeBlockListParam to the given writable
-func (mblp *MatchmakeBlockListParam) WriteTo(writable types.Writable) {
+func (mblp MatchmakeBlockListParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	mblp.OptionFlag.WriteTo(contentWritable)
@@ -45,22 +45,22 @@ func (mblp *MatchmakeBlockListParam) ExtractFrom(readable types.Readable) error 
 }
 
 // Copy returns a new copied instance of MatchmakeBlockListParam
-func (mblp *MatchmakeBlockListParam) Copy() types.RVType {
+func (mblp MatchmakeBlockListParam) Copy() types.RVType {
 	copied := NewMatchmakeBlockListParam()
 
 	copied.StructureVersion = mblp.StructureVersion
-	copied.OptionFlag = mblp.OptionFlag.Copy().(*types.PrimitiveU32)
+	copied.OptionFlag = mblp.OptionFlag.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeBlockListParam contains the same data as the current MatchmakeBlockListParam
-func (mblp *MatchmakeBlockListParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeBlockListParam); !ok {
+func (mblp MatchmakeBlockListParam) Equals(o types.RVType) bool {
+	if _, ok := o.(MatchmakeBlockListParam); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeBlockListParam)
+	other := o.(MatchmakeBlockListParam)
 
 	if mblp.StructureVersion != other.StructureVersion {
 		return false
@@ -69,13 +69,27 @@ func (mblp *MatchmakeBlockListParam) Equals(o types.RVType) bool {
 	return mblp.OptionFlag.Equals(other.OptionFlag)
 }
 
+// CopyRef copies the current value of the MatchmakeBlockListParam
+// and returns a pointer to the new copy
+func (mblp MatchmakeBlockListParam) CopyRef() types.RVTypePtr {
+	copied := mblp.Copy().(MatchmakeBlockListParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeBlockListParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mblp *MatchmakeBlockListParam) Deref() types.RVType {
+	return *mblp
+}
+
 // String returns the string representation of the MatchmakeBlockListParam
-func (mblp *MatchmakeBlockListParam) String() string {
+func (mblp MatchmakeBlockListParam) String() string {
 	return mblp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeBlockListParam using the provided indentation level
-func (mblp *MatchmakeBlockListParam) FormatToString(indentationLevel int) string {
+func (mblp MatchmakeBlockListParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +103,9 @@ func (mblp *MatchmakeBlockListParam) FormatToString(indentationLevel int) string
 }
 
 // NewMatchmakeBlockListParam returns a new MatchmakeBlockListParam
-func NewMatchmakeBlockListParam() *MatchmakeBlockListParam {
-	mblp := &MatchmakeBlockListParam{
-		OptionFlag: types.NewPrimitiveU32(0),
+func NewMatchmakeBlockListParam() MatchmakeBlockListParam {
+	return MatchmakeBlockListParam{
+		OptionFlag: types.NewUInt32(0),
 	}
 
-	return mblp
 }

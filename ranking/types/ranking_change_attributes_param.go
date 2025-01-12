@@ -11,13 +11,13 @@ import (
 // RankingChangeAttributesParam is a type within the Ranking protocol
 type RankingChangeAttributesParam struct {
 	types.Structure
-	ModificationFlag *types.PrimitiveU8
-	Groups           *types.List[*types.PrimitiveU8]
-	Param            *types.PrimitiveU64
+	ModificationFlag types.UInt8
+	Groups           types.List[types.UInt8]
+	Param            types.UInt64
 }
 
 // WriteTo writes the RankingChangeAttributesParam to the given writable
-func (rcap *RankingChangeAttributesParam) WriteTo(writable types.Writable) {
+func (rcap RankingChangeAttributesParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	rcap.ModificationFlag.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (rcap *RankingChangeAttributesParam) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of RankingChangeAttributesParam
-func (rcap *RankingChangeAttributesParam) Copy() types.RVType {
+func (rcap RankingChangeAttributesParam) Copy() types.RVType {
 	copied := NewRankingChangeAttributesParam()
 
 	copied.StructureVersion = rcap.StructureVersion
-	copied.ModificationFlag = rcap.ModificationFlag.Copy().(*types.PrimitiveU8)
-	copied.Groups = rcap.Groups.Copy().(*types.List[*types.PrimitiveU8])
-	copied.Param = rcap.Param.Copy().(*types.PrimitiveU64)
+	copied.ModificationFlag = rcap.ModificationFlag.Copy().(types.UInt8)
+	copied.Groups = rcap.Groups.Copy().(types.List[types.UInt8])
+	copied.Param = rcap.Param.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given RankingChangeAttributesParam contains the same data as the current RankingChangeAttributesParam
-func (rcap *RankingChangeAttributesParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*RankingChangeAttributesParam); !ok {
+func (rcap RankingChangeAttributesParam) Equals(o types.RVType) bool {
+	if _, ok := o.(RankingChangeAttributesParam); !ok {
 		return false
 	}
 
-	other := o.(*RankingChangeAttributesParam)
+	other := o.(RankingChangeAttributesParam)
 
 	if rcap.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (rcap *RankingChangeAttributesParam) Equals(o types.RVType) bool {
 	return rcap.Param.Equals(other.Param)
 }
 
+// CopyRef copies the current value of the RankingChangeAttributesParam
+// and returns a pointer to the new copy
+func (rcap RankingChangeAttributesParam) CopyRef() types.RVTypePtr {
+	copied := rcap.Copy().(RankingChangeAttributesParam)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingChangeAttributesParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rcap *RankingChangeAttributesParam) Deref() types.RVType {
+	return *rcap
+}
+
 // String returns the string representation of the RankingChangeAttributesParam
-func (rcap *RankingChangeAttributesParam) String() string {
+func (rcap RankingChangeAttributesParam) String() string {
 	return rcap.FormatToString(0)
 }
 
 // FormatToString pretty-prints the RankingChangeAttributesParam using the provided indentation level
-func (rcap *RankingChangeAttributesParam) FormatToString(indentationLevel int) string {
+func (rcap RankingChangeAttributesParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +129,11 @@ func (rcap *RankingChangeAttributesParam) FormatToString(indentationLevel int) s
 }
 
 // NewRankingChangeAttributesParam returns a new RankingChangeAttributesParam
-func NewRankingChangeAttributesParam() *RankingChangeAttributesParam {
-	rcap := &RankingChangeAttributesParam{
-		ModificationFlag: types.NewPrimitiveU8(0),
-		Groups:           types.NewList[*types.PrimitiveU8](),
-		Param:            types.NewPrimitiveU64(0),
+func NewRankingChangeAttributesParam() RankingChangeAttributesParam {
+	return RankingChangeAttributesParam{
+		ModificationFlag: types.NewUInt8(0),
+		Groups:           types.NewList[types.UInt8](),
+		Param:            types.NewUInt64(0),
 	}
 
-	rcap.Groups.Type = types.NewPrimitiveU8(0)
-
-	return rcap
 }

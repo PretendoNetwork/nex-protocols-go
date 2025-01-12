@@ -25,12 +25,11 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	ids := types.NewList[*types.PrimitiveU64]()
-	ids.Type = types.NewPrimitiveU64(0)
+	var ids types.List[types.UInt64]
 
 	err := ids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.MarkFriendRequestsAsReceived(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.MarkFriendRequestsAsReceived(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, ids)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

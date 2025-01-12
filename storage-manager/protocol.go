@@ -25,7 +25,7 @@ const (
 type Protocol struct {
 	endpoint           nex.EndpointInterface
 	AcquireCardID      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
-	ActivateWithCardID func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
+	ActivateWithCardID func(err error, packet nex.PacketInterface, callID uint32, unknown types.UInt8, cardID types.UInt64) (*nex.RMCMessage, *nex.Error)
 	Patches            nex.ServiceProtocol
 	PatchedMethods     []uint32
 }
@@ -35,7 +35,7 @@ type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerAcquireCardID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown types.UInt8, cardID types.UInt64) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -54,7 +54,7 @@ func (protocol *Protocol) SetHandlerAcquireCardID(handler func(err error, packet
 }
 
 // SetHandlerActivateWithCardID sets the handler for the ActivateWithCardID method
-func (protocol *Protocol) SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown types.UInt8, cardID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ActivateWithCardID = handler
 }
 

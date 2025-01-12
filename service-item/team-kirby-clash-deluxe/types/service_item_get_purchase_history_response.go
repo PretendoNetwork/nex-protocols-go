@@ -11,12 +11,12 @@ import (
 // ServiceItemGetPurchaseHistoryResponse is a type within the ServiceItem protocol
 type ServiceItemGetPurchaseHistoryResponse struct {
 	types.Structure
-	*ServiceItemEShopResponse
-	NullablePurchaseHistory *types.List[*ServiceItemPurchaseHistory]
+	ServiceItemEShopResponse
+	NullablePurchaseHistory types.List[ServiceItemPurchaseHistory]
 }
 
 // WriteTo writes the ServiceItemGetPurchaseHistoryResponse to the given writable
-func (sigphr *ServiceItemGetPurchaseHistoryResponse) WriteTo(writable types.Writable) {
+func (sigphr ServiceItemGetPurchaseHistoryResponse) WriteTo(writable types.Writable) {
 	sigphr.ServiceItemEShopResponse.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (sigphr *ServiceItemGetPurchaseHistoryResponse) ExtractFrom(readable types.
 }
 
 // Copy returns a new copied instance of ServiceItemGetPurchaseHistoryResponse
-func (sigphr *ServiceItemGetPurchaseHistoryResponse) Copy() types.RVType {
+func (sigphr ServiceItemGetPurchaseHistoryResponse) Copy() types.RVType {
 	copied := NewServiceItemGetPurchaseHistoryResponse()
 
 	copied.StructureVersion = sigphr.StructureVersion
-	copied.ServiceItemEShopResponse = sigphr.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.NullablePurchaseHistory = sigphr.NullablePurchaseHistory.Copy().(*types.List[*ServiceItemPurchaseHistory])
+	copied.ServiceItemEShopResponse = sigphr.ServiceItemEShopResponse.Copy().(ServiceItemEShopResponse)
+	copied.NullablePurchaseHistory = sigphr.NullablePurchaseHistory.Copy().(types.List[ServiceItemPurchaseHistory])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetPurchaseHistoryResponse contains the same data as the current ServiceItemGetPurchaseHistoryResponse
-func (sigphr *ServiceItemGetPurchaseHistoryResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetPurchaseHistoryResponse); !ok {
+func (sigphr ServiceItemGetPurchaseHistoryResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemGetPurchaseHistoryResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetPurchaseHistoryResponse)
+	other := o.(ServiceItemGetPurchaseHistoryResponse)
 
 	if sigphr.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (sigphr *ServiceItemGetPurchaseHistoryResponse) Equals(o types.RVType) bool
 	return sigphr.NullablePurchaseHistory.Equals(other.NullablePurchaseHistory)
 }
 
+// CopyRef copies the current value of the ServiceItemGetPurchaseHistoryResponse
+// and returns a pointer to the new copy
+func (sigphr ServiceItemGetPurchaseHistoryResponse) CopyRef() types.RVTypePtr {
+	copied := sigphr.Copy().(ServiceItemGetPurchaseHistoryResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetPurchaseHistoryResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigphr *ServiceItemGetPurchaseHistoryResponse) Deref() types.RVType {
+	return *sigphr
+}
+
 // String returns the string representation of the ServiceItemGetPurchaseHistoryResponse
-func (sigphr *ServiceItemGetPurchaseHistoryResponse) String() string {
+func (sigphr ServiceItemGetPurchaseHistoryResponse) String() string {
 	return sigphr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetPurchaseHistoryResponse using the provided indentation level
-func (sigphr *ServiceItemGetPurchaseHistoryResponse) FormatToString(indentationLevel int) string {
+func (sigphr ServiceItemGetPurchaseHistoryResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +117,10 @@ func (sigphr *ServiceItemGetPurchaseHistoryResponse) FormatToString(indentationL
 }
 
 // NewServiceItemGetPurchaseHistoryResponse returns a new ServiceItemGetPurchaseHistoryResponse
-func NewServiceItemGetPurchaseHistoryResponse() *ServiceItemGetPurchaseHistoryResponse {
-	sigphr := &ServiceItemGetPurchaseHistoryResponse{
+func NewServiceItemGetPurchaseHistoryResponse() ServiceItemGetPurchaseHistoryResponse {
+	return ServiceItemGetPurchaseHistoryResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullablePurchaseHistory:  types.NewList[*ServiceItemPurchaseHistory](),
+		NullablePurchaseHistory:  types.NewList[ServiceItemPurchaseHistory](),
 	}
 
-	sigphr.NullablePurchaseHistory.Type = NewServiceItemPurchaseHistory()
-
-	return sigphr
 }

@@ -11,12 +11,12 @@ import (
 // GlobalTradeStationPrepareTradePokemonParam is a type within the DataStore protocol
 type GlobalTradeStationPrepareTradePokemonParam struct {
 	types.Structure
-	TradeKey         *GlobalTradeStationTradeKey
-	PrepareUploadKey *GlobalTradeStationRecordKey
+	TradeKey         GlobalTradeStationTradeKey
+	PrepareUploadKey GlobalTradeStationRecordKey
 }
 
 // WriteTo writes the GlobalTradeStationPrepareTradePokemonParam to the given writable
-func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) WriteTo(writable types.Writable) {
+func (gtsptpp GlobalTradeStationPrepareTradePokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsptpp.TradeKey.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) ExtractFrom(readable 
 }
 
 // Copy returns a new copied instance of GlobalTradeStationPrepareTradePokemonParam
-func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) Copy() types.RVType {
+func (gtsptpp GlobalTradeStationPrepareTradePokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationPrepareTradePokemonParam()
 
 	copied.StructureVersion = gtsptpp.StructureVersion
-	copied.TradeKey = gtsptpp.TradeKey.Copy().(*GlobalTradeStationTradeKey)
-	copied.PrepareUploadKey = gtsptpp.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
+	copied.TradeKey = gtsptpp.TradeKey.Copy().(GlobalTradeStationTradeKey)
+	copied.PrepareUploadKey = gtsptpp.PrepareUploadKey.Copy().(GlobalTradeStationRecordKey)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationPrepareTradePokemonParam contains the same data as the current GlobalTradeStationPrepareTradePokemonParam
-func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationPrepareTradePokemonParam); !ok {
+func (gtsptpp GlobalTradeStationPrepareTradePokemonParam) Equals(o types.RVType) bool {
+	if _, ok := o.(GlobalTradeStationPrepareTradePokemonParam); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationPrepareTradePokemonParam)
+	other := o.(GlobalTradeStationPrepareTradePokemonParam)
 
 	if gtsptpp.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) Equals(o types.RVType
 	return gtsptpp.PrepareUploadKey.Equals(other.PrepareUploadKey)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationPrepareTradePokemonParam
+// and returns a pointer to the new copy
+func (gtsptpp GlobalTradeStationPrepareTradePokemonParam) CopyRef() types.RVTypePtr {
+	copied := gtsptpp.Copy().(GlobalTradeStationPrepareTradePokemonParam)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationPrepareTradePokemonParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) Deref() types.RVType {
+	return *gtsptpp
+}
+
 // String returns the string representation of the GlobalTradeStationPrepareTradePokemonParam
-func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) String() string {
+func (gtsptpp GlobalTradeStationPrepareTradePokemonParam) String() string {
 	return gtsptpp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationPrepareTradePokemonParam using the provided indentation level
-func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) FormatToString(indentationLevel int) string {
+func (gtsptpp GlobalTradeStationPrepareTradePokemonParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) FormatToString(indent
 }
 
 // NewGlobalTradeStationPrepareTradePokemonParam returns a new GlobalTradeStationPrepareTradePokemonParam
-func NewGlobalTradeStationPrepareTradePokemonParam() *GlobalTradeStationPrepareTradePokemonParam {
-	gtsptpp := &GlobalTradeStationPrepareTradePokemonParam{
+func NewGlobalTradeStationPrepareTradePokemonParam() GlobalTradeStationPrepareTradePokemonParam {
+	return GlobalTradeStationPrepareTradePokemonParam{
 		TradeKey:         NewGlobalTradeStationTradeKey(),
 		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
 	}
 
-	return gtsptpp
 }

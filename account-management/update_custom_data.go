@@ -25,14 +25,14 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	oPublicData := types.NewAnyDataHolder()
-	oPrivateData := types.NewAnyDataHolder()
+	var oPublicData types.DataHolder
+	var oPrivateData types.DataHolder
 
 	var err error
 
 	err = oPublicData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, oPublicData, oPrivateData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 
 	err = oPrivateData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, oPublicData, oPrivateData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

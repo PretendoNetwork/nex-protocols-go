@@ -11,20 +11,20 @@ import (
 // DataStoreChangeMetaCompareParam is a type within the DataStore protocol
 type DataStoreChangeMetaCompareParam struct {
 	types.Structure
-	ComparisonFlag *types.PrimitiveU32
-	Name           *types.String
-	Permission     *DataStorePermission
-	DelPermission  *DataStorePermission
-	Period         *types.PrimitiveU16
-	MetaBinary     *types.QBuffer
-	Tags           *types.List[*types.String]
-	ReferredCnt    *types.PrimitiveU32
-	DataType       *types.PrimitiveU16
-	Status         *types.PrimitiveU8
+	ComparisonFlag types.UInt32
+	Name           types.String
+	Permission     DataStorePermission
+	DelPermission  DataStorePermission
+	Period         types.UInt16
+	MetaBinary     types.QBuffer
+	Tags           types.List[types.String]
+	ReferredCnt    types.UInt32
+	DataType       types.UInt16
+	Status         types.UInt8
 }
 
 // WriteTo writes the DataStoreChangeMetaCompareParam to the given writable
-func (dscmcp *DataStoreChangeMetaCompareParam) WriteTo(writable types.Writable) {
+func (dscmcp DataStoreChangeMetaCompareParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dscmcp.ComparisonFlag.WriteTo(contentWritable)
@@ -108,31 +108,31 @@ func (dscmcp *DataStoreChangeMetaCompareParam) ExtractFrom(readable types.Readab
 }
 
 // Copy returns a new copied instance of DataStoreChangeMetaCompareParam
-func (dscmcp *DataStoreChangeMetaCompareParam) Copy() types.RVType {
+func (dscmcp DataStoreChangeMetaCompareParam) Copy() types.RVType {
 	copied := NewDataStoreChangeMetaCompareParam()
 
 	copied.StructureVersion = dscmcp.StructureVersion
-	copied.ComparisonFlag = dscmcp.ComparisonFlag.Copy().(*types.PrimitiveU32)
-	copied.Name = dscmcp.Name.Copy().(*types.String)
-	copied.Permission = dscmcp.Permission.Copy().(*DataStorePermission)
-	copied.DelPermission = dscmcp.DelPermission.Copy().(*DataStorePermission)
-	copied.Period = dscmcp.Period.Copy().(*types.PrimitiveU16)
-	copied.MetaBinary = dscmcp.MetaBinary.Copy().(*types.QBuffer)
-	copied.Tags = dscmcp.Tags.Copy().(*types.List[*types.String])
-	copied.ReferredCnt = dscmcp.ReferredCnt.Copy().(*types.PrimitiveU32)
-	copied.DataType = dscmcp.DataType.Copy().(*types.PrimitiveU16)
-	copied.Status = dscmcp.Status.Copy().(*types.PrimitiveU8)
+	copied.ComparisonFlag = dscmcp.ComparisonFlag.Copy().(types.UInt32)
+	copied.Name = dscmcp.Name.Copy().(types.String)
+	copied.Permission = dscmcp.Permission.Copy().(DataStorePermission)
+	copied.DelPermission = dscmcp.DelPermission.Copy().(DataStorePermission)
+	copied.Period = dscmcp.Period.Copy().(types.UInt16)
+	copied.MetaBinary = dscmcp.MetaBinary.Copy().(types.QBuffer)
+	copied.Tags = dscmcp.Tags.Copy().(types.List[types.String])
+	copied.ReferredCnt = dscmcp.ReferredCnt.Copy().(types.UInt32)
+	copied.DataType = dscmcp.DataType.Copy().(types.UInt16)
+	copied.Status = dscmcp.Status.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreChangeMetaCompareParam contains the same data as the current DataStoreChangeMetaCompareParam
-func (dscmcp *DataStoreChangeMetaCompareParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreChangeMetaCompareParam); !ok {
+func (dscmcp DataStoreChangeMetaCompareParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreChangeMetaCompareParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreChangeMetaCompareParam)
+	other := o.(DataStoreChangeMetaCompareParam)
 
 	if dscmcp.StructureVersion != other.StructureVersion {
 		return false
@@ -177,13 +177,27 @@ func (dscmcp *DataStoreChangeMetaCompareParam) Equals(o types.RVType) bool {
 	return dscmcp.Status.Equals(other.Status)
 }
 
+// CopyRef copies the current value of the DataStoreChangeMetaCompareParam
+// and returns a pointer to the new copy
+func (dscmcp DataStoreChangeMetaCompareParam) CopyRef() types.RVTypePtr {
+	copied := dscmcp.Copy().(DataStoreChangeMetaCompareParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreChangeMetaCompareParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscmcp *DataStoreChangeMetaCompareParam) Deref() types.RVType {
+	return *dscmcp
+}
+
 // String returns the string representation of the DataStoreChangeMetaCompareParam
-func (dscmcp *DataStoreChangeMetaCompareParam) String() string {
+func (dscmcp DataStoreChangeMetaCompareParam) String() string {
 	return dscmcp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreChangeMetaCompareParam using the provided indentation level
-func (dscmcp *DataStoreChangeMetaCompareParam) FormatToString(indentationLevel int) string {
+func (dscmcp DataStoreChangeMetaCompareParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -206,21 +220,18 @@ func (dscmcp *DataStoreChangeMetaCompareParam) FormatToString(indentationLevel i
 }
 
 // NewDataStoreChangeMetaCompareParam returns a new DataStoreChangeMetaCompareParam
-func NewDataStoreChangeMetaCompareParam() *DataStoreChangeMetaCompareParam {
-	dscmcp := &DataStoreChangeMetaCompareParam{
-		ComparisonFlag: types.NewPrimitiveU32(0),
+func NewDataStoreChangeMetaCompareParam() DataStoreChangeMetaCompareParam {
+	return DataStoreChangeMetaCompareParam{
+		ComparisonFlag: types.NewUInt32(0),
 		Name:           types.NewString(""),
 		Permission:     NewDataStorePermission(),
 		DelPermission:  NewDataStorePermission(),
-		Period:         types.NewPrimitiveU16(0),
+		Period:         types.NewUInt16(0),
 		MetaBinary:     types.NewQBuffer(nil),
-		Tags:           types.NewList[*types.String](),
-		ReferredCnt:    types.NewPrimitiveU32(0),
-		DataType:       types.NewPrimitiveU16(0),
-		Status:         types.NewPrimitiveU8(0),
+		Tags:           types.NewList[types.String](),
+		ReferredCnt:    types.NewUInt32(0),
+		DataType:       types.NewUInt16(0),
+		Status:         types.NewUInt8(0),
 	}
 
-	dscmcp.Tags.Type = types.NewString("")
-
-	return dscmcp
 }

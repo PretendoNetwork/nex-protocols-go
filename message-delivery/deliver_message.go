@@ -25,11 +25,11 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	oUserMessage := types.NewAnyDataHolder()
+	var oUserMessage types.DataHolder
 
 	err := oUserMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeliverMessage(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.DeliverMessage(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, oUserMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

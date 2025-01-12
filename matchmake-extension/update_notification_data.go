@@ -25,16 +25,16 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	uiType := types.NewPrimitiveU32(0)
-	uiParam1 := types.NewPrimitiveU32(0)
-	uiParam2 := types.NewPrimitiveU32(0)
-	strParam := types.NewString("")
+	var uiType types.UInt32
+	var uiParam1 types.UInt32
+	var uiParam2 types.UInt32
+	var strParam types.String
 
 	var err error
 
 	err = uiType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 
 	err = uiParam1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 
 	err = uiParam2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -64,7 +64,7 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 
 	err = strParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read strParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read strParam from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

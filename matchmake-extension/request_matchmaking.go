@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
 
 	err := autoMatchmakeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestMatchmaking(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.RequestMatchmaking(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, autoMatchmakeParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

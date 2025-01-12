@@ -25,11 +25,11 @@ func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	nexUniqueID := types.NewPrimitiveU64(0)
+	var nexUniqueID types.UInt64
 
 	err := nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.DeleteCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

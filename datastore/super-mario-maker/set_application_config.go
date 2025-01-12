@@ -25,15 +25,15 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	applicationID := types.NewPrimitiveU32(0)
-	key := types.NewPrimitiveU32(0)
-	value := types.NewPrimitiveS32(0)
+	var applicationID types.UInt32
+	var key types.UInt32
+	var value types.Int32
 
 	var err error
 
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	err = key.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	err = value.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

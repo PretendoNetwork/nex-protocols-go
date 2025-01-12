@@ -11,12 +11,12 @@ import (
 // ServiceItemUseServiceItemResponse is a type within the ServiceItem protocol
 type ServiceItemUseServiceItemResponse struct {
 	types.Structure
-	*ServiceItemEShopResponse
-	NullableUsedInfo *types.List[*ServiceItemUsedInfo]
+	ServiceItemEShopResponse
+	NullableUsedInfo types.List[ServiceItemUsedInfo]
 }
 
 // WriteTo writes the ServiceItemUseServiceItemResponse to the given writable
-func (siusir *ServiceItemUseServiceItemResponse) WriteTo(writable types.Writable) {
+func (siusir ServiceItemUseServiceItemResponse) WriteTo(writable types.Writable) {
 	siusir.ServiceItemEShopResponse.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (siusir *ServiceItemUseServiceItemResponse) ExtractFrom(readable types.Read
 }
 
 // Copy returns a new copied instance of ServiceItemUseServiceItemResponse
-func (siusir *ServiceItemUseServiceItemResponse) Copy() types.RVType {
+func (siusir ServiceItemUseServiceItemResponse) Copy() types.RVType {
 	copied := NewServiceItemUseServiceItemResponse()
 
 	copied.StructureVersion = siusir.StructureVersion
-	copied.ServiceItemEShopResponse = siusir.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.NullableUsedInfo = siusir.NullableUsedInfo.Copy().(*types.List[*ServiceItemUsedInfo])
+	copied.ServiceItemEShopResponse = siusir.ServiceItemEShopResponse.Copy().(ServiceItemEShopResponse)
+	copied.NullableUsedInfo = siusir.NullableUsedInfo.Copy().(types.List[ServiceItemUsedInfo])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemUseServiceItemResponse contains the same data as the current ServiceItemUseServiceItemResponse
-func (siusir *ServiceItemUseServiceItemResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemUseServiceItemResponse); !ok {
+func (siusir ServiceItemUseServiceItemResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemUseServiceItemResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemUseServiceItemResponse)
+	other := o.(ServiceItemUseServiceItemResponse)
 
 	if siusir.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (siusir *ServiceItemUseServiceItemResponse) Equals(o types.RVType) bool {
 	return siusir.NullableUsedInfo.Equals(other.NullableUsedInfo)
 }
 
+// CopyRef copies the current value of the ServiceItemUseServiceItemResponse
+// and returns a pointer to the new copy
+func (siusir ServiceItemUseServiceItemResponse) CopyRef() types.RVTypePtr {
+	copied := siusir.Copy().(ServiceItemUseServiceItemResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemUseServiceItemResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siusir *ServiceItemUseServiceItemResponse) Deref() types.RVType {
+	return *siusir
+}
+
 // String returns the string representation of the ServiceItemUseServiceItemResponse
-func (siusir *ServiceItemUseServiceItemResponse) String() string {
+func (siusir ServiceItemUseServiceItemResponse) String() string {
 	return siusir.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemUseServiceItemResponse using the provided indentation level
-func (siusir *ServiceItemUseServiceItemResponse) FormatToString(indentationLevel int) string {
+func (siusir ServiceItemUseServiceItemResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +117,10 @@ func (siusir *ServiceItemUseServiceItemResponse) FormatToString(indentationLevel
 }
 
 // NewServiceItemUseServiceItemResponse returns a new ServiceItemUseServiceItemResponse
-func NewServiceItemUseServiceItemResponse() *ServiceItemUseServiceItemResponse {
-	siusir := &ServiceItemUseServiceItemResponse{
+func NewServiceItemUseServiceItemResponse() ServiceItemUseServiceItemResponse {
+	return ServiceItemUseServiceItemResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableUsedInfo:         types.NewList[*ServiceItemUsedInfo](),
+		NullableUsedInfo:         types.NewList[ServiceItemUsedInfo](),
 	}
 
-	siusir.NullableUsedInfo.Type = NewServiceItemUsedInfo()
-
-	return siusir
 }

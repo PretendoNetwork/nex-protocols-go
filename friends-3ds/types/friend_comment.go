@@ -11,14 +11,14 @@ import (
 // FriendComment is a type within the Friends3DS protocol
 type FriendComment struct {
 	types.Structure
-	*types.Data
-	PID        *types.PID
-	Comment    *types.String
-	ModifiedAt *types.DateTime
+	types.Data
+	PID        types.PID
+	Comment    types.String
+	ModifiedAt types.DateTime
 }
 
 // WriteTo writes the FriendComment to the given writable
-func (fc *FriendComment) WriteTo(writable types.Writable) {
+func (fc FriendComment) WriteTo(writable types.Writable) {
 	fc.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,25 +67,25 @@ func (fc *FriendComment) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendComment
-func (fc *FriendComment) Copy() types.RVType {
+func (fc FriendComment) Copy() types.RVType {
 	copied := NewFriendComment()
 
 	copied.StructureVersion = fc.StructureVersion
-	copied.Data = fc.Data.Copy().(*types.Data)
-	copied.PID = fc.PID.Copy().(*types.PID)
-	copied.Comment = fc.Comment.Copy().(*types.String)
-	copied.ModifiedAt = fc.ModifiedAt.Copy().(*types.DateTime)
+	copied.Data = fc.Data.Copy().(types.Data)
+	copied.PID = fc.PID.Copy().(types.PID)
+	copied.Comment = fc.Comment.Copy().(types.String)
+	copied.ModifiedAt = fc.ModifiedAt.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given FriendComment contains the same data as the current FriendComment
-func (fc *FriendComment) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendComment); !ok {
+func (fc FriendComment) Equals(o types.RVType) bool {
+	if _, ok := o.(FriendComment); !ok {
 		return false
 	}
 
-	other := o.(*FriendComment)
+	other := o.(FriendComment)
 
 	if fc.StructureVersion != other.StructureVersion {
 		return false
@@ -106,13 +106,27 @@ func (fc *FriendComment) Equals(o types.RVType) bool {
 	return fc.ModifiedAt.Equals(other.ModifiedAt)
 }
 
+// CopyRef copies the current value of the FriendComment
+// and returns a pointer to the new copy
+func (fc FriendComment) CopyRef() types.RVTypePtr {
+	copied := fc.Copy().(FriendComment)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendComment
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fc *FriendComment) Deref() types.RVType {
+	return *fc
+}
+
 // String returns the string representation of the FriendComment
-func (fc *FriendComment) String() string {
+func (fc FriendComment) String() string {
 	return fc.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendComment using the provided indentation level
-func (fc *FriendComment) FormatToString(indentationLevel int) string {
+func (fc FriendComment) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +143,12 @@ func (fc *FriendComment) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendComment returns a new FriendComment
-func NewFriendComment() *FriendComment {
-	fc := &FriendComment{
+func NewFriendComment() FriendComment {
+	return FriendComment{
 		Data:       types.NewData(),
 		PID:        types.NewPID(0),
 		Comment:    types.NewString(""),
 		ModifiedAt: types.NewDateTime(0),
 	}
 
-	return fc
 }

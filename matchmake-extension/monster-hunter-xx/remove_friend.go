@@ -25,11 +25,11 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	pid := types.NewPID(0)
+	var pid types.PID
 
 	err := pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RemoveFriend(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.RemoveFriend(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,14 +11,14 @@ import (
 // ServiceItemPurchaceInfo is a type within the ServiceItem protocol
 type ServiceItemPurchaceInfo struct {
 	types.Structure
-	TransactionID    *types.String
-	ExtTransactionID *types.String
-	ItemCode         *types.String
-	PostBalance      *ServiceItemAmount
+	TransactionID    types.String
+	ExtTransactionID types.String
+	ItemCode         types.String
+	PostBalance      ServiceItemAmount
 }
 
 // WriteTo writes the ServiceItemPurchaceInfo to the given writable
-func (sipi *ServiceItemPurchaceInfo) WriteTo(writable types.Writable) {
+func (sipi ServiceItemPurchaceInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sipi.TransactionID.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (sipi *ServiceItemPurchaceInfo) ExtractFrom(readable types.Readable) error 
 }
 
 // Copy returns a new copied instance of ServiceItemPurchaceInfo
-func (sipi *ServiceItemPurchaceInfo) Copy() types.RVType {
+func (sipi ServiceItemPurchaceInfo) Copy() types.RVType {
 	copied := NewServiceItemPurchaceInfo()
 
 	copied.StructureVersion = sipi.StructureVersion
-	copied.TransactionID = sipi.TransactionID.Copy().(*types.String)
-	copied.ExtTransactionID = sipi.ExtTransactionID.Copy().(*types.String)
-	copied.ItemCode = sipi.ItemCode.Copy().(*types.String)
-	copied.PostBalance = sipi.PostBalance.Copy().(*ServiceItemAmount)
+	copied.TransactionID = sipi.TransactionID.Copy().(types.String)
+	copied.ExtTransactionID = sipi.ExtTransactionID.Copy().(types.String)
+	copied.ItemCode = sipi.ItemCode.Copy().(types.String)
+	copied.PostBalance = sipi.PostBalance.Copy().(ServiceItemAmount)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemPurchaceInfo contains the same data as the current ServiceItemPurchaceInfo
-func (sipi *ServiceItemPurchaceInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPurchaceInfo); !ok {
+func (sipi ServiceItemPurchaceInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemPurchaceInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPurchaceInfo)
+	other := o.(ServiceItemPurchaceInfo)
 
 	if sipi.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (sipi *ServiceItemPurchaceInfo) Equals(o types.RVType) bool {
 	return sipi.PostBalance.Equals(other.PostBalance)
 }
 
+// CopyRef copies the current value of the ServiceItemPurchaceInfo
+// and returns a pointer to the new copy
+func (sipi ServiceItemPurchaceInfo) CopyRef() types.RVTypePtr {
+	copied := sipi.Copy().(ServiceItemPurchaceInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPurchaceInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sipi *ServiceItemPurchaceInfo) Deref() types.RVType {
+	return *sipi
+}
+
 // String returns the string representation of the ServiceItemPurchaceInfo
-func (sipi *ServiceItemPurchaceInfo) String() string {
+func (sipi ServiceItemPurchaceInfo) String() string {
 	return sipi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemPurchaceInfo using the provided indentation level
-func (sipi *ServiceItemPurchaceInfo) FormatToString(indentationLevel int) string {
+func (sipi ServiceItemPurchaceInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +142,12 @@ func (sipi *ServiceItemPurchaceInfo) FormatToString(indentationLevel int) string
 }
 
 // NewServiceItemPurchaceInfo returns a new ServiceItemPurchaceInfo
-func NewServiceItemPurchaceInfo() *ServiceItemPurchaceInfo {
-	sipi := &ServiceItemPurchaceInfo{
+func NewServiceItemPurchaceInfo() ServiceItemPurchaceInfo {
+	return ServiceItemPurchaceInfo{
 		TransactionID:    types.NewString(""),
 		ExtTransactionID: types.NewString(""),
 		ItemCode:         types.NewString(""),
 		PostBalance:      NewServiceItemAmount(),
 	}
 
-	return sipi
 }

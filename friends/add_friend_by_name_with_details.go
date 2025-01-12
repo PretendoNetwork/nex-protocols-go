@@ -25,15 +25,15 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	uiPlayer := types.NewPrimitiveU32(0)
-	uiDetails := types.NewPrimitiveU32(0)
-	strMessage := types.NewString("")
+	var uiPlayer types.UInt32
+	var uiDetails types.UInt32
+	var strMessage types.String
 
 	var err error
 
 	err = uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

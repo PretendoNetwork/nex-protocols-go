@@ -25,12 +25,11 @@ func (protocol *Protocol) handleAddFriends(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	pids := types.NewList[*types.PID]()
-	pids.Type = types.NewPID(0)
+	var pids types.List[types.PID]
 
 	err := pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriends(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.AddFriends(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

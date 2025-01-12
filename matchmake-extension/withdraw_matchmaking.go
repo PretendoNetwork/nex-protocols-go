@@ -25,11 +25,11 @@ func (protocol *Protocol) handleWithdrawMatchmaking(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	requestID := types.NewPrimitiveU64(0)
+	var requestID types.UInt64
 
 	err := requestID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.WithdrawMatchmaking(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.WithdrawMatchmaking(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, requestID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

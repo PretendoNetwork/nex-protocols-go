@@ -25,14 +25,14 @@ func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idSource := types.NewPID(0)
-	idTarget := types.NewPID(0)
+	var idSource types.PID
+	var idTarget types.PID
 
 	var err error
 
 	err = idSource.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idSource from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idSource from parameters. %s", err.Error()), packet, callID, idSource, idTarget)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 
 	err = idTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idTarget from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idTarget from parameters. %s", err.Error()), packet, callID, idSource, idTarget)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

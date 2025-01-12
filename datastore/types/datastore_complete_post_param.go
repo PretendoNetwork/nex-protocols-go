@@ -11,12 +11,12 @@ import (
 // DataStoreCompletePostParam is a type within the DataStore protocol
 type DataStoreCompletePostParam struct {
 	types.Structure
-	DataID    *types.PrimitiveU64
-	IsSuccess *types.PrimitiveBool
+	DataID    types.UInt64
+	IsSuccess types.Bool
 }
 
 // WriteTo writes the DataStoreCompletePostParam to the given writable
-func (dscpp *DataStoreCompletePostParam) WriteTo(writable types.Writable) {
+func (dscpp DataStoreCompletePostParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dscpp.DataID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (dscpp *DataStoreCompletePostParam) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of DataStoreCompletePostParam
-func (dscpp *DataStoreCompletePostParam) Copy() types.RVType {
+func (dscpp DataStoreCompletePostParam) Copy() types.RVType {
 	copied := NewDataStoreCompletePostParam()
 
 	copied.StructureVersion = dscpp.StructureVersion
-	copied.DataID = dscpp.DataID.Copy().(*types.PrimitiveU64)
-	copied.IsSuccess = dscpp.IsSuccess.Copy().(*types.PrimitiveBool)
+	copied.DataID = dscpp.DataID.Copy().(types.UInt64)
+	copied.IsSuccess = dscpp.IsSuccess.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreCompletePostParam contains the same data as the current DataStoreCompletePostParam
-func (dscpp *DataStoreCompletePostParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreCompletePostParam); !ok {
+func (dscpp DataStoreCompletePostParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreCompletePostParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreCompletePostParam)
+	other := o.(DataStoreCompletePostParam)
 
 	if dscpp.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (dscpp *DataStoreCompletePostParam) Equals(o types.RVType) bool {
 	return dscpp.IsSuccess.Equals(other.IsSuccess)
 }
 
+// CopyRef copies the current value of the DataStoreCompletePostParam
+// and returns a pointer to the new copy
+func (dscpp DataStoreCompletePostParam) CopyRef() types.RVTypePtr {
+	copied := dscpp.Copy().(DataStoreCompletePostParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreCompletePostParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscpp *DataStoreCompletePostParam) Deref() types.RVType {
+	return *dscpp
+}
+
 // String returns the string representation of the DataStoreCompletePostParam
-func (dscpp *DataStoreCompletePostParam) String() string {
+func (dscpp DataStoreCompletePostParam) String() string {
 	return dscpp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreCompletePostParam using the provided indentation level
-func (dscpp *DataStoreCompletePostParam) FormatToString(indentationLevel int) string {
+func (dscpp DataStoreCompletePostParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (dscpp *DataStoreCompletePostParam) FormatToString(indentationLevel int) st
 }
 
 // NewDataStoreCompletePostParam returns a new DataStoreCompletePostParam
-func NewDataStoreCompletePostParam() *DataStoreCompletePostParam {
-	dscpp := &DataStoreCompletePostParam{
-		DataID:    types.NewPrimitiveU64(0),
-		IsSuccess: types.NewPrimitiveBool(false),
+func NewDataStoreCompletePostParam() DataStoreCompletePostParam {
+	return DataStoreCompletePostParam{
+		DataID:    types.NewUInt64(0),
+		IsSuccess: types.NewBool(false),
 	}
 
-	return dscpp
 }

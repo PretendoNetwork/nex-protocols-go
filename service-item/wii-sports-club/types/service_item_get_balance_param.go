@@ -11,12 +11,12 @@ import (
 // ServiceItemGetBalanceParam is a type within the ServiceItem protocol
 type ServiceItemGetBalanceParam struct {
 	types.Structure
-	Language *types.String
-	TitleID  *types.String
+	Language types.String
+	TitleID  types.String
 }
 
 // WriteTo writes the ServiceItemGetBalanceParam to the given writable
-func (sigbp *ServiceItemGetBalanceParam) WriteTo(writable types.Writable) {
+func (sigbp ServiceItemGetBalanceParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sigbp.Language.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (sigbp *ServiceItemGetBalanceParam) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of ServiceItemGetBalanceParam
-func (sigbp *ServiceItemGetBalanceParam) Copy() types.RVType {
+func (sigbp ServiceItemGetBalanceParam) Copy() types.RVType {
 	copied := NewServiceItemGetBalanceParam()
 
 	copied.StructureVersion = sigbp.StructureVersion
-	copied.Language = sigbp.Language.Copy().(*types.String)
-	copied.TitleID = sigbp.TitleID.Copy().(*types.String)
+	copied.Language = sigbp.Language.Copy().(types.String)
+	copied.TitleID = sigbp.TitleID.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetBalanceParam contains the same data as the current ServiceItemGetBalanceParam
-func (sigbp *ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetBalanceParam); !ok {
+func (sigbp ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemGetBalanceParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetBalanceParam)
+	other := o.(ServiceItemGetBalanceParam)
 
 	if sigbp.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (sigbp *ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
 	return sigbp.TitleID.Equals(other.TitleID)
 }
 
+// CopyRef copies the current value of the ServiceItemGetBalanceParam
+// and returns a pointer to the new copy
+func (sigbp ServiceItemGetBalanceParam) CopyRef() types.RVTypePtr {
+	copied := sigbp.Copy().(ServiceItemGetBalanceParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetBalanceParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigbp *ServiceItemGetBalanceParam) Deref() types.RVType {
+	return *sigbp
+}
+
 // String returns the string representation of the ServiceItemGetBalanceParam
-func (sigbp *ServiceItemGetBalanceParam) String() string {
+func (sigbp ServiceItemGetBalanceParam) String() string {
 	return sigbp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetBalanceParam using the provided indentation level
-func (sigbp *ServiceItemGetBalanceParam) FormatToString(indentationLevel int) string {
+func (sigbp ServiceItemGetBalanceParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (sigbp *ServiceItemGetBalanceParam) FormatToString(indentationLevel int) st
 }
 
 // NewServiceItemGetBalanceParam returns a new ServiceItemGetBalanceParam
-func NewServiceItemGetBalanceParam() *ServiceItemGetBalanceParam {
-	sigbp := &ServiceItemGetBalanceParam{
+func NewServiceItemGetBalanceParam() ServiceItemGetBalanceParam {
+	return ServiceItemGetBalanceParam{
 		Language: types.NewString(""),
 		TitleID:  types.NewString(""),
 	}
 
-	return sigbp
 }

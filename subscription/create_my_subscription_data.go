@@ -25,11 +25,11 @@ func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterf
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	unk := types.NewPrimitiveU64(0)
+	var unk types.UInt64
 
 	err := unk.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unk from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unk from parameters. %s", err.Error()), packet, callID, unk, nil)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

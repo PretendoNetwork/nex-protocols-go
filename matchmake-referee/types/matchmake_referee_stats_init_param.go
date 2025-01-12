@@ -11,13 +11,13 @@ import (
 // MatchmakeRefereeStatsInitParam is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStatsInitParam struct {
 	types.Structure
-	*types.Data
-	Category           *types.PrimitiveU32
-	InitialRatingValue *types.PrimitiveU32
+	types.Data
+	Category           types.UInt32
+	InitialRatingValue types.UInt32
 }
 
 // WriteTo writes the MatchmakeRefereeStatsInitParam to the given writable
-func (mrsip *MatchmakeRefereeStatsInitParam) WriteTo(writable types.Writable) {
+func (mrsip MatchmakeRefereeStatsInitParam) WriteTo(writable types.Writable) {
 	mrsip.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -60,24 +60,24 @@ func (mrsip *MatchmakeRefereeStatsInitParam) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeStatsInitParam
-func (mrsip *MatchmakeRefereeStatsInitParam) Copy() types.RVType {
+func (mrsip MatchmakeRefereeStatsInitParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStatsInitParam()
 
 	copied.StructureVersion = mrsip.StructureVersion
-	copied.Data = mrsip.Data.Copy().(*types.Data)
-	copied.Category = mrsip.Category.Copy().(*types.PrimitiveU32)
-	copied.InitialRatingValue = mrsip.InitialRatingValue.Copy().(*types.PrimitiveU32)
+	copied.Data = mrsip.Data.Copy().(types.Data)
+	copied.Category = mrsip.Category.Copy().(types.UInt32)
+	copied.InitialRatingValue = mrsip.InitialRatingValue.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeRefereeStatsInitParam contains the same data as the current MatchmakeRefereeStatsInitParam
-func (mrsip *MatchmakeRefereeStatsInitParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeStatsInitParam); !ok {
+func (mrsip MatchmakeRefereeStatsInitParam) Equals(o types.RVType) bool {
+	if _, ok := o.(MatchmakeRefereeStatsInitParam); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeStatsInitParam)
+	other := o.(MatchmakeRefereeStatsInitParam)
 
 	if mrsip.StructureVersion != other.StructureVersion {
 		return false
@@ -94,13 +94,27 @@ func (mrsip *MatchmakeRefereeStatsInitParam) Equals(o types.RVType) bool {
 	return mrsip.InitialRatingValue.Equals(other.InitialRatingValue)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeStatsInitParam
+// and returns a pointer to the new copy
+func (mrsip MatchmakeRefereeStatsInitParam) CopyRef() types.RVTypePtr {
+	copied := mrsip.Copy().(MatchmakeRefereeStatsInitParam)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeStatsInitParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrsip *MatchmakeRefereeStatsInitParam) Deref() types.RVType {
+	return *mrsip
+}
+
 // String returns the string representation of the MatchmakeRefereeStatsInitParam
-func (mrsip *MatchmakeRefereeStatsInitParam) String() string {
+func (mrsip MatchmakeRefereeStatsInitParam) String() string {
 	return mrsip.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeRefereeStatsInitParam using the provided indentation level
-func (mrsip *MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int) string {
+func (mrsip MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -116,12 +130,11 @@ func (mrsip *MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int
 }
 
 // NewMatchmakeRefereeStatsInitParam returns a new MatchmakeRefereeStatsInitParam
-func NewMatchmakeRefereeStatsInitParam() *MatchmakeRefereeStatsInitParam {
-	mrsip := &MatchmakeRefereeStatsInitParam{
+func NewMatchmakeRefereeStatsInitParam() MatchmakeRefereeStatsInitParam {
+	return MatchmakeRefereeStatsInitParam{
 		Data:               types.NewData(),
-		Category:           types.NewPrimitiveU32(0),
-		InitialRatingValue: types.NewPrimitiveU32(0),
+		Category:           types.NewUInt32(0),
+		InitialRatingValue: types.NewUInt32(0),
 	}
 
-	return mrsip
 }

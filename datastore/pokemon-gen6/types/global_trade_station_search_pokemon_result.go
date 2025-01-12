@@ -11,13 +11,13 @@ import (
 // GlobalTradeStationSearchPokemonResult is a type within the DataStore protocol
 type GlobalTradeStationSearchPokemonResult struct {
 	types.Structure
-	TotalCount     *types.PrimitiveU32
-	Result         *types.List[*GlobalTradeStationData]
-	TotalCountType *types.PrimitiveU8
+	TotalCount     types.UInt32
+	Result         types.List[GlobalTradeStationData]
+	TotalCountType types.UInt8
 }
 
 // WriteTo writes the GlobalTradeStationSearchPokemonResult to the given writable
-func (gtsspr *GlobalTradeStationSearchPokemonResult) WriteTo(writable types.Writable) {
+func (gtsspr GlobalTradeStationSearchPokemonResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsspr.TotalCount.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (gtsspr *GlobalTradeStationSearchPokemonResult) ExtractFrom(readable types.
 }
 
 // Copy returns a new copied instance of GlobalTradeStationSearchPokemonResult
-func (gtsspr *GlobalTradeStationSearchPokemonResult) Copy() types.RVType {
+func (gtsspr GlobalTradeStationSearchPokemonResult) Copy() types.RVType {
 	copied := NewGlobalTradeStationSearchPokemonResult()
 
 	copied.StructureVersion = gtsspr.StructureVersion
-	copied.TotalCount = gtsspr.TotalCount.Copy().(*types.PrimitiveU32)
-	copied.Result = gtsspr.Result.Copy().(*types.List[*GlobalTradeStationData])
-	copied.TotalCountType = gtsspr.TotalCountType.Copy().(*types.PrimitiveU8)
+	copied.TotalCount = gtsspr.TotalCount.Copy().(types.UInt32)
+	copied.Result = gtsspr.Result.Copy().(types.List[GlobalTradeStationData])
+	copied.TotalCountType = gtsspr.TotalCountType.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationSearchPokemonResult contains the same data as the current GlobalTradeStationSearchPokemonResult
-func (gtsspr *GlobalTradeStationSearchPokemonResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationSearchPokemonResult); !ok {
+func (gtsspr GlobalTradeStationSearchPokemonResult) Equals(o types.RVType) bool {
+	if _, ok := o.(GlobalTradeStationSearchPokemonResult); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationSearchPokemonResult)
+	other := o.(GlobalTradeStationSearchPokemonResult)
 
 	if gtsspr.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (gtsspr *GlobalTradeStationSearchPokemonResult) Equals(o types.RVType) bool
 	return gtsspr.TotalCountType.Equals(other.TotalCountType)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationSearchPokemonResult
+// and returns a pointer to the new copy
+func (gtsspr GlobalTradeStationSearchPokemonResult) CopyRef() types.RVTypePtr {
+	copied := gtsspr.Copy().(GlobalTradeStationSearchPokemonResult)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationSearchPokemonResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsspr *GlobalTradeStationSearchPokemonResult) Deref() types.RVType {
+	return *gtsspr
+}
+
 // String returns the string representation of the GlobalTradeStationSearchPokemonResult
-func (gtsspr *GlobalTradeStationSearchPokemonResult) String() string {
+func (gtsspr GlobalTradeStationSearchPokemonResult) String() string {
 	return gtsspr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationSearchPokemonResult using the provided indentation level
-func (gtsspr *GlobalTradeStationSearchPokemonResult) FormatToString(indentationLevel int) string {
+func (gtsspr GlobalTradeStationSearchPokemonResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +129,11 @@ func (gtsspr *GlobalTradeStationSearchPokemonResult) FormatToString(indentationL
 }
 
 // NewGlobalTradeStationSearchPokemonResult returns a new GlobalTradeStationSearchPokemonResult
-func NewGlobalTradeStationSearchPokemonResult() *GlobalTradeStationSearchPokemonResult {
-	gtsspr := &GlobalTradeStationSearchPokemonResult{
-		TotalCount:     types.NewPrimitiveU32(0),
-		Result:         types.NewList[*GlobalTradeStationData](),
-		TotalCountType: types.NewPrimitiveU8(0),
+func NewGlobalTradeStationSearchPokemonResult() GlobalTradeStationSearchPokemonResult {
+	return GlobalTradeStationSearchPokemonResult{
+		TotalCount:     types.NewUInt32(0),
+		Result:         types.NewList[GlobalTradeStationData](),
+		TotalCountType: types.NewUInt8(0),
 	}
 
-	gtsspr.Result.Type = NewGlobalTradeStationData()
-
-	return gtsspr
 }

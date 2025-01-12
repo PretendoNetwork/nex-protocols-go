@@ -11,13 +11,13 @@ import (
 // DeletionEntry is a type within the Matchmaking protocol
 type DeletionEntry struct {
 	types.Structure
-	IDGathering *types.PrimitiveU32
-	PID         *types.PID
-	UIReason    *types.PrimitiveU32
+	IDGathering types.UInt32
+	PID         types.PID
+	UIReason    types.UInt32
 }
 
 // WriteTo writes the DeletionEntry to the given writable
-func (de *DeletionEntry) WriteTo(writable types.Writable) {
+func (de DeletionEntry) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	de.IDGathering.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (de *DeletionEntry) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DeletionEntry
-func (de *DeletionEntry) Copy() types.RVType {
+func (de DeletionEntry) Copy() types.RVType {
 	copied := NewDeletionEntry()
 
 	copied.StructureVersion = de.StructureVersion
-	copied.IDGathering = de.IDGathering.Copy().(*types.PrimitiveU32)
-	copied.PID = de.PID.Copy().(*types.PID)
-	copied.UIReason = de.UIReason.Copy().(*types.PrimitiveU32)
+	copied.IDGathering = de.IDGathering.Copy().(types.UInt32)
+	copied.PID = de.PID.Copy().(types.PID)
+	copied.UIReason = de.UIReason.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given DeletionEntry contains the same data as the current DeletionEntry
-func (de *DeletionEntry) Equals(o types.RVType) bool {
-	if _, ok := o.(*DeletionEntry); !ok {
+func (de DeletionEntry) Equals(o types.RVType) bool {
+	if _, ok := o.(DeletionEntry); !ok {
 		return false
 	}
 
-	other := o.(*DeletionEntry)
+	other := o.(DeletionEntry)
 
 	if de.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (de *DeletionEntry) Equals(o types.RVType) bool {
 	return de.UIReason.Equals(other.UIReason)
 }
 
+// CopyRef copies the current value of the DeletionEntry
+// and returns a pointer to the new copy
+func (de DeletionEntry) CopyRef() types.RVTypePtr {
+	copied := de.Copy().(DeletionEntry)
+	return &copied
+}
+
+// Deref takes a pointer to the DeletionEntry
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (de *DeletionEntry) Deref() types.RVType {
+	return *de
+}
+
 // String returns the string representation of the DeletionEntry
-func (de *DeletionEntry) String() string {
+func (de DeletionEntry) String() string {
 	return de.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DeletionEntry using the provided indentation level
-func (de *DeletionEntry) FormatToString(indentationLevel int) string {
+func (de DeletionEntry) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +129,11 @@ func (de *DeletionEntry) FormatToString(indentationLevel int) string {
 }
 
 // NewDeletionEntry returns a new DeletionEntry
-func NewDeletionEntry() *DeletionEntry {
-	de := &DeletionEntry{
-		IDGathering: types.NewPrimitiveU32(0),
+func NewDeletionEntry() DeletionEntry {
+	return DeletionEntry{
+		IDGathering: types.NewUInt32(0),
 		PID:         types.NewPID(0),
-		UIReason:    types.NewPrimitiveU32(0),
+		UIReason:    types.NewUInt32(0),
 	}
 
-	return de
 }

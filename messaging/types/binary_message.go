@@ -11,12 +11,12 @@ import (
 // BinaryMessage is a type within the MessageDelivery protocol
 type BinaryMessage struct {
 	types.Structure
-	*UserMessage
-	BinaryBody *types.QBuffer
+	UserMessage
+	BinaryBody types.QBuffer
 }
 
 // WriteTo writes the BinaryMessage to the given writable
-func (bm *BinaryMessage) WriteTo(writable types.Writable) {
+func (bm BinaryMessage) WriteTo(writable types.Writable) {
 	bm.UserMessage.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (bm *BinaryMessage) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of BinaryMessage
-func (bm *BinaryMessage) Copy() types.RVType {
+func (bm BinaryMessage) Copy() types.RVType {
 	copied := NewBinaryMessage()
 
 	copied.StructureVersion = bm.StructureVersion
-	copied.UserMessage = bm.UserMessage.Copy().(*UserMessage)
-	copied.BinaryBody = bm.BinaryBody.Copy().(*types.QBuffer)
+	copied.UserMessage = bm.UserMessage.Copy().(UserMessage)
+	copied.BinaryBody = bm.BinaryBody.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given BinaryMessage contains the same data as the current BinaryMessage
-func (bm *BinaryMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*BinaryMessage); !ok {
+func (bm BinaryMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(BinaryMessage); !ok {
 		return false
 	}
 
-	other := o.(*BinaryMessage)
+	other := o.(BinaryMessage)
 
 	if bm.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (bm *BinaryMessage) Equals(o types.RVType) bool {
 	return bm.BinaryBody.Equals(other.BinaryBody)
 }
 
+// CopyRef copies the current value of the BinaryMessage
+// and returns a pointer to the new copy
+func (bm BinaryMessage) CopyRef() types.RVTypePtr {
+	copied := bm.Copy().(BinaryMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the BinaryMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (bm *BinaryMessage) Deref() types.RVType {
+	return *bm
+}
+
 // String returns the string representation of the BinaryMessage
-func (bm *BinaryMessage) String() string {
+func (bm BinaryMessage) String() string {
 	return bm.FormatToString(0)
 }
 
 // FormatToString pretty-prints the BinaryMessage using the provided indentation level
-func (bm *BinaryMessage) FormatToString(indentationLevel int) string {
+func (bm BinaryMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,11 +117,10 @@ func (bm *BinaryMessage) FormatToString(indentationLevel int) string {
 }
 
 // NewBinaryMessage returns a new BinaryMessage
-func NewBinaryMessage() *BinaryMessage {
-	bm := &BinaryMessage{
+func NewBinaryMessage() BinaryMessage {
+	return BinaryMessage{
 		UserMessage: NewUserMessage(),
 		BinaryBody:  types.NewQBuffer(nil),
 	}
 
-	return bm
 }

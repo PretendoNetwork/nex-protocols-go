@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	resultRange := types.NewResultRange()
+	var resultRange types.ResultRange
 
 	err := resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRelationships(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetRelationships(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

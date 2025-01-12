@@ -11,16 +11,16 @@ import (
 // MatchmakeRefereePersonalRoundResult is a type within the MatchmakeReferee protocol
 type MatchmakeRefereePersonalRoundResult struct {
 	types.Structure
-	*types.Data
-	PID                     *types.PID
-	PersonalRoundResultFlag *types.PrimitiveU32
-	RoundWinLoss            *types.PrimitiveU32
-	RatingValueChange       *types.PrimitiveS32
-	Buffer                  *types.QBuffer
+	types.Data
+	PID                     types.PID
+	PersonalRoundResultFlag types.UInt32
+	RoundWinLoss            types.UInt32
+	RatingValueChange       types.Int32
+	Buffer                  types.QBuffer
 }
 
 // WriteTo writes the MatchmakeRefereePersonalRoundResult to the given writable
-func (mrprr *MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writable) {
+func (mrprr MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writable) {
 	mrprr.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -81,27 +81,27 @@ func (mrprr *MatchmakeRefereePersonalRoundResult) ExtractFrom(readable types.Rea
 }
 
 // Copy returns a new copied instance of MatchmakeRefereePersonalRoundResult
-func (mrprr *MatchmakeRefereePersonalRoundResult) Copy() types.RVType {
+func (mrprr MatchmakeRefereePersonalRoundResult) Copy() types.RVType {
 	copied := NewMatchmakeRefereePersonalRoundResult()
 
 	copied.StructureVersion = mrprr.StructureVersion
-	copied.Data = mrprr.Data.Copy().(*types.Data)
-	copied.PID = mrprr.PID.Copy().(*types.PID)
-	copied.PersonalRoundResultFlag = mrprr.PersonalRoundResultFlag.Copy().(*types.PrimitiveU32)
-	copied.RoundWinLoss = mrprr.RoundWinLoss.Copy().(*types.PrimitiveU32)
-	copied.RatingValueChange = mrprr.RatingValueChange.Copy().(*types.PrimitiveS32)
-	copied.Buffer = mrprr.Buffer.Copy().(*types.QBuffer)
+	copied.Data = mrprr.Data.Copy().(types.Data)
+	copied.PID = mrprr.PID.Copy().(types.PID)
+	copied.PersonalRoundResultFlag = mrprr.PersonalRoundResultFlag.Copy().(types.UInt32)
+	copied.RoundWinLoss = mrprr.RoundWinLoss.Copy().(types.UInt32)
+	copied.RatingValueChange = mrprr.RatingValueChange.Copy().(types.Int32)
+	copied.Buffer = mrprr.Buffer.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeRefereePersonalRoundResult contains the same data as the current MatchmakeRefereePersonalRoundResult
-func (mrprr *MatchmakeRefereePersonalRoundResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereePersonalRoundResult); !ok {
+func (mrprr MatchmakeRefereePersonalRoundResult) Equals(o types.RVType) bool {
+	if _, ok := o.(MatchmakeRefereePersonalRoundResult); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereePersonalRoundResult)
+	other := o.(MatchmakeRefereePersonalRoundResult)
 
 	if mrprr.StructureVersion != other.StructureVersion {
 		return false
@@ -130,13 +130,27 @@ func (mrprr *MatchmakeRefereePersonalRoundResult) Equals(o types.RVType) bool {
 	return mrprr.Buffer.Equals(other.Buffer)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereePersonalRoundResult
+// and returns a pointer to the new copy
+func (mrprr MatchmakeRefereePersonalRoundResult) CopyRef() types.RVTypePtr {
+	copied := mrprr.Copy().(MatchmakeRefereePersonalRoundResult)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereePersonalRoundResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrprr *MatchmakeRefereePersonalRoundResult) Deref() types.RVType {
+	return *mrprr
+}
+
 // String returns the string representation of the MatchmakeRefereePersonalRoundResult
-func (mrprr *MatchmakeRefereePersonalRoundResult) String() string {
+func (mrprr MatchmakeRefereePersonalRoundResult) String() string {
 	return mrprr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeRefereePersonalRoundResult using the provided indentation level
-func (mrprr *MatchmakeRefereePersonalRoundResult) FormatToString(indentationLevel int) string {
+func (mrprr MatchmakeRefereePersonalRoundResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -155,15 +169,14 @@ func (mrprr *MatchmakeRefereePersonalRoundResult) FormatToString(indentationLeve
 }
 
 // NewMatchmakeRefereePersonalRoundResult returns a new MatchmakeRefereePersonalRoundResult
-func NewMatchmakeRefereePersonalRoundResult() *MatchmakeRefereePersonalRoundResult {
-	mrprr := &MatchmakeRefereePersonalRoundResult{
+func NewMatchmakeRefereePersonalRoundResult() MatchmakeRefereePersonalRoundResult {
+	return MatchmakeRefereePersonalRoundResult{
 		Data:                    types.NewData(),
 		PID:                     types.NewPID(0),
-		PersonalRoundResultFlag: types.NewPrimitiveU32(0),
-		RoundWinLoss:            types.NewPrimitiveU32(0),
-		RatingValueChange:       types.NewPrimitiveS32(0),
+		PersonalRoundResultFlag: types.NewUInt32(0),
+		RoundWinLoss:            types.NewUInt32(0),
+		RatingValueChange:       types.NewInt32(0),
 		Buffer:                  types.NewQBuffer(nil),
 	}
 
-	return mrprr
 }

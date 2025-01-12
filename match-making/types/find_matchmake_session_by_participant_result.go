@@ -11,12 +11,12 @@ import (
 // FindMatchmakeSessionByParticipantResult is a type within the Matchmaking protocol
 type FindMatchmakeSessionByParticipantResult struct {
 	types.Structure
-	PrincipalID *types.PID
-	Session     *MatchmakeSession
+	PrincipalID types.PID
+	Session     MatchmakeSession
 }
 
 // WriteTo writes the FindMatchmakeSessionByParticipantResult to the given writable
-func (fmsbpr *FindMatchmakeSessionByParticipantResult) WriteTo(writable types.Writable) {
+func (fmsbpr FindMatchmakeSessionByParticipantResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	fmsbpr.PrincipalID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (fmsbpr *FindMatchmakeSessionByParticipantResult) ExtractFrom(readable type
 }
 
 // Copy returns a new copied instance of FindMatchmakeSessionByParticipantResult
-func (fmsbpr *FindMatchmakeSessionByParticipantResult) Copy() types.RVType {
+func (fmsbpr FindMatchmakeSessionByParticipantResult) Copy() types.RVType {
 	copied := NewFindMatchmakeSessionByParticipantResult()
 
 	copied.StructureVersion = fmsbpr.StructureVersion
-	copied.PrincipalID = fmsbpr.PrincipalID.Copy().(*types.PID)
-	copied.Session = fmsbpr.Session.Copy().(*MatchmakeSession)
+	copied.PrincipalID = fmsbpr.PrincipalID.Copy().(types.PID)
+	copied.Session = fmsbpr.Session.Copy().(MatchmakeSession)
 
 	return copied
 }
 
 // Equals checks if the given FindMatchmakeSessionByParticipantResult contains the same data as the current FindMatchmakeSessionByParticipantResult
-func (fmsbpr *FindMatchmakeSessionByParticipantResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*FindMatchmakeSessionByParticipantResult); !ok {
+func (fmsbpr FindMatchmakeSessionByParticipantResult) Equals(o types.RVType) bool {
+	if _, ok := o.(FindMatchmakeSessionByParticipantResult); !ok {
 		return false
 	}
 
-	other := o.(*FindMatchmakeSessionByParticipantResult)
+	other := o.(FindMatchmakeSessionByParticipantResult)
 
 	if fmsbpr.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (fmsbpr *FindMatchmakeSessionByParticipantResult) Equals(o types.RVType) bo
 	return fmsbpr.Session.Equals(other.Session)
 }
 
+// CopyRef copies the current value of the FindMatchmakeSessionByParticipantResult
+// and returns a pointer to the new copy
+func (fmsbpr FindMatchmakeSessionByParticipantResult) CopyRef() types.RVTypePtr {
+	copied := fmsbpr.Copy().(FindMatchmakeSessionByParticipantResult)
+	return &copied
+}
+
+// Deref takes a pointer to the FindMatchmakeSessionByParticipantResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fmsbpr *FindMatchmakeSessionByParticipantResult) Deref() types.RVType {
+	return *fmsbpr
+}
+
 // String returns the string representation of the FindMatchmakeSessionByParticipantResult
-func (fmsbpr *FindMatchmakeSessionByParticipantResult) String() string {
+func (fmsbpr FindMatchmakeSessionByParticipantResult) String() string {
 	return fmsbpr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FindMatchmakeSessionByParticipantResult using the provided indentation level
-func (fmsbpr *FindMatchmakeSessionByParticipantResult) FormatToString(indentationLevel int) string {
+func (fmsbpr FindMatchmakeSessionByParticipantResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (fmsbpr *FindMatchmakeSessionByParticipantResult) FormatToString(indentatio
 }
 
 // NewFindMatchmakeSessionByParticipantResult returns a new FindMatchmakeSessionByParticipantResult
-func NewFindMatchmakeSessionByParticipantResult() *FindMatchmakeSessionByParticipantResult {
-	fmsbpr := &FindMatchmakeSessionByParticipantResult{
+func NewFindMatchmakeSessionByParticipantResult() FindMatchmakeSessionByParticipantResult {
+	return FindMatchmakeSessionByParticipantResult{
 		PrincipalID: types.NewPID(0),
 		Session:     NewMatchmakeSession(),
 	}
 
-	return fmsbpr
 }

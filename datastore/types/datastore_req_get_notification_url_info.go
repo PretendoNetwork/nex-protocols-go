@@ -11,14 +11,14 @@ import (
 // DataStoreReqGetNotificationURLInfo is a type within the DataStore protocol
 type DataStoreReqGetNotificationURLInfo struct {
 	types.Structure
-	URL        *types.String
-	Key        *types.String
-	Query      *types.String
-	RootCACert *types.Buffer
+	URL        types.String
+	Key        types.String
+	Query      types.String
+	RootCACert types.Buffer
 }
 
 // WriteTo writes the DataStoreReqGetNotificationURLInfo to the given writable
-func (dsrgnurli *DataStoreReqGetNotificationURLInfo) WriteTo(writable types.Writable) {
+func (dsrgnurli DataStoreReqGetNotificationURLInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrgnurli.URL.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (dsrgnurli *DataStoreReqGetNotificationURLInfo) ExtractFrom(readable types.
 }
 
 // Copy returns a new copied instance of DataStoreReqGetNotificationURLInfo
-func (dsrgnurli *DataStoreReqGetNotificationURLInfo) Copy() types.RVType {
+func (dsrgnurli DataStoreReqGetNotificationURLInfo) Copy() types.RVType {
 	copied := NewDataStoreReqGetNotificationURLInfo()
 
 	copied.StructureVersion = dsrgnurli.StructureVersion
-	copied.URL = dsrgnurli.URL.Copy().(*types.String)
-	copied.Key = dsrgnurli.Key.Copy().(*types.String)
-	copied.Query = dsrgnurli.Query.Copy().(*types.String)
-	copied.RootCACert = dsrgnurli.RootCACert.Copy().(*types.Buffer)
+	copied.URL = dsrgnurli.URL.Copy().(types.String)
+	copied.Key = dsrgnurli.Key.Copy().(types.String)
+	copied.Query = dsrgnurli.Query.Copy().(types.String)
+	copied.RootCACert = dsrgnurli.RootCACert.Copy().(types.Buffer)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReqGetNotificationURLInfo contains the same data as the current DataStoreReqGetNotificationURLInfo
-func (dsrgnurli *DataStoreReqGetNotificationURLInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqGetNotificationURLInfo); !ok {
+func (dsrgnurli DataStoreReqGetNotificationURLInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreReqGetNotificationURLInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqGetNotificationURLInfo)
+	other := o.(DataStoreReqGetNotificationURLInfo)
 
 	if dsrgnurli.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (dsrgnurli *DataStoreReqGetNotificationURLInfo) Equals(o types.RVType) bool
 	return dsrgnurli.RootCACert.Equals(other.RootCACert)
 }
 
+// CopyRef copies the current value of the DataStoreReqGetNotificationURLInfo
+// and returns a pointer to the new copy
+func (dsrgnurli DataStoreReqGetNotificationURLInfo) CopyRef() types.RVTypePtr {
+	copied := dsrgnurli.Copy().(DataStoreReqGetNotificationURLInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqGetNotificationURLInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrgnurli *DataStoreReqGetNotificationURLInfo) Deref() types.RVType {
+	return *dsrgnurli
+}
+
 // String returns the string representation of the DataStoreReqGetNotificationURLInfo
-func (dsrgnurli *DataStoreReqGetNotificationURLInfo) String() string {
+func (dsrgnurli DataStoreReqGetNotificationURLInfo) String() string {
 	return dsrgnurli.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReqGetNotificationURLInfo using the provided indentation level
-func (dsrgnurli *DataStoreReqGetNotificationURLInfo) FormatToString(indentationLevel int) string {
+func (dsrgnurli DataStoreReqGetNotificationURLInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +142,12 @@ func (dsrgnurli *DataStoreReqGetNotificationURLInfo) FormatToString(indentationL
 }
 
 // NewDataStoreReqGetNotificationURLInfo returns a new DataStoreReqGetNotificationURLInfo
-func NewDataStoreReqGetNotificationURLInfo() *DataStoreReqGetNotificationURLInfo {
-	dsrgnurli := &DataStoreReqGetNotificationURLInfo{
+func NewDataStoreReqGetNotificationURLInfo() DataStoreReqGetNotificationURLInfo {
+	return DataStoreReqGetNotificationURLInfo{
 		URL:        types.NewString(""),
 		Key:        types.NewString(""),
 		Query:      types.NewString(""),
 		RootCACert: types.NewBuffer(nil),
 	}
 
-	return dsrgnurli
 }

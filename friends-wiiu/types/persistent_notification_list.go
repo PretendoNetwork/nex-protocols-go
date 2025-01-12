@@ -11,12 +11,12 @@ import (
 // PersistentNotificationList is a type within the FriendsWiiU protocol
 type PersistentNotificationList struct {
 	types.Structure
-	*types.Data
-	Notifications *types.List[*PersistentNotification]
+	types.Data
+	Notifications types.List[PersistentNotification]
 }
 
 // WriteTo writes the PersistentNotificationList to the given writable
-func (pnl *PersistentNotificationList) WriteTo(writable types.Writable) {
+func (pnl PersistentNotificationList) WriteTo(writable types.Writable) {
 	pnl.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (pnl *PersistentNotificationList) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of PersistentNotificationList
-func (pnl *PersistentNotificationList) Copy() types.RVType {
+func (pnl PersistentNotificationList) Copy() types.RVType {
 	copied := NewPersistentNotificationList()
 
 	copied.StructureVersion = pnl.StructureVersion
-	copied.Data = pnl.Data.Copy().(*types.Data)
-	copied.Notifications = pnl.Notifications.Copy().(*types.List[*PersistentNotification])
+	copied.Data = pnl.Data.Copy().(types.Data)
+	copied.Notifications = pnl.Notifications.Copy().(types.List[PersistentNotification])
 
 	return copied
 }
 
 // Equals checks if the given PersistentNotificationList contains the same data as the current PersistentNotificationList
-func (pnl *PersistentNotificationList) Equals(o types.RVType) bool {
-	if _, ok := o.(*PersistentNotificationList); !ok {
+func (pnl PersistentNotificationList) Equals(o types.RVType) bool {
+	if _, ok := o.(PersistentNotificationList); !ok {
 		return false
 	}
 
-	other := o.(*PersistentNotificationList)
+	other := o.(PersistentNotificationList)
 
 	if pnl.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (pnl *PersistentNotificationList) Equals(o types.RVType) bool {
 	return pnl.Notifications.Equals(other.Notifications)
 }
 
+// CopyRef copies the current value of the PersistentNotificationList
+// and returns a pointer to the new copy
+func (pnl PersistentNotificationList) CopyRef() types.RVTypePtr {
+	copied := pnl.Copy().(PersistentNotificationList)
+	return &copied
+}
+
+// Deref takes a pointer to the PersistentNotificationList
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pnl *PersistentNotificationList) Deref() types.RVType {
+	return *pnl
+}
+
 // String returns the string representation of the PersistentNotificationList
-func (pnl *PersistentNotificationList) String() string {
+func (pnl PersistentNotificationList) String() string {
 	return pnl.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PersistentNotificationList using the provided indentation level
-func (pnl *PersistentNotificationList) FormatToString(indentationLevel int) string {
+func (pnl PersistentNotificationList) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +117,10 @@ func (pnl *PersistentNotificationList) FormatToString(indentationLevel int) stri
 }
 
 // NewPersistentNotificationList returns a new PersistentNotificationList
-func NewPersistentNotificationList() *PersistentNotificationList {
-	pnl := &PersistentNotificationList{
+func NewPersistentNotificationList() PersistentNotificationList {
+	return PersistentNotificationList{
 		Data:          types.NewData(),
-		Notifications: types.NewList[*PersistentNotification](),
+		Notifications: types.NewList[PersistentNotification](),
 	}
 
-	pnl.Notifications.Type = NewPersistentNotification()
-
-	return pnl
 }

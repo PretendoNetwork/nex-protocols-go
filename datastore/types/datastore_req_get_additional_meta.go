@@ -11,14 +11,14 @@ import (
 // DataStoreReqGetAdditionalMeta is a type within the DataStore protocol
 type DataStoreReqGetAdditionalMeta struct {
 	types.Structure
-	OwnerID    *types.PID
-	DataType   *types.PrimitiveU16
-	Version    *types.PrimitiveU16
-	MetaBinary *types.QBuffer
+	OwnerID    types.PID
+	DataType   types.UInt16
+	Version    types.UInt16
+	MetaBinary types.QBuffer
 }
 
 // WriteTo writes the DataStoreReqGetAdditionalMeta to the given writable
-func (dsrgam *DataStoreReqGetAdditionalMeta) WriteTo(writable types.Writable) {
+func (dsrgam DataStoreReqGetAdditionalMeta) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrgam.OwnerID.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (dsrgam *DataStoreReqGetAdditionalMeta) ExtractFrom(readable types.Readable
 }
 
 // Copy returns a new copied instance of DataStoreReqGetAdditionalMeta
-func (dsrgam *DataStoreReqGetAdditionalMeta) Copy() types.RVType {
+func (dsrgam DataStoreReqGetAdditionalMeta) Copy() types.RVType {
 	copied := NewDataStoreReqGetAdditionalMeta()
 
 	copied.StructureVersion = dsrgam.StructureVersion
-	copied.OwnerID = dsrgam.OwnerID.Copy().(*types.PID)
-	copied.DataType = dsrgam.DataType.Copy().(*types.PrimitiveU16)
-	copied.Version = dsrgam.Version.Copy().(*types.PrimitiveU16)
-	copied.MetaBinary = dsrgam.MetaBinary.Copy().(*types.QBuffer)
+	copied.OwnerID = dsrgam.OwnerID.Copy().(types.PID)
+	copied.DataType = dsrgam.DataType.Copy().(types.UInt16)
+	copied.Version = dsrgam.Version.Copy().(types.UInt16)
+	copied.MetaBinary = dsrgam.MetaBinary.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReqGetAdditionalMeta contains the same data as the current DataStoreReqGetAdditionalMeta
-func (dsrgam *DataStoreReqGetAdditionalMeta) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqGetAdditionalMeta); !ok {
+func (dsrgam DataStoreReqGetAdditionalMeta) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreReqGetAdditionalMeta); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqGetAdditionalMeta)
+	other := o.(DataStoreReqGetAdditionalMeta)
 
 	if dsrgam.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (dsrgam *DataStoreReqGetAdditionalMeta) Equals(o types.RVType) bool {
 	return dsrgam.MetaBinary.Equals(other.MetaBinary)
 }
 
+// CopyRef copies the current value of the DataStoreReqGetAdditionalMeta
+// and returns a pointer to the new copy
+func (dsrgam DataStoreReqGetAdditionalMeta) CopyRef() types.RVTypePtr {
+	copied := dsrgam.Copy().(DataStoreReqGetAdditionalMeta)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqGetAdditionalMeta
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrgam *DataStoreReqGetAdditionalMeta) Deref() types.RVType {
+	return *dsrgam
+}
+
 // String returns the string representation of the DataStoreReqGetAdditionalMeta
-func (dsrgam *DataStoreReqGetAdditionalMeta) String() string {
+func (dsrgam DataStoreReqGetAdditionalMeta) String() string {
 	return dsrgam.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReqGetAdditionalMeta using the provided indentation level
-func (dsrgam *DataStoreReqGetAdditionalMeta) FormatToString(indentationLevel int) string {
+func (dsrgam DataStoreReqGetAdditionalMeta) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +142,12 @@ func (dsrgam *DataStoreReqGetAdditionalMeta) FormatToString(indentationLevel int
 }
 
 // NewDataStoreReqGetAdditionalMeta returns a new DataStoreReqGetAdditionalMeta
-func NewDataStoreReqGetAdditionalMeta() *DataStoreReqGetAdditionalMeta {
-	dsrgam := &DataStoreReqGetAdditionalMeta{
+func NewDataStoreReqGetAdditionalMeta() DataStoreReqGetAdditionalMeta {
+	return DataStoreReqGetAdditionalMeta{
 		OwnerID:    types.NewPID(0),
-		DataType:   types.NewPrimitiveU16(0),
-		Version:    types.NewPrimitiveU16(0),
+		DataType:   types.NewUInt16(0),
+		Version:    types.NewUInt16(0),
 		MetaBinary: types.NewQBuffer(nil),
 	}
 
-	return dsrgam
 }

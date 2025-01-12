@@ -12,10 +12,10 @@ import (
 )
 
 func init() {
-	types.RegisterDataHolderType("NintendoCreateAccountData", account_management_types.NewNintendoCreateAccountData())
-	types.RegisterDataHolderType("AccountExtraInfo", account_management_types.NewAccountExtraInfo())
-	types.RegisterDataHolderType("NintendoLoginData", ticket_granting_types.NewNintendoLoginData())
-	types.RegisterDataHolderType("AuthenticationInfo", ticket_granting_types.NewAuthenticationInfo())
-	types.RegisterDataHolderType("Gathering", match_making_types.NewGathering())
-	types.RegisterDataHolderType("MatchmakeSession", match_making_types.NewMatchmakeSession())
+	types.RegisterObjectHolderType(account_management_types.NewNintendoCreateAccountData())
+	types.RegisterObjectHolderType(account_management_types.NewAccountExtraInfo())
+	types.RegisterObjectHolderType(ticket_granting_types.NewNintendoLoginData())
+	types.RegisterObjectHolderType(ticket_granting_types.NewAuthenticationInfo())
+	types.RegisterObjectHolderType(match_making_types.NewGathering())
+	types.RegisterObjectHolderType(match_making_types.NewMatchmakeSession())
 }

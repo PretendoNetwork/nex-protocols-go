@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	err := principalPreference.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, principalPreference)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

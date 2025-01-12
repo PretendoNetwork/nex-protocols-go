@@ -25,11 +25,11 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	objectID := types.NewPrimitiveU32(0)
+	var objectID types.UInt32
 
 	err := objectID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.DeleteSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, objectID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

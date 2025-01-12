@@ -25,12 +25,11 @@ func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	unknown := types.NewList[*types.PrimitiveU32]()
-	unknown.Type = types.NewPrimitiveU32(0)
+	var unknown types.List[types.UInt32]
 
 	err := unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateBlackList(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateBlackList(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, unknown)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 
 	err := getLawMessageParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetLawMessageRequest(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetLawMessageRequest(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, getLawMessageParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

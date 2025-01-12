@@ -25,15 +25,14 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	ownerID := types.NewPID(0)
-	persistenceSlotIDs := types.NewList[*types.PrimitiveU16]()
-	persistenceSlotIDs.Type = types.NewPrimitiveU16(0)
+	var ownerID types.PID
+	var persistenceSlotIDs types.List[types.UInt16]
 
 	var err error
 
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPersistenceInfos(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetPersistenceInfos(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, ownerID, persistenceSlotIDs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 
 	err = persistenceSlotIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPersistenceInfos(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetPersistenceInfos(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, ownerID, persistenceSlotIDs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

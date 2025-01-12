@@ -25,12 +25,11 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lstPID := types.NewList[*types.PID]()
-	lstPID.Type = types.NewPID(0)
+	var lstPID types.List[types.PID]
 
 	err := lstPID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, lstPID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

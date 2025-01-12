@@ -11,11 +11,11 @@ import (
 // ServiceItemHTTPGetParam is a type within the ServiceItem protocol
 type ServiceItemHTTPGetParam struct {
 	types.Structure
-	URL *types.String
+	URL types.String
 }
 
 // WriteTo writes the ServiceItemHTTPGetParam to the given writable
-func (sihttpgp *ServiceItemHTTPGetParam) WriteTo(writable types.Writable) {
+func (sihttpgp ServiceItemHTTPGetParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sihttpgp.URL.WriteTo(contentWritable)
@@ -45,22 +45,22 @@ func (sihttpgp *ServiceItemHTTPGetParam) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of ServiceItemHTTPGetParam
-func (sihttpgp *ServiceItemHTTPGetParam) Copy() types.RVType {
+func (sihttpgp ServiceItemHTTPGetParam) Copy() types.RVType {
 	copied := NewServiceItemHTTPGetParam()
 
 	copied.StructureVersion = sihttpgp.StructureVersion
-	copied.URL = sihttpgp.URL.Copy().(*types.String)
+	copied.URL = sihttpgp.URL.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemHTTPGetParam contains the same data as the current ServiceItemHTTPGetParam
-func (sihttpgp *ServiceItemHTTPGetParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemHTTPGetParam); !ok {
+func (sihttpgp ServiceItemHTTPGetParam) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemHTTPGetParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemHTTPGetParam)
+	other := o.(ServiceItemHTTPGetParam)
 
 	if sihttpgp.StructureVersion != other.StructureVersion {
 		return false
@@ -69,13 +69,27 @@ func (sihttpgp *ServiceItemHTTPGetParam) Equals(o types.RVType) bool {
 	return sihttpgp.URL.Equals(other.URL)
 }
 
+// CopyRef copies the current value of the ServiceItemHTTPGetParam
+// and returns a pointer to the new copy
+func (sihttpgp ServiceItemHTTPGetParam) CopyRef() types.RVTypePtr {
+	copied := sihttpgp.Copy().(ServiceItemHTTPGetParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemHTTPGetParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sihttpgp *ServiceItemHTTPGetParam) Deref() types.RVType {
+	return *sihttpgp
+}
+
 // String returns the string representation of the ServiceItemHTTPGetParam
-func (sihttpgp *ServiceItemHTTPGetParam) String() string {
+func (sihttpgp ServiceItemHTTPGetParam) String() string {
 	return sihttpgp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemHTTPGetParam using the provided indentation level
-func (sihttpgp *ServiceItemHTTPGetParam) FormatToString(indentationLevel int) string {
+func (sihttpgp ServiceItemHTTPGetParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +103,9 @@ func (sihttpgp *ServiceItemHTTPGetParam) FormatToString(indentationLevel int) st
 }
 
 // NewServiceItemHTTPGetParam returns a new ServiceItemHTTPGetParam
-func NewServiceItemHTTPGetParam() *ServiceItemHTTPGetParam {
-	sihttpgp := &ServiceItemHTTPGetParam{
+func NewServiceItemHTTPGetParam() ServiceItemHTTPGetParam {
+	return ServiceItemHTTPGetParam{
 		URL: types.NewString(""),
 	}
 
-	return sihttpgp
 }

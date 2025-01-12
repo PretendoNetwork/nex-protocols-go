@@ -11,12 +11,12 @@ import (
 // ServiceItemGetServiceItemRightResponse is a type within the ServiceItem protocol
 type ServiceItemGetServiceItemRightResponse struct {
 	types.Structure
-	*ServiceItemEShopResponse
-	NullableRightInfos *types.List[*ServiceItemRightInfos]
+	ServiceItemEShopResponse
+	NullableRightInfos types.List[ServiceItemRightInfos]
 }
 
 // WriteTo writes the ServiceItemGetServiceItemRightResponse to the given writable
-func (sigsirr *ServiceItemGetServiceItemRightResponse) WriteTo(writable types.Writable) {
+func (sigsirr ServiceItemGetServiceItemRightResponse) WriteTo(writable types.Writable) {
 	sigsirr.ServiceItemEShopResponse.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (sigsirr *ServiceItemGetServiceItemRightResponse) ExtractFrom(readable type
 }
 
 // Copy returns a new copied instance of ServiceItemGetServiceItemRightResponse
-func (sigsirr *ServiceItemGetServiceItemRightResponse) Copy() types.RVType {
+func (sigsirr ServiceItemGetServiceItemRightResponse) Copy() types.RVType {
 	copied := NewServiceItemGetServiceItemRightResponse()
 
 	copied.StructureVersion = sigsirr.StructureVersion
-	copied.ServiceItemEShopResponse = sigsirr.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.NullableRightInfos = sigsirr.NullableRightInfos.Copy().(*types.List[*ServiceItemRightInfos])
+	copied.ServiceItemEShopResponse = sigsirr.ServiceItemEShopResponse.Copy().(ServiceItemEShopResponse)
+	copied.NullableRightInfos = sigsirr.NullableRightInfos.Copy().(types.List[ServiceItemRightInfos])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetServiceItemRightResponse contains the same data as the current ServiceItemGetServiceItemRightResponse
-func (sigsirr *ServiceItemGetServiceItemRightResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetServiceItemRightResponse); !ok {
+func (sigsirr ServiceItemGetServiceItemRightResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemGetServiceItemRightResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetServiceItemRightResponse)
+	other := o.(ServiceItemGetServiceItemRightResponse)
 
 	if sigsirr.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (sigsirr *ServiceItemGetServiceItemRightResponse) Equals(o types.RVType) bo
 	return sigsirr.NullableRightInfos.Equals(other.NullableRightInfos)
 }
 
+// CopyRef copies the current value of the ServiceItemGetServiceItemRightResponse
+// and returns a pointer to the new copy
+func (sigsirr ServiceItemGetServiceItemRightResponse) CopyRef() types.RVTypePtr {
+	copied := sigsirr.Copy().(ServiceItemGetServiceItemRightResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetServiceItemRightResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigsirr *ServiceItemGetServiceItemRightResponse) Deref() types.RVType {
+	return *sigsirr
+}
+
 // String returns the string representation of the ServiceItemGetServiceItemRightResponse
-func (sigsirr *ServiceItemGetServiceItemRightResponse) String() string {
+func (sigsirr ServiceItemGetServiceItemRightResponse) String() string {
 	return sigsirr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetServiceItemRightResponse using the provided indentation level
-func (sigsirr *ServiceItemGetServiceItemRightResponse) FormatToString(indentationLevel int) string {
+func (sigsirr ServiceItemGetServiceItemRightResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +117,10 @@ func (sigsirr *ServiceItemGetServiceItemRightResponse) FormatToString(indentatio
 }
 
 // NewServiceItemGetServiceItemRightResponse returns a new ServiceItemGetServiceItemRightResponse
-func NewServiceItemGetServiceItemRightResponse() *ServiceItemGetServiceItemRightResponse {
-	sigsirr := &ServiceItemGetServiceItemRightResponse{
+func NewServiceItemGetServiceItemRightResponse() ServiceItemGetServiceItemRightResponse {
+	return ServiceItemGetServiceItemRightResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableRightInfos:       types.NewList[*ServiceItemRightInfos](),
+		NullableRightInfos:       types.NewList[ServiceItemRightInfos](),
 	}
 
-	sigsirr.NullableRightInfos.Type = NewServiceItemRightInfos()
-
-	return sigsirr
 }

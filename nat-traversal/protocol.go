@@ -39,13 +39,13 @@ const (
 // Protocol stores all the RMC method handlers for the NAT Traversal protocol and listens for requests
 type Protocol struct {
 	endpoint                       nex.EndpointInterface
-	RequestProbeInitiation         func(err error, packet nex.PacketInterface, callID uint32, urlTargetList *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)
-	InitiateProbe                  func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *types.StationURL) (*nex.RMCMessage, *nex.Error)
-	RequestProbeInitiationExt      func(err error, packet nex.PacketInterface, callID uint32, targetList *types.List[*types.String], stationToProbe *types.String) (*nex.RMCMessage, *nex.Error)
-	ReportNATTraversalResult       func(err error, packet nex.PacketInterface, callID uint32, cid *types.PrimitiveU32, result *types.PrimitiveBool, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
-	ReportNATProperties            func(err error, packet nex.PacketInterface, callID uint32, natmapping *types.PrimitiveU32, natfiltering *types.PrimitiveU32, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	RequestProbeInitiation         func(err error, packet nex.PacketInterface, callID uint32, urlTargetList types.List[types.StationURL]) (*nex.RMCMessage, *nex.Error)
+	InitiateProbe                  func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe types.StationURL) (*nex.RMCMessage, *nex.Error)
+	RequestProbeInitiationExt      func(err error, packet nex.PacketInterface, callID uint32, targetList types.List[types.String], stationToProbe types.String) (*nex.RMCMessage, *nex.Error)
+	ReportNATTraversalResult       func(err error, packet nex.PacketInterface, callID uint32, cid types.UInt32, result types.Bool, rtt types.UInt32) (*nex.RMCMessage, *nex.Error)
+	ReportNATProperties            func(err error, packet nex.PacketInterface, callID uint32, natmapping types.UInt32, natfiltering types.UInt32, rtt types.UInt32) (*nex.RMCMessage, *nex.Error)
 	GetRelaySignatureKey           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
-	ReportNATTraversalResultDetail func(err error, packet nex.PacketInterface, callID uint32, cid *types.PrimitiveU32, result *types.PrimitiveBool, detail *types.PrimitiveS32, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	ReportNATTraversalResultDetail func(err error, packet nex.PacketInterface, callID uint32, cid types.UInt32, result types.Bool, detail types.Int32, rtt types.UInt32) (*nex.RMCMessage, *nex.Error)
 	Patches                        nex.ServiceProtocol
 	PatchedMethods                 []uint32
 }
@@ -54,13 +54,13 @@ type Protocol struct {
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
-	SetHandlerRequestProbeInitiation(handler func(err error, packet nex.PacketInterface, callID uint32, urlTargetList *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerInitiateProbe(handler func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *types.StationURL) (*nex.RMCMessage, *nex.Error))
-	SetHandlerRequestProbeInitiationExt(handler func(err error, packet nex.PacketInterface, callID uint32, targetList *types.List[*types.String], stationToProbe *types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerReportNATTraversalResult(handler func(err error, packet nex.PacketInterface, callID uint32, cid *types.PrimitiveU32, result *types.PrimitiveBool, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerReportNATProperties(handler func(err error, packet nex.PacketInterface, callID uint32, natmapping *types.PrimitiveU32, natfiltering *types.PrimitiveU32, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRequestProbeInitiation(handler func(err error, packet nex.PacketInterface, callID uint32, urlTargetList types.List[types.StationURL]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerInitiateProbe(handler func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe types.StationURL) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRequestProbeInitiationExt(handler func(err error, packet nex.PacketInterface, callID uint32, targetList types.List[types.String], stationToProbe types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerReportNATTraversalResult(handler func(err error, packet nex.PacketInterface, callID uint32, cid types.UInt32, result types.Bool, rtt types.UInt32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerReportNATProperties(handler func(err error, packet nex.PacketInterface, callID uint32, natmapping types.UInt32, natfiltering types.UInt32, rtt types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetRelaySignatureKey(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerReportNATTraversalResultDetail(handler func(err error, packet nex.PacketInterface, callID uint32, cid *types.PrimitiveU32, result *types.PrimitiveBool, detail *types.PrimitiveS32, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerReportNATTraversalResultDetail(handler func(err error, packet nex.PacketInterface, callID uint32, cid types.UInt32, result types.Bool, detail types.Int32, rtt types.UInt32) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -74,27 +74,27 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // SetHandlerRequestProbeInitiation sets the handler for the RequestProbeInitiation method
-func (protocol *Protocol) SetHandlerRequestProbeInitiation(handler func(err error, packet nex.PacketInterface, callID uint32, urlTargetList *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerRequestProbeInitiation(handler func(err error, packet nex.PacketInterface, callID uint32, urlTargetList types.List[types.StationURL]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RequestProbeInitiation = handler
 }
 
 // SetHandlerInitiateProbe sets the handler for the InitiateProbe method
-func (protocol *Protocol) SetHandlerInitiateProbe(handler func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *types.StationURL) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerInitiateProbe(handler func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe types.StationURL) (*nex.RMCMessage, *nex.Error)) {
 	protocol.InitiateProbe = handler
 }
 
 // SetHandlerRequestProbeInitiationExt sets the handler for the RequestProbeInitiationExt method
-func (protocol *Protocol) SetHandlerRequestProbeInitiationExt(handler func(err error, packet nex.PacketInterface, callID uint32, targetList *types.List[*types.String], stationToProbe *types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerRequestProbeInitiationExt(handler func(err error, packet nex.PacketInterface, callID uint32, targetList types.List[types.String], stationToProbe types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RequestProbeInitiationExt = handler
 }
 
 // SetHandlerReportNATTraversalResult sets the handler for the ReportNATTraversalResult method
-func (protocol *Protocol) SetHandlerReportNATTraversalResult(handler func(err error, packet nex.PacketInterface, callID uint32, cid *types.PrimitiveU32, result *types.PrimitiveBool, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerReportNATTraversalResult(handler func(err error, packet nex.PacketInterface, callID uint32, cid types.UInt32, result types.Bool, rtt types.UInt32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ReportNATTraversalResult = handler
 }
 
 // SetHandlerReportNATProperties sets the handler for the ReportNATProperties method
-func (protocol *Protocol) SetHandlerReportNATProperties(handler func(err error, packet nex.PacketInterface, callID uint32, natmapping *types.PrimitiveU32, natfiltering *types.PrimitiveU32, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerReportNATProperties(handler func(err error, packet nex.PacketInterface, callID uint32, natmapping types.UInt32, natfiltering types.UInt32, rtt types.UInt32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ReportNATProperties = handler
 }
 
@@ -104,7 +104,7 @@ func (protocol *Protocol) SetHandlerGetRelaySignatureKey(handler func(err error,
 }
 
 // SetHandlerReportNATTraversalResultDetail sets the handler for the ReportNATTraversalResultDetail method
-func (protocol *Protocol) SetHandlerReportNATTraversalResultDetail(handler func(err error, packet nex.PacketInterface, callID uint32, cid *types.PrimitiveU32, result *types.PrimitiveBool, detail *types.PrimitiveS32, rtt *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerReportNATTraversalResultDetail(handler func(err error, packet nex.PacketInterface, callID uint32, cid types.UInt32, result types.Bool, detail types.Int32, rtt types.UInt32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ReportNATTraversalResultDetail = handler
 }
 

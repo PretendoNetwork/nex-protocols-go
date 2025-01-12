@@ -25,14 +25,14 @@ func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	cidTarget := types.NewPrimitiveU32(0)
-	pidTarget := types.NewPID(0)
+	var cidTarget types.UInt32
+	var pidTarget types.PID
 
 	var err error
 
 	err = cidTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestConnectionData(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RequestConnectionData(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, cidTarget, pidTarget)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface
 
 	err = pidTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestConnectionData(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.RequestConnectionData(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, cidTarget, pidTarget)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

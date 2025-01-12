@@ -25,12 +25,11 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	vecMyURLs := types.NewList[*types.StationURL]()
-	vecMyURLs.Type = types.NewStationURL("")
+	var vecMyURLs types.List[types.StationURL]
 
 	err := vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateURLs(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateURLs(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, vecMyURLs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

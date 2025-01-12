@@ -11,12 +11,12 @@ import (
 // PlayedGame is a type within the Friends3DS protocol
 type PlayedGame struct {
 	types.Structure
-	GameKey *GameKey
-	Unknown *types.DateTime
+	GameKey GameKey
+	Unknown types.DateTime
 }
 
 // WriteTo writes the PlayedGame to the given writable
-func (pg *PlayedGame) WriteTo(writable types.Writable) {
+func (pg PlayedGame) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	pg.GameKey.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (pg *PlayedGame) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of PlayedGame
-func (pg *PlayedGame) Copy() types.RVType {
+func (pg PlayedGame) Copy() types.RVType {
 	copied := NewPlayedGame()
 
 	copied.StructureVersion = pg.StructureVersion
-	copied.GameKey = pg.GameKey.Copy().(*GameKey)
-	copied.Unknown = pg.Unknown.Copy().(*types.DateTime)
+	copied.GameKey = pg.GameKey.Copy().(GameKey)
+	copied.Unknown = pg.Unknown.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given PlayedGame contains the same data as the current PlayedGame
-func (pg *PlayedGame) Equals(o types.RVType) bool {
-	if _, ok := o.(*PlayedGame); !ok {
+func (pg PlayedGame) Equals(o types.RVType) bool {
+	if _, ok := o.(PlayedGame); !ok {
 		return false
 	}
 
-	other := o.(*PlayedGame)
+	other := o.(PlayedGame)
 
 	if pg.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (pg *PlayedGame) Equals(o types.RVType) bool {
 	return pg.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the PlayedGame
+// and returns a pointer to the new copy
+func (pg PlayedGame) CopyRef() types.RVTypePtr {
+	copied := pg.Copy().(PlayedGame)
+	return &copied
+}
+
+// Deref takes a pointer to the PlayedGame
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pg *PlayedGame) Deref() types.RVType {
+	return *pg
+}
+
 // String returns the string representation of the PlayedGame
-func (pg *PlayedGame) String() string {
+func (pg PlayedGame) String() string {
 	return pg.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PlayedGame using the provided indentation level
-func (pg *PlayedGame) FormatToString(indentationLevel int) string {
+func (pg PlayedGame) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (pg *PlayedGame) FormatToString(indentationLevel int) string {
 }
 
 // NewPlayedGame returns a new PlayedGame
-func NewPlayedGame() *PlayedGame {
-	pg := &PlayedGame{
+func NewPlayedGame() PlayedGame {
+	return PlayedGame{
 		GameKey: NewGameKey(),
 		Unknown: types.NewDateTime(0),
 	}
 
-	return pg
 }

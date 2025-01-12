@@ -11,19 +11,19 @@ import (
 // PersistentGathering is a type within the Matchmaking protocol
 type PersistentGathering struct {
 	types.Structure
-	*Gathering
-	CommunityType          *types.PrimitiveU32
-	Password               *types.String
-	Attribs                *types.List[*types.PrimitiveU32]
-	ApplicationBuffer      *types.Buffer
-	ParticipationStartDate *types.DateTime
-	ParticipationEndDate   *types.DateTime
-	MatchmakeSessionCount  *types.PrimitiveU32
-	ParticipationCount     *types.PrimitiveU32
+	Gathering
+	CommunityType          types.UInt32
+	Password               types.String
+	Attribs                types.List[types.UInt32]
+	ApplicationBuffer      types.Buffer
+	ParticipationStartDate types.DateTime
+	ParticipationEndDate   types.DateTime
+	MatchmakeSessionCount  types.UInt32
+	ParticipationCount     types.UInt32
 }
 
 // WriteTo writes the PersistentGathering to the given writable
-func (pg *PersistentGathering) WriteTo(writable types.Writable) {
+func (pg PersistentGathering) WriteTo(writable types.Writable) {
 	pg.Gathering.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -102,30 +102,30 @@ func (pg *PersistentGathering) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of PersistentGathering
-func (pg *PersistentGathering) Copy() types.RVType {
+func (pg PersistentGathering) Copy() types.RVType {
 	copied := NewPersistentGathering()
 
 	copied.StructureVersion = pg.StructureVersion
-	copied.Gathering = pg.Gathering.Copy().(*Gathering)
-	copied.CommunityType = pg.CommunityType.Copy().(*types.PrimitiveU32)
-	copied.Password = pg.Password.Copy().(*types.String)
-	copied.Attribs = pg.Attribs.Copy().(*types.List[*types.PrimitiveU32])
-	copied.ApplicationBuffer = pg.ApplicationBuffer.Copy().(*types.Buffer)
-	copied.ParticipationStartDate = pg.ParticipationStartDate.Copy().(*types.DateTime)
-	copied.ParticipationEndDate = pg.ParticipationEndDate.Copy().(*types.DateTime)
-	copied.MatchmakeSessionCount = pg.MatchmakeSessionCount.Copy().(*types.PrimitiveU32)
-	copied.ParticipationCount = pg.ParticipationCount.Copy().(*types.PrimitiveU32)
+	copied.Gathering = pg.Gathering.Copy().(Gathering)
+	copied.CommunityType = pg.CommunityType.Copy().(types.UInt32)
+	copied.Password = pg.Password.Copy().(types.String)
+	copied.Attribs = pg.Attribs.Copy().(types.List[types.UInt32])
+	copied.ApplicationBuffer = pg.ApplicationBuffer.Copy().(types.Buffer)
+	copied.ParticipationStartDate = pg.ParticipationStartDate.Copy().(types.DateTime)
+	copied.ParticipationEndDate = pg.ParticipationEndDate.Copy().(types.DateTime)
+	copied.MatchmakeSessionCount = pg.MatchmakeSessionCount.Copy().(types.UInt32)
+	copied.ParticipationCount = pg.ParticipationCount.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given PersistentGathering contains the same data as the current PersistentGathering
-func (pg *PersistentGathering) Equals(o types.RVType) bool {
-	if _, ok := o.(*PersistentGathering); !ok {
+func (pg PersistentGathering) Equals(o types.RVType) bool {
+	if _, ok := o.(PersistentGathering); !ok {
 		return false
 	}
 
-	other := o.(*PersistentGathering)
+	other := o.(PersistentGathering)
 
 	if pg.StructureVersion != other.StructureVersion {
 		return false
@@ -166,13 +166,27 @@ func (pg *PersistentGathering) Equals(o types.RVType) bool {
 	return pg.ParticipationCount.Equals(other.ParticipationCount)
 }
 
+// CopyRef copies the current value of the PersistentGathering
+// and returns a pointer to the new copy
+func (pg PersistentGathering) CopyRef() types.RVTypePtr {
+	copied := pg.Copy().(PersistentGathering)
+	return &copied
+}
+
+// Deref takes a pointer to the PersistentGathering
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (pg *PersistentGathering) Deref() types.RVType {
+	return *pg
+}
+
 // String returns the string representation of the PersistentGathering
-func (pg *PersistentGathering) String() string {
+func (pg PersistentGathering) String() string {
 	return pg.FormatToString(0)
 }
 
 // FormatToString pretty-prints the PersistentGathering using the provided indentation level
-func (pg *PersistentGathering) FormatToString(indentationLevel int) string {
+func (pg PersistentGathering) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -194,20 +208,17 @@ func (pg *PersistentGathering) FormatToString(indentationLevel int) string {
 }
 
 // NewPersistentGathering returns a new PersistentGathering
-func NewPersistentGathering() *PersistentGathering {
-	pg := &PersistentGathering{
+func NewPersistentGathering() PersistentGathering {
+	return PersistentGathering{
 		Gathering:              NewGathering(),
-		CommunityType:          types.NewPrimitiveU32(0),
+		CommunityType:          types.NewUInt32(0),
 		Password:               types.NewString(""),
-		Attribs:                types.NewList[*types.PrimitiveU32](),
+		Attribs:                types.NewList[types.UInt32](),
 		ApplicationBuffer:      types.NewBuffer(nil),
 		ParticipationStartDate: types.NewDateTime(0),
 		ParticipationEndDate:   types.NewDateTime(0),
-		MatchmakeSessionCount:  types.NewPrimitiveU32(0),
-		ParticipationCount:     types.NewPrimitiveU32(0),
+		MatchmakeSessionCount:  types.NewUInt32(0),
+		ParticipationCount:     types.NewUInt32(0),
 	}
 
-	pg.Attribs.Type = types.NewPrimitiveU32(0)
-
-	return pg
 }

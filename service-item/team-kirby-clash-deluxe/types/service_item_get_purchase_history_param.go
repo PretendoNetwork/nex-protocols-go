@@ -11,15 +11,15 @@ import (
 // ServiceItemGetPurchaseHistoryParam is a type within the ServiceItem protocol
 type ServiceItemGetPurchaseHistoryParam struct {
 	types.Structure
-	Language *types.String
-	Offset   *types.PrimitiveU32
-	Size     *types.PrimitiveU32
-	UniqueID *types.PrimitiveU32
-	Platform *types.PrimitiveU8
+	Language types.String
+	Offset   types.UInt32
+	Size     types.UInt32
+	UniqueID types.UInt32
+	Platform types.UInt8
 }
 
 // WriteTo writes the ServiceItemGetPurchaseHistoryParam to the given writable
-func (sigphp *ServiceItemGetPurchaseHistoryParam) WriteTo(writable types.Writable) {
+func (sigphp ServiceItemGetPurchaseHistoryParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sigphp.Language.WriteTo(contentWritable)
@@ -73,26 +73,26 @@ func (sigphp *ServiceItemGetPurchaseHistoryParam) ExtractFrom(readable types.Rea
 }
 
 // Copy returns a new copied instance of ServiceItemGetPurchaseHistoryParam
-func (sigphp *ServiceItemGetPurchaseHistoryParam) Copy() types.RVType {
+func (sigphp ServiceItemGetPurchaseHistoryParam) Copy() types.RVType {
 	copied := NewServiceItemGetPurchaseHistoryParam()
 
 	copied.StructureVersion = sigphp.StructureVersion
-	copied.Language = sigphp.Language.Copy().(*types.String)
-	copied.Offset = sigphp.Offset.Copy().(*types.PrimitiveU32)
-	copied.Size = sigphp.Size.Copy().(*types.PrimitiveU32)
-	copied.UniqueID = sigphp.UniqueID.Copy().(*types.PrimitiveU32)
-	copied.Platform = sigphp.Platform.Copy().(*types.PrimitiveU8)
+	copied.Language = sigphp.Language.Copy().(types.String)
+	copied.Offset = sigphp.Offset.Copy().(types.UInt32)
+	copied.Size = sigphp.Size.Copy().(types.UInt32)
+	copied.UniqueID = sigphp.UniqueID.Copy().(types.UInt32)
+	copied.Platform = sigphp.Platform.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetPurchaseHistoryParam contains the same data as the current ServiceItemGetPurchaseHistoryParam
-func (sigphp *ServiceItemGetPurchaseHistoryParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetPurchaseHistoryParam); !ok {
+func (sigphp ServiceItemGetPurchaseHistoryParam) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemGetPurchaseHistoryParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetPurchaseHistoryParam)
+	other := o.(ServiceItemGetPurchaseHistoryParam)
 
 	if sigphp.StructureVersion != other.StructureVersion {
 		return false
@@ -117,13 +117,27 @@ func (sigphp *ServiceItemGetPurchaseHistoryParam) Equals(o types.RVType) bool {
 	return sigphp.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemGetPurchaseHistoryParam
+// and returns a pointer to the new copy
+func (sigphp ServiceItemGetPurchaseHistoryParam) CopyRef() types.RVTypePtr {
+	copied := sigphp.Copy().(ServiceItemGetPurchaseHistoryParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetPurchaseHistoryParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigphp *ServiceItemGetPurchaseHistoryParam) Deref() types.RVType {
+	return *sigphp
+}
+
 // String returns the string representation of the ServiceItemGetPurchaseHistoryParam
-func (sigphp *ServiceItemGetPurchaseHistoryParam) String() string {
+func (sigphp ServiceItemGetPurchaseHistoryParam) String() string {
 	return sigphp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetPurchaseHistoryParam using the provided indentation level
-func (sigphp *ServiceItemGetPurchaseHistoryParam) FormatToString(indentationLevel int) string {
+func (sigphp ServiceItemGetPurchaseHistoryParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,14 +155,13 @@ func (sigphp *ServiceItemGetPurchaseHistoryParam) FormatToString(indentationLeve
 }
 
 // NewServiceItemGetPurchaseHistoryParam returns a new ServiceItemGetPurchaseHistoryParam
-func NewServiceItemGetPurchaseHistoryParam() *ServiceItemGetPurchaseHistoryParam {
-	sigphp := &ServiceItemGetPurchaseHistoryParam{
+func NewServiceItemGetPurchaseHistoryParam() ServiceItemGetPurchaseHistoryParam {
+	return ServiceItemGetPurchaseHistoryParam{
 		Language: types.NewString(""),
-		Offset:   types.NewPrimitiveU32(0),
-		Size:     types.NewPrimitiveU32(0),
-		UniqueID: types.NewPrimitiveU32(0),
-		Platform: types.NewPrimitiveU8(0),
+		Offset:   types.NewUInt32(0),
+		Size:     types.NewUInt32(0),
+		UniqueID: types.NewUInt32(0),
+		Platform: types.NewUInt8(0),
 	}
 
-	return sigphp
 }

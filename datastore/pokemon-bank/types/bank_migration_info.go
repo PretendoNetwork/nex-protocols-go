@@ -11,12 +11,12 @@ import (
 // BankMigrationInfo is a type within the DataStore protocol
 type BankMigrationInfo struct {
 	types.Structure
-	MigrationStatus *types.PrimitiveU32
-	UpdatedTime     *types.DateTime
+	MigrationStatus types.UInt32
+	UpdatedTime     types.DateTime
 }
 
 // WriteTo writes the BankMigrationInfo to the given writable
-func (bmi *BankMigrationInfo) WriteTo(writable types.Writable) {
+func (bmi BankMigrationInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	bmi.MigrationStatus.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (bmi *BankMigrationInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of BankMigrationInfo
-func (bmi *BankMigrationInfo) Copy() types.RVType {
+func (bmi BankMigrationInfo) Copy() types.RVType {
 	copied := NewBankMigrationInfo()
 
 	copied.StructureVersion = bmi.StructureVersion
-	copied.MigrationStatus = bmi.MigrationStatus.Copy().(*types.PrimitiveU32)
-	copied.UpdatedTime = bmi.UpdatedTime.Copy().(*types.DateTime)
+	copied.MigrationStatus = bmi.MigrationStatus.Copy().(types.UInt32)
+	copied.UpdatedTime = bmi.UpdatedTime.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given BankMigrationInfo contains the same data as the current BankMigrationInfo
-func (bmi *BankMigrationInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*BankMigrationInfo); !ok {
+func (bmi BankMigrationInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(BankMigrationInfo); !ok {
 		return false
 	}
 
-	other := o.(*BankMigrationInfo)
+	other := o.(BankMigrationInfo)
 
 	if bmi.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (bmi *BankMigrationInfo) Equals(o types.RVType) bool {
 	return bmi.UpdatedTime.Equals(other.UpdatedTime)
 }
 
+// CopyRef copies the current value of the BankMigrationInfo
+// and returns a pointer to the new copy
+func (bmi BankMigrationInfo) CopyRef() types.RVTypePtr {
+	copied := bmi.Copy().(BankMigrationInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the BankMigrationInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (bmi *BankMigrationInfo) Deref() types.RVType {
+	return *bmi
+}
+
 // String returns the string representation of the BankMigrationInfo
-func (bmi *BankMigrationInfo) String() string {
+func (bmi BankMigrationInfo) String() string {
 	return bmi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the BankMigrationInfo using the provided indentation level
-func (bmi *BankMigrationInfo) FormatToString(indentationLevel int) string {
+func (bmi BankMigrationInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (bmi *BankMigrationInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewBankMigrationInfo returns a new BankMigrationInfo
-func NewBankMigrationInfo() *BankMigrationInfo {
-	bmi := &BankMigrationInfo{
-		MigrationStatus: types.NewPrimitiveU32(0),
+func NewBankMigrationInfo() BankMigrationInfo {
+	return BankMigrationInfo{
+		MigrationStatus: types.NewUInt32(0),
 		UpdatedTime:     types.NewDateTime(0),
 	}
 
-	return bmi
 }

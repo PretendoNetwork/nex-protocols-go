@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	id := types.NewPID(0)
+	var id types.PID
 
 	err := id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetName(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetName(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, id)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

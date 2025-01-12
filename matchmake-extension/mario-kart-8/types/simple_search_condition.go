@@ -11,12 +11,12 @@ import (
 // SimpleSearchCondition is a type within the MatchmakeExtension protocol
 type SimpleSearchCondition struct {
 	types.Structure
-	Value              *types.PrimitiveU32
-	ComparisonOperator *types.PrimitiveU32
+	Value              types.UInt32
+	ComparisonOperator types.UInt32
 }
 
 // WriteTo writes the SimpleSearchCondition to the given writable
-func (ssc *SimpleSearchCondition) WriteTo(writable types.Writable) {
+func (ssc SimpleSearchCondition) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	ssc.Value.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (ssc *SimpleSearchCondition) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of SimpleSearchCondition
-func (ssc *SimpleSearchCondition) Copy() types.RVType {
+func (ssc SimpleSearchCondition) Copy() types.RVType {
 	copied := NewSimpleSearchCondition()
 
 	copied.StructureVersion = ssc.StructureVersion
-	copied.Value = ssc.Value.Copy().(*types.PrimitiveU32)
-	copied.ComparisonOperator = ssc.ComparisonOperator.Copy().(*types.PrimitiveU32)
+	copied.Value = ssc.Value.Copy().(types.UInt32)
+	copied.ComparisonOperator = ssc.ComparisonOperator.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given SimpleSearchCondition contains the same data as the current SimpleSearchCondition
-func (ssc *SimpleSearchCondition) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimpleSearchCondition); !ok {
+func (ssc SimpleSearchCondition) Equals(o types.RVType) bool {
+	if _, ok := o.(SimpleSearchCondition); !ok {
 		return false
 	}
 
-	other := o.(*SimpleSearchCondition)
+	other := o.(SimpleSearchCondition)
 
 	if ssc.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (ssc *SimpleSearchCondition) Equals(o types.RVType) bool {
 	return ssc.ComparisonOperator.Equals(other.ComparisonOperator)
 }
 
+// CopyRef copies the current value of the SimpleSearchCondition
+// and returns a pointer to the new copy
+func (ssc SimpleSearchCondition) CopyRef() types.RVTypePtr {
+	copied := ssc.Copy().(SimpleSearchCondition)
+	return &copied
+}
+
+// Deref takes a pointer to the SimpleSearchCondition
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ssc *SimpleSearchCondition) Deref() types.RVType {
+	return *ssc
+}
+
 // String returns the string representation of the SimpleSearchCondition
-func (ssc *SimpleSearchCondition) String() string {
+func (ssc SimpleSearchCondition) String() string {
 	return ssc.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SimpleSearchCondition using the provided indentation level
-func (ssc *SimpleSearchCondition) FormatToString(indentationLevel int) string {
+func (ssc SimpleSearchCondition) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (ssc *SimpleSearchCondition) FormatToString(indentationLevel int) string {
 }
 
 // NewSimpleSearchCondition returns a new SimpleSearchCondition
-func NewSimpleSearchCondition() *SimpleSearchCondition {
-	ssc := &SimpleSearchCondition{
-		Value:              types.NewPrimitiveU32(0),
-		ComparisonOperator: types.NewPrimitiveU32(0),
+func NewSimpleSearchCondition() SimpleSearchCondition {
+	return SimpleSearchCondition{
+		Value:              types.NewUInt32(0),
+		ComparisonOperator: types.NewUInt32(0),
 	}
 
-	return ssc
 }

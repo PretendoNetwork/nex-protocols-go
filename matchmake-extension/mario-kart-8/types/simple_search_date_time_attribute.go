@@ -11,16 +11,16 @@ import (
 // SimpleSearchDateTimeAttribute is a type within the MatchmakeExtension protocol
 type SimpleSearchDateTimeAttribute struct {
 	types.Structure
-	Unknown   *types.PrimitiveU32
-	Unknown2  *types.PrimitiveU32
-	Unknown3  *types.PrimitiveU32
-	Unknown4  *types.PrimitiveU32
-	StartTime *types.DateTime
-	EndTime   *types.DateTime
+	Unknown   types.UInt32
+	Unknown2  types.UInt32
+	Unknown3  types.UInt32
+	Unknown4  types.UInt32
+	StartTime types.DateTime
+	EndTime   types.DateTime
 }
 
 // WriteTo writes the SimpleSearchDateTimeAttribute to the given writable
-func (ssdta *SimpleSearchDateTimeAttribute) WriteTo(writable types.Writable) {
+func (ssdta SimpleSearchDateTimeAttribute) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	ssdta.Unknown.WriteTo(contentWritable)
@@ -80,27 +80,27 @@ func (ssdta *SimpleSearchDateTimeAttribute) ExtractFrom(readable types.Readable)
 }
 
 // Copy returns a new copied instance of SimpleSearchDateTimeAttribute
-func (ssdta *SimpleSearchDateTimeAttribute) Copy() types.RVType {
+func (ssdta SimpleSearchDateTimeAttribute) Copy() types.RVType {
 	copied := NewSimpleSearchDateTimeAttribute()
 
 	copied.StructureVersion = ssdta.StructureVersion
-	copied.Unknown = ssdta.Unknown.Copy().(*types.PrimitiveU32)
-	copied.Unknown2 = ssdta.Unknown2.Copy().(*types.PrimitiveU32)
-	copied.Unknown3 = ssdta.Unknown3.Copy().(*types.PrimitiveU32)
-	copied.Unknown4 = ssdta.Unknown4.Copy().(*types.PrimitiveU32)
-	copied.StartTime = ssdta.StartTime.Copy().(*types.DateTime)
-	copied.EndTime = ssdta.EndTime.Copy().(*types.DateTime)
+	copied.Unknown = ssdta.Unknown.Copy().(types.UInt32)
+	copied.Unknown2 = ssdta.Unknown2.Copy().(types.UInt32)
+	copied.Unknown3 = ssdta.Unknown3.Copy().(types.UInt32)
+	copied.Unknown4 = ssdta.Unknown4.Copy().(types.UInt32)
+	copied.StartTime = ssdta.StartTime.Copy().(types.DateTime)
+	copied.EndTime = ssdta.EndTime.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given SimpleSearchDateTimeAttribute contains the same data as the current SimpleSearchDateTimeAttribute
-func (ssdta *SimpleSearchDateTimeAttribute) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimpleSearchDateTimeAttribute); !ok {
+func (ssdta SimpleSearchDateTimeAttribute) Equals(o types.RVType) bool {
+	if _, ok := o.(SimpleSearchDateTimeAttribute); !ok {
 		return false
 	}
 
-	other := o.(*SimpleSearchDateTimeAttribute)
+	other := o.(SimpleSearchDateTimeAttribute)
 
 	if ssdta.StructureVersion != other.StructureVersion {
 		return false
@@ -129,13 +129,27 @@ func (ssdta *SimpleSearchDateTimeAttribute) Equals(o types.RVType) bool {
 	return ssdta.EndTime.Equals(other.EndTime)
 }
 
+// CopyRef copies the current value of the SimpleSearchDateTimeAttribute
+// and returns a pointer to the new copy
+func (ssdta SimpleSearchDateTimeAttribute) CopyRef() types.RVTypePtr {
+	copied := ssdta.Copy().(SimpleSearchDateTimeAttribute)
+	return &copied
+}
+
+// Deref takes a pointer to the SimpleSearchDateTimeAttribute
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ssdta *SimpleSearchDateTimeAttribute) Deref() types.RVType {
+	return *ssdta
+}
+
 // String returns the string representation of the SimpleSearchDateTimeAttribute
-func (ssdta *SimpleSearchDateTimeAttribute) String() string {
+func (ssdta SimpleSearchDateTimeAttribute) String() string {
 	return ssdta.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SimpleSearchDateTimeAttribute using the provided indentation level
-func (ssdta *SimpleSearchDateTimeAttribute) FormatToString(indentationLevel int) string {
+func (ssdta SimpleSearchDateTimeAttribute) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,15 +168,14 @@ func (ssdta *SimpleSearchDateTimeAttribute) FormatToString(indentationLevel int)
 }
 
 // NewSimpleSearchDateTimeAttribute returns a new SimpleSearchDateTimeAttribute
-func NewSimpleSearchDateTimeAttribute() *SimpleSearchDateTimeAttribute {
-	ssdta := &SimpleSearchDateTimeAttribute{
-		Unknown:   types.NewPrimitiveU32(0),
-		Unknown2:  types.NewPrimitiveU32(0),
-		Unknown3:  types.NewPrimitiveU32(0),
-		Unknown4:  types.NewPrimitiveU32(0),
+func NewSimpleSearchDateTimeAttribute() SimpleSearchDateTimeAttribute {
+	return SimpleSearchDateTimeAttribute{
+		Unknown:   types.NewUInt32(0),
+		Unknown2:  types.NewUInt32(0),
+		Unknown3:  types.NewUInt32(0),
+		Unknown4:  types.NewUInt32(0),
 		StartTime: types.NewDateTime(0),
 		EndTime:   types.NewDateTime(0),
 	}
 
-	return ssdta
 }

@@ -25,14 +25,14 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	uiReason := types.NewPrimitiveU32(0)
-	resultRange := types.NewResultRange()
+	var uiReason types.UInt32
+	var resultRange types.ResultRange
 
 	var err error
 
 	err = uiReason.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), packet, callID, uiReason, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, uiReason, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

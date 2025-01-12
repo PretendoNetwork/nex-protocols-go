@@ -11,11 +11,11 @@ import (
 // Unknown is a type within the Shop protocol
 type Unknown struct {
 	types.Structure
-	Unknown *types.QBuffer
+	Unknown types.QBuffer
 }
 
 // WriteTo writes the Unknown to the given writable
-func (u *Unknown) WriteTo(writable types.Writable) {
+func (u Unknown) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	u.Unknown.WriteTo(contentWritable)
@@ -45,22 +45,22 @@ func (u *Unknown) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Unknown
-func (u *Unknown) Copy() types.RVType {
+func (u Unknown) Copy() types.RVType {
 	copied := NewUnknown()
 
 	copied.StructureVersion = u.StructureVersion
-	copied.Unknown = u.Unknown.Copy().(*types.QBuffer)
+	copied.Unknown = u.Unknown.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given Unknown contains the same data as the current Unknown
-func (u *Unknown) Equals(o types.RVType) bool {
-	if _, ok := o.(*Unknown); !ok {
+func (u Unknown) Equals(o types.RVType) bool {
+	if _, ok := o.(Unknown); !ok {
 		return false
 	}
 
-	other := o.(*Unknown)
+	other := o.(Unknown)
 
 	if u.StructureVersion != other.StructureVersion {
 		return false
@@ -69,13 +69,27 @@ func (u *Unknown) Equals(o types.RVType) bool {
 	return u.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the Unknown
+// and returns a pointer to the new copy
+func (u Unknown) CopyRef() types.RVTypePtr {
+	copied := u.Copy().(Unknown)
+	return &copied
+}
+
+// Deref takes a pointer to the Unknown
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (u *Unknown) Deref() types.RVType {
+	return *u
+}
+
 // String returns the string representation of the Unknown
-func (u *Unknown) String() string {
+func (u Unknown) String() string {
 	return u.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Unknown using the provided indentation level
-func (u *Unknown) FormatToString(indentationLevel int) string {
+func (u Unknown) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +103,9 @@ func (u *Unknown) FormatToString(indentationLevel int) string {
 }
 
 // NewUnknown returns a new Unknown
-func NewUnknown() *Unknown {
-	u := &Unknown{
+func NewUnknown() Unknown {
+	return Unknown{
 		Unknown: types.NewQBuffer(nil),
 	}
 
-	return u
 }

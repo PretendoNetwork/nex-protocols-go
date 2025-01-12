@@ -27,14 +27,13 @@ func (protocol *Protocol) handleSuggestedCourseSearchObject(packet nex.PacketInt
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	param := datastore_types.NewDataStoreSearchParam()
-	extraData := types.NewList[*types.String]()
-	extraData.Type = types.NewString("")
+	var extraData types.List[types.String]
 
 	var err error
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SuggestedCourseSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.SuggestedCourseSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleSuggestedCourseSearchObject(packet nex.PacketInt
 
 	err = extraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SuggestedCourseSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.SuggestedCourseSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

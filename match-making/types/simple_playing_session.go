@@ -11,14 +11,14 @@ import (
 // SimplePlayingSession is a type within the Matchmaking protocol
 type SimplePlayingSession struct {
 	types.Structure
-	PrincipalID *types.PID
-	GatheringID *types.PrimitiveU32
-	GameMode    *types.PrimitiveU32
-	Attribute0  *types.PrimitiveU32
+	PrincipalID types.PID
+	GatheringID types.UInt32
+	GameMode    types.UInt32
+	Attribute0  types.UInt32
 }
 
 // WriteTo writes the SimplePlayingSession to the given writable
-func (sps *SimplePlayingSession) WriteTo(writable types.Writable) {
+func (sps SimplePlayingSession) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sps.PrincipalID.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (sps *SimplePlayingSession) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of SimplePlayingSession
-func (sps *SimplePlayingSession) Copy() types.RVType {
+func (sps SimplePlayingSession) Copy() types.RVType {
 	copied := NewSimplePlayingSession()
 
 	copied.StructureVersion = sps.StructureVersion
-	copied.PrincipalID = sps.PrincipalID.Copy().(*types.PID)
-	copied.GatheringID = sps.GatheringID.Copy().(*types.PrimitiveU32)
-	copied.GameMode = sps.GameMode.Copy().(*types.PrimitiveU32)
-	copied.Attribute0 = sps.Attribute0.Copy().(*types.PrimitiveU32)
+	copied.PrincipalID = sps.PrincipalID.Copy().(types.PID)
+	copied.GatheringID = sps.GatheringID.Copy().(types.UInt32)
+	copied.GameMode = sps.GameMode.Copy().(types.UInt32)
+	copied.Attribute0 = sps.Attribute0.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given SimplePlayingSession contains the same data as the current SimplePlayingSession
-func (sps *SimplePlayingSession) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimplePlayingSession); !ok {
+func (sps SimplePlayingSession) Equals(o types.RVType) bool {
+	if _, ok := o.(SimplePlayingSession); !ok {
 		return false
 	}
 
-	other := o.(*SimplePlayingSession)
+	other := o.(SimplePlayingSession)
 
 	if sps.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (sps *SimplePlayingSession) Equals(o types.RVType) bool {
 	return sps.Attribute0.Equals(other.Attribute0)
 }
 
+// CopyRef copies the current value of the SimplePlayingSession
+// and returns a pointer to the new copy
+func (sps SimplePlayingSession) CopyRef() types.RVTypePtr {
+	copied := sps.Copy().(SimplePlayingSession)
+	return &copied
+}
+
+// Deref takes a pointer to the SimplePlayingSession
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sps *SimplePlayingSession) Deref() types.RVType {
+	return *sps
+}
+
 // String returns the string representation of the SimplePlayingSession
-func (sps *SimplePlayingSession) String() string {
+func (sps SimplePlayingSession) String() string {
 	return sps.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SimplePlayingSession using the provided indentation level
-func (sps *SimplePlayingSession) FormatToString(indentationLevel int) string {
+func (sps SimplePlayingSession) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +142,12 @@ func (sps *SimplePlayingSession) FormatToString(indentationLevel int) string {
 }
 
 // NewSimplePlayingSession returns a new SimplePlayingSession
-func NewSimplePlayingSession() *SimplePlayingSession {
-	sps := &SimplePlayingSession{
+func NewSimplePlayingSession() SimplePlayingSession {
+	return SimplePlayingSession{
 		PrincipalID: types.NewPID(0),
-		GatheringID: types.NewPrimitiveU32(0),
-		GameMode:    types.NewPrimitiveU32(0),
-		Attribute0:  types.NewPrimitiveU32(0),
+		GatheringID: types.NewUInt32(0),
+		GameMode:    types.NewUInt32(0),
+		Attribute0:  types.NewUInt32(0),
 	}
 
-	return sps
 }

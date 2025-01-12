@@ -11,12 +11,12 @@ import (
 // SimpleCommunity is a type within the Matchmaking protocol
 type SimpleCommunity struct {
 	types.Structure
-	GatheringID           *types.PrimitiveU32
-	MatchmakeSessionCount *types.PrimitiveU32
+	GatheringID           types.UInt32
+	MatchmakeSessionCount types.UInt32
 }
 
 // WriteTo writes the SimpleCommunity to the given writable
-func (sc *SimpleCommunity) WriteTo(writable types.Writable) {
+func (sc SimpleCommunity) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sc.GatheringID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (sc *SimpleCommunity) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of SimpleCommunity
-func (sc *SimpleCommunity) Copy() types.RVType {
+func (sc SimpleCommunity) Copy() types.RVType {
 	copied := NewSimpleCommunity()
 
 	copied.StructureVersion = sc.StructureVersion
-	copied.GatheringID = sc.GatheringID.Copy().(*types.PrimitiveU32)
-	copied.MatchmakeSessionCount = sc.MatchmakeSessionCount.Copy().(*types.PrimitiveU32)
+	copied.GatheringID = sc.GatheringID.Copy().(types.UInt32)
+	copied.MatchmakeSessionCount = sc.MatchmakeSessionCount.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given SimpleCommunity contains the same data as the current SimpleCommunity
-func (sc *SimpleCommunity) Equals(o types.RVType) bool {
-	if _, ok := o.(*SimpleCommunity); !ok {
+func (sc SimpleCommunity) Equals(o types.RVType) bool {
+	if _, ok := o.(SimpleCommunity); !ok {
 		return false
 	}
 
-	other := o.(*SimpleCommunity)
+	other := o.(SimpleCommunity)
 
 	if sc.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (sc *SimpleCommunity) Equals(o types.RVType) bool {
 	return sc.MatchmakeSessionCount.Equals(other.MatchmakeSessionCount)
 }
 
+// CopyRef copies the current value of the SimpleCommunity
+// and returns a pointer to the new copy
+func (sc SimpleCommunity) CopyRef() types.RVTypePtr {
+	copied := sc.Copy().(SimpleCommunity)
+	return &copied
+}
+
+// Deref takes a pointer to the SimpleCommunity
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sc *SimpleCommunity) Deref() types.RVType {
+	return *sc
+}
+
 // String returns the string representation of the SimpleCommunity
-func (sc *SimpleCommunity) String() string {
+func (sc SimpleCommunity) String() string {
 	return sc.FormatToString(0)
 }
 
 // FormatToString pretty-prints the SimpleCommunity using the provided indentation level
-func (sc *SimpleCommunity) FormatToString(indentationLevel int) string {
+func (sc SimpleCommunity) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (sc *SimpleCommunity) FormatToString(indentationLevel int) string {
 }
 
 // NewSimpleCommunity returns a new SimpleCommunity
-func NewSimpleCommunity() *SimpleCommunity {
-	sc := &SimpleCommunity{
-		GatheringID:           types.NewPrimitiveU32(0),
-		MatchmakeSessionCount: types.NewPrimitiveU32(0),
+func NewSimpleCommunity() SimpleCommunity {
+	return SimpleCommunity{
+		GatheringID:           types.NewUInt32(0),
+		MatchmakeSessionCount: types.NewUInt32(0),
 	}
 
-	return sc
 }

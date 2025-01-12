@@ -11,12 +11,12 @@ import (
 // ServiceItemRightConsumptionInfo is a type within the ServiceItem protocol
 type ServiceItemRightConsumptionInfo struct {
 	types.Structure
-	*ServiceItemRightInfo
-	AccountRights *types.List[*ServiceItemAccountRightConsumption]
+	ServiceItemRightInfo
+	AccountRights types.List[ServiceItemAccountRightConsumption]
 }
 
 // WriteTo writes the ServiceItemRightConsumptionInfo to the given writable
-func (sirci *ServiceItemRightConsumptionInfo) WriteTo(writable types.Writable) {
+func (sirci ServiceItemRightConsumptionInfo) WriteTo(writable types.Writable) {
 	sirci.ServiceItemRightInfo.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (sirci *ServiceItemRightConsumptionInfo) ExtractFrom(readable types.Readabl
 }
 
 // Copy returns a new copied instance of ServiceItemRightConsumptionInfo
-func (sirci *ServiceItemRightConsumptionInfo) Copy() types.RVType {
+func (sirci ServiceItemRightConsumptionInfo) Copy() types.RVType {
 	copied := NewServiceItemRightConsumptionInfo()
 
 	copied.StructureVersion = sirci.StructureVersion
-	copied.ServiceItemRightInfo = sirci.ServiceItemRightInfo.Copy().(*ServiceItemRightInfo)
-	copied.AccountRights = sirci.AccountRights.Copy().(*types.List[*ServiceItemAccountRightConsumption])
+	copied.ServiceItemRightInfo = sirci.ServiceItemRightInfo.Copy().(ServiceItemRightInfo)
+	copied.AccountRights = sirci.AccountRights.Copy().(types.List[ServiceItemAccountRightConsumption])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemRightConsumptionInfo contains the same data as the current ServiceItemRightConsumptionInfo
-func (sirci *ServiceItemRightConsumptionInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemRightConsumptionInfo); !ok {
+func (sirci ServiceItemRightConsumptionInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemRightConsumptionInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemRightConsumptionInfo)
+	other := o.(ServiceItemRightConsumptionInfo)
 
 	if sirci.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (sirci *ServiceItemRightConsumptionInfo) Equals(o types.RVType) bool {
 	return sirci.AccountRights.Equals(other.AccountRights)
 }
 
+// CopyRef copies the current value of the ServiceItemRightConsumptionInfo
+// and returns a pointer to the new copy
+func (sirci ServiceItemRightConsumptionInfo) CopyRef() types.RVTypePtr {
+	copied := sirci.Copy().(ServiceItemRightConsumptionInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemRightConsumptionInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sirci *ServiceItemRightConsumptionInfo) Deref() types.RVType {
+	return *sirci
+}
+
 // String returns the string representation of the ServiceItemRightConsumptionInfo
-func (sirci *ServiceItemRightConsumptionInfo) String() string {
+func (sirci ServiceItemRightConsumptionInfo) String() string {
 	return sirci.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemRightConsumptionInfo using the provided indentation level
-func (sirci *ServiceItemRightConsumptionInfo) FormatToString(indentationLevel int) string {
+func (sirci ServiceItemRightConsumptionInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +117,10 @@ func (sirci *ServiceItemRightConsumptionInfo) FormatToString(indentationLevel in
 }
 
 // NewServiceItemRightConsumptionInfo returns a new ServiceItemRightConsumptionInfo
-func NewServiceItemRightConsumptionInfo() *ServiceItemRightConsumptionInfo {
-	sirci := &ServiceItemRightConsumptionInfo{
+func NewServiceItemRightConsumptionInfo() ServiceItemRightConsumptionInfo {
+	return ServiceItemRightConsumptionInfo{
 		ServiceItemRightInfo: NewServiceItemRightInfo(),
-		AccountRights:        types.NewList[*ServiceItemAccountRightConsumption](),
+		AccountRights:        types.NewList[ServiceItemAccountRightConsumption](),
 	}
 
-	sirci.AccountRights.Type = NewServiceItemAccountRightConsumption()
-
-	return sirci
 }

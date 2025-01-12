@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idGathering := types.NewPrimitiveU32(0)
+	var idGathering types.UInt32
 
 	err := idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

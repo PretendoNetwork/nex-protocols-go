@@ -25,15 +25,15 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	uiGroup := types.NewPrimitiveU32(0)
-	strTag := types.NewString("")
-	strQuery := types.NewString("")
+	var uiGroup types.UInt32
+	var strTag types.String
+	var strQuery types.String
 
 	var err error
 
 	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, uiGroup, strTag, strQuery)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 
 	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, uiGroup, strTag, strQuery)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 
 	err = strQuery.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, uiGroup, strTag, strQuery)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

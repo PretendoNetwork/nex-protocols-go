@@ -11,19 +11,19 @@ import (
 // AccountData is a type within the AccountManagement protocol
 type AccountData struct {
 	types.Structure
-	PID                *types.PID
-	StrName            *types.String
-	UIGroups           *types.PrimitiveU32
-	StrEmail           *types.String
-	DTCreationDate     *types.DateTime
-	DTEffectiveDate    *types.DateTime
-	StrNotEffectiveMsg *types.String
-	DTExpiryDate       *types.DateTime
-	StrExpiredMsg      *types.String
+	PID                types.PID
+	StrName            types.String
+	UIGroups           types.UInt32
+	StrEmail           types.String
+	DTCreationDate     types.DateTime
+	DTEffectiveDate    types.DateTime
+	StrNotEffectiveMsg types.String
+	DTExpiryDate       types.DateTime
+	StrExpiredMsg      types.String
 }
 
 // WriteTo writes the AccountData to the given writable
-func (ad *AccountData) WriteTo(writable types.Writable) {
+func (ad AccountData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	ad.PID.WriteTo(contentWritable)
@@ -101,30 +101,30 @@ func (ad *AccountData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of AccountData
-func (ad *AccountData) Copy() types.RVType {
+func (ad AccountData) Copy() types.RVType {
 	copied := NewAccountData()
 
 	copied.StructureVersion = ad.StructureVersion
-	copied.PID = ad.PID.Copy().(*types.PID)
-	copied.StrName = ad.StrName.Copy().(*types.String)
-	copied.UIGroups = ad.UIGroups.Copy().(*types.PrimitiveU32)
-	copied.StrEmail = ad.StrEmail.Copy().(*types.String)
-	copied.DTCreationDate = ad.DTCreationDate.Copy().(*types.DateTime)
-	copied.DTEffectiveDate = ad.DTEffectiveDate.Copy().(*types.DateTime)
-	copied.StrNotEffectiveMsg = ad.StrNotEffectiveMsg.Copy().(*types.String)
-	copied.DTExpiryDate = ad.DTExpiryDate.Copy().(*types.DateTime)
-	copied.StrExpiredMsg = ad.StrExpiredMsg.Copy().(*types.String)
+	copied.PID = ad.PID.Copy().(types.PID)
+	copied.StrName = ad.StrName.Copy().(types.String)
+	copied.UIGroups = ad.UIGroups.Copy().(types.UInt32)
+	copied.StrEmail = ad.StrEmail.Copy().(types.String)
+	copied.DTCreationDate = ad.DTCreationDate.Copy().(types.DateTime)
+	copied.DTEffectiveDate = ad.DTEffectiveDate.Copy().(types.DateTime)
+	copied.StrNotEffectiveMsg = ad.StrNotEffectiveMsg.Copy().(types.String)
+	copied.DTExpiryDate = ad.DTExpiryDate.Copy().(types.DateTime)
+	copied.StrExpiredMsg = ad.StrExpiredMsg.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given AccountData contains the same data as the current AccountData
-func (ad *AccountData) Equals(o types.RVType) bool {
-	if _, ok := o.(*AccountData); !ok {
+func (ad AccountData) Equals(o types.RVType) bool {
+	if _, ok := o.(AccountData); !ok {
 		return false
 	}
 
-	other := o.(*AccountData)
+	other := o.(AccountData)
 
 	if ad.StructureVersion != other.StructureVersion {
 		return false
@@ -165,13 +165,27 @@ func (ad *AccountData) Equals(o types.RVType) bool {
 	return ad.StrExpiredMsg.Equals(other.StrExpiredMsg)
 }
 
+// CopyRef copies the current value of the AccountData
+// and returns a pointer to the new copy
+func (ad AccountData) CopyRef() types.RVTypePtr {
+	copied := ad.Copy().(AccountData)
+	return &copied
+}
+
+// Deref takes a pointer to the AccountData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ad *AccountData) Deref() types.RVType {
+	return *ad
+}
+
 // String returns the string representation of the AccountData
-func (ad *AccountData) String() string {
+func (ad AccountData) String() string {
 	return ad.FormatToString(0)
 }
 
 // FormatToString pretty-prints the AccountData using the provided indentation level
-func (ad *AccountData) FormatToString(indentationLevel int) string {
+func (ad AccountData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,11 +207,11 @@ func (ad *AccountData) FormatToString(indentationLevel int) string {
 }
 
 // NewAccountData returns a new AccountData
-func NewAccountData() *AccountData {
-	ad := &AccountData{
+func NewAccountData() AccountData {
+	return AccountData{
 		PID:                types.NewPID(0),
 		StrName:            types.NewString(""),
-		UIGroups:           types.NewPrimitiveU32(0),
+		UIGroups:           types.NewUInt32(0),
 		StrEmail:           types.NewString(""),
 		DTCreationDate:     types.NewDateTime(0),
 		DTEffectiveDate:    types.NewDateTime(0),
@@ -206,5 +220,4 @@ func NewAccountData() *AccountData {
 		StrExpiredMsg:      types.NewString(""),
 	}
 
-	return ad
 }

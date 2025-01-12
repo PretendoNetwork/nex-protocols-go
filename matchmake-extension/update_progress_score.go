@@ -25,14 +25,14 @@ func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	gid := types.NewPrimitiveU32(0)
-	progressScore := types.NewPrimitiveU8(0)
+	var gid types.UInt32
+	var progressScore types.UInt8
 
 	var err error
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateProgressScore(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdateProgressScore(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, progressScore)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) 
 
 	err = progressScore.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateProgressScore(fmt.Errorf("Failed to read progressScore from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdateProgressScore(fmt.Errorf("Failed to read progressScore from parameters. %s", err.Error()), packet, callID, gid, progressScore)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

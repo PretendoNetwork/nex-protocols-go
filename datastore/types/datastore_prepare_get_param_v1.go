@@ -11,12 +11,12 @@ import (
 // DataStorePrepareGetParamV1 is a type within the DataStore protocol
 type DataStorePrepareGetParamV1 struct {
 	types.Structure
-	DataID *types.PrimitiveU32
-	LockID *types.PrimitiveU32
+	DataID types.UInt32
+	LockID types.UInt32
 }
 
 // WriteTo writes the DataStorePrepareGetParamV1 to the given writable
-func (dspgpv *DataStorePrepareGetParamV1) WriteTo(writable types.Writable) {
+func (dspgpv DataStorePrepareGetParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dspgpv.DataID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (dspgpv *DataStorePrepareGetParamV1) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of DataStorePrepareGetParamV1
-func (dspgpv *DataStorePrepareGetParamV1) Copy() types.RVType {
+func (dspgpv DataStorePrepareGetParamV1) Copy() types.RVType {
 	copied := NewDataStorePrepareGetParamV1()
 
 	copied.StructureVersion = dspgpv.StructureVersion
-	copied.DataID = dspgpv.DataID.Copy().(*types.PrimitiveU32)
-	copied.LockID = dspgpv.LockID.Copy().(*types.PrimitiveU32)
+	copied.DataID = dspgpv.DataID.Copy().(types.UInt32)
+	copied.LockID = dspgpv.LockID.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given DataStorePrepareGetParamV1 contains the same data as the current DataStorePrepareGetParamV1
-func (dspgpv *DataStorePrepareGetParamV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePrepareGetParamV1); !ok {
+func (dspgpv DataStorePrepareGetParamV1) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStorePrepareGetParamV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePrepareGetParamV1)
+	other := o.(DataStorePrepareGetParamV1)
 
 	if dspgpv.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (dspgpv *DataStorePrepareGetParamV1) Equals(o types.RVType) bool {
 	return dspgpv.LockID.Equals(other.LockID)
 }
 
+// CopyRef copies the current value of the DataStorePrepareGetParamV1
+// and returns a pointer to the new copy
+func (dspgpv DataStorePrepareGetParamV1) CopyRef() types.RVTypePtr {
+	copied := dspgpv.Copy().(DataStorePrepareGetParamV1)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePrepareGetParamV1
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspgpv *DataStorePrepareGetParamV1) Deref() types.RVType {
+	return *dspgpv
+}
+
 // String returns the string representation of the DataStorePrepareGetParamV1
-func (dspgpv *DataStorePrepareGetParamV1) String() string {
+func (dspgpv DataStorePrepareGetParamV1) String() string {
 	return dspgpv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePrepareGetParamV1 using the provided indentation level
-func (dspgpv *DataStorePrepareGetParamV1) FormatToString(indentationLevel int) string {
+func (dspgpv DataStorePrepareGetParamV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (dspgpv *DataStorePrepareGetParamV1) FormatToString(indentationLevel int) s
 }
 
 // NewDataStorePrepareGetParamV1 returns a new DataStorePrepareGetParamV1
-func NewDataStorePrepareGetParamV1() *DataStorePrepareGetParamV1 {
-	dspgpv := &DataStorePrepareGetParamV1{
-		DataID: types.NewPrimitiveU32(0),
-		LockID: types.NewPrimitiveU32(0),
+func NewDataStorePrepareGetParamV1() DataStorePrepareGetParamV1 {
+	return DataStorePrepareGetParamV1{
+		DataID: types.NewUInt32(0),
+		LockID: types.NewUInt32(0),
 	}
 
-	return dspgpv
 }

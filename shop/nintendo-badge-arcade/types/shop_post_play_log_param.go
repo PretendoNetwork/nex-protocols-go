@@ -11,13 +11,13 @@ import (
 // ShopPostPlayLogParam is a type within the ShopNintendoBadgeArcade protocol
 type ShopPostPlayLogParam struct {
 	types.Structure
-	Unknown1  *types.List[*types.PrimitiveU32]
-	Timestamp *types.DateTime
-	Unknown2  *types.String
+	Unknown1  types.List[types.UInt32]
+	Timestamp types.DateTime
+	Unknown2  types.String
 }
 
 // WriteTo writes the ShopPostPlayLogParam to the given writable
-func (spplp *ShopPostPlayLogParam) WriteTo(writable types.Writable) {
+func (spplp ShopPostPlayLogParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	spplp.Unknown1.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (spplp *ShopPostPlayLogParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ShopPostPlayLogParam
-func (spplp *ShopPostPlayLogParam) Copy() types.RVType {
+func (spplp ShopPostPlayLogParam) Copy() types.RVType {
 	copied := NewShopPostPlayLogParam()
 
 	copied.StructureVersion = spplp.StructureVersion
-	copied.Unknown1 = spplp.Unknown1.Copy().(*types.List[*types.PrimitiveU32])
-	copied.Timestamp = spplp.Timestamp.Copy().(*types.DateTime)
-	copied.Unknown2 = spplp.Unknown2.Copy().(*types.String)
+	copied.Unknown1 = spplp.Unknown1.Copy().(types.List[types.UInt32])
+	copied.Timestamp = spplp.Timestamp.Copy().(types.DateTime)
+	copied.Unknown2 = spplp.Unknown2.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ShopPostPlayLogParam contains the same data as the current ShopPostPlayLogParam
-func (spplp *ShopPostPlayLogParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ShopPostPlayLogParam); !ok {
+func (spplp ShopPostPlayLogParam) Equals(o types.RVType) bool {
+	if _, ok := o.(ShopPostPlayLogParam); !ok {
 		return false
 	}
 
-	other := o.(*ShopPostPlayLogParam)
+	other := o.(ShopPostPlayLogParam)
 
 	if spplp.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (spplp *ShopPostPlayLogParam) Equals(o types.RVType) bool {
 	return spplp.Unknown2.Equals(other.Unknown2)
 }
 
+// CopyRef copies the current value of the ShopPostPlayLogParam
+// and returns a pointer to the new copy
+func (spplp ShopPostPlayLogParam) CopyRef() types.RVTypePtr {
+	copied := spplp.Copy().(ShopPostPlayLogParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ShopPostPlayLogParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (spplp *ShopPostPlayLogParam) Deref() types.RVType {
+	return *spplp
+}
+
 // String returns the string representation of the ShopPostPlayLogParam
-func (spplp *ShopPostPlayLogParam) String() string {
+func (spplp ShopPostPlayLogParam) String() string {
 	return spplp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ShopPostPlayLogParam using the provided indentation level
-func (spplp *ShopPostPlayLogParam) FormatToString(indentationLevel int) string {
+func (spplp ShopPostPlayLogParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +129,11 @@ func (spplp *ShopPostPlayLogParam) FormatToString(indentationLevel int) string {
 }
 
 // NewShopPostPlayLogParam returns a new ShopPostPlayLogParam
-func NewShopPostPlayLogParam() *ShopPostPlayLogParam {
-	spplp := &ShopPostPlayLogParam{
-		Unknown1:  types.NewList[*types.PrimitiveU32](),
+func NewShopPostPlayLogParam() ShopPostPlayLogParam {
+	return ShopPostPlayLogParam{
+		Unknown1:  types.NewList[types.UInt32](),
 		Timestamp: types.NewDateTime(0),
 		Unknown2:  types.NewString(""),
 	}
 
-	spplp.Unknown1.Type = types.NewPrimitiveU32(0)
-
-	return spplp
 }

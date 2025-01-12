@@ -11,12 +11,12 @@ import (
 // DataStoreRateObjectParam is a type within the DataStore protocol
 type DataStoreRateObjectParam struct {
 	types.Structure
-	RatingValue    *types.PrimitiveS32
-	AccessPassword *types.PrimitiveU64
+	RatingValue    types.Int32
+	AccessPassword types.UInt64
 }
 
 // WriteTo writes the DataStoreRateObjectParam to the given writable
-func (dsrop *DataStoreRateObjectParam) WriteTo(writable types.Writable) {
+func (dsrop DataStoreRateObjectParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrop.RatingValue.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (dsrop *DataStoreRateObjectParam) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of DataStoreRateObjectParam
-func (dsrop *DataStoreRateObjectParam) Copy() types.RVType {
+func (dsrop DataStoreRateObjectParam) Copy() types.RVType {
 	copied := NewDataStoreRateObjectParam()
 
 	copied.StructureVersion = dsrop.StructureVersion
-	copied.RatingValue = dsrop.RatingValue.Copy().(*types.PrimitiveS32)
-	copied.AccessPassword = dsrop.AccessPassword.Copy().(*types.PrimitiveU64)
+	copied.RatingValue = dsrop.RatingValue.Copy().(types.Int32)
+	copied.AccessPassword = dsrop.AccessPassword.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreRateObjectParam contains the same data as the current DataStoreRateObjectParam
-func (dsrop *DataStoreRateObjectParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreRateObjectParam); !ok {
+func (dsrop DataStoreRateObjectParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreRateObjectParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreRateObjectParam)
+	other := o.(DataStoreRateObjectParam)
 
 	if dsrop.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (dsrop *DataStoreRateObjectParam) Equals(o types.RVType) bool {
 	return dsrop.AccessPassword.Equals(other.AccessPassword)
 }
 
+// CopyRef copies the current value of the DataStoreRateObjectParam
+// and returns a pointer to the new copy
+func (dsrop DataStoreRateObjectParam) CopyRef() types.RVTypePtr {
+	copied := dsrop.Copy().(DataStoreRateObjectParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreRateObjectParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrop *DataStoreRateObjectParam) Deref() types.RVType {
+	return *dsrop
+}
+
 // String returns the string representation of the DataStoreRateObjectParam
-func (dsrop *DataStoreRateObjectParam) String() string {
+func (dsrop DataStoreRateObjectParam) String() string {
 	return dsrop.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreRateObjectParam using the provided indentation level
-func (dsrop *DataStoreRateObjectParam) FormatToString(indentationLevel int) string {
+func (dsrop DataStoreRateObjectParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (dsrop *DataStoreRateObjectParam) FormatToString(indentationLevel int) stri
 }
 
 // NewDataStoreRateObjectParam returns a new DataStoreRateObjectParam
-func NewDataStoreRateObjectParam() *DataStoreRateObjectParam {
-	dsrop := &DataStoreRateObjectParam{
-		RatingValue:    types.NewPrimitiveS32(0),
-		AccessPassword: types.NewPrimitiveU64(0),
+func NewDataStoreRateObjectParam() DataStoreRateObjectParam {
+	return DataStoreRateObjectParam{
+		RatingValue:    types.NewInt32(0),
+		AccessPassword: types.NewUInt64(0),
 	}
 
-	return dsrop
 }

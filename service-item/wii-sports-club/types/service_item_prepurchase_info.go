@@ -11,18 +11,18 @@ import (
 // ServiceItemPrepurchaseInfo is a type within the ServiceItem protocol
 type ServiceItemPrepurchaseInfo struct {
 	types.Structure
-	ItemCode       *types.String
-	PriceID        *types.String
-	RegularPrice   *ServiceItemAmount
-	IsTaxAvailable *types.PrimitiveBool
-	TaxAmount      *ServiceItemAmount
-	TotalAmount    *ServiceItemAmount
-	CurrentBalance *ServiceItemAmount
-	PostBalance    *ServiceItemAmount
+	ItemCode       types.String
+	PriceID        types.String
+	RegularPrice   ServiceItemAmount
+	IsTaxAvailable types.Bool
+	TaxAmount      ServiceItemAmount
+	TotalAmount    ServiceItemAmount
+	CurrentBalance ServiceItemAmount
+	PostBalance    ServiceItemAmount
 }
 
 // WriteTo writes the ServiceItemPrepurchaseInfo to the given writable
-func (sipi *ServiceItemPrepurchaseInfo) WriteTo(writable types.Writable) {
+func (sipi ServiceItemPrepurchaseInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sipi.ItemCode.WriteTo(contentWritable)
@@ -94,29 +94,29 @@ func (sipi *ServiceItemPrepurchaseInfo) ExtractFrom(readable types.Readable) err
 }
 
 // Copy returns a new copied instance of ServiceItemPrepurchaseInfo
-func (sipi *ServiceItemPrepurchaseInfo) Copy() types.RVType {
+func (sipi ServiceItemPrepurchaseInfo) Copy() types.RVType {
 	copied := NewServiceItemPrepurchaseInfo()
 
 	copied.StructureVersion = sipi.StructureVersion
-	copied.ItemCode = sipi.ItemCode.Copy().(*types.String)
-	copied.PriceID = sipi.PriceID.Copy().(*types.String)
-	copied.RegularPrice = sipi.RegularPrice.Copy().(*ServiceItemAmount)
-	copied.IsTaxAvailable = sipi.IsTaxAvailable.Copy().(*types.PrimitiveBool)
-	copied.TaxAmount = sipi.TaxAmount.Copy().(*ServiceItemAmount)
-	copied.TotalAmount = sipi.TotalAmount.Copy().(*ServiceItemAmount)
-	copied.CurrentBalance = sipi.CurrentBalance.Copy().(*ServiceItemAmount)
-	copied.PostBalance = sipi.PostBalance.Copy().(*ServiceItemAmount)
+	copied.ItemCode = sipi.ItemCode.Copy().(types.String)
+	copied.PriceID = sipi.PriceID.Copy().(types.String)
+	copied.RegularPrice = sipi.RegularPrice.Copy().(ServiceItemAmount)
+	copied.IsTaxAvailable = sipi.IsTaxAvailable.Copy().(types.Bool)
+	copied.TaxAmount = sipi.TaxAmount.Copy().(ServiceItemAmount)
+	copied.TotalAmount = sipi.TotalAmount.Copy().(ServiceItemAmount)
+	copied.CurrentBalance = sipi.CurrentBalance.Copy().(ServiceItemAmount)
+	copied.PostBalance = sipi.PostBalance.Copy().(ServiceItemAmount)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemPrepurchaseInfo contains the same data as the current ServiceItemPrepurchaseInfo
-func (sipi *ServiceItemPrepurchaseInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPrepurchaseInfo); !ok {
+func (sipi ServiceItemPrepurchaseInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemPrepurchaseInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPrepurchaseInfo)
+	other := o.(ServiceItemPrepurchaseInfo)
 
 	if sipi.StructureVersion != other.StructureVersion {
 		return false
@@ -153,13 +153,27 @@ func (sipi *ServiceItemPrepurchaseInfo) Equals(o types.RVType) bool {
 	return sipi.PostBalance.Equals(other.PostBalance)
 }
 
+// CopyRef copies the current value of the ServiceItemPrepurchaseInfo
+// and returns a pointer to the new copy
+func (sipi ServiceItemPrepurchaseInfo) CopyRef() types.RVTypePtr {
+	copied := sipi.Copy().(ServiceItemPrepurchaseInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPrepurchaseInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sipi *ServiceItemPrepurchaseInfo) Deref() types.RVType {
+	return *sipi
+}
+
 // String returns the string representation of the ServiceItemPrepurchaseInfo
-func (sipi *ServiceItemPrepurchaseInfo) String() string {
+func (sipi ServiceItemPrepurchaseInfo) String() string {
 	return sipi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemPrepurchaseInfo using the provided indentation level
-func (sipi *ServiceItemPrepurchaseInfo) FormatToString(indentationLevel int) string {
+func (sipi ServiceItemPrepurchaseInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -180,17 +194,16 @@ func (sipi *ServiceItemPrepurchaseInfo) FormatToString(indentationLevel int) str
 }
 
 // NewServiceItemPrepurchaseInfo returns a new ServiceItemPrepurchaseInfo
-func NewServiceItemPrepurchaseInfo() *ServiceItemPrepurchaseInfo {
-	sipi := &ServiceItemPrepurchaseInfo{
+func NewServiceItemPrepurchaseInfo() ServiceItemPrepurchaseInfo {
+	return ServiceItemPrepurchaseInfo{
 		ItemCode:       types.NewString(""),
 		PriceID:        types.NewString(""),
 		RegularPrice:   NewServiceItemAmount(),
-		IsTaxAvailable: types.NewPrimitiveBool(false),
+		IsTaxAvailable: types.NewBool(false),
 		TaxAmount:      NewServiceItemAmount(),
 		TotalAmount:    NewServiceItemAmount(),
 		CurrentBalance: NewServiceItemAmount(),
 		PostBalance:    NewServiceItemAmount(),
 	}
 
-	return sipi
 }

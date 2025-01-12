@@ -25,12 +25,11 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	urlTargetList := types.NewList[*types.StationURL]()
-	urlTargetList.Type = types.NewStationURL("")
+	var urlTargetList types.List[types.StationURL]
 
 	err := urlTargetList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, urlTargetList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

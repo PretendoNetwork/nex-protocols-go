@@ -25,14 +25,14 @@ func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface)
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	gid := types.NewPrimitiveU32(0)
-	strMessage := types.NewString("")
+	var gid types.UInt32
+	var strMessage types.String
 
 	var err error
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.JoinMatchmakeSession(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.JoinMatchmakeSession(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface)
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.JoinMatchmakeSession(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.JoinMatchmakeSession(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, gid, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

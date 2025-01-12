@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 
 	err := nintendoPresenceV2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nintendoPresenceV2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

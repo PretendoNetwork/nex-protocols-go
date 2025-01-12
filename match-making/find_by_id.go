@@ -25,12 +25,11 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lstID := types.NewList[*types.PrimitiveU32]()
-	lstID.Type = types.NewPrimitiveU32(0)
+	var lstID types.List[types.UInt32]
 
 	err := lstID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByID(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.FindByID(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), packet, callID, lstID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

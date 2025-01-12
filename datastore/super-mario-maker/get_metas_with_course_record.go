@@ -27,15 +27,14 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	params := types.NewList[*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam]()
-	params.Type = datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam()
+	var params types.List[datastore_super_mario_maker_types.DataStoreGetCourseRecordParam]
 	metaParam := datastore_types.NewDataStoreGetMetaParam()
 
 	var err error
 
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, params, metaParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -45,7 +44,7 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 
 	err = metaParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, params, metaParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

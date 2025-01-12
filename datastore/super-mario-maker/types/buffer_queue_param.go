@@ -11,12 +11,12 @@ import (
 // BufferQueueParam is a type within the DataStore protocol
 type BufferQueueParam struct {
 	types.Structure
-	DataID *types.PrimitiveU64
-	Slot   *types.PrimitiveU32
+	DataID types.UInt64
+	Slot   types.UInt32
 }
 
 // WriteTo writes the BufferQueueParam to the given writable
-func (bqp *BufferQueueParam) WriteTo(writable types.Writable) {
+func (bqp BufferQueueParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	bqp.DataID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (bqp *BufferQueueParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of BufferQueueParam
-func (bqp *BufferQueueParam) Copy() types.RVType {
+func (bqp BufferQueueParam) Copy() types.RVType {
 	copied := NewBufferQueueParam()
 
 	copied.StructureVersion = bqp.StructureVersion
-	copied.DataID = bqp.DataID.Copy().(*types.PrimitiveU64)
-	copied.Slot = bqp.Slot.Copy().(*types.PrimitiveU32)
+	copied.DataID = bqp.DataID.Copy().(types.UInt64)
+	copied.Slot = bqp.Slot.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given BufferQueueParam contains the same data as the current BufferQueueParam
-func (bqp *BufferQueueParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*BufferQueueParam); !ok {
+func (bqp BufferQueueParam) Equals(o types.RVType) bool {
+	if _, ok := o.(BufferQueueParam); !ok {
 		return false
 	}
 
-	other := o.(*BufferQueueParam)
+	other := o.(BufferQueueParam)
 
 	if bqp.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (bqp *BufferQueueParam) Equals(o types.RVType) bool {
 	return bqp.Slot.Equals(other.Slot)
 }
 
+// CopyRef copies the current value of the BufferQueueParam
+// and returns a pointer to the new copy
+func (bqp BufferQueueParam) CopyRef() types.RVTypePtr {
+	copied := bqp.Copy().(BufferQueueParam)
+	return &copied
+}
+
+// Deref takes a pointer to the BufferQueueParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (bqp *BufferQueueParam) Deref() types.RVType {
+	return *bqp
+}
+
 // String returns the string representation of the BufferQueueParam
-func (bqp *BufferQueueParam) String() string {
+func (bqp BufferQueueParam) String() string {
 	return bqp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the BufferQueueParam using the provided indentation level
-func (bqp *BufferQueueParam) FormatToString(indentationLevel int) string {
+func (bqp BufferQueueParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (bqp *BufferQueueParam) FormatToString(indentationLevel int) string {
 }
 
 // NewBufferQueueParam returns a new BufferQueueParam
-func NewBufferQueueParam() *BufferQueueParam {
-	bqp := &BufferQueueParam{
-		DataID: types.NewPrimitiveU64(0),
-		Slot:   types.NewPrimitiveU32(0),
+func NewBufferQueueParam() BufferQueueParam {
+	return BufferQueueParam{
+		DataID: types.NewUInt64(0),
+		Slot:   types.NewUInt32(0),
 	}
 
-	return bqp
 }

@@ -11,12 +11,12 @@ import (
 // GlobalTradeStationRecordKey is a type within the DataStore protocol
 type GlobalTradeStationRecordKey struct {
 	types.Structure
-	DataID   *types.PrimitiveU64
-	Password *types.PrimitiveU64
+	DataID   types.UInt64
+	Password types.UInt64
 }
 
 // WriteTo writes the GlobalTradeStationRecordKey to the given writable
-func (gtsrk *GlobalTradeStationRecordKey) WriteTo(writable types.Writable) {
+func (gtsrk GlobalTradeStationRecordKey) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsrk.DataID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (gtsrk *GlobalTradeStationRecordKey) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of GlobalTradeStationRecordKey
-func (gtsrk *GlobalTradeStationRecordKey) Copy() types.RVType {
+func (gtsrk GlobalTradeStationRecordKey) Copy() types.RVType {
 	copied := NewGlobalTradeStationRecordKey()
 
 	copied.StructureVersion = gtsrk.StructureVersion
-	copied.DataID = gtsrk.DataID.Copy().(*types.PrimitiveU64)
-	copied.Password = gtsrk.Password.Copy().(*types.PrimitiveU64)
+	copied.DataID = gtsrk.DataID.Copy().(types.UInt64)
+	copied.Password = gtsrk.Password.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationRecordKey contains the same data as the current GlobalTradeStationRecordKey
-func (gtsrk *GlobalTradeStationRecordKey) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationRecordKey); !ok {
+func (gtsrk GlobalTradeStationRecordKey) Equals(o types.RVType) bool {
+	if _, ok := o.(GlobalTradeStationRecordKey); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationRecordKey)
+	other := o.(GlobalTradeStationRecordKey)
 
 	if gtsrk.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (gtsrk *GlobalTradeStationRecordKey) Equals(o types.RVType) bool {
 	return gtsrk.Password.Equals(other.Password)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationRecordKey
+// and returns a pointer to the new copy
+func (gtsrk GlobalTradeStationRecordKey) CopyRef() types.RVTypePtr {
+	copied := gtsrk.Copy().(GlobalTradeStationRecordKey)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationRecordKey
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsrk *GlobalTradeStationRecordKey) Deref() types.RVType {
+	return *gtsrk
+}
+
 // String returns the string representation of the GlobalTradeStationRecordKey
-func (gtsrk *GlobalTradeStationRecordKey) String() string {
+func (gtsrk GlobalTradeStationRecordKey) String() string {
 	return gtsrk.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationRecordKey using the provided indentation level
-func (gtsrk *GlobalTradeStationRecordKey) FormatToString(indentationLevel int) string {
+func (gtsrk GlobalTradeStationRecordKey) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (gtsrk *GlobalTradeStationRecordKey) FormatToString(indentationLevel int) s
 }
 
 // NewGlobalTradeStationRecordKey returns a new GlobalTradeStationRecordKey
-func NewGlobalTradeStationRecordKey() *GlobalTradeStationRecordKey {
-	gtsrk := &GlobalTradeStationRecordKey{
-		DataID:   types.NewPrimitiveU64(0),
-		Password: types.NewPrimitiveU64(0),
+func NewGlobalTradeStationRecordKey() GlobalTradeStationRecordKey {
+	return GlobalTradeStationRecordKey{
+		DataID:   types.NewUInt64(0),
+		Password: types.NewUInt64(0),
 	}
 
-	return gtsrk
 }

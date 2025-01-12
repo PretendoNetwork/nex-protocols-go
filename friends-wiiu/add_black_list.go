@@ -29,7 +29,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 
 	err := blacklistedPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddBlackList(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.AddBlackList(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, blacklistedPrincipal)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,11 +11,11 @@ import (
 // ServiceItemGetNoticeParam is a type within the ServiceItem protocol
 type ServiceItemGetNoticeParam struct {
 	types.Structure
-	NoticeType *types.PrimitiveU32
+	NoticeType types.UInt32
 }
 
 // WriteTo writes the ServiceItemGetNoticeParam to the given writable
-func (signp *ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
+func (signp ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	signp.NoticeType.WriteTo(contentWritable)
@@ -45,22 +45,22 @@ func (signp *ServiceItemGetNoticeParam) ExtractFrom(readable types.Readable) err
 }
 
 // Copy returns a new copied instance of ServiceItemGetNoticeParam
-func (signp *ServiceItemGetNoticeParam) Copy() types.RVType {
+func (signp ServiceItemGetNoticeParam) Copy() types.RVType {
 	copied := NewServiceItemGetNoticeParam()
 
 	copied.StructureVersion = signp.StructureVersion
-	copied.NoticeType = signp.NoticeType.Copy().(*types.PrimitiveU32)
+	copied.NoticeType = signp.NoticeType.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetNoticeParam contains the same data as the current ServiceItemGetNoticeParam
-func (signp *ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetNoticeParam); !ok {
+func (signp ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemGetNoticeParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetNoticeParam)
+	other := o.(ServiceItemGetNoticeParam)
 
 	if signp.StructureVersion != other.StructureVersion {
 		return false
@@ -69,13 +69,27 @@ func (signp *ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
 	return signp.NoticeType.Equals(other.NoticeType)
 }
 
+// CopyRef copies the current value of the ServiceItemGetNoticeParam
+// and returns a pointer to the new copy
+func (signp ServiceItemGetNoticeParam) CopyRef() types.RVTypePtr {
+	copied := signp.Copy().(ServiceItemGetNoticeParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetNoticeParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (signp *ServiceItemGetNoticeParam) Deref() types.RVType {
+	return *signp
+}
+
 // String returns the string representation of the ServiceItemGetNoticeParam
-func (signp *ServiceItemGetNoticeParam) String() string {
+func (signp ServiceItemGetNoticeParam) String() string {
 	return signp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetNoticeParam using the provided indentation level
-func (signp *ServiceItemGetNoticeParam) FormatToString(indentationLevel int) string {
+func (signp ServiceItemGetNoticeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +103,9 @@ func (signp *ServiceItemGetNoticeParam) FormatToString(indentationLevel int) str
 }
 
 // NewServiceItemGetNoticeParam returns a new ServiceItemGetNoticeParam
-func NewServiceItemGetNoticeParam() *ServiceItemGetNoticeParam {
-	signp := &ServiceItemGetNoticeParam{
-		NoticeType: types.NewPrimitiveU32(0),
+func NewServiceItemGetNoticeParam() ServiceItemGetNoticeParam {
+	return ServiceItemGetNoticeParam{
+		NoticeType: types.NewUInt32(0),
 	}
 
-	return signp
 }

@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	integerSettingIndex := types.NewPrimitiveU32(0)
+	var integerSettingIndex types.UInt32
 
 	err := integerSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, integerSettingIndex)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,11 +11,11 @@ import (
 // DataStorePostProfileParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStorePostProfileParam struct {
 	types.Structure
-	Profile *types.QBuffer
+	Profile types.QBuffer
 }
 
 // WriteTo writes the DataStorePostProfileParam to the given writable
-func (dsppp *DataStorePostProfileParam) WriteTo(writable types.Writable) {
+func (dsppp DataStorePostProfileParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsppp.Profile.WriteTo(contentWritable)
@@ -45,22 +45,22 @@ func (dsppp *DataStorePostProfileParam) ExtractFrom(readable types.Readable) err
 }
 
 // Copy returns a new copied instance of DataStorePostProfileParam
-func (dsppp *DataStorePostProfileParam) Copy() types.RVType {
+func (dsppp DataStorePostProfileParam) Copy() types.RVType {
 	copied := NewDataStorePostProfileParam()
 
 	copied.StructureVersion = dsppp.StructureVersion
-	copied.Profile = dsppp.Profile.Copy().(*types.QBuffer)
+	copied.Profile = dsppp.Profile.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given DataStorePostProfileParam contains the same data as the current DataStorePostProfileParam
-func (dsppp *DataStorePostProfileParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePostProfileParam); !ok {
+func (dsppp DataStorePostProfileParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStorePostProfileParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePostProfileParam)
+	other := o.(DataStorePostProfileParam)
 
 	if dsppp.StructureVersion != other.StructureVersion {
 		return false
@@ -69,13 +69,27 @@ func (dsppp *DataStorePostProfileParam) Equals(o types.RVType) bool {
 	return dsppp.Profile.Equals(other.Profile)
 }
 
+// CopyRef copies the current value of the DataStorePostProfileParam
+// and returns a pointer to the new copy
+func (dsppp DataStorePostProfileParam) CopyRef() types.RVTypePtr {
+	copied := dsppp.Copy().(DataStorePostProfileParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePostProfileParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsppp *DataStorePostProfileParam) Deref() types.RVType {
+	return *dsppp
+}
+
 // String returns the string representation of the DataStorePostProfileParam
-func (dsppp *DataStorePostProfileParam) String() string {
+func (dsppp DataStorePostProfileParam) String() string {
 	return dsppp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePostProfileParam using the provided indentation level
-func (dsppp *DataStorePostProfileParam) FormatToString(indentationLevel int) string {
+func (dsppp DataStorePostProfileParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +103,9 @@ func (dsppp *DataStorePostProfileParam) FormatToString(indentationLevel int) str
 }
 
 // NewDataStorePostProfileParam returns a new DataStorePostProfileParam
-func NewDataStorePostProfileParam() *DataStorePostProfileParam {
-	dsppp := &DataStorePostProfileParam{
+func NewDataStorePostProfileParam() DataStorePostProfileParam {
+	return DataStorePostProfileParam{
 		Profile: types.NewQBuffer(nil),
 	}
 
-	return dsppp
 }

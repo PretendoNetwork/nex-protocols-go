@@ -25,12 +25,11 @@ func (protocol *Protocol) handleSearchSimpleSearchObjectByObjectIDs(packet nex.P
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	objectIDs := types.NewList[*types.PrimitiveU32]()
-	objectIDs.Type = types.NewPrimitiveU32(0)
+	var objectIDs types.List[types.UInt32]
 
 	err := objectIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SearchSimpleSearchObjectByObjectIDs(fmt.Errorf("Failed to read objectIDs from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.SearchSimpleSearchObjectByObjectIDs(fmt.Errorf("Failed to read objectIDs from parameters. %s", err.Error()), packet, callID, objectIDs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

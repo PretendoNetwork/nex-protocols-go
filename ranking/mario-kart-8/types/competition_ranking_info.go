@@ -11,13 +11,13 @@ import (
 // CompetitionRankingInfo is a type within the Ranking protocol
 type CompetitionRankingInfo struct {
 	types.Structure
-	Unknown  *types.PrimitiveU32
-	Unknown2 *types.PrimitiveU32
-	Unknown3 *types.List[*types.PrimitiveU32]
+	Unknown  types.UInt32
+	Unknown2 types.UInt32
+	Unknown3 types.List[types.UInt32]
 }
 
 // WriteTo writes the CompetitionRankingInfo to the given writable
-func (cri *CompetitionRankingInfo) WriteTo(writable types.Writable) {
+func (cri CompetitionRankingInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	cri.Unknown.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (cri *CompetitionRankingInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of CompetitionRankingInfo
-func (cri *CompetitionRankingInfo) Copy() types.RVType {
+func (cri CompetitionRankingInfo) Copy() types.RVType {
 	copied := NewCompetitionRankingInfo()
 
 	copied.StructureVersion = cri.StructureVersion
-	copied.Unknown = cri.Unknown.Copy().(*types.PrimitiveU32)
-	copied.Unknown2 = cri.Unknown2.Copy().(*types.PrimitiveU32)
-	copied.Unknown3 = cri.Unknown3.Copy().(*types.List[*types.PrimitiveU32])
+	copied.Unknown = cri.Unknown.Copy().(types.UInt32)
+	copied.Unknown2 = cri.Unknown2.Copy().(types.UInt32)
+	copied.Unknown3 = cri.Unknown3.Copy().(types.List[types.UInt32])
 
 	return copied
 }
 
 // Equals checks if the given CompetitionRankingInfo contains the same data as the current CompetitionRankingInfo
-func (cri *CompetitionRankingInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*CompetitionRankingInfo); !ok {
+func (cri CompetitionRankingInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(CompetitionRankingInfo); !ok {
 		return false
 	}
 
-	other := o.(*CompetitionRankingInfo)
+	other := o.(CompetitionRankingInfo)
 
 	if cri.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (cri *CompetitionRankingInfo) Equals(o types.RVType) bool {
 	return cri.Unknown3.Equals(other.Unknown3)
 }
 
+// CopyRef copies the current value of the CompetitionRankingInfo
+// and returns a pointer to the new copy
+func (cri CompetitionRankingInfo) CopyRef() types.RVTypePtr {
+	copied := cri.Copy().(CompetitionRankingInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the CompetitionRankingInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (cri *CompetitionRankingInfo) Deref() types.RVType {
+	return *cri
+}
+
 // String returns the string representation of the CompetitionRankingInfo
-func (cri *CompetitionRankingInfo) String() string {
+func (cri CompetitionRankingInfo) String() string {
 	return cri.FormatToString(0)
 }
 
 // FormatToString pretty-prints the CompetitionRankingInfo using the provided indentation level
-func (cri *CompetitionRankingInfo) FormatToString(indentationLevel int) string {
+func (cri CompetitionRankingInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,14 +129,11 @@ func (cri *CompetitionRankingInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewCompetitionRankingInfo returns a new CompetitionRankingInfo
-func NewCompetitionRankingInfo() *CompetitionRankingInfo {
-	cri := &CompetitionRankingInfo{
-		Unknown:  types.NewPrimitiveU32(0),
-		Unknown2: types.NewPrimitiveU32(0),
-		Unknown3: types.NewList[*types.PrimitiveU32](),
+func NewCompetitionRankingInfo() CompetitionRankingInfo {
+	return CompetitionRankingInfo{
+		Unknown:  types.NewUInt32(0),
+		Unknown2: types.NewUInt32(0),
+		Unknown3: types.NewList[types.UInt32](),
 	}
 
-	cri.Unknown3.Type = types.NewPrimitiveU32(0)
-
-	return cri
 }

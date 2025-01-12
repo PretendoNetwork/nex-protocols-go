@@ -11,13 +11,13 @@ import (
 // ServiceItemAmount is a type within the ServiceItem protocol
 type ServiceItemAmount struct {
 	types.Structure
-	FormattedAmount *types.String
-	Currency        *types.String
-	RawValue        *types.String
+	FormattedAmount types.String
+	Currency        types.String
+	RawValue        types.String
 }
 
 // WriteTo writes the ServiceItemAmount to the given writable
-func (sia *ServiceItemAmount) WriteTo(writable types.Writable) {
+func (sia ServiceItemAmount) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sia.FormattedAmount.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (sia *ServiceItemAmount) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemAmount
-func (sia *ServiceItemAmount) Copy() types.RVType {
+func (sia ServiceItemAmount) Copy() types.RVType {
 	copied := NewServiceItemAmount()
 
 	copied.StructureVersion = sia.StructureVersion
-	copied.FormattedAmount = sia.FormattedAmount.Copy().(*types.String)
-	copied.Currency = sia.Currency.Copy().(*types.String)
-	copied.RawValue = sia.RawValue.Copy().(*types.String)
+	copied.FormattedAmount = sia.FormattedAmount.Copy().(types.String)
+	copied.Currency = sia.Currency.Copy().(types.String)
+	copied.RawValue = sia.RawValue.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemAmount contains the same data as the current ServiceItemAmount
-func (sia *ServiceItemAmount) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemAmount); !ok {
+func (sia ServiceItemAmount) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemAmount); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemAmount)
+	other := o.(ServiceItemAmount)
 
 	if sia.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (sia *ServiceItemAmount) Equals(o types.RVType) bool {
 	return sia.RawValue.Equals(other.RawValue)
 }
 
+// CopyRef copies the current value of the ServiceItemAmount
+// and returns a pointer to the new copy
+func (sia ServiceItemAmount) CopyRef() types.RVTypePtr {
+	copied := sia.Copy().(ServiceItemAmount)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemAmount
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sia *ServiceItemAmount) Deref() types.RVType {
+	return *sia
+}
+
 // String returns the string representation of the ServiceItemAmount
-func (sia *ServiceItemAmount) String() string {
+func (sia ServiceItemAmount) String() string {
 	return sia.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemAmount using the provided indentation level
-func (sia *ServiceItemAmount) FormatToString(indentationLevel int) string {
+func (sia ServiceItemAmount) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +129,11 @@ func (sia *ServiceItemAmount) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemAmount returns a new ServiceItemAmount
-func NewServiceItemAmount() *ServiceItemAmount {
-	sia := &ServiceItemAmount{
+func NewServiceItemAmount() ServiceItemAmount {
+	return ServiceItemAmount{
 		FormattedAmount: types.NewString(""),
 		Currency:        types.NewString(""),
 		RawValue:        types.NewString(""),
 	}
 
-	return sia
 }

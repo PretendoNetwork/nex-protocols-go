@@ -11,16 +11,16 @@ import (
 // Ranking2EstimateScoreRankOutput is a type within the Ranking2 protocol
 type Ranking2EstimateScoreRankOutput struct {
 	types.Structure
-	Rank         *types.PrimitiveU32
-	Length       *types.PrimitiveU32
-	Score        *types.PrimitiveU32
-	Category     *types.PrimitiveU32
-	Season       *types.PrimitiveS32
-	SamplingRate *types.PrimitiveU8
+	Rank         types.UInt32
+	Length       types.UInt32
+	Score        types.UInt32
+	Category     types.UInt32
+	Season       types.Int32
+	SamplingRate types.UInt8
 }
 
 // WriteTo writes the Ranking2EstimateScoreRankOutput to the given writable
-func (resro *Ranking2EstimateScoreRankOutput) WriteTo(writable types.Writable) {
+func (resro Ranking2EstimateScoreRankOutput) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	resro.Rank.WriteTo(contentWritable)
@@ -80,27 +80,27 @@ func (resro *Ranking2EstimateScoreRankOutput) ExtractFrom(readable types.Readabl
 }
 
 // Copy returns a new copied instance of Ranking2EstimateScoreRankOutput
-func (resro *Ranking2EstimateScoreRankOutput) Copy() types.RVType {
+func (resro Ranking2EstimateScoreRankOutput) Copy() types.RVType {
 	copied := NewRanking2EstimateScoreRankOutput()
 
 	copied.StructureVersion = resro.StructureVersion
-	copied.Rank = resro.Rank.Copy().(*types.PrimitiveU32)
-	copied.Length = resro.Length.Copy().(*types.PrimitiveU32)
-	copied.Score = resro.Score.Copy().(*types.PrimitiveU32)
-	copied.Category = resro.Category.Copy().(*types.PrimitiveU32)
-	copied.Season = resro.Season.Copy().(*types.PrimitiveS32)
-	copied.SamplingRate = resro.SamplingRate.Copy().(*types.PrimitiveU8)
+	copied.Rank = resro.Rank.Copy().(types.UInt32)
+	copied.Length = resro.Length.Copy().(types.UInt32)
+	copied.Score = resro.Score.Copy().(types.UInt32)
+	copied.Category = resro.Category.Copy().(types.UInt32)
+	copied.Season = resro.Season.Copy().(types.Int32)
+	copied.SamplingRate = resro.SamplingRate.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given Ranking2EstimateScoreRankOutput contains the same data as the current Ranking2EstimateScoreRankOutput
-func (resro *Ranking2EstimateScoreRankOutput) Equals(o types.RVType) bool {
-	if _, ok := o.(*Ranking2EstimateScoreRankOutput); !ok {
+func (resro Ranking2EstimateScoreRankOutput) Equals(o types.RVType) bool {
+	if _, ok := o.(Ranking2EstimateScoreRankOutput); !ok {
 		return false
 	}
 
-	other := o.(*Ranking2EstimateScoreRankOutput)
+	other := o.(Ranking2EstimateScoreRankOutput)
 
 	if resro.StructureVersion != other.StructureVersion {
 		return false
@@ -129,13 +129,27 @@ func (resro *Ranking2EstimateScoreRankOutput) Equals(o types.RVType) bool {
 	return resro.SamplingRate.Equals(other.SamplingRate)
 }
 
+// CopyRef copies the current value of the Ranking2EstimateScoreRankOutput
+// and returns a pointer to the new copy
+func (resro Ranking2EstimateScoreRankOutput) CopyRef() types.RVTypePtr {
+	copied := resro.Copy().(Ranking2EstimateScoreRankOutput)
+	return &copied
+}
+
+// Deref takes a pointer to the Ranking2EstimateScoreRankOutput
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (resro *Ranking2EstimateScoreRankOutput) Deref() types.RVType {
+	return *resro
+}
+
 // String returns the string representation of the Ranking2EstimateScoreRankOutput
-func (resro *Ranking2EstimateScoreRankOutput) String() string {
+func (resro Ranking2EstimateScoreRankOutput) String() string {
 	return resro.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Ranking2EstimateScoreRankOutput using the provided indentation level
-func (resro *Ranking2EstimateScoreRankOutput) FormatToString(indentationLevel int) string {
+func (resro Ranking2EstimateScoreRankOutput) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,15 +168,14 @@ func (resro *Ranking2EstimateScoreRankOutput) FormatToString(indentationLevel in
 }
 
 // NewRanking2EstimateScoreRankOutput returns a new Ranking2EstimateScoreRankOutput
-func NewRanking2EstimateScoreRankOutput() *Ranking2EstimateScoreRankOutput {
-	resro := &Ranking2EstimateScoreRankOutput{
-		Rank:         types.NewPrimitiveU32(0),
-		Length:       types.NewPrimitiveU32(0),
-		Score:        types.NewPrimitiveU32(0),
-		Category:     types.NewPrimitiveU32(0),
-		Season:       types.NewPrimitiveS32(0),
-		SamplingRate: types.NewPrimitiveU8(0),
+func NewRanking2EstimateScoreRankOutput() Ranking2EstimateScoreRankOutput {
+	return Ranking2EstimateScoreRankOutput{
+		Rank:         types.NewUInt32(0),
+		Length:       types.NewUInt32(0),
+		Score:        types.NewUInt32(0),
+		Category:     types.NewUInt32(0),
+		Season:       types.NewInt32(0),
+		SamplingRate: types.NewUInt8(0),
 	}
 
-	return resro
 }

@@ -11,16 +11,16 @@ import (
 // ServiceItemListItem is a type within the ServiceItem protocol
 type ServiceItemListItem struct {
 	types.Structure
-	ItemCode            *types.String
-	RegularPrice        *ServiceItemAmount
-	TaxExcluded         *types.PrimitiveBool
-	InitialPurchaseOnly *types.PrimitiveBool
-	Limitation          *ServiceItemLimitation
-	Attributes          *types.List[*ServiceItemAttribute]
+	ItemCode            types.String
+	RegularPrice        ServiceItemAmount
+	TaxExcluded         types.Bool
+	InitialPurchaseOnly types.Bool
+	Limitation          ServiceItemLimitation
+	Attributes          types.List[ServiceItemAttribute]
 }
 
 // WriteTo writes the ServiceItemListItem to the given writable
-func (sili *ServiceItemListItem) WriteTo(writable types.Writable) {
+func (sili ServiceItemListItem) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sili.ItemCode.WriteTo(contentWritable)
@@ -80,27 +80,27 @@ func (sili *ServiceItemListItem) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemListItem
-func (sili *ServiceItemListItem) Copy() types.RVType {
+func (sili ServiceItemListItem) Copy() types.RVType {
 	copied := NewServiceItemListItem()
 
 	copied.StructureVersion = sili.StructureVersion
-	copied.ItemCode = sili.ItemCode.Copy().(*types.String)
-	copied.RegularPrice = sili.RegularPrice.Copy().(*ServiceItemAmount)
-	copied.TaxExcluded = sili.TaxExcluded.Copy().(*types.PrimitiveBool)
-	copied.InitialPurchaseOnly = sili.InitialPurchaseOnly.Copy().(*types.PrimitiveBool)
-	copied.Limitation = sili.Limitation.Copy().(*ServiceItemLimitation)
-	copied.Attributes = sili.Attributes.Copy().(*types.List[*ServiceItemAttribute])
+	copied.ItemCode = sili.ItemCode.Copy().(types.String)
+	copied.RegularPrice = sili.RegularPrice.Copy().(ServiceItemAmount)
+	copied.TaxExcluded = sili.TaxExcluded.Copy().(types.Bool)
+	copied.InitialPurchaseOnly = sili.InitialPurchaseOnly.Copy().(types.Bool)
+	copied.Limitation = sili.Limitation.Copy().(ServiceItemLimitation)
+	copied.Attributes = sili.Attributes.Copy().(types.List[ServiceItemAttribute])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemListItem contains the same data as the current ServiceItemListItem
-func (sili *ServiceItemListItem) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemListItem); !ok {
+func (sili ServiceItemListItem) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemListItem); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemListItem)
+	other := o.(ServiceItemListItem)
 
 	if sili.StructureVersion != other.StructureVersion {
 		return false
@@ -129,13 +129,27 @@ func (sili *ServiceItemListItem) Equals(o types.RVType) bool {
 	return sili.Attributes.Equals(other.Attributes)
 }
 
+// CopyRef copies the current value of the ServiceItemListItem
+// and returns a pointer to the new copy
+func (sili ServiceItemListItem) CopyRef() types.RVTypePtr {
+	copied := sili.Copy().(ServiceItemListItem)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemListItem
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sili *ServiceItemListItem) Deref() types.RVType {
+	return *sili
+}
+
 // String returns the string representation of the ServiceItemListItem
-func (sili *ServiceItemListItem) String() string {
+func (sili ServiceItemListItem) String() string {
 	return sili.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemListItem using the provided indentation level
-func (sili *ServiceItemListItem) FormatToString(indentationLevel int) string {
+func (sili ServiceItemListItem) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,17 +168,14 @@ func (sili *ServiceItemListItem) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemListItem returns a new ServiceItemListItem
-func NewServiceItemListItem() *ServiceItemListItem {
-	sili := &ServiceItemListItem{
+func NewServiceItemListItem() ServiceItemListItem {
+	return ServiceItemListItem{
 		ItemCode:            types.NewString(""),
 		RegularPrice:        NewServiceItemAmount(),
-		TaxExcluded:         types.NewPrimitiveBool(false),
-		InitialPurchaseOnly: types.NewPrimitiveBool(false),
+		TaxExcluded:         types.NewBool(false),
+		InitialPurchaseOnly: types.NewBool(false),
 		Limitation:          NewServiceItemLimitation(),
-		Attributes:          types.NewList[*ServiceItemAttribute](),
+		Attributes:          types.NewList[ServiceItemAttribute](),
 	}
 
-	sili.Attributes.Type = NewServiceItemAttribute()
-
-	return sili
 }

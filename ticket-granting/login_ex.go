@@ -25,14 +25,14 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	strUserName := types.NewString("")
-	oExtraData := types.NewAnyDataHolder()
+	var strUserName types.String
+	var oExtraData types.DataHolder
 
 	var err error
 
 	err = strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, strUserName, oExtraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 
 	err = oExtraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, strUserName, oExtraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

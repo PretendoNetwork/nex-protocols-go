@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 
 	err := profileData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateProfile(fmt.Errorf("Failed to read profileData from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateProfile(fmt.Errorf("Failed to read profileData from parameters. %s", err.Error()), packet, callID, profileData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,11 +11,11 @@ import (
 // ServiceItemUserInfo is a type within the ServiceItem protocol
 type ServiceItemUserInfo struct {
 	types.Structure
-	ApplicationBuffer *types.QBuffer
+	ApplicationBuffer types.QBuffer
 }
 
 // WriteTo writes the ServiceItemUserInfo to the given writable
-func (siui *ServiceItemUserInfo) WriteTo(writable types.Writable) {
+func (siui ServiceItemUserInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siui.ApplicationBuffer.WriteTo(contentWritable)
@@ -45,22 +45,22 @@ func (siui *ServiceItemUserInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemUserInfo
-func (siui *ServiceItemUserInfo) Copy() types.RVType {
+func (siui ServiceItemUserInfo) Copy() types.RVType {
 	copied := NewServiceItemUserInfo()
 
 	copied.StructureVersion = siui.StructureVersion
-	copied.ApplicationBuffer = siui.ApplicationBuffer.Copy().(*types.QBuffer)
+	copied.ApplicationBuffer = siui.ApplicationBuffer.Copy().(types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemUserInfo contains the same data as the current ServiceItemUserInfo
-func (siui *ServiceItemUserInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemUserInfo); !ok {
+func (siui ServiceItemUserInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemUserInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemUserInfo)
+	other := o.(ServiceItemUserInfo)
 
 	if siui.StructureVersion != other.StructureVersion {
 		return false
@@ -69,13 +69,27 @@ func (siui *ServiceItemUserInfo) Equals(o types.RVType) bool {
 	return siui.ApplicationBuffer.Equals(other.ApplicationBuffer)
 }
 
+// CopyRef copies the current value of the ServiceItemUserInfo
+// and returns a pointer to the new copy
+func (siui ServiceItemUserInfo) CopyRef() types.RVTypePtr {
+	copied := siui.Copy().(ServiceItemUserInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemUserInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siui *ServiceItemUserInfo) Deref() types.RVType {
+	return *siui
+}
+
 // String returns the string representation of the ServiceItemUserInfo
-func (siui *ServiceItemUserInfo) String() string {
+func (siui ServiceItemUserInfo) String() string {
 	return siui.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemUserInfo using the provided indentation level
-func (siui *ServiceItemUserInfo) FormatToString(indentationLevel int) string {
+func (siui ServiceItemUserInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +103,9 @@ func (siui *ServiceItemUserInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemUserInfo returns a new ServiceItemUserInfo
-func NewServiceItemUserInfo() *ServiceItemUserInfo {
-	siui := &ServiceItemUserInfo{
+func NewServiceItemUserInfo() ServiceItemUserInfo {
+	return ServiceItemUserInfo{
 		ApplicationBuffer: types.NewQBuffer(nil),
 	}
 
-	return siui
 }

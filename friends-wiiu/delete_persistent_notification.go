@@ -26,12 +26,11 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	persistentNotifications := types.NewList[*friends_wiiu_types.PersistentNotification]()
-	persistentNotifications.Type = friends_wiiu_types.NewPersistentNotification()
+	var persistentNotifications types.List[friends_wiiu_types.PersistentNotification]
 
 	err := persistentNotifications.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeletePersistentNotification(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.DeletePersistentNotification(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), packet, callID, persistentNotifications)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

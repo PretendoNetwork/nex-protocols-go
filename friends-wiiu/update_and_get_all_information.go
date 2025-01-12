@@ -28,13 +28,13 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	nnaInfo := friends_wiiu_types.NewNNAInfo()
 	presence := friends_wiiu_types.NewNintendoPresenceV2()
-	birthday := types.NewDateTime(0)
+	var birthday types.DateTime
 
 	var err error
 
 	err = nnaInfo.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	err = presence.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	err = birthday.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

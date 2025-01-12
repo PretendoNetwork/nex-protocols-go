@@ -11,15 +11,15 @@ import (
 // DataStoreSpecificMetaInfo is a type within the DataStore protocol
 type DataStoreSpecificMetaInfo struct {
 	types.Structure
-	DataID   *types.PrimitiveU64
-	OwnerID  *types.PID
-	Size     *types.PrimitiveU32
-	DataType *types.PrimitiveU16
-	Version  *types.PrimitiveU32
+	DataID   types.UInt64
+	OwnerID  types.PID
+	Size     types.UInt32
+	DataType types.UInt16
+	Version  types.UInt32
 }
 
 // WriteTo writes the DataStoreSpecificMetaInfo to the given writable
-func (dssmi *DataStoreSpecificMetaInfo) WriteTo(writable types.Writable) {
+func (dssmi DataStoreSpecificMetaInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dssmi.DataID.WriteTo(contentWritable)
@@ -73,26 +73,26 @@ func (dssmi *DataStoreSpecificMetaInfo) ExtractFrom(readable types.Readable) err
 }
 
 // Copy returns a new copied instance of DataStoreSpecificMetaInfo
-func (dssmi *DataStoreSpecificMetaInfo) Copy() types.RVType {
+func (dssmi DataStoreSpecificMetaInfo) Copy() types.RVType {
 	copied := NewDataStoreSpecificMetaInfo()
 
 	copied.StructureVersion = dssmi.StructureVersion
-	copied.DataID = dssmi.DataID.Copy().(*types.PrimitiveU64)
-	copied.OwnerID = dssmi.OwnerID.Copy().(*types.PID)
-	copied.Size = dssmi.Size.Copy().(*types.PrimitiveU32)
-	copied.DataType = dssmi.DataType.Copy().(*types.PrimitiveU16)
-	copied.Version = dssmi.Version.Copy().(*types.PrimitiveU32)
+	copied.DataID = dssmi.DataID.Copy().(types.UInt64)
+	copied.OwnerID = dssmi.OwnerID.Copy().(types.PID)
+	copied.Size = dssmi.Size.Copy().(types.UInt32)
+	copied.DataType = dssmi.DataType.Copy().(types.UInt16)
+	copied.Version = dssmi.Version.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreSpecificMetaInfo contains the same data as the current DataStoreSpecificMetaInfo
-func (dssmi *DataStoreSpecificMetaInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreSpecificMetaInfo); !ok {
+func (dssmi DataStoreSpecificMetaInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreSpecificMetaInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreSpecificMetaInfo)
+	other := o.(DataStoreSpecificMetaInfo)
 
 	if dssmi.StructureVersion != other.StructureVersion {
 		return false
@@ -117,13 +117,27 @@ func (dssmi *DataStoreSpecificMetaInfo) Equals(o types.RVType) bool {
 	return dssmi.Version.Equals(other.Version)
 }
 
+// CopyRef copies the current value of the DataStoreSpecificMetaInfo
+// and returns a pointer to the new copy
+func (dssmi DataStoreSpecificMetaInfo) CopyRef() types.RVTypePtr {
+	copied := dssmi.Copy().(DataStoreSpecificMetaInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreSpecificMetaInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dssmi *DataStoreSpecificMetaInfo) Deref() types.RVType {
+	return *dssmi
+}
+
 // String returns the string representation of the DataStoreSpecificMetaInfo
-func (dssmi *DataStoreSpecificMetaInfo) String() string {
+func (dssmi DataStoreSpecificMetaInfo) String() string {
 	return dssmi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreSpecificMetaInfo using the provided indentation level
-func (dssmi *DataStoreSpecificMetaInfo) FormatToString(indentationLevel int) string {
+func (dssmi DataStoreSpecificMetaInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,14 +155,13 @@ func (dssmi *DataStoreSpecificMetaInfo) FormatToString(indentationLevel int) str
 }
 
 // NewDataStoreSpecificMetaInfo returns a new DataStoreSpecificMetaInfo
-func NewDataStoreSpecificMetaInfo() *DataStoreSpecificMetaInfo {
-	dssmi := &DataStoreSpecificMetaInfo{
-		DataID:   types.NewPrimitiveU64(0),
+func NewDataStoreSpecificMetaInfo() DataStoreSpecificMetaInfo {
+	return DataStoreSpecificMetaInfo{
+		DataID:   types.NewUInt64(0),
 		OwnerID:  types.NewPID(0),
-		Size:     types.NewPrimitiveU32(0),
-		DataType: types.NewPrimitiveU16(0),
-		Version:  types.NewPrimitiveU32(0),
+		Size:     types.NewUInt32(0),
+		DataType: types.NewUInt16(0),
+		Version:  types.NewUInt32(0),
 	}
 
-	return dssmi
 }

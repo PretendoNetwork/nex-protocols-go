@@ -25,15 +25,14 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	dataIDs := types.NewList[*types.PrimitiveU64]()
-	dataIDs.Type = types.NewPrimitiveU64(0)
-	accessPassword := types.NewPrimitiveU64(0)
+	var dataIDs types.List[types.UInt64]
+	var accessPassword types.UInt64
 
 	var err error
 
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRatings(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetRatings(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, accessPassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 
 	err = accessPassword.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRatings(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetRatings(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, dataIDs, accessPassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

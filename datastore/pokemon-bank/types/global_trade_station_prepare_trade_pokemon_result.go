@@ -11,12 +11,12 @@ import (
 // GlobalTradeStationPrepareTradePokemonResult is a type within the DataStore protocol
 type GlobalTradeStationPrepareTradePokemonResult struct {
 	types.Structure
-	Result          *GlobalTradeStationDownloadPokemonResult
-	PrepareTradeKey *GlobalTradeStationRecordKey
+	Result          GlobalTradeStationDownloadPokemonResult
+	PrepareTradeKey GlobalTradeStationRecordKey
 }
 
 // WriteTo writes the GlobalTradeStationPrepareTradePokemonResult to the given writable
-func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) WriteTo(writable types.Writable) {
+func (gtsptpr GlobalTradeStationPrepareTradePokemonResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gtsptpr.Result.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) ExtractFrom(readable
 }
 
 // Copy returns a new copied instance of GlobalTradeStationPrepareTradePokemonResult
-func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) Copy() types.RVType {
+func (gtsptpr GlobalTradeStationPrepareTradePokemonResult) Copy() types.RVType {
 	copied := NewGlobalTradeStationPrepareTradePokemonResult()
 
 	copied.StructureVersion = gtsptpr.StructureVersion
-	copied.Result = gtsptpr.Result.Copy().(*GlobalTradeStationDownloadPokemonResult)
-	copied.PrepareTradeKey = gtsptpr.PrepareTradeKey.Copy().(*GlobalTradeStationRecordKey)
+	copied.Result = gtsptpr.Result.Copy().(GlobalTradeStationDownloadPokemonResult)
+	copied.PrepareTradeKey = gtsptpr.PrepareTradeKey.Copy().(GlobalTradeStationRecordKey)
 
 	return copied
 }
 
 // Equals checks if the given GlobalTradeStationPrepareTradePokemonResult contains the same data as the current GlobalTradeStationPrepareTradePokemonResult
-func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) Equals(o types.RVType) bool {
-	if _, ok := o.(*GlobalTradeStationPrepareTradePokemonResult); !ok {
+func (gtsptpr GlobalTradeStationPrepareTradePokemonResult) Equals(o types.RVType) bool {
+	if _, ok := o.(GlobalTradeStationPrepareTradePokemonResult); !ok {
 		return false
 	}
 
-	other := o.(*GlobalTradeStationPrepareTradePokemonResult)
+	other := o.(GlobalTradeStationPrepareTradePokemonResult)
 
 	if gtsptpr.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) Equals(o types.RVTyp
 	return gtsptpr.PrepareTradeKey.Equals(other.PrepareTradeKey)
 }
 
+// CopyRef copies the current value of the GlobalTradeStationPrepareTradePokemonResult
+// and returns a pointer to the new copy
+func (gtsptpr GlobalTradeStationPrepareTradePokemonResult) CopyRef() types.RVTypePtr {
+	copied := gtsptpr.Copy().(GlobalTradeStationPrepareTradePokemonResult)
+	return &copied
+}
+
+// Deref takes a pointer to the GlobalTradeStationPrepareTradePokemonResult
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) Deref() types.RVType {
+	return *gtsptpr
+}
+
 // String returns the string representation of the GlobalTradeStationPrepareTradePokemonResult
-func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) String() string {
+func (gtsptpr GlobalTradeStationPrepareTradePokemonResult) String() string {
 	return gtsptpr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GlobalTradeStationPrepareTradePokemonResult using the provided indentation level
-func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) FormatToString(indentationLevel int) string {
+func (gtsptpr GlobalTradeStationPrepareTradePokemonResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) FormatToString(inden
 }
 
 // NewGlobalTradeStationPrepareTradePokemonResult returns a new GlobalTradeStationPrepareTradePokemonResult
-func NewGlobalTradeStationPrepareTradePokemonResult() *GlobalTradeStationPrepareTradePokemonResult {
-	gtsptpr := &GlobalTradeStationPrepareTradePokemonResult{
+func NewGlobalTradeStationPrepareTradePokemonResult() GlobalTradeStationPrepareTradePokemonResult {
+	return GlobalTradeStationPrepareTradePokemonResult{
 		Result:          NewGlobalTradeStationDownloadPokemonResult(),
 		PrepareTradeKey: NewGlobalTradeStationRecordKey(),
 	}
 
-	return gtsptpr
 }

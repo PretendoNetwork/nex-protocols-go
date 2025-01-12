@@ -26,12 +26,11 @@ func (protocol *Protocol) handleRateCustomRanking(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	params := types.NewList[*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam]()
-	params.Type = datastore_super_mario_maker_types.NewDataStoreRateCustomRankingParam()
+	var params types.List[datastore_super_mario_maker_types.DataStoreRateCustomRankingParam]
 
 	err := params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RateCustomRanking(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.RateCustomRanking(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, params)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

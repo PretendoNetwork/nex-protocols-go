@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetUnlockKey(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	challengeValue := types.NewPrimitiveU32(0)
+	var challengeValue types.UInt32
 
 	err := challengeValue.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetUnlockKey(fmt.Errorf("Failed to read challengeValue from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetUnlockKey(fmt.Errorf("Failed to read challengeValue from parameters. %s", err.Error()), packet, callID, challengeValue)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

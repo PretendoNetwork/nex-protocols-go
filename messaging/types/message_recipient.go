@@ -11,13 +11,13 @@ import (
 // MessageRecipient is a type within the MessageDelivery protocol
 type MessageRecipient struct {
 	types.Structure
-	UIRecipientType *types.PrimitiveU32
-	PrincipalID     *types.PID
-	GatheringID     *types.PrimitiveU32
+	UIRecipientType types.UInt32
+	PrincipalID     types.PID
+	GatheringID     types.UInt32
 }
 
 // WriteTo writes the MessageRecipient to the given writable
-func (mr *MessageRecipient) WriteTo(writable types.Writable) {
+func (mr MessageRecipient) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	mr.UIRecipientType.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (mr *MessageRecipient) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MessageRecipient
-func (mr *MessageRecipient) Copy() types.RVType {
+func (mr MessageRecipient) Copy() types.RVType {
 	copied := NewMessageRecipient()
 
 	copied.StructureVersion = mr.StructureVersion
-	copied.UIRecipientType = mr.UIRecipientType.Copy().(*types.PrimitiveU32)
-	copied.PrincipalID = mr.PrincipalID.Copy().(*types.PID)
-	copied.GatheringID = mr.GatheringID.Copy().(*types.PrimitiveU32)
+	copied.UIRecipientType = mr.UIRecipientType.Copy().(types.UInt32)
+	copied.PrincipalID = mr.PrincipalID.Copy().(types.PID)
+	copied.GatheringID = mr.GatheringID.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given MessageRecipient contains the same data as the current MessageRecipient
-func (mr *MessageRecipient) Equals(o types.RVType) bool {
-	if _, ok := o.(*MessageRecipient); !ok {
+func (mr MessageRecipient) Equals(o types.RVType) bool {
+	if _, ok := o.(MessageRecipient); !ok {
 		return false
 	}
 
-	other := o.(*MessageRecipient)
+	other := o.(MessageRecipient)
 
 	if mr.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (mr *MessageRecipient) Equals(o types.RVType) bool {
 	return mr.GatheringID.Equals(other.GatheringID)
 }
 
+// CopyRef copies the current value of the MessageRecipient
+// and returns a pointer to the new copy
+func (mr MessageRecipient) CopyRef() types.RVTypePtr {
+	copied := mr.Copy().(MessageRecipient)
+	return &copied
+}
+
+// Deref takes a pointer to the MessageRecipient
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mr *MessageRecipient) Deref() types.RVType {
+	return *mr
+}
+
 // String returns the string representation of the MessageRecipient
-func (mr *MessageRecipient) String() string {
+func (mr MessageRecipient) String() string {
 	return mr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MessageRecipient using the provided indentation level
-func (mr *MessageRecipient) FormatToString(indentationLevel int) string {
+func (mr MessageRecipient) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +129,11 @@ func (mr *MessageRecipient) FormatToString(indentationLevel int) string {
 }
 
 // NewMessageRecipient returns a new MessageRecipient
-func NewMessageRecipient() *MessageRecipient {
-	mr := &MessageRecipient{
-		UIRecipientType: types.NewPrimitiveU32(0),
+func NewMessageRecipient() MessageRecipient {
+	return MessageRecipient{
+		UIRecipientType: types.NewUInt32(0),
 		PrincipalID:     types.NewPID(0),
-		GatheringID:     types.NewPrimitiveU32(0),
+		GatheringID:     types.NewUInt32(0),
 	}
 
-	return mr
 }

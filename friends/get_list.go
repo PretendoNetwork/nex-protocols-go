@@ -25,14 +25,14 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	byRelationship := types.NewPrimitiveU8(0)
-	bReversed := types.NewPrimitiveBool(false)
+	var byRelationship types.UInt8
+	var bReversed types.Bool
 
 	var err error
 
 	err = byRelationship.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, byRelationship, bReversed)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	err = bReversed.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, byRelationship, bReversed)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

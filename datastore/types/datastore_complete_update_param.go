@@ -12,13 +12,13 @@ import (
 // DataStoreCompleteUpdateParam is a type within the DataStore protocol
 type DataStoreCompleteUpdateParam struct {
 	types.Structure
-	DataID    *types.PrimitiveU64
-	Version   *types.PrimitiveU32
-	IsSuccess *types.PrimitiveBool
+	DataID    types.UInt64
+	Version   types.UInt32
+	IsSuccess types.Bool
 }
 
 // WriteTo writes the DataStoreCompleteUpdateParam to the given writable
-func (dscup *DataStoreCompleteUpdateParam) WriteTo(writable types.Writable) {
+func (dscup DataStoreCompleteUpdateParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.DataStore
 
@@ -27,13 +27,13 @@ func (dscup *DataStoreCompleteUpdateParam) WriteTo(writable types.Writable) {
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		dscup.DataID.WriteTo(contentWritable)
 	} else {
-		contentWritable.WritePrimitiveUInt32LE(uint32(dscup.DataID.Value))
+		contentWritable.WriteUInt32LE(uint32(dscup.DataID))
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		dscup.Version.WriteTo(contentWritable)
 	} else {
-		contentWritable.WritePrimitiveUInt16LE(uint16(dscup.Version.Value))
+		contentWritable.WriteUInt16LE(uint16(dscup.Version))
 	}
 
 	dscup.IsSuccess.WriteTo(contentWritable)
@@ -63,12 +63,12 @@ func (dscup *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) 
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 	} else {
-		dataID, err := readable.ReadPrimitiveUInt32LE()
+		dataID, err := readable.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 
-		dscup.DataID.Value = uint64(dataID)
+		dscup.DataID = types.UInt64(dataID)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
@@ -77,12 +77,12 @@ func (dscup *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) 
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 	} else {
-		version, err := readable.ReadPrimitiveUInt16LE()
+		version, err := readable.ReadUInt16LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 
-		dscup.Version.Value = uint32(version)
+		dscup.Version = types.UInt32(version)
 	}
 
 	err = dscup.IsSuccess.ExtractFrom(readable)
@@ -94,24 +94,24 @@ func (dscup *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) 
 }
 
 // Copy returns a new copied instance of DataStoreCompleteUpdateParam
-func (dscup *DataStoreCompleteUpdateParam) Copy() types.RVType {
+func (dscup DataStoreCompleteUpdateParam) Copy() types.RVType {
 	copied := NewDataStoreCompleteUpdateParam()
 
 	copied.StructureVersion = dscup.StructureVersion
-	copied.DataID = dscup.DataID.Copy().(*types.PrimitiveU64)
-	copied.Version = dscup.Version.Copy().(*types.PrimitiveU32)
-	copied.IsSuccess = dscup.IsSuccess.Copy().(*types.PrimitiveBool)
+	copied.DataID = dscup.DataID.Copy().(types.UInt64)
+	copied.Version = dscup.Version.Copy().(types.UInt32)
+	copied.IsSuccess = dscup.IsSuccess.Copy().(types.Bool)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreCompleteUpdateParam contains the same data as the current DataStoreCompleteUpdateParam
-func (dscup *DataStoreCompleteUpdateParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreCompleteUpdateParam); !ok {
+func (dscup DataStoreCompleteUpdateParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreCompleteUpdateParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreCompleteUpdateParam)
+	other := o.(DataStoreCompleteUpdateParam)
 
 	if dscup.StructureVersion != other.StructureVersion {
 		return false
@@ -128,13 +128,27 @@ func (dscup *DataStoreCompleteUpdateParam) Equals(o types.RVType) bool {
 	return dscup.IsSuccess.Equals(other.IsSuccess)
 }
 
+// CopyRef copies the current value of the DataStoreCompleteUpdateParam
+// and returns a pointer to the new copy
+func (dscup DataStoreCompleteUpdateParam) CopyRef() types.RVTypePtr {
+	copied := dscup.Copy().(DataStoreCompleteUpdateParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreCompleteUpdateParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dscup *DataStoreCompleteUpdateParam) Deref() types.RVType {
+	return *dscup
+}
+
 // String returns the string representation of the DataStoreCompleteUpdateParam
-func (dscup *DataStoreCompleteUpdateParam) String() string {
+func (dscup DataStoreCompleteUpdateParam) String() string {
 	return dscup.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreCompleteUpdateParam using the provided indentation level
-func (dscup *DataStoreCompleteUpdateParam) FormatToString(indentationLevel int) string {
+func (dscup DataStoreCompleteUpdateParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -150,12 +164,11 @@ func (dscup *DataStoreCompleteUpdateParam) FormatToString(indentationLevel int) 
 }
 
 // NewDataStoreCompleteUpdateParam returns a new DataStoreCompleteUpdateParam
-func NewDataStoreCompleteUpdateParam() *DataStoreCompleteUpdateParam {
-	dscup := &DataStoreCompleteUpdateParam{
-		DataID:    types.NewPrimitiveU64(0),
-		Version:   types.NewPrimitiveU32(0),
-		IsSuccess: types.NewPrimitiveBool(false),
+func NewDataStoreCompleteUpdateParam() DataStoreCompleteUpdateParam {
+	return DataStoreCompleteUpdateParam{
+		DataID:    types.NewUInt64(0),
+		Version:   types.NewUInt32(0),
+		IsSuccess: types.NewBool(false),
 	}
 
-	return dscup
 }

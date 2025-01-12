@@ -25,14 +25,14 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	lfc := types.NewPrimitiveU64(0)
-	pid := types.NewPID(0)
+	var lfc types.UInt64
+	var pid types.PID
 
 	var err error
 
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, lfc, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, lfc, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

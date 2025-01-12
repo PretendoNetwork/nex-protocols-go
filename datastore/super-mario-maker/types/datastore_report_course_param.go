@@ -11,14 +11,14 @@ import (
 // DataStoreReportCourseParam is a type within the DataStore protocol
 type DataStoreReportCourseParam struct {
 	types.Structure
-	DataID         *types.PrimitiveU64
-	MiiName        *types.String
-	ReportCategory *types.PrimitiveU8
-	ReportReason   *types.String
+	DataID         types.UInt64
+	MiiName        types.String
+	ReportCategory types.UInt8
+	ReportReason   types.String
 }
 
 // WriteTo writes the DataStoreReportCourseParam to the given writable
-func (dsrcp *DataStoreReportCourseParam) WriteTo(writable types.Writable) {
+func (dsrcp DataStoreReportCourseParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrcp.DataID.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (dsrcp *DataStoreReportCourseParam) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of DataStoreReportCourseParam
-func (dsrcp *DataStoreReportCourseParam) Copy() types.RVType {
+func (dsrcp DataStoreReportCourseParam) Copy() types.RVType {
 	copied := NewDataStoreReportCourseParam()
 
 	copied.StructureVersion = dsrcp.StructureVersion
-	copied.DataID = dsrcp.DataID.Copy().(*types.PrimitiveU64)
-	copied.MiiName = dsrcp.MiiName.Copy().(*types.String)
-	copied.ReportCategory = dsrcp.ReportCategory.Copy().(*types.PrimitiveU8)
-	copied.ReportReason = dsrcp.ReportReason.Copy().(*types.String)
+	copied.DataID = dsrcp.DataID.Copy().(types.UInt64)
+	copied.MiiName = dsrcp.MiiName.Copy().(types.String)
+	copied.ReportCategory = dsrcp.ReportCategory.Copy().(types.UInt8)
+	copied.ReportReason = dsrcp.ReportReason.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReportCourseParam contains the same data as the current DataStoreReportCourseParam
-func (dsrcp *DataStoreReportCourseParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReportCourseParam); !ok {
+func (dsrcp DataStoreReportCourseParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreReportCourseParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReportCourseParam)
+	other := o.(DataStoreReportCourseParam)
 
 	if dsrcp.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (dsrcp *DataStoreReportCourseParam) Equals(o types.RVType) bool {
 	return dsrcp.ReportReason.Equals(other.ReportReason)
 }
 
+// CopyRef copies the current value of the DataStoreReportCourseParam
+// and returns a pointer to the new copy
+func (dsrcp DataStoreReportCourseParam) CopyRef() types.RVTypePtr {
+	copied := dsrcp.Copy().(DataStoreReportCourseParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReportCourseParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrcp *DataStoreReportCourseParam) Deref() types.RVType {
+	return *dsrcp
+}
+
 // String returns the string representation of the DataStoreReportCourseParam
-func (dsrcp *DataStoreReportCourseParam) String() string {
+func (dsrcp DataStoreReportCourseParam) String() string {
 	return dsrcp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReportCourseParam using the provided indentation level
-func (dsrcp *DataStoreReportCourseParam) FormatToString(indentationLevel int) string {
+func (dsrcp DataStoreReportCourseParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +142,12 @@ func (dsrcp *DataStoreReportCourseParam) FormatToString(indentationLevel int) st
 }
 
 // NewDataStoreReportCourseParam returns a new DataStoreReportCourseParam
-func NewDataStoreReportCourseParam() *DataStoreReportCourseParam {
-	dsrcp := &DataStoreReportCourseParam{
-		DataID:         types.NewPrimitiveU64(0),
+func NewDataStoreReportCourseParam() DataStoreReportCourseParam {
+	return DataStoreReportCourseParam{
+		DataID:         types.NewUInt64(0),
 		MiiName:        types.NewString(""),
-		ReportCategory: types.NewPrimitiveU8(0),
+		ReportCategory: types.NewUInt8(0),
 		ReportReason:   types.NewString(""),
 	}
 
-	return dsrcp
 }

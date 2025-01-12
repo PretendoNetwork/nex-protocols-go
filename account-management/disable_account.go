@@ -25,15 +25,15 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idPrincipal := types.NewPID(0)
-	dtUntil := types.NewDateTime(0)
-	strMessage := types.NewString("")
+	var idPrincipal types.PID
+	var dtUntil types.DateTime
+	var strMessage types.String
 
 	var err error
 
 	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal, dtUntil, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 
 	err = dtUntil.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), packet, callID, idPrincipal, dtUntil, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, idPrincipal, dtUntil, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -12,14 +12,14 @@ import (
 // DataStorePrepareUpdateParam is a type within the DataStore protocol
 type DataStorePrepareUpdateParam struct {
 	types.Structure
-	DataID         *types.PrimitiveU64
-	Size           *types.PrimitiveU32
-	UpdatePassword *types.PrimitiveU64        // * NEX v3.0.0
-	ExtraData      *types.List[*types.String] // * NEX v3.5.0
+	DataID         types.UInt64
+	Size           types.UInt32
+	UpdatePassword types.UInt64             // * NEX v3.0.0
+	ExtraData      types.List[types.String] // * NEX v3.5.0
 }
 
 // WriteTo writes the DataStorePrepareUpdateParam to the given writable
-func (dspup *DataStorePrepareUpdateParam) WriteTo(writable types.Writable) {
+func (dspup DataStorePrepareUpdateParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.DataStore
 
@@ -28,7 +28,7 @@ func (dspup *DataStorePrepareUpdateParam) WriteTo(writable types.Writable) {
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		dspup.DataID.WriteTo(contentWritable)
 	} else {
-		contentWritable.WritePrimitiveUInt32LE(uint32(dspup.DataID.Value))
+		contentWritable.WriteUInt32LE(uint32(dspup.DataID))
 	}
 
 	dspup.Size.WriteTo(contentWritable)
@@ -66,12 +66,12 @@ func (dspup *DataStorePrepareUpdateParam) ExtractFrom(readable types.Readable) e
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 	} else {
-		dataID, err := readable.ReadPrimitiveUInt32LE()
+		dataID, err := readable.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 
-		dspup.DataID.Value = uint64(dataID)
+		dspup.DataID = types.UInt64(dataID)
 	}
 
 	err = dspup.Size.ExtractFrom(readable)
@@ -97,25 +97,25 @@ func (dspup *DataStorePrepareUpdateParam) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of DataStorePrepareUpdateParam
-func (dspup *DataStorePrepareUpdateParam) Copy() types.RVType {
+func (dspup DataStorePrepareUpdateParam) Copy() types.RVType {
 	copied := NewDataStorePrepareUpdateParam()
 
 	copied.StructureVersion = dspup.StructureVersion
-	copied.DataID = dspup.DataID.Copy().(*types.PrimitiveU64)
-	copied.Size = dspup.Size.Copy().(*types.PrimitiveU32)
-	copied.UpdatePassword = dspup.UpdatePassword.Copy().(*types.PrimitiveU64)
-	copied.ExtraData = dspup.ExtraData.Copy().(*types.List[*types.String])
+	copied.DataID = dspup.DataID.Copy().(types.UInt64)
+	copied.Size = dspup.Size.Copy().(types.UInt32)
+	copied.UpdatePassword = dspup.UpdatePassword.Copy().(types.UInt64)
+	copied.ExtraData = dspup.ExtraData.Copy().(types.List[types.String])
 
 	return copied
 }
 
 // Equals checks if the given DataStorePrepareUpdateParam contains the same data as the current DataStorePrepareUpdateParam
-func (dspup *DataStorePrepareUpdateParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePrepareUpdateParam); !ok {
+func (dspup DataStorePrepareUpdateParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStorePrepareUpdateParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePrepareUpdateParam)
+	other := o.(DataStorePrepareUpdateParam)
 
 	if dspup.StructureVersion != other.StructureVersion {
 		return false
@@ -136,13 +136,27 @@ func (dspup *DataStorePrepareUpdateParam) Equals(o types.RVType) bool {
 	return dspup.ExtraData.Equals(other.ExtraData)
 }
 
+// CopyRef copies the current value of the DataStorePrepareUpdateParam
+// and returns a pointer to the new copy
+func (dspup DataStorePrepareUpdateParam) CopyRef() types.RVTypePtr {
+	copied := dspup.Copy().(DataStorePrepareUpdateParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePrepareUpdateParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspup *DataStorePrepareUpdateParam) Deref() types.RVType {
+	return *dspup
+}
+
 // String returns the string representation of the DataStorePrepareUpdateParam
-func (dspup *DataStorePrepareUpdateParam) String() string {
+func (dspup DataStorePrepareUpdateParam) String() string {
 	return dspup.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePrepareUpdateParam using the provided indentation level
-func (dspup *DataStorePrepareUpdateParam) FormatToString(indentationLevel int) string {
+func (dspup DataStorePrepareUpdateParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -159,15 +173,12 @@ func (dspup *DataStorePrepareUpdateParam) FormatToString(indentationLevel int) s
 }
 
 // NewDataStorePrepareUpdateParam returns a new DataStorePrepareUpdateParam
-func NewDataStorePrepareUpdateParam() *DataStorePrepareUpdateParam {
-	dspup := &DataStorePrepareUpdateParam{
-		DataID:         types.NewPrimitiveU64(0),
-		Size:           types.NewPrimitiveU32(0),
-		UpdatePassword: types.NewPrimitiveU64(0),
-		ExtraData:      types.NewList[*types.String](),
+func NewDataStorePrepareUpdateParam() DataStorePrepareUpdateParam {
+	return DataStorePrepareUpdateParam{
+		DataID:         types.NewUInt64(0),
+		Size:           types.NewUInt32(0),
+		UpdatePassword: types.NewUInt64(0),
+		ExtraData:      types.NewList[types.String](),
 	}
 
-	dspup.ExtraData.Type = types.NewString("")
-
-	return dspup
 }

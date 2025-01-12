@@ -26,15 +26,14 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	dataIDs := types.NewList[*types.PrimitiveU64]()
-	dataIDs.Type = types.NewPrimitiveU64(0)
+	var dataIDs types.List[types.UInt64]
 	param := datastore_types.NewDataStoreGetMetaParam()
 
 	var err error
 
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMetas(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetMetas(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, dataIDs, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

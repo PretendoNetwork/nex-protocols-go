@@ -11,16 +11,16 @@ import (
 // CreateMatchmakeSessionParam is a type within the Matchmaking protocol
 type CreateMatchmakeSessionParam struct {
 	types.Structure
-	SourceMatchmakeSession       *MatchmakeSession
-	AdditionalParticipants       *types.List[*types.PID]
-	GIDForParticipationCheck     *types.PrimitiveU32
-	CreateMatchmakeSessionOption *types.PrimitiveU32
-	JoinMessage                  *types.String
-	ParticipationCount           *types.PrimitiveU16
+	SourceMatchmakeSession       MatchmakeSession
+	AdditionalParticipants       types.List[types.PID]
+	GIDForParticipationCheck     types.UInt32
+	CreateMatchmakeSessionOption types.UInt32
+	JoinMessage                  types.String
+	ParticipationCount           types.UInt16
 }
 
 // WriteTo writes the CreateMatchmakeSessionParam to the given writable
-func (cmsp *CreateMatchmakeSessionParam) WriteTo(writable types.Writable) {
+func (cmsp CreateMatchmakeSessionParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	cmsp.SourceMatchmakeSession.WriteTo(contentWritable)
@@ -80,27 +80,27 @@ func (cmsp *CreateMatchmakeSessionParam) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of CreateMatchmakeSessionParam
-func (cmsp *CreateMatchmakeSessionParam) Copy() types.RVType {
+func (cmsp CreateMatchmakeSessionParam) Copy() types.RVType {
 	copied := NewCreateMatchmakeSessionParam()
 
 	copied.StructureVersion = cmsp.StructureVersion
-	copied.SourceMatchmakeSession = cmsp.SourceMatchmakeSession.Copy().(*MatchmakeSession)
-	copied.AdditionalParticipants = cmsp.AdditionalParticipants.Copy().(*types.List[*types.PID])
-	copied.GIDForParticipationCheck = cmsp.GIDForParticipationCheck.Copy().(*types.PrimitiveU32)
-	copied.CreateMatchmakeSessionOption = cmsp.CreateMatchmakeSessionOption.Copy().(*types.PrimitiveU32)
-	copied.JoinMessage = cmsp.JoinMessage.Copy().(*types.String)
-	copied.ParticipationCount = cmsp.ParticipationCount.Copy().(*types.PrimitiveU16)
+	copied.SourceMatchmakeSession = cmsp.SourceMatchmakeSession.Copy().(MatchmakeSession)
+	copied.AdditionalParticipants = cmsp.AdditionalParticipants.Copy().(types.List[types.PID])
+	copied.GIDForParticipationCheck = cmsp.GIDForParticipationCheck.Copy().(types.UInt32)
+	copied.CreateMatchmakeSessionOption = cmsp.CreateMatchmakeSessionOption.Copy().(types.UInt32)
+	copied.JoinMessage = cmsp.JoinMessage.Copy().(types.String)
+	copied.ParticipationCount = cmsp.ParticipationCount.Copy().(types.UInt16)
 
 	return copied
 }
 
 // Equals checks if the given CreateMatchmakeSessionParam contains the same data as the current CreateMatchmakeSessionParam
-func (cmsp *CreateMatchmakeSessionParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*CreateMatchmakeSessionParam); !ok {
+func (cmsp CreateMatchmakeSessionParam) Equals(o types.RVType) bool {
+	if _, ok := o.(CreateMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	other := o.(*CreateMatchmakeSessionParam)
+	other := o.(CreateMatchmakeSessionParam)
 
 	if cmsp.StructureVersion != other.StructureVersion {
 		return false
@@ -129,13 +129,27 @@ func (cmsp *CreateMatchmakeSessionParam) Equals(o types.RVType) bool {
 	return cmsp.ParticipationCount.Equals(other.ParticipationCount)
 }
 
+// CopyRef copies the current value of the CreateMatchmakeSessionParam
+// and returns a pointer to the new copy
+func (cmsp CreateMatchmakeSessionParam) CopyRef() types.RVTypePtr {
+	copied := cmsp.Copy().(CreateMatchmakeSessionParam)
+	return &copied
+}
+
+// Deref takes a pointer to the CreateMatchmakeSessionParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (cmsp *CreateMatchmakeSessionParam) Deref() types.RVType {
+	return *cmsp
+}
+
 // String returns the string representation of the CreateMatchmakeSessionParam
-func (cmsp *CreateMatchmakeSessionParam) String() string {
+func (cmsp CreateMatchmakeSessionParam) String() string {
 	return cmsp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the CreateMatchmakeSessionParam using the provided indentation level
-func (cmsp *CreateMatchmakeSessionParam) FormatToString(indentationLevel int) string {
+func (cmsp CreateMatchmakeSessionParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -154,17 +168,14 @@ func (cmsp *CreateMatchmakeSessionParam) FormatToString(indentationLevel int) st
 }
 
 // NewCreateMatchmakeSessionParam returns a new CreateMatchmakeSessionParam
-func NewCreateMatchmakeSessionParam() *CreateMatchmakeSessionParam {
-	cmsp := &CreateMatchmakeSessionParam{
+func NewCreateMatchmakeSessionParam() CreateMatchmakeSessionParam {
+	return CreateMatchmakeSessionParam{
 		SourceMatchmakeSession:       NewMatchmakeSession(),
-		AdditionalParticipants:       types.NewList[*types.PID](),
-		GIDForParticipationCheck:     types.NewPrimitiveU32(0),
-		CreateMatchmakeSessionOption: types.NewPrimitiveU32(0),
+		AdditionalParticipants:       types.NewList[types.PID](),
+		GIDForParticipationCheck:     types.NewUInt32(0),
+		CreateMatchmakeSessionOption: types.NewUInt32(0),
 		JoinMessage:                  types.NewString(""),
-		ParticipationCount:           types.NewPrimitiveU16(0),
+		ParticipationCount:           types.NewUInt16(0),
 	}
 
-	cmsp.AdditionalParticipants.Type = types.NewPID(0)
-
-	return cmsp
 }

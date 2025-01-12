@@ -29,7 +29,7 @@ func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 
 	err := endRoundParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.EndRound(fmt.Errorf("Failed to read endRoundParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.EndRound(fmt.Errorf("Failed to read endRoundParam from parameters. %s", err.Error()), packet, callID, endRoundParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

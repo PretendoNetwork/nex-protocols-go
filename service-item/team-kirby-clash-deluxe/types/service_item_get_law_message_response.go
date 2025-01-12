@@ -11,12 +11,12 @@ import (
 // ServiceItemGetLawMessageResponse is a type within the ServiceItem protocol
 type ServiceItemGetLawMessageResponse struct {
 	types.Structure
-	*ServiceItemEShopResponse
-	NullableLawMessage *types.List[*ServiceItemLawMessage]
+	ServiceItemEShopResponse
+	NullableLawMessage types.List[ServiceItemLawMessage]
 }
 
 // WriteTo writes the ServiceItemGetLawMessageResponse to the given writable
-func (siglmr *ServiceItemGetLawMessageResponse) WriteTo(writable types.Writable) {
+func (siglmr ServiceItemGetLawMessageResponse) WriteTo(writable types.Writable) {
 	siglmr.ServiceItemEShopResponse.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (siglmr *ServiceItemGetLawMessageResponse) ExtractFrom(readable types.Reada
 }
 
 // Copy returns a new copied instance of ServiceItemGetLawMessageResponse
-func (siglmr *ServiceItemGetLawMessageResponse) Copy() types.RVType {
+func (siglmr ServiceItemGetLawMessageResponse) Copy() types.RVType {
 	copied := NewServiceItemGetLawMessageResponse()
 
 	copied.StructureVersion = siglmr.StructureVersion
-	copied.ServiceItemEShopResponse = siglmr.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.NullableLawMessage = siglmr.NullableLawMessage.Copy().(*types.List[*ServiceItemLawMessage])
+	copied.ServiceItemEShopResponse = siglmr.ServiceItemEShopResponse.Copy().(ServiceItemEShopResponse)
+	copied.NullableLawMessage = siglmr.NullableLawMessage.Copy().(types.List[ServiceItemLawMessage])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetLawMessageResponse contains the same data as the current ServiceItemGetLawMessageResponse
-func (siglmr *ServiceItemGetLawMessageResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetLawMessageResponse); !ok {
+func (siglmr ServiceItemGetLawMessageResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemGetLawMessageResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetLawMessageResponse)
+	other := o.(ServiceItemGetLawMessageResponse)
 
 	if siglmr.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (siglmr *ServiceItemGetLawMessageResponse) Equals(o types.RVType) bool {
 	return siglmr.NullableLawMessage.Equals(other.NullableLawMessage)
 }
 
+// CopyRef copies the current value of the ServiceItemGetLawMessageResponse
+// and returns a pointer to the new copy
+func (siglmr ServiceItemGetLawMessageResponse) CopyRef() types.RVTypePtr {
+	copied := siglmr.Copy().(ServiceItemGetLawMessageResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetLawMessageResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siglmr *ServiceItemGetLawMessageResponse) Deref() types.RVType {
+	return *siglmr
+}
+
 // String returns the string representation of the ServiceItemGetLawMessageResponse
-func (siglmr *ServiceItemGetLawMessageResponse) String() string {
+func (siglmr ServiceItemGetLawMessageResponse) String() string {
 	return siglmr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetLawMessageResponse using the provided indentation level
-func (siglmr *ServiceItemGetLawMessageResponse) FormatToString(indentationLevel int) string {
+func (siglmr ServiceItemGetLawMessageResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +117,10 @@ func (siglmr *ServiceItemGetLawMessageResponse) FormatToString(indentationLevel 
 }
 
 // NewServiceItemGetLawMessageResponse returns a new ServiceItemGetLawMessageResponse
-func NewServiceItemGetLawMessageResponse() *ServiceItemGetLawMessageResponse {
-	siglmr := &ServiceItemGetLawMessageResponse{
+func NewServiceItemGetLawMessageResponse() ServiceItemGetLawMessageResponse {
+	return ServiceItemGetLawMessageResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableLawMessage:       types.NewList[*ServiceItemLawMessage](),
+		NullableLawMessage:       types.NewList[ServiceItemLawMessage](),
 	}
 
-	siglmr.NullableLawMessage.Type = NewServiceItemLawMessage()
-
-	return siglmr
 }

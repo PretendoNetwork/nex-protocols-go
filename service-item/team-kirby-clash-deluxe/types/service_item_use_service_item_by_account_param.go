@@ -11,18 +11,18 @@ import (
 // ServiceItemUseServiceItemByAccountParam is a type within the ServiceItem protocol
 type ServiceItemUseServiceItemByAccountParam struct {
 	types.Structure
-	ReferenceIDForUse         *types.String
-	ReferenceIDForRightBinary *types.String
-	UseType                   *types.PrimitiveU8
-	UseNumber                 *types.PrimitiveU8
-	RightBinary               *types.QBuffer
-	LogMessage                *types.String
-	UniqueID                  *types.PrimitiveU32
-	Platform                  *types.PrimitiveU8
+	ReferenceIDForUse         types.String
+	ReferenceIDForRightBinary types.String
+	UseType                   types.UInt8
+	UseNumber                 types.UInt8
+	RightBinary               types.QBuffer
+	LogMessage                types.String
+	UniqueID                  types.UInt32
+	Platform                  types.UInt8
 }
 
 // WriteTo writes the ServiceItemUseServiceItemByAccountParam to the given writable
-func (siusibap *ServiceItemUseServiceItemByAccountParam) WriteTo(writable types.Writable) {
+func (siusibap ServiceItemUseServiceItemByAccountParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siusibap.ReferenceIDForUse.WriteTo(contentWritable)
@@ -94,29 +94,29 @@ func (siusibap *ServiceItemUseServiceItemByAccountParam) ExtractFrom(readable ty
 }
 
 // Copy returns a new copied instance of ServiceItemUseServiceItemByAccountParam
-func (siusibap *ServiceItemUseServiceItemByAccountParam) Copy() types.RVType {
+func (siusibap ServiceItemUseServiceItemByAccountParam) Copy() types.RVType {
 	copied := NewServiceItemUseServiceItemByAccountParam()
 
 	copied.StructureVersion = siusibap.StructureVersion
-	copied.ReferenceIDForUse = siusibap.ReferenceIDForUse.Copy().(*types.String)
-	copied.ReferenceIDForRightBinary = siusibap.ReferenceIDForRightBinary.Copy().(*types.String)
-	copied.UseType = siusibap.UseType.Copy().(*types.PrimitiveU8)
-	copied.UseNumber = siusibap.UseNumber.Copy().(*types.PrimitiveU8)
-	copied.RightBinary = siusibap.RightBinary.Copy().(*types.QBuffer)
-	copied.LogMessage = siusibap.LogMessage.Copy().(*types.String)
-	copied.UniqueID = siusibap.UniqueID.Copy().(*types.PrimitiveU32)
-	copied.Platform = siusibap.Platform.Copy().(*types.PrimitiveU8)
+	copied.ReferenceIDForUse = siusibap.ReferenceIDForUse.Copy().(types.String)
+	copied.ReferenceIDForRightBinary = siusibap.ReferenceIDForRightBinary.Copy().(types.String)
+	copied.UseType = siusibap.UseType.Copy().(types.UInt8)
+	copied.UseNumber = siusibap.UseNumber.Copy().(types.UInt8)
+	copied.RightBinary = siusibap.RightBinary.Copy().(types.QBuffer)
+	copied.LogMessage = siusibap.LogMessage.Copy().(types.String)
+	copied.UniqueID = siusibap.UniqueID.Copy().(types.UInt32)
+	copied.Platform = siusibap.Platform.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemUseServiceItemByAccountParam contains the same data as the current ServiceItemUseServiceItemByAccountParam
-func (siusibap *ServiceItemUseServiceItemByAccountParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemUseServiceItemByAccountParam); !ok {
+func (siusibap ServiceItemUseServiceItemByAccountParam) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemUseServiceItemByAccountParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemUseServiceItemByAccountParam)
+	other := o.(ServiceItemUseServiceItemByAccountParam)
 
 	if siusibap.StructureVersion != other.StructureVersion {
 		return false
@@ -153,13 +153,27 @@ func (siusibap *ServiceItemUseServiceItemByAccountParam) Equals(o types.RVType) 
 	return siusibap.Platform.Equals(other.Platform)
 }
 
+// CopyRef copies the current value of the ServiceItemUseServiceItemByAccountParam
+// and returns a pointer to the new copy
+func (siusibap ServiceItemUseServiceItemByAccountParam) CopyRef() types.RVTypePtr {
+	copied := siusibap.Copy().(ServiceItemUseServiceItemByAccountParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemUseServiceItemByAccountParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siusibap *ServiceItemUseServiceItemByAccountParam) Deref() types.RVType {
+	return *siusibap
+}
+
 // String returns the string representation of the ServiceItemUseServiceItemByAccountParam
-func (siusibap *ServiceItemUseServiceItemByAccountParam) String() string {
+func (siusibap ServiceItemUseServiceItemByAccountParam) String() string {
 	return siusibap.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemUseServiceItemByAccountParam using the provided indentation level
-func (siusibap *ServiceItemUseServiceItemByAccountParam) FormatToString(indentationLevel int) string {
+func (siusibap ServiceItemUseServiceItemByAccountParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -180,17 +194,16 @@ func (siusibap *ServiceItemUseServiceItemByAccountParam) FormatToString(indentat
 }
 
 // NewServiceItemUseServiceItemByAccountParam returns a new ServiceItemUseServiceItemByAccountParam
-func NewServiceItemUseServiceItemByAccountParam() *ServiceItemUseServiceItemByAccountParam {
-	siusibap := &ServiceItemUseServiceItemByAccountParam{
+func NewServiceItemUseServiceItemByAccountParam() ServiceItemUseServiceItemByAccountParam {
+	return ServiceItemUseServiceItemByAccountParam{
 		ReferenceIDForUse:         types.NewString(""),
 		ReferenceIDForRightBinary: types.NewString(""),
-		UseType:                   types.NewPrimitiveU8(0),
-		UseNumber:                 types.NewPrimitiveU8(0),
+		UseType:                   types.NewUInt8(0),
+		UseNumber:                 types.NewUInt8(0),
 		RightBinary:               types.NewQBuffer(nil),
 		LogMessage:                types.NewString(""),
-		UniqueID:                  types.NewPrimitiveU32(0),
-		Platform:                  types.NewPrimitiveU8(0),
+		UniqueID:                  types.NewUInt32(0),
+		Platform:                  types.NewUInt8(0),
 	}
 
-	return siusibap
 }

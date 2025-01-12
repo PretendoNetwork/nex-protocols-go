@@ -11,12 +11,12 @@ import (
 // GatheringURLs is a type within the Matchmaking protocol
 type GatheringURLs struct {
 	types.Structure
-	GID            *types.PrimitiveU32
-	LstStationURLs *types.List[*types.StationURL]
+	GID            types.UInt32
+	LstStationURLs types.List[types.StationURL]
 }
 
 // WriteTo writes the GatheringURLs to the given writable
-func (gurl *GatheringURLs) WriteTo(writable types.Writable) {
+func (gurl GatheringURLs) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	gurl.GID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (gurl *GatheringURLs) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of GatheringURLs
-func (gurl *GatheringURLs) Copy() types.RVType {
+func (gurl GatheringURLs) Copy() types.RVType {
 	copied := NewGatheringURLs()
 
 	copied.StructureVersion = gurl.StructureVersion
-	copied.GID = gurl.GID.Copy().(*types.PrimitiveU32)
-	copied.LstStationURLs = gurl.LstStationURLs.Copy().(*types.List[*types.StationURL])
+	copied.GID = gurl.GID.Copy().(types.UInt32)
+	copied.LstStationURLs = gurl.LstStationURLs.Copy().(types.List[types.StationURL])
 
 	return copied
 }
 
 // Equals checks if the given GatheringURLs contains the same data as the current GatheringURLs
-func (gurl *GatheringURLs) Equals(o types.RVType) bool {
-	if _, ok := o.(*GatheringURLs); !ok {
+func (gurl GatheringURLs) Equals(o types.RVType) bool {
+	if _, ok := o.(GatheringURLs); !ok {
 		return false
 	}
 
-	other := o.(*GatheringURLs)
+	other := o.(GatheringURLs)
 
 	if gurl.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (gurl *GatheringURLs) Equals(o types.RVType) bool {
 	return gurl.LstStationURLs.Equals(other.LstStationURLs)
 }
 
+// CopyRef copies the current value of the GatheringURLs
+// and returns a pointer to the new copy
+func (gurl GatheringURLs) CopyRef() types.RVTypePtr {
+	copied := gurl.Copy().(GatheringURLs)
+	return &copied
+}
+
+// Deref takes a pointer to the GatheringURLs
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (gurl *GatheringURLs) Deref() types.RVType {
+	return *gurl
+}
+
 // String returns the string representation of the GatheringURLs
-func (gurl *GatheringURLs) String() string {
+func (gurl GatheringURLs) String() string {
 	return gurl.FormatToString(0)
 }
 
 // FormatToString pretty-prints the GatheringURLs using the provided indentation level
-func (gurl *GatheringURLs) FormatToString(indentationLevel int) string {
+func (gurl GatheringURLs) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,13 +116,10 @@ func (gurl *GatheringURLs) FormatToString(indentationLevel int) string {
 }
 
 // NewGatheringURLs returns a new GatheringURLs
-func NewGatheringURLs() *GatheringURLs {
-	gurl := &GatheringURLs{
-		GID:            types.NewPrimitiveU32(0),
-		LstStationURLs: types.NewList[*types.StationURL](),
+func NewGatheringURLs() GatheringURLs {
+	return GatheringURLs{
+		GID:            types.NewUInt32(0),
+		LstStationURLs: types.NewList[types.StationURL](),
 	}
 
-	gurl.LstStationURLs.Type = types.NewStationURL("")
-
-	return gurl
 }

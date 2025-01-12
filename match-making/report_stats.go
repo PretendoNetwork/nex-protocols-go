@@ -26,15 +26,14 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idGathering := types.NewPrimitiveU32(0)
-	lstStats := types.NewList[*match_making_types.GatheringStats]()
-	lstStats.Type = match_making_types.NewGatheringStats()
+	var idGathering types.UInt32
+	var lstStats types.List[match_making_types.GatheringStats]
 
 	var err error
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, lstStats)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 
 	err = lstStats.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, idGathering, lstStats)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

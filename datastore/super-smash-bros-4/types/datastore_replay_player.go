@@ -11,19 +11,19 @@ import (
 // DataStoreReplayPlayer is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreReplayPlayer struct {
 	types.Structure
-	Fighter     *types.PrimitiveU8
-	Health      *types.PrimitiveU8
-	WinningRate *types.PrimitiveU16
-	Color       *types.PrimitiveU8
-	Color2      *types.PrimitiveU8
-	PrincipalID *types.PrimitiveU32
-	Country     *types.PrimitiveU32
-	Region      *types.PrimitiveU8
-	Number      *types.PrimitiveU8
+	Fighter     types.UInt8
+	Health      types.UInt8
+	WinningRate types.UInt16
+	Color       types.UInt8
+	Color2      types.UInt8
+	PrincipalID types.UInt32
+	Country     types.UInt32
+	Region      types.UInt8
+	Number      types.UInt8
 }
 
 // WriteTo writes the DataStoreReplayPlayer to the given writable
-func (dsrp *DataStoreReplayPlayer) WriteTo(writable types.Writable) {
+func (dsrp DataStoreReplayPlayer) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrp.Fighter.WriteTo(contentWritable)
@@ -101,30 +101,30 @@ func (dsrp *DataStoreReplayPlayer) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreReplayPlayer
-func (dsrp *DataStoreReplayPlayer) Copy() types.RVType {
+func (dsrp DataStoreReplayPlayer) Copy() types.RVType {
 	copied := NewDataStoreReplayPlayer()
 
 	copied.StructureVersion = dsrp.StructureVersion
-	copied.Fighter = dsrp.Fighter.Copy().(*types.PrimitiveU8)
-	copied.Health = dsrp.Health.Copy().(*types.PrimitiveU8)
-	copied.WinningRate = dsrp.WinningRate.Copy().(*types.PrimitiveU16)
-	copied.Color = dsrp.Color.Copy().(*types.PrimitiveU8)
-	copied.Color2 = dsrp.Color2.Copy().(*types.PrimitiveU8)
-	copied.PrincipalID = dsrp.PrincipalID.Copy().(*types.PrimitiveU32)
-	copied.Country = dsrp.Country.Copy().(*types.PrimitiveU32)
-	copied.Region = dsrp.Region.Copy().(*types.PrimitiveU8)
-	copied.Number = dsrp.Number.Copy().(*types.PrimitiveU8)
+	copied.Fighter = dsrp.Fighter.Copy().(types.UInt8)
+	copied.Health = dsrp.Health.Copy().(types.UInt8)
+	copied.WinningRate = dsrp.WinningRate.Copy().(types.UInt16)
+	copied.Color = dsrp.Color.Copy().(types.UInt8)
+	copied.Color2 = dsrp.Color2.Copy().(types.UInt8)
+	copied.PrincipalID = dsrp.PrincipalID.Copy().(types.UInt32)
+	copied.Country = dsrp.Country.Copy().(types.UInt32)
+	copied.Region = dsrp.Region.Copy().(types.UInt8)
+	copied.Number = dsrp.Number.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReplayPlayer contains the same data as the current DataStoreReplayPlayer
-func (dsrp *DataStoreReplayPlayer) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReplayPlayer); !ok {
+func (dsrp DataStoreReplayPlayer) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreReplayPlayer); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReplayPlayer)
+	other := o.(DataStoreReplayPlayer)
 
 	if dsrp.StructureVersion != other.StructureVersion {
 		return false
@@ -165,13 +165,27 @@ func (dsrp *DataStoreReplayPlayer) Equals(o types.RVType) bool {
 	return dsrp.Number.Equals(other.Number)
 }
 
+// CopyRef copies the current value of the DataStoreReplayPlayer
+// and returns a pointer to the new copy
+func (dsrp DataStoreReplayPlayer) CopyRef() types.RVTypePtr {
+	copied := dsrp.Copy().(DataStoreReplayPlayer)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReplayPlayer
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrp *DataStoreReplayPlayer) Deref() types.RVType {
+	return *dsrp
+}
+
 // String returns the string representation of the DataStoreReplayPlayer
-func (dsrp *DataStoreReplayPlayer) String() string {
+func (dsrp DataStoreReplayPlayer) String() string {
 	return dsrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReplayPlayer using the provided indentation level
-func (dsrp *DataStoreReplayPlayer) FormatToString(indentationLevel int) string {
+func (dsrp DataStoreReplayPlayer) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -193,18 +207,17 @@ func (dsrp *DataStoreReplayPlayer) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreReplayPlayer returns a new DataStoreReplayPlayer
-func NewDataStoreReplayPlayer() *DataStoreReplayPlayer {
-	dsrp := &DataStoreReplayPlayer{
-		Fighter:     types.NewPrimitiveU8(0),
-		Health:      types.NewPrimitiveU8(0),
-		WinningRate: types.NewPrimitiveU16(0),
-		Color:       types.NewPrimitiveU8(0),
-		Color2:      types.NewPrimitiveU8(0),
-		PrincipalID: types.NewPrimitiveU32(0),
-		Country:     types.NewPrimitiveU32(0),
-		Region:      types.NewPrimitiveU8(0),
-		Number:      types.NewPrimitiveU8(0),
+func NewDataStoreReplayPlayer() DataStoreReplayPlayer {
+	return DataStoreReplayPlayer{
+		Fighter:     types.NewUInt8(0),
+		Health:      types.NewUInt8(0),
+		WinningRate: types.NewUInt16(0),
+		Color:       types.NewUInt8(0),
+		Color2:      types.NewUInt8(0),
+		PrincipalID: types.NewUInt32(0),
+		Country:     types.NewUInt32(0),
+		Region:      types.NewUInt8(0),
+		Number:      types.NewUInt8(0),
 	}
 
-	return dsrp
 }

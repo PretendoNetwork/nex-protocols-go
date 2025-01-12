@@ -12,15 +12,15 @@ import (
 // DataStoreReqGetInfo is a type within the DataStore protocol
 type DataStoreReqGetInfo struct {
 	types.Structure
-	URL            *types.String
-	RequestHeaders *types.List[*DataStoreKeyValue]
-	Size           *types.PrimitiveU32
-	RootCACert     *types.Buffer
-	DataID         *types.PrimitiveU64 // * NEX v3.5.0
+	URL            types.String
+	RequestHeaders types.List[DataStoreKeyValue]
+	Size           types.UInt32
+	RootCACert     types.Buffer
+	DataID         types.UInt64 // * NEX v3.5.0
 }
 
 // WriteTo writes the DataStoreReqGetInfo to the given writable
-func (dsrgi *DataStoreReqGetInfo) WriteTo(writable types.Writable) {
+func (dsrgi DataStoreReqGetInfo) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.DataStore
 
@@ -85,26 +85,26 @@ func (dsrgi *DataStoreReqGetInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreReqGetInfo
-func (dsrgi *DataStoreReqGetInfo) Copy() types.RVType {
+func (dsrgi DataStoreReqGetInfo) Copy() types.RVType {
 	copied := NewDataStoreReqGetInfo()
 
 	copied.StructureVersion = dsrgi.StructureVersion
-	copied.URL = dsrgi.URL.Copy().(*types.String)
-	copied.RequestHeaders = dsrgi.RequestHeaders.Copy().(*types.List[*DataStoreKeyValue])
-	copied.Size = dsrgi.Size.Copy().(*types.PrimitiveU32)
-	copied.RootCACert = dsrgi.RootCACert.Copy().(*types.Buffer)
-	copied.DataID = dsrgi.DataID.Copy().(*types.PrimitiveU64)
+	copied.URL = dsrgi.URL.Copy().(types.String)
+	copied.RequestHeaders = dsrgi.RequestHeaders.Copy().(types.List[DataStoreKeyValue])
+	copied.Size = dsrgi.Size.Copy().(types.UInt32)
+	copied.RootCACert = dsrgi.RootCACert.Copy().(types.Buffer)
+	copied.DataID = dsrgi.DataID.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReqGetInfo contains the same data as the current DataStoreReqGetInfo
-func (dsrgi *DataStoreReqGetInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqGetInfo); !ok {
+func (dsrgi DataStoreReqGetInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreReqGetInfo); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqGetInfo)
+	other := o.(DataStoreReqGetInfo)
 
 	if dsrgi.StructureVersion != other.StructureVersion {
 		return false
@@ -129,13 +129,27 @@ func (dsrgi *DataStoreReqGetInfo) Equals(o types.RVType) bool {
 	return dsrgi.DataID.Equals(other.DataID)
 }
 
+// CopyRef copies the current value of the DataStoreReqGetInfo
+// and returns a pointer to the new copy
+func (dsrgi DataStoreReqGetInfo) CopyRef() types.RVTypePtr {
+	copied := dsrgi.Copy().(DataStoreReqGetInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqGetInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrgi *DataStoreReqGetInfo) Deref() types.RVType {
+	return *dsrgi
+}
+
 // String returns the string representation of the DataStoreReqGetInfo
-func (dsrgi *DataStoreReqGetInfo) String() string {
+func (dsrgi DataStoreReqGetInfo) String() string {
 	return dsrgi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReqGetInfo using the provided indentation level
-func (dsrgi *DataStoreReqGetInfo) FormatToString(indentationLevel int) string {
+func (dsrgi DataStoreReqGetInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -153,16 +167,13 @@ func (dsrgi *DataStoreReqGetInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewDataStoreReqGetInfo returns a new DataStoreReqGetInfo
-func NewDataStoreReqGetInfo() *DataStoreReqGetInfo {
-	dsrgi := &DataStoreReqGetInfo{
+func NewDataStoreReqGetInfo() DataStoreReqGetInfo {
+	return DataStoreReqGetInfo{
 		URL:            types.NewString(""),
-		RequestHeaders: types.NewList[*DataStoreKeyValue](),
-		Size:           types.NewPrimitiveU32(0),
+		RequestHeaders: types.NewList[DataStoreKeyValue](),
+		Size:           types.NewUInt32(0),
 		RootCACert:     types.NewBuffer(nil),
-		DataID:         types.NewPrimitiveU64(0),
+		DataID:         types.NewUInt64(0),
 	}
 
-	dsrgi.RequestHeaders.Type = NewDataStoreKeyValue()
-
-	return dsrgi
 }

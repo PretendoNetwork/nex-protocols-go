@@ -25,15 +25,15 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	persistenceSlotID := types.NewPrimitiveU16(0)
-	dataID := types.NewPrimitiveU64(0)
-	deleteLastObject := types.NewPrimitiveBool(false)
+	var persistenceSlotID types.UInt16
+	var dataID types.UInt64
+	var deleteLastObject types.Bool
 
 	var err error
 
 	err = persistenceSlotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, persistenceSlotID, dataID, deleteLastObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 
 	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, persistenceSlotID, dataID, deleteLastObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 
 	err = deleteLastObject.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, persistenceSlotID, dataID, deleteLastObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

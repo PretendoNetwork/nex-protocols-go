@@ -11,18 +11,18 @@ import (
 // AutoMatchmakeParam is a type within the Matchmaking protocol
 type AutoMatchmakeParam struct {
 	types.Structure
-	SourceMatchmakeSession   *MatchmakeSession
-	AdditionalParticipants   *types.List[*types.PID]
-	GIDForParticipationCheck *types.PrimitiveU32
-	AutoMatchmakeOption      *types.PrimitiveU32
-	JoinMessage              *types.String
-	ParticipationCount       *types.PrimitiveU16
-	LstSearchCriteria        *types.List[*MatchmakeSessionSearchCriteria]
-	TargetGIDs               *types.List[*types.PrimitiveU32]
+	SourceMatchmakeSession   MatchmakeSession
+	AdditionalParticipants   types.List[types.PID]
+	GIDForParticipationCheck types.UInt32
+	AutoMatchmakeOption      types.UInt32
+	JoinMessage              types.String
+	ParticipationCount       types.UInt16
+	LstSearchCriteria        types.List[MatchmakeSessionSearchCriteria]
+	TargetGIDs               types.List[types.UInt32]
 }
 
 // WriteTo writes the AutoMatchmakeParam to the given writable
-func (amp *AutoMatchmakeParam) WriteTo(writable types.Writable) {
+func (amp AutoMatchmakeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	amp.SourceMatchmakeSession.WriteTo(contentWritable)
@@ -94,29 +94,29 @@ func (amp *AutoMatchmakeParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of AutoMatchmakeParam
-func (amp *AutoMatchmakeParam) Copy() types.RVType {
+func (amp AutoMatchmakeParam) Copy() types.RVType {
 	copied := NewAutoMatchmakeParam()
 
 	copied.StructureVersion = amp.StructureVersion
-	copied.SourceMatchmakeSession = amp.SourceMatchmakeSession.Copy().(*MatchmakeSession)
-	copied.AdditionalParticipants = amp.AdditionalParticipants.Copy().(*types.List[*types.PID])
-	copied.GIDForParticipationCheck = amp.GIDForParticipationCheck.Copy().(*types.PrimitiveU32)
-	copied.AutoMatchmakeOption = amp.AutoMatchmakeOption.Copy().(*types.PrimitiveU32)
-	copied.JoinMessage = amp.JoinMessage.Copy().(*types.String)
-	copied.ParticipationCount = amp.ParticipationCount.Copy().(*types.PrimitiveU16)
-	copied.LstSearchCriteria = amp.LstSearchCriteria.Copy().(*types.List[*MatchmakeSessionSearchCriteria])
-	copied.TargetGIDs = amp.TargetGIDs.Copy().(*types.List[*types.PrimitiveU32])
+	copied.SourceMatchmakeSession = amp.SourceMatchmakeSession.Copy().(MatchmakeSession)
+	copied.AdditionalParticipants = amp.AdditionalParticipants.Copy().(types.List[types.PID])
+	copied.GIDForParticipationCheck = amp.GIDForParticipationCheck.Copy().(types.UInt32)
+	copied.AutoMatchmakeOption = amp.AutoMatchmakeOption.Copy().(types.UInt32)
+	copied.JoinMessage = amp.JoinMessage.Copy().(types.String)
+	copied.ParticipationCount = amp.ParticipationCount.Copy().(types.UInt16)
+	copied.LstSearchCriteria = amp.LstSearchCriteria.Copy().(types.List[MatchmakeSessionSearchCriteria])
+	copied.TargetGIDs = amp.TargetGIDs.Copy().(types.List[types.UInt32])
 
 	return copied
 }
 
 // Equals checks if the given AutoMatchmakeParam contains the same data as the current AutoMatchmakeParam
-func (amp *AutoMatchmakeParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*AutoMatchmakeParam); !ok {
+func (amp AutoMatchmakeParam) Equals(o types.RVType) bool {
+	if _, ok := o.(AutoMatchmakeParam); !ok {
 		return false
 	}
 
-	other := o.(*AutoMatchmakeParam)
+	other := o.(AutoMatchmakeParam)
 
 	if amp.StructureVersion != other.StructureVersion {
 		return false
@@ -153,13 +153,27 @@ func (amp *AutoMatchmakeParam) Equals(o types.RVType) bool {
 	return amp.TargetGIDs.Equals(other.TargetGIDs)
 }
 
+// CopyRef copies the current value of the AutoMatchmakeParam
+// and returns a pointer to the new copy
+func (amp AutoMatchmakeParam) CopyRef() types.RVTypePtr {
+	copied := amp.Copy().(AutoMatchmakeParam)
+	return &copied
+}
+
+// Deref takes a pointer to the AutoMatchmakeParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (amp *AutoMatchmakeParam) Deref() types.RVType {
+	return *amp
+}
+
 // String returns the string representation of the AutoMatchmakeParam
-func (amp *AutoMatchmakeParam) String() string {
+func (amp AutoMatchmakeParam) String() string {
 	return amp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the AutoMatchmakeParam using the provided indentation level
-func (amp *AutoMatchmakeParam) FormatToString(indentationLevel int) string {
+func (amp AutoMatchmakeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -180,21 +194,16 @@ func (amp *AutoMatchmakeParam) FormatToString(indentationLevel int) string {
 }
 
 // NewAutoMatchmakeParam returns a new AutoMatchmakeParam
-func NewAutoMatchmakeParam() *AutoMatchmakeParam {
-	amp := &AutoMatchmakeParam{
+func NewAutoMatchmakeParam() AutoMatchmakeParam {
+	return AutoMatchmakeParam{
 		SourceMatchmakeSession:   NewMatchmakeSession(),
-		AdditionalParticipants:   types.NewList[*types.PID](),
-		GIDForParticipationCheck: types.NewPrimitiveU32(0),
-		AutoMatchmakeOption:      types.NewPrimitiveU32(0),
+		AdditionalParticipants:   types.NewList[types.PID](),
+		GIDForParticipationCheck: types.NewUInt32(0),
+		AutoMatchmakeOption:      types.NewUInt32(0),
 		JoinMessage:              types.NewString(""),
-		ParticipationCount:       types.NewPrimitiveU16(0),
-		LstSearchCriteria:        types.NewList[*MatchmakeSessionSearchCriteria](),
-		TargetGIDs:               types.NewList[*types.PrimitiveU32](),
+		ParticipationCount:       types.NewUInt16(0),
+		LstSearchCriteria:        types.NewList[MatchmakeSessionSearchCriteria](),
+		TargetGIDs:               types.NewList[types.UInt32](),
 	}
 
-	amp.AdditionalParticipants.Type = types.NewPID(0)
-	amp.LstSearchCriteria.Type = NewMatchmakeSessionSearchCriteria()
-	amp.TargetGIDs.Type = types.NewPrimitiveU32(0)
-
-	return amp
 }

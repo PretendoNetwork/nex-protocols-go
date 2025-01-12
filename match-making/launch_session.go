@@ -25,14 +25,14 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idGathering := types.NewPrimitiveU32(0)
-	strURL := types.NewString("")
+	var idGathering types.UInt32
+	var strURL types.String
 
 	var err error
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.LaunchSession(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.LaunchSession(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, strURL)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 
 	err = strURL.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.LaunchSession(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.LaunchSession(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, idGathering, strURL)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -25,15 +25,15 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	gid := types.NewPrimitiveU32(0)
-	strMessage := types.NewString("")
-	strPassword := types.NewString("")
+	var gid types.UInt32
+	var strMessage types.String
+	var strPassword types.String
 
 	var err error
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, strMessage, strPassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, gid, strMessage, strPassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 
 	err = strPassword.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read strPassword from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read strPassword from parameters. %s", err.Error()), packet, callID, gid, strMessage, strPassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -11,14 +11,14 @@ import (
 // Comment is a type within the FriendsWiiU protocol
 type Comment struct {
 	types.Structure
-	*types.Data
-	Unknown     *types.PrimitiveU8
-	Contents    *types.String
-	LastChanged *types.DateTime
+	types.Data
+	Unknown     types.UInt8
+	Contents    types.String
+	LastChanged types.DateTime
 }
 
 // WriteTo writes the Comment to the given writable
-func (c *Comment) WriteTo(writable types.Writable) {
+func (c Comment) WriteTo(writable types.Writable) {
 	c.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -67,25 +67,25 @@ func (c *Comment) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Comment
-func (c *Comment) Copy() types.RVType {
+func (c Comment) Copy() types.RVType {
 	copied := NewComment()
 
 	copied.StructureVersion = c.StructureVersion
-	copied.Data = c.Data.Copy().(*types.Data)
-	copied.Unknown = c.Unknown.Copy().(*types.PrimitiveU8)
-	copied.Contents = c.Contents.Copy().(*types.String)
-	copied.LastChanged = c.LastChanged.Copy().(*types.DateTime)
+	copied.Data = c.Data.Copy().(types.Data)
+	copied.Unknown = c.Unknown.Copy().(types.UInt8)
+	copied.Contents = c.Contents.Copy().(types.String)
+	copied.LastChanged = c.LastChanged.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given Comment contains the same data as the current Comment
-func (c *Comment) Equals(o types.RVType) bool {
-	if _, ok := o.(*Comment); !ok {
+func (c Comment) Equals(o types.RVType) bool {
+	if _, ok := o.(Comment); !ok {
 		return false
 	}
 
-	other := o.(*Comment)
+	other := o.(Comment)
 
 	if c.StructureVersion != other.StructureVersion {
 		return false
@@ -106,13 +106,27 @@ func (c *Comment) Equals(o types.RVType) bool {
 	return c.LastChanged.Equals(other.LastChanged)
 }
 
+// CopyRef copies the current value of the Comment
+// and returns a pointer to the new copy
+func (c Comment) CopyRef() types.RVTypePtr {
+	copied := c.Copy().(Comment)
+	return &copied
+}
+
+// Deref takes a pointer to the Comment
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (c *Comment) Deref() types.RVType {
+	return *c
+}
+
 // String returns the string representation of the Comment
-func (c *Comment) String() string {
+func (c Comment) String() string {
 	return c.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Comment using the provided indentation level
-func (c *Comment) FormatToString(indentationLevel int) string {
+func (c Comment) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +143,12 @@ func (c *Comment) FormatToString(indentationLevel int) string {
 }
 
 // NewComment returns a new Comment
-func NewComment() *Comment {
-	c := &Comment{
+func NewComment() Comment {
+	return Comment{
 		Data:        types.NewData(),
-		Unknown:     types.NewPrimitiveU8(0),
+		Unknown:     types.NewUInt8(0),
 		Contents:    types.NewString(""),
 		LastChanged: types.NewDateTime(0),
 	}
 
-	return c
 }

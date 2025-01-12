@@ -11,12 +11,12 @@ import (
 // ServiceItemRightInfo is a type within the ServiceItem protocol
 type ServiceItemRightInfo struct {
 	types.Structure
-	ReferenceID     *types.String
-	ReferenceIDType *types.PrimitiveU32
+	ReferenceID     types.String
+	ReferenceIDType types.UInt32
 }
 
 // WriteTo writes the ServiceItemRightInfo to the given writable
-func (siri *ServiceItemRightInfo) WriteTo(writable types.Writable) {
+func (siri ServiceItemRightInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	siri.ReferenceID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (siri *ServiceItemRightInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of ServiceItemRightInfo
-func (siri *ServiceItemRightInfo) Copy() types.RVType {
+func (siri ServiceItemRightInfo) Copy() types.RVType {
 	copied := NewServiceItemRightInfo()
 
 	copied.StructureVersion = siri.StructureVersion
-	copied.ReferenceID = siri.ReferenceID.Copy().(*types.String)
-	copied.ReferenceIDType = siri.ReferenceIDType.Copy().(*types.PrimitiveU32)
+	copied.ReferenceID = siri.ReferenceID.Copy().(types.String)
+	copied.ReferenceIDType = siri.ReferenceIDType.Copy().(types.UInt32)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemRightInfo contains the same data as the current ServiceItemRightInfo
-func (siri *ServiceItemRightInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemRightInfo); !ok {
+func (siri ServiceItemRightInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemRightInfo); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemRightInfo)
+	other := o.(ServiceItemRightInfo)
 
 	if siri.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (siri *ServiceItemRightInfo) Equals(o types.RVType) bool {
 	return siri.ReferenceIDType.Equals(other.ReferenceIDType)
 }
 
+// CopyRef copies the current value of the ServiceItemRightInfo
+// and returns a pointer to the new copy
+func (siri ServiceItemRightInfo) CopyRef() types.RVTypePtr {
+	copied := siri.Copy().(ServiceItemRightInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemRightInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (siri *ServiceItemRightInfo) Deref() types.RVType {
+	return *siri
+}
+
 // String returns the string representation of the ServiceItemRightInfo
-func (siri *ServiceItemRightInfo) String() string {
+func (siri ServiceItemRightInfo) String() string {
 	return siri.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemRightInfo using the provided indentation level
-func (siri *ServiceItemRightInfo) FormatToString(indentationLevel int) string {
+func (siri ServiceItemRightInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (siri *ServiceItemRightInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewServiceItemRightInfo returns a new ServiceItemRightInfo
-func NewServiceItemRightInfo() *ServiceItemRightInfo {
-	siri := &ServiceItemRightInfo{
+func NewServiceItemRightInfo() ServiceItemRightInfo {
+	return ServiceItemRightInfo{
 		ReferenceID:     types.NewString(""),
-		ReferenceIDType: types.NewPrimitiveU32(0),
+		ReferenceIDType: types.NewUInt32(0),
 	}
 
-	return siri
 }

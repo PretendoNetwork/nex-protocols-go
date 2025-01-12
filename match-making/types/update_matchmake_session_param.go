@@ -11,27 +11,27 @@ import (
 // UpdateMatchmakeSessionParam is a type within the Matchmaking protocol
 type UpdateMatchmakeSessionParam struct {
 	types.Structure
-	GID                 *types.PrimitiveU32
-	ModificationFlag    *types.PrimitiveU32
-	Attributes          *types.List[*types.PrimitiveU32]
-	OpenParticipation   *types.PrimitiveBool
-	ApplicationBuffer   *types.Buffer
-	ProgressScore       *types.PrimitiveU8
-	MatchmakeParam      *MatchmakeParam
-	StartedTime         *types.DateTime
-	UserPassword        *types.String
-	GameMode            *types.PrimitiveU32
-	Description         *types.String
-	MinParticipants     *types.PrimitiveU16
-	MaxParticipants     *types.PrimitiveU16
-	MatchmakeSystemType *types.PrimitiveU32
-	ParticipationPolicy *types.PrimitiveU32
-	PolicyArgument      *types.PrimitiveU32
-	Codeword            *types.String
+	GID                 types.UInt32
+	ModificationFlag    types.UInt32
+	Attributes          types.List[types.UInt32]
+	OpenParticipation   types.Bool
+	ApplicationBuffer   types.Buffer
+	ProgressScore       types.UInt8
+	MatchmakeParam      MatchmakeParam
+	StartedTime         types.DateTime
+	UserPassword        types.String
+	GameMode            types.UInt32
+	Description         types.String
+	MinParticipants     types.UInt16
+	MaxParticipants     types.UInt16
+	MatchmakeSystemType types.UInt32
+	ParticipationPolicy types.UInt32
+	PolicyArgument      types.UInt32
+	Codeword            types.String
 }
 
 // WriteTo writes the UpdateMatchmakeSessionParam to the given writable
-func (umsp *UpdateMatchmakeSessionParam) WriteTo(writable types.Writable) {
+func (umsp UpdateMatchmakeSessionParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	umsp.GID.WriteTo(contentWritable)
@@ -157,38 +157,38 @@ func (umsp *UpdateMatchmakeSessionParam) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of UpdateMatchmakeSessionParam
-func (umsp *UpdateMatchmakeSessionParam) Copy() types.RVType {
+func (umsp UpdateMatchmakeSessionParam) Copy() types.RVType {
 	copied := NewUpdateMatchmakeSessionParam()
 
 	copied.StructureVersion = umsp.StructureVersion
-	copied.GID = umsp.GID.Copy().(*types.PrimitiveU32)
-	copied.ModificationFlag = umsp.ModificationFlag.Copy().(*types.PrimitiveU32)
-	copied.Attributes = umsp.Attributes.Copy().(*types.List[*types.PrimitiveU32])
-	copied.OpenParticipation = umsp.OpenParticipation.Copy().(*types.PrimitiveBool)
-	copied.ApplicationBuffer = umsp.ApplicationBuffer.Copy().(*types.Buffer)
-	copied.ProgressScore = umsp.ProgressScore.Copy().(*types.PrimitiveU8)
-	copied.MatchmakeParam = umsp.MatchmakeParam.Copy().(*MatchmakeParam)
-	copied.StartedTime = umsp.StartedTime.Copy().(*types.DateTime)
-	copied.UserPassword = umsp.UserPassword.Copy().(*types.String)
-	copied.GameMode = umsp.GameMode.Copy().(*types.PrimitiveU32)
-	copied.Description = umsp.Description.Copy().(*types.String)
-	copied.MinParticipants = umsp.MinParticipants.Copy().(*types.PrimitiveU16)
-	copied.MaxParticipants = umsp.MaxParticipants.Copy().(*types.PrimitiveU16)
-	copied.MatchmakeSystemType = umsp.MatchmakeSystemType.Copy().(*types.PrimitiveU32)
-	copied.ParticipationPolicy = umsp.ParticipationPolicy.Copy().(*types.PrimitiveU32)
-	copied.PolicyArgument = umsp.PolicyArgument.Copy().(*types.PrimitiveU32)
-	copied.Codeword = umsp.Codeword.Copy().(*types.String)
+	copied.GID = umsp.GID.Copy().(types.UInt32)
+	copied.ModificationFlag = umsp.ModificationFlag.Copy().(types.UInt32)
+	copied.Attributes = umsp.Attributes.Copy().(types.List[types.UInt32])
+	copied.OpenParticipation = umsp.OpenParticipation.Copy().(types.Bool)
+	copied.ApplicationBuffer = umsp.ApplicationBuffer.Copy().(types.Buffer)
+	copied.ProgressScore = umsp.ProgressScore.Copy().(types.UInt8)
+	copied.MatchmakeParam = umsp.MatchmakeParam.Copy().(MatchmakeParam)
+	copied.StartedTime = umsp.StartedTime.Copy().(types.DateTime)
+	copied.UserPassword = umsp.UserPassword.Copy().(types.String)
+	copied.GameMode = umsp.GameMode.Copy().(types.UInt32)
+	copied.Description = umsp.Description.Copy().(types.String)
+	copied.MinParticipants = umsp.MinParticipants.Copy().(types.UInt16)
+	copied.MaxParticipants = umsp.MaxParticipants.Copy().(types.UInt16)
+	copied.MatchmakeSystemType = umsp.MatchmakeSystemType.Copy().(types.UInt32)
+	copied.ParticipationPolicy = umsp.ParticipationPolicy.Copy().(types.UInt32)
+	copied.PolicyArgument = umsp.PolicyArgument.Copy().(types.UInt32)
+	copied.Codeword = umsp.Codeword.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given UpdateMatchmakeSessionParam contains the same data as the current UpdateMatchmakeSessionParam
-func (umsp *UpdateMatchmakeSessionParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*UpdateMatchmakeSessionParam); !ok {
+func (umsp UpdateMatchmakeSessionParam) Equals(o types.RVType) bool {
+	if _, ok := o.(UpdateMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	other := o.(*UpdateMatchmakeSessionParam)
+	other := o.(UpdateMatchmakeSessionParam)
 
 	if umsp.StructureVersion != other.StructureVersion {
 		return false
@@ -261,13 +261,27 @@ func (umsp *UpdateMatchmakeSessionParam) Equals(o types.RVType) bool {
 	return umsp.Codeword.Equals(other.Codeword)
 }
 
+// CopyRef copies the current value of the UpdateMatchmakeSessionParam
+// and returns a pointer to the new copy
+func (umsp UpdateMatchmakeSessionParam) CopyRef() types.RVTypePtr {
+	copied := umsp.Copy().(UpdateMatchmakeSessionParam)
+	return &copied
+}
+
+// Deref takes a pointer to the UpdateMatchmakeSessionParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (umsp *UpdateMatchmakeSessionParam) Deref() types.RVType {
+	return *umsp
+}
+
 // String returns the string representation of the UpdateMatchmakeSessionParam
-func (umsp *UpdateMatchmakeSessionParam) String() string {
+func (umsp UpdateMatchmakeSessionParam) String() string {
 	return umsp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the UpdateMatchmakeSessionParam using the provided indentation level
-func (umsp *UpdateMatchmakeSessionParam) FormatToString(indentationLevel int) string {
+func (umsp UpdateMatchmakeSessionParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -297,28 +311,25 @@ func (umsp *UpdateMatchmakeSessionParam) FormatToString(indentationLevel int) st
 }
 
 // NewUpdateMatchmakeSessionParam returns a new UpdateMatchmakeSessionParam
-func NewUpdateMatchmakeSessionParam() *UpdateMatchmakeSessionParam {
-	umsp := &UpdateMatchmakeSessionParam{
-		GID:                 types.NewPrimitiveU32(0),
-		ModificationFlag:    types.NewPrimitiveU32(0),
-		Attributes:          types.NewList[*types.PrimitiveU32](),
-		OpenParticipation:   types.NewPrimitiveBool(false),
+func NewUpdateMatchmakeSessionParam() UpdateMatchmakeSessionParam {
+	return UpdateMatchmakeSessionParam{
+		GID:                 types.NewUInt32(0),
+		ModificationFlag:    types.NewUInt32(0),
+		Attributes:          types.NewList[types.UInt32](),
+		OpenParticipation:   types.NewBool(false),
 		ApplicationBuffer:   types.NewBuffer(nil),
-		ProgressScore:       types.NewPrimitiveU8(0),
+		ProgressScore:       types.NewUInt8(0),
 		MatchmakeParam:      NewMatchmakeParam(),
 		StartedTime:         types.NewDateTime(0),
 		UserPassword:        types.NewString(""),
-		GameMode:            types.NewPrimitiveU32(0),
+		GameMode:            types.NewUInt32(0),
 		Description:         types.NewString(""),
-		MinParticipants:     types.NewPrimitiveU16(0),
-		MaxParticipants:     types.NewPrimitiveU16(0),
-		MatchmakeSystemType: types.NewPrimitiveU32(0),
-		ParticipationPolicy: types.NewPrimitiveU32(0),
-		PolicyArgument:      types.NewPrimitiveU32(0),
+		MinParticipants:     types.NewUInt16(0),
+		MaxParticipants:     types.NewUInt16(0),
+		MatchmakeSystemType: types.NewUInt32(0),
+		ParticipationPolicy: types.NewUInt32(0),
+		PolicyArgument:      types.NewUInt32(0),
 		Codeword:            types.NewString(""),
 	}
 
-	umsp.Attributes.Type = types.NewPrimitiveU32(0)
-
-	return umsp
 }

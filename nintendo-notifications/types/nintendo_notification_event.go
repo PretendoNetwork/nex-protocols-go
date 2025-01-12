@@ -11,13 +11,13 @@ import (
 // NintendoNotificationEvent is a type within the NintendoNotifications protocol
 type NintendoNotificationEvent struct {
 	types.Structure
-	Type       *types.PrimitiveU32
-	SenderPID  *types.PID
-	DataHolder *types.AnyDataHolder
+	Type       types.UInt32
+	SenderPID  types.PID
+	DataHolder types.DataHolder
 }
 
 // WriteTo writes the NintendoNotificationEvent to the given writable
-func (nne *NintendoNotificationEvent) WriteTo(writable types.Writable) {
+func (nne NintendoNotificationEvent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	nne.Type.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (nne *NintendoNotificationEvent) ExtractFrom(readable types.Readable) error
 }
 
 // Copy returns a new copied instance of NintendoNotificationEvent
-func (nne *NintendoNotificationEvent) Copy() types.RVType {
+func (nne NintendoNotificationEvent) Copy() types.RVType {
 	copied := NewNintendoNotificationEvent()
 
 	copied.StructureVersion = nne.StructureVersion
-	copied.Type = nne.Type.Copy().(*types.PrimitiveU32)
-	copied.SenderPID = nne.SenderPID.Copy().(*types.PID)
-	copied.DataHolder = nne.DataHolder.Copy().(*types.AnyDataHolder)
+	copied.Type = nne.Type.Copy().(types.UInt32)
+	copied.SenderPID = nne.SenderPID.Copy().(types.PID)
+	copied.DataHolder = nne.DataHolder.Copy().(types.DataHolder)
 
 	return copied
 }
 
 // Equals checks if the given NintendoNotificationEvent contains the same data as the current NintendoNotificationEvent
-func (nne *NintendoNotificationEvent) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoNotificationEvent); !ok {
+func (nne NintendoNotificationEvent) Equals(o types.RVType) bool {
+	if _, ok := o.(NintendoNotificationEvent); !ok {
 		return false
 	}
 
-	other := o.(*NintendoNotificationEvent)
+	other := o.(NintendoNotificationEvent)
 
 	if nne.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (nne *NintendoNotificationEvent) Equals(o types.RVType) bool {
 	return nne.DataHolder.Equals(other.DataHolder)
 }
 
+// CopyRef copies the current value of the NintendoNotificationEvent
+// and returns a pointer to the new copy
+func (nne NintendoNotificationEvent) CopyRef() types.RVTypePtr {
+	copied := nne.Copy().(NintendoNotificationEvent)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoNotificationEvent
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (nne *NintendoNotificationEvent) Deref() types.RVType {
+	return *nne
+}
+
 // String returns the string representation of the NintendoNotificationEvent
-func (nne *NintendoNotificationEvent) String() string {
+func (nne NintendoNotificationEvent) String() string {
 	return nne.FormatToString(0)
 }
 
 // FormatToString pretty-prints the NintendoNotificationEvent using the provided indentation level
-func (nne *NintendoNotificationEvent) FormatToString(indentationLevel int) string {
+func (nne NintendoNotificationEvent) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +129,11 @@ func (nne *NintendoNotificationEvent) FormatToString(indentationLevel int) strin
 }
 
 // NewNintendoNotificationEvent returns a new NintendoNotificationEvent
-func NewNintendoNotificationEvent() *NintendoNotificationEvent {
-	nne := &NintendoNotificationEvent{
-		Type:       types.NewPrimitiveU32(0),
+func NewNintendoNotificationEvent() NintendoNotificationEvent {
+	return NintendoNotificationEvent{
+		Type:       types.NewUInt32(0),
 		SenderPID:  types.NewPID(0),
-		DataHolder: types.NewAnyDataHolder(),
+		DataHolder: types.NewDataHolder(),
 	}
 
-	return nne
 }

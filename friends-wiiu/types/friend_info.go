@@ -11,17 +11,17 @@ import (
 // FriendInfo is a type within the FriendsWiiU protocol
 type FriendInfo struct {
 	types.Structure
-	*types.Data
-	NNAInfo      *NNAInfo
-	Presence     *NintendoPresenceV2
-	Status       *Comment
-	BecameFriend *types.DateTime
-	LastOnline   *types.DateTime
-	Unknown      *types.PrimitiveU64
+	types.Data
+	NNAInfo      NNAInfo
+	Presence     NintendoPresenceV2
+	Status       Comment
+	BecameFriend types.DateTime
+	LastOnline   types.DateTime
+	Unknown      types.UInt64
 }
 
 // WriteTo writes the FriendInfo to the given writable
-func (fi *FriendInfo) WriteTo(writable types.Writable) {
+func (fi FriendInfo) WriteTo(writable types.Writable) {
 	fi.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -88,28 +88,28 @@ func (fi *FriendInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of FriendInfo
-func (fi *FriendInfo) Copy() types.RVType {
+func (fi FriendInfo) Copy() types.RVType {
 	copied := NewFriendInfo()
 
 	copied.StructureVersion = fi.StructureVersion
-	copied.Data = fi.Data.Copy().(*types.Data)
-	copied.NNAInfo = fi.NNAInfo.Copy().(*NNAInfo)
-	copied.Presence = fi.Presence.Copy().(*NintendoPresenceV2)
-	copied.Status = fi.Status.Copy().(*Comment)
-	copied.BecameFriend = fi.BecameFriend.Copy().(*types.DateTime)
-	copied.LastOnline = fi.LastOnline.Copy().(*types.DateTime)
-	copied.Unknown = fi.Unknown.Copy().(*types.PrimitiveU64)
+	copied.Data = fi.Data.Copy().(types.Data)
+	copied.NNAInfo = fi.NNAInfo.Copy().(NNAInfo)
+	copied.Presence = fi.Presence.Copy().(NintendoPresenceV2)
+	copied.Status = fi.Status.Copy().(Comment)
+	copied.BecameFriend = fi.BecameFriend.Copy().(types.DateTime)
+	copied.LastOnline = fi.LastOnline.Copy().(types.DateTime)
+	copied.Unknown = fi.Unknown.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given FriendInfo contains the same data as the current FriendInfo
-func (fi *FriendInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*FriendInfo); !ok {
+func (fi FriendInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(FriendInfo); !ok {
 		return false
 	}
 
-	other := o.(*FriendInfo)
+	other := o.(FriendInfo)
 
 	if fi.StructureVersion != other.StructureVersion {
 		return false
@@ -142,13 +142,27 @@ func (fi *FriendInfo) Equals(o types.RVType) bool {
 	return fi.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the FriendInfo
+// and returns a pointer to the new copy
+func (fi FriendInfo) CopyRef() types.RVTypePtr {
+	copied := fi.Copy().(FriendInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the FriendInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (fi *FriendInfo) Deref() types.RVType {
+	return *fi
+}
+
 // String returns the string representation of the FriendInfo
-func (fi *FriendInfo) String() string {
+func (fi FriendInfo) String() string {
 	return fi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the FriendInfo using the provided indentation level
-func (fi *FriendInfo) FormatToString(indentationLevel int) string {
+func (fi FriendInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -168,16 +182,15 @@ func (fi *FriendInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewFriendInfo returns a new FriendInfo
-func NewFriendInfo() *FriendInfo {
-	fi := &FriendInfo{
+func NewFriendInfo() FriendInfo {
+	return FriendInfo{
 		Data:         types.NewData(),
 		NNAInfo:      NewNNAInfo(),
 		Presence:     NewNintendoPresenceV2(),
 		Status:       NewComment(),
 		BecameFriend: types.NewDateTime(0),
 		LastOnline:   types.NewDateTime(0),
-		Unknown:      types.NewPrimitiveU64(0),
+		Unknown:      types.NewUInt64(0),
 	}
 
-	return fi
 }

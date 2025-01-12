@@ -11,13 +11,13 @@ import (
 // ServiceItemGetPrepurchaseInfoParam is a type within the ServiceItem protocol
 type ServiceItemGetPrepurchaseInfoParam struct {
 	types.Structure
-	ItemCode *types.String
-	Language *types.String
-	TitleID  *types.String
+	ItemCode types.String
+	Language types.String
+	TitleID  types.String
 }
 
 // WriteTo writes the ServiceItemGetPrepurchaseInfoParam to the given writable
-func (sigpip *ServiceItemGetPrepurchaseInfoParam) WriteTo(writable types.Writable) {
+func (sigpip ServiceItemGetPrepurchaseInfoParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	sigpip.ItemCode.WriteTo(contentWritable)
@@ -59,24 +59,24 @@ func (sigpip *ServiceItemGetPrepurchaseInfoParam) ExtractFrom(readable types.Rea
 }
 
 // Copy returns a new copied instance of ServiceItemGetPrepurchaseInfoParam
-func (sigpip *ServiceItemGetPrepurchaseInfoParam) Copy() types.RVType {
+func (sigpip ServiceItemGetPrepurchaseInfoParam) Copy() types.RVType {
 	copied := NewServiceItemGetPrepurchaseInfoParam()
 
 	copied.StructureVersion = sigpip.StructureVersion
-	copied.ItemCode = sigpip.ItemCode.Copy().(*types.String)
-	copied.Language = sigpip.Language.Copy().(*types.String)
-	copied.TitleID = sigpip.TitleID.Copy().(*types.String)
+	copied.ItemCode = sigpip.ItemCode.Copy().(types.String)
+	copied.Language = sigpip.Language.Copy().(types.String)
+	copied.TitleID = sigpip.TitleID.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemGetPrepurchaseInfoParam contains the same data as the current ServiceItemGetPrepurchaseInfoParam
-func (sigpip *ServiceItemGetPrepurchaseInfoParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemGetPrepurchaseInfoParam); !ok {
+func (sigpip ServiceItemGetPrepurchaseInfoParam) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemGetPrepurchaseInfoParam); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemGetPrepurchaseInfoParam)
+	other := o.(ServiceItemGetPrepurchaseInfoParam)
 
 	if sigpip.StructureVersion != other.StructureVersion {
 		return false
@@ -93,13 +93,27 @@ func (sigpip *ServiceItemGetPrepurchaseInfoParam) Equals(o types.RVType) bool {
 	return sigpip.TitleID.Equals(other.TitleID)
 }
 
+// CopyRef copies the current value of the ServiceItemGetPrepurchaseInfoParam
+// and returns a pointer to the new copy
+func (sigpip ServiceItemGetPrepurchaseInfoParam) CopyRef() types.RVTypePtr {
+	copied := sigpip.Copy().(ServiceItemGetPrepurchaseInfoParam)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemGetPrepurchaseInfoParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sigpip *ServiceItemGetPrepurchaseInfoParam) Deref() types.RVType {
+	return *sigpip
+}
+
 // String returns the string representation of the ServiceItemGetPrepurchaseInfoParam
-func (sigpip *ServiceItemGetPrepurchaseInfoParam) String() string {
+func (sigpip ServiceItemGetPrepurchaseInfoParam) String() string {
 	return sigpip.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemGetPrepurchaseInfoParam using the provided indentation level
-func (sigpip *ServiceItemGetPrepurchaseInfoParam) FormatToString(indentationLevel int) string {
+func (sigpip ServiceItemGetPrepurchaseInfoParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -115,12 +129,11 @@ func (sigpip *ServiceItemGetPrepurchaseInfoParam) FormatToString(indentationLeve
 }
 
 // NewServiceItemGetPrepurchaseInfoParam returns a new ServiceItemGetPrepurchaseInfoParam
-func NewServiceItemGetPrepurchaseInfoParam() *ServiceItemGetPrepurchaseInfoParam {
-	sigpip := &ServiceItemGetPrepurchaseInfoParam{
+func NewServiceItemGetPrepurchaseInfoParam() ServiceItemGetPrepurchaseInfoParam {
+	return ServiceItemGetPrepurchaseInfoParam{
 		ItemCode: types.NewString(""),
 		Language: types.NewString(""),
 		TitleID:  types.NewString(""),
 	}
 
-	return sigpip
 }

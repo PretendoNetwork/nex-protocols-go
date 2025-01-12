@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetStatus(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idPrincipal := types.NewPID(0)
+	var idPrincipal types.PID
 
 	err := idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStatus(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetStatus(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

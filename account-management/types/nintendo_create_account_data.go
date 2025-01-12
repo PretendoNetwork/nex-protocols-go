@@ -12,14 +12,24 @@ import (
 // NintendoCreateAccountData is a type within the AccountManagement protocol
 type NintendoCreateAccountData struct {
 	types.Structure
-	NNAInfo  *friends_wiiu_types.NNAInfo
-	Token    *types.String
-	Birthday *types.DateTime
-	Unknown  *types.PrimitiveU64
+	NNAInfo  friends_wiiu_types.NNAInfo
+	Token    types.String
+	Birthday types.DateTime
+	Unknown  types.UInt64
+}
+
+// ObjectID returns the object identifier of the type
+func (ncad NintendoCreateAccountData) ObjectID() types.RVType {
+	return ncad.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (ncad NintendoCreateAccountData) DataObjectID() types.RVType {
+	return types.NewString("NintendoCreateAccountData")
 }
 
 // WriteTo writes the NintendoCreateAccountData to the given writable
-func (ncad *NintendoCreateAccountData) WriteTo(writable types.Writable) {
+func (ncad NintendoCreateAccountData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	ncad.NNAInfo.WriteTo(contentWritable)
@@ -67,25 +77,25 @@ func (ncad *NintendoCreateAccountData) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of NintendoCreateAccountData
-func (ncad *NintendoCreateAccountData) Copy() types.RVType {
+func (ncad NintendoCreateAccountData) Copy() types.RVType {
 	copied := NewNintendoCreateAccountData()
 
 	copied.StructureVersion = ncad.StructureVersion
-	copied.NNAInfo = ncad.NNAInfo.Copy().(*friends_wiiu_types.NNAInfo)
-	copied.Token = ncad.Token.Copy().(*types.String)
-	copied.Birthday = ncad.Birthday.Copy().(*types.DateTime)
-	copied.Unknown = ncad.Unknown.Copy().(*types.PrimitiveU64)
+	copied.NNAInfo = ncad.NNAInfo.Copy().(friends_wiiu_types.NNAInfo)
+	copied.Token = ncad.Token.Copy().(types.String)
+	copied.Birthday = ncad.Birthday.Copy().(types.DateTime)
+	copied.Unknown = ncad.Unknown.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given NintendoCreateAccountData contains the same data as the current NintendoCreateAccountData
-func (ncad *NintendoCreateAccountData) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoCreateAccountData); !ok {
+func (ncad NintendoCreateAccountData) Equals(o types.RVType) bool {
+	if _, ok := o.(NintendoCreateAccountData); !ok {
 		return false
 	}
 
-	other := o.(*NintendoCreateAccountData)
+	other := o.(NintendoCreateAccountData)
 
 	if ncad.StructureVersion != other.StructureVersion {
 		return false
@@ -106,13 +116,27 @@ func (ncad *NintendoCreateAccountData) Equals(o types.RVType) bool {
 	return ncad.Unknown.Equals(other.Unknown)
 }
 
+// CopyRef copies the current value of the NintendoCreateAccountData
+// and returns a pointer to the new copy
+func (ncad NintendoCreateAccountData) CopyRef() types.RVTypePtr {
+	copied := ncad.Copy().(NintendoCreateAccountData)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoCreateAccountData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ncad *NintendoCreateAccountData) Deref() types.RVType {
+	return *ncad
+}
+
 // String returns the string representation of the NintendoCreateAccountData
-func (ncad *NintendoCreateAccountData) String() string {
+func (ncad NintendoCreateAccountData) String() string {
 	return ncad.FormatToString(0)
 }
 
 // FormatToString pretty-prints the NintendoCreateAccountData using the provided indentation level
-func (ncad *NintendoCreateAccountData) FormatToString(indentationLevel int) string {
+func (ncad NintendoCreateAccountData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -129,13 +153,12 @@ func (ncad *NintendoCreateAccountData) FormatToString(indentationLevel int) stri
 }
 
 // NewNintendoCreateAccountData returns a new NintendoCreateAccountData
-func NewNintendoCreateAccountData() *NintendoCreateAccountData {
-	ncad := &NintendoCreateAccountData{
+func NewNintendoCreateAccountData() NintendoCreateAccountData {
+	return NintendoCreateAccountData{
 		NNAInfo:  friends_wiiu_types.NewNNAInfo(),
 		Token:    types.NewString(""),
 		Birthday: types.NewDateTime(0),
-		Unknown:  types.NewPrimitiveU64(0),
+		Unknown:  types.NewUInt64(0),
 	}
 
-	return ncad
 }

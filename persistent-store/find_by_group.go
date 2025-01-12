@@ -25,11 +25,11 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	uiGroup := types.NewPrimitiveU32(0)
+	var uiGroup types.UInt32
 
 	err := uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByGroup(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.FindByGroup(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, uiGroup)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

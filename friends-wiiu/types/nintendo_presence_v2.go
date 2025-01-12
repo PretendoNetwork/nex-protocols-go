@@ -11,26 +11,26 @@ import (
 // NintendoPresenceV2 is a type within the FriendsWiiU protocol
 type NintendoPresenceV2 struct {
 	types.Structure
-	*types.Data
-	ChangedFlags    *types.PrimitiveU32
-	Online          *types.PrimitiveBool
-	GameKey         *GameKey
-	Unknown1        *types.PrimitiveU8
-	Message         *types.String
-	Unknown2        *types.PrimitiveU32
-	Unknown3        *types.PrimitiveU8
-	GameServerID    *types.PrimitiveU32
-	Unknown4        *types.PrimitiveU32
-	PID             *types.PID
-	GatheringID     *types.PrimitiveU32
-	ApplicationData *types.Buffer
-	Unknown5        *types.PrimitiveU8
-	Unknown6        *types.PrimitiveU8
-	Unknown7        *types.PrimitiveU8
+	types.Data
+	ChangedFlags    types.UInt32
+	Online          types.Bool
+	GameKey         GameKey
+	Unknown1        types.UInt8
+	Message         types.String
+	Unknown2        types.UInt32
+	Unknown3        types.UInt8
+	GameServerID    types.UInt32
+	Unknown4        types.UInt32
+	PID             types.PID
+	GatheringID     types.UInt32
+	ApplicationData types.Buffer
+	Unknown5        types.UInt8
+	Unknown6        types.UInt8
+	Unknown7        types.UInt8
 }
 
 // WriteTo writes the NintendoPresenceV2 to the given writable
-func (npv *NintendoPresenceV2) WriteTo(writable types.Writable) {
+func (npv NintendoPresenceV2) WriteTo(writable types.Writable) {
 	npv.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -151,37 +151,37 @@ func (npv *NintendoPresenceV2) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of NintendoPresenceV2
-func (npv *NintendoPresenceV2) Copy() types.RVType {
+func (npv NintendoPresenceV2) Copy() types.RVType {
 	copied := NewNintendoPresenceV2()
 
 	copied.StructureVersion = npv.StructureVersion
-	copied.Data = npv.Data.Copy().(*types.Data)
-	copied.ChangedFlags = npv.ChangedFlags.Copy().(*types.PrimitiveU32)
-	copied.Online = npv.Online.Copy().(*types.PrimitiveBool)
-	copied.GameKey = npv.GameKey.Copy().(*GameKey)
-	copied.Unknown1 = npv.Unknown1.Copy().(*types.PrimitiveU8)
-	copied.Message = npv.Message.Copy().(*types.String)
-	copied.Unknown2 = npv.Unknown2.Copy().(*types.PrimitiveU32)
-	copied.Unknown3 = npv.Unknown3.Copy().(*types.PrimitiveU8)
-	copied.GameServerID = npv.GameServerID.Copy().(*types.PrimitiveU32)
-	copied.Unknown4 = npv.Unknown4.Copy().(*types.PrimitiveU32)
-	copied.PID = npv.PID.Copy().(*types.PID)
-	copied.GatheringID = npv.GatheringID.Copy().(*types.PrimitiveU32)
-	copied.ApplicationData = npv.ApplicationData.Copy().(*types.Buffer)
-	copied.Unknown5 = npv.Unknown5.Copy().(*types.PrimitiveU8)
-	copied.Unknown6 = npv.Unknown6.Copy().(*types.PrimitiveU8)
-	copied.Unknown7 = npv.Unknown7.Copy().(*types.PrimitiveU8)
+	copied.Data = npv.Data.Copy().(types.Data)
+	copied.ChangedFlags = npv.ChangedFlags.Copy().(types.UInt32)
+	copied.Online = npv.Online.Copy().(types.Bool)
+	copied.GameKey = npv.GameKey.Copy().(GameKey)
+	copied.Unknown1 = npv.Unknown1.Copy().(types.UInt8)
+	copied.Message = npv.Message.Copy().(types.String)
+	copied.Unknown2 = npv.Unknown2.Copy().(types.UInt32)
+	copied.Unknown3 = npv.Unknown3.Copy().(types.UInt8)
+	copied.GameServerID = npv.GameServerID.Copy().(types.UInt32)
+	copied.Unknown4 = npv.Unknown4.Copy().(types.UInt32)
+	copied.PID = npv.PID.Copy().(types.PID)
+	copied.GatheringID = npv.GatheringID.Copy().(types.UInt32)
+	copied.ApplicationData = npv.ApplicationData.Copy().(types.Buffer)
+	copied.Unknown5 = npv.Unknown5.Copy().(types.UInt8)
+	copied.Unknown6 = npv.Unknown6.Copy().(types.UInt8)
+	copied.Unknown7 = npv.Unknown7.Copy().(types.UInt8)
 
 	return copied
 }
 
 // Equals checks if the given NintendoPresenceV2 contains the same data as the current NintendoPresenceV2
-func (npv *NintendoPresenceV2) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoPresenceV2); !ok {
+func (npv NintendoPresenceV2) Equals(o types.RVType) bool {
+	if _, ok := o.(NintendoPresenceV2); !ok {
 		return false
 	}
 
-	other := o.(*NintendoPresenceV2)
+	other := o.(NintendoPresenceV2)
 
 	if npv.StructureVersion != other.StructureVersion {
 		return false
@@ -250,13 +250,27 @@ func (npv *NintendoPresenceV2) Equals(o types.RVType) bool {
 	return npv.Unknown7.Equals(other.Unknown7)
 }
 
+// CopyRef copies the current value of the NintendoPresenceV2
+// and returns a pointer to the new copy
+func (npv NintendoPresenceV2) CopyRef() types.RVTypePtr {
+	copied := npv.Copy().(NintendoPresenceV2)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoPresenceV2
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (npv *NintendoPresenceV2) Deref() types.RVType {
+	return *npv
+}
+
 // String returns the string representation of the NintendoPresenceV2
-func (npv *NintendoPresenceV2) String() string {
+func (npv NintendoPresenceV2) String() string {
 	return npv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the NintendoPresenceV2 using the provided indentation level
-func (npv *NintendoPresenceV2) FormatToString(indentationLevel int) string {
+func (npv NintendoPresenceV2) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -285,25 +299,24 @@ func (npv *NintendoPresenceV2) FormatToString(indentationLevel int) string {
 }
 
 // NewNintendoPresenceV2 returns a new NintendoPresenceV2
-func NewNintendoPresenceV2() *NintendoPresenceV2 {
-	npv := &NintendoPresenceV2{
+func NewNintendoPresenceV2() NintendoPresenceV2 {
+	return NintendoPresenceV2{
 		Data:            types.NewData(),
-		ChangedFlags:    types.NewPrimitiveU32(0),
-		Online:          types.NewPrimitiveBool(false),
+		ChangedFlags:    types.NewUInt32(0),
+		Online:          types.NewBool(false),
 		GameKey:         NewGameKey(),
-		Unknown1:        types.NewPrimitiveU8(0),
+		Unknown1:        types.NewUInt8(0),
 		Message:         types.NewString(""),
-		Unknown2:        types.NewPrimitiveU32(0),
-		Unknown3:        types.NewPrimitiveU8(0),
-		GameServerID:    types.NewPrimitiveU32(0),
-		Unknown4:        types.NewPrimitiveU32(0),
+		Unknown2:        types.NewUInt32(0),
+		Unknown3:        types.NewUInt8(0),
+		GameServerID:    types.NewUInt32(0),
+		Unknown4:        types.NewUInt32(0),
 		PID:             types.NewPID(0),
-		GatheringID:     types.NewPrimitiveU32(0),
+		GatheringID:     types.NewUInt32(0),
 		ApplicationData: types.NewBuffer(nil),
-		Unknown5:        types.NewPrimitiveU8(0),
-		Unknown6:        types.NewPrimitiveU8(0),
-		Unknown7:        types.NewPrimitiveU8(0),
+		Unknown5:        types.NewUInt8(0),
+		Unknown6:        types.NewUInt8(0),
+		Unknown7:        types.NewUInt8(0),
 	}
 
-	return npv
 }

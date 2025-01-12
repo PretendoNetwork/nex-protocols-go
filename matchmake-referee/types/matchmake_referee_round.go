@@ -11,16 +11,16 @@ import (
 // MatchmakeRefereeRound is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeRound struct {
 	types.Structure
-	*types.Data
-	RoundID                        *types.PrimitiveU64
-	GID                            *types.PrimitiveU32
-	State                          *types.PrimitiveU32
-	PersonalDataCategory           *types.PrimitiveU32
-	NormalizedPersonalRoundResults *types.List[*MatchmakeRefereePersonalRoundResult]
+	types.Data
+	RoundID                        types.UInt64
+	GID                            types.UInt32
+	State                          types.UInt32
+	PersonalDataCategory           types.UInt32
+	NormalizedPersonalRoundResults types.List[MatchmakeRefereePersonalRoundResult]
 }
 
 // WriteTo writes the MatchmakeRefereeRound to the given writable
-func (mrr *MatchmakeRefereeRound) WriteTo(writable types.Writable) {
+func (mrr MatchmakeRefereeRound) WriteTo(writable types.Writable) {
 	mrr.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -81,27 +81,27 @@ func (mrr *MatchmakeRefereeRound) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeRound
-func (mrr *MatchmakeRefereeRound) Copy() types.RVType {
+func (mrr MatchmakeRefereeRound) Copy() types.RVType {
 	copied := NewMatchmakeRefereeRound()
 
 	copied.StructureVersion = mrr.StructureVersion
-	copied.Data = mrr.Data.Copy().(*types.Data)
-	copied.RoundID = mrr.RoundID.Copy().(*types.PrimitiveU64)
-	copied.GID = mrr.GID.Copy().(*types.PrimitiveU32)
-	copied.State = mrr.State.Copy().(*types.PrimitiveU32)
-	copied.PersonalDataCategory = mrr.PersonalDataCategory.Copy().(*types.PrimitiveU32)
-	copied.NormalizedPersonalRoundResults = mrr.NormalizedPersonalRoundResults.Copy().(*types.List[*MatchmakeRefereePersonalRoundResult])
+	copied.Data = mrr.Data.Copy().(types.Data)
+	copied.RoundID = mrr.RoundID.Copy().(types.UInt64)
+	copied.GID = mrr.GID.Copy().(types.UInt32)
+	copied.State = mrr.State.Copy().(types.UInt32)
+	copied.PersonalDataCategory = mrr.PersonalDataCategory.Copy().(types.UInt32)
+	copied.NormalizedPersonalRoundResults = mrr.NormalizedPersonalRoundResults.Copy().(types.List[MatchmakeRefereePersonalRoundResult])
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeRefereeRound contains the same data as the current MatchmakeRefereeRound
-func (mrr *MatchmakeRefereeRound) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeRefereeRound); !ok {
+func (mrr MatchmakeRefereeRound) Equals(o types.RVType) bool {
+	if _, ok := o.(MatchmakeRefereeRound); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeRefereeRound)
+	other := o.(MatchmakeRefereeRound)
 
 	if mrr.StructureVersion != other.StructureVersion {
 		return false
@@ -130,13 +130,27 @@ func (mrr *MatchmakeRefereeRound) Equals(o types.RVType) bool {
 	return mrr.NormalizedPersonalRoundResults.Equals(other.NormalizedPersonalRoundResults)
 }
 
+// CopyRef copies the current value of the MatchmakeRefereeRound
+// and returns a pointer to the new copy
+func (mrr MatchmakeRefereeRound) CopyRef() types.RVTypePtr {
+	copied := mrr.Copy().(MatchmakeRefereeRound)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeRefereeRound
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (mrr *MatchmakeRefereeRound) Deref() types.RVType {
+	return *mrr
+}
+
 // String returns the string representation of the MatchmakeRefereeRound
-func (mrr *MatchmakeRefereeRound) String() string {
+func (mrr MatchmakeRefereeRound) String() string {
 	return mrr.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeRefereeRound using the provided indentation level
-func (mrr *MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
+func (mrr MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -155,17 +169,14 @@ func (mrr *MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
 }
 
 // NewMatchmakeRefereeRound returns a new MatchmakeRefereeRound
-func NewMatchmakeRefereeRound() *MatchmakeRefereeRound {
-	mrr := &MatchmakeRefereeRound{
+func NewMatchmakeRefereeRound() MatchmakeRefereeRound {
+	return MatchmakeRefereeRound{
 		Data:                           types.NewData(),
-		RoundID:                        types.NewPrimitiveU64(0),
-		GID:                            types.NewPrimitiveU32(0),
-		State:                          types.NewPrimitiveU32(0),
-		PersonalDataCategory:           types.NewPrimitiveU32(0),
-		NormalizedPersonalRoundResults: types.NewList[*MatchmakeRefereePersonalRoundResult](),
+		RoundID:                        types.NewUInt64(0),
+		GID:                            types.NewUInt32(0),
+		State:                          types.NewUInt32(0),
+		PersonalDataCategory:           types.NewUInt32(0),
+		NormalizedPersonalRoundResults: types.NewList[MatchmakeRefereePersonalRoundResult](),
 	}
 
-	mrr.NormalizedPersonalRoundResults.Type = NewMatchmakeRefereePersonalRoundResult()
-
-	return mrr
 }

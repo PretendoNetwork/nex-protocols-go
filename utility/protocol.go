@@ -45,12 +45,12 @@ type Protocol struct {
 	endpoint                                   nex.EndpointInterface
 	AcquireNexUniqueID                         func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 	AcquireNexUniqueIDWithPassword             func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
-	AssociateNexUniqueIDWithMyPrincipalID      func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) (*nex.RMCMessage, *nex.Error)
-	AssociateNexUniqueIDsWithMyPrincipalID     func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *types.List[*utility_types.UniqueIDInfo]) (*nex.RMCMessage, *nex.Error)
+	AssociateNexUniqueIDWithMyPrincipalID      func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo utility_types.UniqueIDInfo) (*nex.RMCMessage, *nex.Error)
+	AssociateNexUniqueIDsWithMyPrincipalID     func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo types.List[utility_types.UniqueIDInfo]) (*nex.RMCMessage, *nex.Error)
 	GetAssociatedNexUniqueIDWithMyPrincipalID  func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 	GetAssociatedNexUniqueIDsWithMyPrincipalID func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
-	GetIntegerSettings                         func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
-	GetStringSettings                          func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	GetIntegerSettings                         func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex types.UInt32) (*nex.RMCMessage, *nex.Error)
+	GetStringSettings                          func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex types.UInt32) (*nex.RMCMessage, *nex.Error)
 	Patches                                    nex.ServiceProtocol
 	PatchedMethods                             []uint32
 }
@@ -61,12 +61,12 @@ type Interface interface {
 	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerAcquireNexUniqueID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAcquireNexUniqueIDWithPassword(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerAssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) (*nex.RMCMessage, *nex.Error))
-	SetHandlerAssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *types.List[*utility_types.UniqueIDInfo]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo utility_types.UniqueIDInfo) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo types.List[utility_types.UniqueIDInfo]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetAssociatedNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex types.UInt32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex types.UInt32) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -90,12 +90,12 @@ func (protocol *Protocol) SetHandlerAcquireNexUniqueIDWithPassword(handler func(
 }
 
 // SetHandlerAssociateNexUniqueIDWithMyPrincipalID sets the handler for the AssociateNexUniqueIDWithMyPrincipalID method
-func (protocol *Protocol) SetHandlerAssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerAssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo utility_types.UniqueIDInfo) (*nex.RMCMessage, *nex.Error)) {
 	protocol.AssociateNexUniqueIDWithMyPrincipalID = handler
 }
 
 // SetHandlerAssociateNexUniqueIDsWithMyPrincipalID sets the handler for the AssociateNexUniqueIDsWithMyPrincipalID method
-func (protocol *Protocol) SetHandlerAssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *types.List[*utility_types.UniqueIDInfo]) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerAssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo types.List[utility_types.UniqueIDInfo]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.AssociateNexUniqueIDsWithMyPrincipalID = handler
 }
 
@@ -110,12 +110,12 @@ func (protocol *Protocol) SetHandlerGetAssociatedNexUniqueIDsWithMyPrincipalID(h
 }
 
 // SetHandlerGetIntegerSettings sets the handler for the GetIntegerSettings method
-func (protocol *Protocol) SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex types.UInt32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetIntegerSettings = handler
 }
 
 // SetHandlerGetStringSettings sets the handler for the GetStringSettings method
-func (protocol *Protocol) SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex types.UInt32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetStringSettings = handler
 }
 

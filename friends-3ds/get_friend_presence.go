@@ -25,12 +25,11 @@ func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	pidList := types.NewList[*types.PID]()
-	pidList.Type = types.NewPID(0)
+	var pidList types.List[types.PID]
 
 	err := pidList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetFriendPresence(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetFriendPresence(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, pidList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

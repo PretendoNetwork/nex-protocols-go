@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInter
 
 	err := getPrepurchaseInfoParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPrepurchaseInfoRequest(fmt.Errorf("Failed to read getPrepurchaseInfoParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetPrepurchaseInfoRequest(fmt.Errorf("Failed to read getPrepurchaseInfoParam from parameters. %s", err.Error()), packet, callID, getPrepurchaseInfoParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

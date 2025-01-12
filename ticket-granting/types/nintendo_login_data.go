@@ -11,11 +11,21 @@ import (
 // NintendoLoginData is a type within the TicketGranting protocol
 type NintendoLoginData struct {
 	types.Structure
-	Token *types.String
+	Token types.String
+}
+
+// ObjectID returns the object identifier of the type
+func (nld NintendoLoginData) ObjectID() types.RVType {
+	return nld.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (nld NintendoLoginData) DataObjectID() types.RVType {
+	return types.NewString("NintendoLoginData")
 }
 
 // WriteTo writes the NintendoLoginData to the given writable
-func (nld *NintendoLoginData) WriteTo(writable types.Writable) {
+func (nld NintendoLoginData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	nld.Token.WriteTo(contentWritable)
@@ -45,22 +55,22 @@ func (nld *NintendoLoginData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of NintendoLoginData
-func (nld *NintendoLoginData) Copy() types.RVType {
+func (nld NintendoLoginData) Copy() types.RVType {
 	copied := NewNintendoLoginData()
 
 	copied.StructureVersion = nld.StructureVersion
-	copied.Token = nld.Token.Copy().(*types.String)
+	copied.Token = nld.Token.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given NintendoLoginData contains the same data as the current NintendoLoginData
-func (nld *NintendoLoginData) Equals(o types.RVType) bool {
-	if _, ok := o.(*NintendoLoginData); !ok {
+func (nld NintendoLoginData) Equals(o types.RVType) bool {
+	if _, ok := o.(NintendoLoginData); !ok {
 		return false
 	}
 
-	other := o.(*NintendoLoginData)
+	other := o.(NintendoLoginData)
 
 	if nld.StructureVersion != other.StructureVersion {
 		return false
@@ -69,13 +79,27 @@ func (nld *NintendoLoginData) Equals(o types.RVType) bool {
 	return nld.Token.Equals(other.Token)
 }
 
+// CopyRef copies the current value of the NintendoLoginData
+// and returns a pointer to the new copy
+func (nld NintendoLoginData) CopyRef() types.RVTypePtr {
+	copied := nld.Copy().(NintendoLoginData)
+	return &copied
+}
+
+// Deref takes a pointer to the NintendoLoginData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (nld *NintendoLoginData) Deref() types.RVType {
+	return *nld
+}
+
 // String returns the string representation of the NintendoLoginData
-func (nld *NintendoLoginData) String() string {
+func (nld NintendoLoginData) String() string {
 	return nld.FormatToString(0)
 }
 
 // FormatToString pretty-prints the NintendoLoginData using the provided indentation level
-func (nld *NintendoLoginData) FormatToString(indentationLevel int) string {
+func (nld NintendoLoginData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -89,10 +113,9 @@ func (nld *NintendoLoginData) FormatToString(indentationLevel int) string {
 }
 
 // NewNintendoLoginData returns a new NintendoLoginData
-func NewNintendoLoginData() *NintendoLoginData {
-	nld := &NintendoLoginData{
+func NewNintendoLoginData() NintendoLoginData {
+	return NintendoLoginData{
 		Token: types.NewString(""),
 	}
 
-	return nld
 }

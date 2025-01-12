@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	err := getParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), packet, callID, getParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

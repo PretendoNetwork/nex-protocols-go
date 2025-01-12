@@ -12,23 +12,23 @@ import (
 // DataStorePreparePostParam is a type within the DataStore protocol
 type DataStorePreparePostParam struct {
 	types.Structure
-	Size                 *types.PrimitiveU32
-	Name                 *types.String
-	DataType             *types.PrimitiveU16
-	MetaBinary           *types.QBuffer
-	Permission           *DataStorePermission
-	DelPermission        *DataStorePermission
-	Flag                 *types.PrimitiveU32
-	Period               *types.PrimitiveU16
-	ReferDataID          *types.PrimitiveU32
-	Tags                 *types.List[*types.String]
-	RatingInitParams     *types.List[*DataStoreRatingInitParamWithSlot]
-	PersistenceInitParam *DataStorePersistenceInitParam
-	ExtraData            *types.List[*types.String] // * NEX v3.5.0
+	Size                 types.UInt32
+	Name                 types.String
+	DataType             types.UInt16
+	MetaBinary           types.QBuffer
+	Permission           DataStorePermission
+	DelPermission        DataStorePermission
+	Flag                 types.UInt32
+	Period               types.UInt16
+	ReferDataID          types.UInt32
+	Tags                 types.List[types.String]
+	RatingInitParams     types.List[DataStoreRatingInitParamWithSlot]
+	PersistenceInitParam DataStorePersistenceInitParam
+	ExtraData            types.List[types.String] // * NEX v3.5.0
 }
 
 // WriteTo writes the DataStorePreparePostParam to the given writable
-func (dsppp *DataStorePreparePostParam) WriteTo(writable types.Writable) {
+func (dsppp DataStorePreparePostParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.DataStore
 
@@ -141,34 +141,34 @@ func (dsppp *DataStorePreparePostParam) ExtractFrom(readable types.Readable) err
 }
 
 // Copy returns a new copied instance of DataStorePreparePostParam
-func (dsppp *DataStorePreparePostParam) Copy() types.RVType {
+func (dsppp DataStorePreparePostParam) Copy() types.RVType {
 	copied := NewDataStorePreparePostParam()
 
 	copied.StructureVersion = dsppp.StructureVersion
-	copied.Size = dsppp.Size.Copy().(*types.PrimitiveU32)
-	copied.Name = dsppp.Name.Copy().(*types.String)
-	copied.DataType = dsppp.DataType.Copy().(*types.PrimitiveU16)
-	copied.MetaBinary = dsppp.MetaBinary.Copy().(*types.QBuffer)
-	copied.Permission = dsppp.Permission.Copy().(*DataStorePermission)
-	copied.DelPermission = dsppp.DelPermission.Copy().(*DataStorePermission)
-	copied.Flag = dsppp.Flag.Copy().(*types.PrimitiveU32)
-	copied.Period = dsppp.Period.Copy().(*types.PrimitiveU16)
-	copied.ReferDataID = dsppp.ReferDataID.Copy().(*types.PrimitiveU32)
-	copied.Tags = dsppp.Tags.Copy().(*types.List[*types.String])
-	copied.RatingInitParams = dsppp.RatingInitParams.Copy().(*types.List[*DataStoreRatingInitParamWithSlot])
-	copied.PersistenceInitParam = dsppp.PersistenceInitParam.Copy().(*DataStorePersistenceInitParam)
-	copied.ExtraData = dsppp.ExtraData.Copy().(*types.List[*types.String])
+	copied.Size = dsppp.Size.Copy().(types.UInt32)
+	copied.Name = dsppp.Name.Copy().(types.String)
+	copied.DataType = dsppp.DataType.Copy().(types.UInt16)
+	copied.MetaBinary = dsppp.MetaBinary.Copy().(types.QBuffer)
+	copied.Permission = dsppp.Permission.Copy().(DataStorePermission)
+	copied.DelPermission = dsppp.DelPermission.Copy().(DataStorePermission)
+	copied.Flag = dsppp.Flag.Copy().(types.UInt32)
+	copied.Period = dsppp.Period.Copy().(types.UInt16)
+	copied.ReferDataID = dsppp.ReferDataID.Copy().(types.UInt32)
+	copied.Tags = dsppp.Tags.Copy().(types.List[types.String])
+	copied.RatingInitParams = dsppp.RatingInitParams.Copy().(types.List[DataStoreRatingInitParamWithSlot])
+	copied.PersistenceInitParam = dsppp.PersistenceInitParam.Copy().(DataStorePersistenceInitParam)
+	copied.ExtraData = dsppp.ExtraData.Copy().(types.List[types.String])
 
 	return copied
 }
 
 // Equals checks if the given DataStorePreparePostParam contains the same data as the current DataStorePreparePostParam
-func (dsppp *DataStorePreparePostParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePreparePostParam); !ok {
+func (dsppp DataStorePreparePostParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStorePreparePostParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePreparePostParam)
+	other := o.(DataStorePreparePostParam)
 
 	if dsppp.StructureVersion != other.StructureVersion {
 		return false
@@ -225,13 +225,27 @@ func (dsppp *DataStorePreparePostParam) Equals(o types.RVType) bool {
 	return dsppp.ExtraData.Equals(other.ExtraData)
 }
 
+// CopyRef copies the current value of the DataStorePreparePostParam
+// and returns a pointer to the new copy
+func (dsppp DataStorePreparePostParam) CopyRef() types.RVTypePtr {
+	copied := dsppp.Copy().(DataStorePreparePostParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePreparePostParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsppp *DataStorePreparePostParam) Deref() types.RVType {
+	return *dsppp
+}
+
 // String returns the string representation of the DataStorePreparePostParam
-func (dsppp *DataStorePreparePostParam) String() string {
+func (dsppp DataStorePreparePostParam) String() string {
 	return dsppp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePreparePostParam using the provided indentation level
-func (dsppp *DataStorePreparePostParam) FormatToString(indentationLevel int) string {
+func (dsppp DataStorePreparePostParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -257,26 +271,21 @@ func (dsppp *DataStorePreparePostParam) FormatToString(indentationLevel int) str
 }
 
 // NewDataStorePreparePostParam returns a new DataStorePreparePostParam
-func NewDataStorePreparePostParam() *DataStorePreparePostParam {
-	dsppp := &DataStorePreparePostParam{
-		Size:                 types.NewPrimitiveU32(0),
+func NewDataStorePreparePostParam() DataStorePreparePostParam {
+	return DataStorePreparePostParam{
+		Size:                 types.NewUInt32(0),
 		Name:                 types.NewString(""),
-		DataType:             types.NewPrimitiveU16(0),
+		DataType:             types.NewUInt16(0),
 		MetaBinary:           types.NewQBuffer(nil),
 		Permission:           NewDataStorePermission(),
 		DelPermission:        NewDataStorePermission(),
-		Flag:                 types.NewPrimitiveU32(0),
-		Period:               types.NewPrimitiveU16(0),
-		ReferDataID:          types.NewPrimitiveU32(0),
-		Tags:                 types.NewList[*types.String](),
-		RatingInitParams:     types.NewList[*DataStoreRatingInitParamWithSlot](),
+		Flag:                 types.NewUInt32(0),
+		Period:               types.NewUInt16(0),
+		ReferDataID:          types.NewUInt32(0),
+		Tags:                 types.NewList[types.String](),
+		RatingInitParams:     types.NewList[DataStoreRatingInitParamWithSlot](),
 		PersistenceInitParam: NewDataStorePersistenceInitParam(),
-		ExtraData:            types.NewList[*types.String](),
+		ExtraData:            types.NewList[types.String](),
 	}
 
-	dsppp.Tags.Type = types.NewString("")
-	dsppp.RatingInitParams.Type = NewDataStoreRatingInitParamWithSlot()
-	dsppp.ExtraData.Type = types.NewString("")
-
-	return dsppp
 }

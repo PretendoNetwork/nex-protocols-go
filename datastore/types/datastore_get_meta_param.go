@@ -11,14 +11,14 @@ import (
 // DataStoreGetMetaParam is a type within the DataStore protocol
 type DataStoreGetMetaParam struct {
 	types.Structure
-	DataID            *types.PrimitiveU64
-	PersistenceTarget *DataStorePersistenceTarget
-	ResultOption      *types.PrimitiveU8
-	AccessPassword    *types.PrimitiveU64
+	DataID            types.UInt64
+	PersistenceTarget DataStorePersistenceTarget
+	ResultOption      types.UInt8
+	AccessPassword    types.UInt64
 }
 
 // WriteTo writes the DataStoreGetMetaParam to the given writable
-func (dsgmp *DataStoreGetMetaParam) WriteTo(writable types.Writable) {
+func (dsgmp DataStoreGetMetaParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsgmp.DataID.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (dsgmp *DataStoreGetMetaParam) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of DataStoreGetMetaParam
-func (dsgmp *DataStoreGetMetaParam) Copy() types.RVType {
+func (dsgmp DataStoreGetMetaParam) Copy() types.RVType {
 	copied := NewDataStoreGetMetaParam()
 
 	copied.StructureVersion = dsgmp.StructureVersion
-	copied.DataID = dsgmp.DataID.Copy().(*types.PrimitiveU64)
-	copied.PersistenceTarget = dsgmp.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
-	copied.ResultOption = dsgmp.ResultOption.Copy().(*types.PrimitiveU8)
-	copied.AccessPassword = dsgmp.AccessPassword.Copy().(*types.PrimitiveU64)
+	copied.DataID = dsgmp.DataID.Copy().(types.UInt64)
+	copied.PersistenceTarget = dsgmp.PersistenceTarget.Copy().(DataStorePersistenceTarget)
+	copied.ResultOption = dsgmp.ResultOption.Copy().(types.UInt8)
+	copied.AccessPassword = dsgmp.AccessPassword.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreGetMetaParam contains the same data as the current DataStoreGetMetaParam
-func (dsgmp *DataStoreGetMetaParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetMetaParam); !ok {
+func (dsgmp DataStoreGetMetaParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreGetMetaParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetMetaParam)
+	other := o.(DataStoreGetMetaParam)
 
 	if dsgmp.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (dsgmp *DataStoreGetMetaParam) Equals(o types.RVType) bool {
 	return dsgmp.AccessPassword.Equals(other.AccessPassword)
 }
 
+// CopyRef copies the current value of the DataStoreGetMetaParam
+// and returns a pointer to the new copy
+func (dsgmp DataStoreGetMetaParam) CopyRef() types.RVTypePtr {
+	copied := dsgmp.Copy().(DataStoreGetMetaParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetMetaParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgmp *DataStoreGetMetaParam) Deref() types.RVType {
+	return *dsgmp
+}
+
 // String returns the string representation of the DataStoreGetMetaParam
-func (dsgmp *DataStoreGetMetaParam) String() string {
+func (dsgmp DataStoreGetMetaParam) String() string {
 	return dsgmp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreGetMetaParam using the provided indentation level
-func (dsgmp *DataStoreGetMetaParam) FormatToString(indentationLevel int) string {
+func (dsgmp DataStoreGetMetaParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +142,12 @@ func (dsgmp *DataStoreGetMetaParam) FormatToString(indentationLevel int) string 
 }
 
 // NewDataStoreGetMetaParam returns a new DataStoreGetMetaParam
-func NewDataStoreGetMetaParam() *DataStoreGetMetaParam {
-	dsgmp := &DataStoreGetMetaParam{
-		DataID:            types.NewPrimitiveU64(0),
+func NewDataStoreGetMetaParam() DataStoreGetMetaParam {
+	return DataStoreGetMetaParam{
+		DataID:            types.NewUInt64(0),
 		PersistenceTarget: NewDataStorePersistenceTarget(),
-		ResultOption:      types.NewPrimitiveU8(0),
-		AccessPassword:    types.NewPrimitiveU64(0),
+		ResultOption:      types.NewUInt8(0),
+		AccessPassword:    types.NewUInt64(0),
 	}
 
-	return dsgmp
 }

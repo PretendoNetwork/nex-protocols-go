@@ -26,14 +26,14 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	objectID := types.NewPrimitiveU32(0)
+	var objectID types.UInt32
 	newObject := matchmake_extension_mario_kart8_types.NewSimpleSearchObject()
 
 	var err error
 
 	err = objectID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, objectID, newObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 
 	err = newObject.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), packet, callID, objectID, newObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

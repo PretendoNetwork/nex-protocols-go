@@ -25,17 +25,15 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	rankingType := types.NewString("")
-	rankingArgs := types.NewList[*types.String]()
-	rankingArgs.Type = types.NewString("")
-	dataIDLst := types.NewList[*types.PrimitiveU64]()
-	dataIDLst.Type = types.NewPrimitiveU64(0)
+	var rankingType types.String
+	var rankingArgs types.List[types.String]
+	var dataIDLst types.List[types.UInt64]
 
 	var err error
 
 	err = rankingType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -45,7 +43,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	err = rankingArgs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -55,7 +53,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

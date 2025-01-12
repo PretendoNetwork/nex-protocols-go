@@ -12,15 +12,15 @@ import (
 // DataStorePrepareGetParam is a type within the DataStore protocol
 type DataStorePrepareGetParam struct {
 	types.Structure
-	DataID            *types.PrimitiveU64
-	LockID            *types.PrimitiveU32
-	PersistenceTarget *DataStorePersistenceTarget
-	AccessPassword    *types.PrimitiveU64
-	ExtraData         *types.List[*types.String] // * NEX v3.5.0
+	DataID            types.UInt64
+	LockID            types.UInt32
+	PersistenceTarget DataStorePersistenceTarget
+	AccessPassword    types.UInt64
+	ExtraData         types.List[types.String] // * NEX v3.5.0
 }
 
 // WriteTo writes the DataStorePrepareGetParam to the given writable
-func (dspgp *DataStorePrepareGetParam) WriteTo(writable types.Writable) {
+func (dspgp DataStorePrepareGetParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.DataStore
 
@@ -85,26 +85,26 @@ func (dspgp *DataStorePrepareGetParam) ExtractFrom(readable types.Readable) erro
 }
 
 // Copy returns a new copied instance of DataStorePrepareGetParam
-func (dspgp *DataStorePrepareGetParam) Copy() types.RVType {
+func (dspgp DataStorePrepareGetParam) Copy() types.RVType {
 	copied := NewDataStorePrepareGetParam()
 
 	copied.StructureVersion = dspgp.StructureVersion
-	copied.DataID = dspgp.DataID.Copy().(*types.PrimitiveU64)
-	copied.LockID = dspgp.LockID.Copy().(*types.PrimitiveU32)
-	copied.PersistenceTarget = dspgp.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
-	copied.AccessPassword = dspgp.AccessPassword.Copy().(*types.PrimitiveU64)
-	copied.ExtraData = dspgp.ExtraData.Copy().(*types.List[*types.String])
+	copied.DataID = dspgp.DataID.Copy().(types.UInt64)
+	copied.LockID = dspgp.LockID.Copy().(types.UInt32)
+	copied.PersistenceTarget = dspgp.PersistenceTarget.Copy().(DataStorePersistenceTarget)
+	copied.AccessPassword = dspgp.AccessPassword.Copy().(types.UInt64)
+	copied.ExtraData = dspgp.ExtraData.Copy().(types.List[types.String])
 
 	return copied
 }
 
 // Equals checks if the given DataStorePrepareGetParam contains the same data as the current DataStorePrepareGetParam
-func (dspgp *DataStorePrepareGetParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStorePrepareGetParam); !ok {
+func (dspgp DataStorePrepareGetParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStorePrepareGetParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStorePrepareGetParam)
+	other := o.(DataStorePrepareGetParam)
 
 	if dspgp.StructureVersion != other.StructureVersion {
 		return false
@@ -129,13 +129,27 @@ func (dspgp *DataStorePrepareGetParam) Equals(o types.RVType) bool {
 	return dspgp.ExtraData.Equals(other.ExtraData)
 }
 
+// CopyRef copies the current value of the DataStorePrepareGetParam
+// and returns a pointer to the new copy
+func (dspgp DataStorePrepareGetParam) CopyRef() types.RVTypePtr {
+	copied := dspgp.Copy().(DataStorePrepareGetParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStorePrepareGetParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dspgp *DataStorePrepareGetParam) Deref() types.RVType {
+	return *dspgp
+}
+
 // String returns the string representation of the DataStorePrepareGetParam
-func (dspgp *DataStorePrepareGetParam) String() string {
+func (dspgp DataStorePrepareGetParam) String() string {
 	return dspgp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStorePrepareGetParam using the provided indentation level
-func (dspgp *DataStorePrepareGetParam) FormatToString(indentationLevel int) string {
+func (dspgp DataStorePrepareGetParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -153,16 +167,13 @@ func (dspgp *DataStorePrepareGetParam) FormatToString(indentationLevel int) stri
 }
 
 // NewDataStorePrepareGetParam returns a new DataStorePrepareGetParam
-func NewDataStorePrepareGetParam() *DataStorePrepareGetParam {
-	dspgp := &DataStorePrepareGetParam{
-		DataID:            types.NewPrimitiveU64(0),
-		LockID:            types.NewPrimitiveU32(0),
+func NewDataStorePrepareGetParam() DataStorePrepareGetParam {
+	return DataStorePrepareGetParam{
+		DataID:            types.NewUInt64(0),
+		LockID:            types.NewUInt32(0),
 		PersistenceTarget: NewDataStorePersistenceTarget(),
-		AccessPassword:    types.NewPrimitiveU64(0),
-		ExtraData:         types.NewList[*types.String](),
+		AccessPassword:    types.NewUInt64(0),
+		ExtraData:         types.NewList[types.String](),
 	}
 
-	dspgp.ExtraData.Type = types.NewString("")
-
-	return dspgp
 }

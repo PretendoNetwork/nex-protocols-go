@@ -11,12 +11,12 @@ import (
 // UniqueIDInfo is a type within the Utility protocol
 type UniqueIDInfo struct {
 	types.Structure
-	NEXUniqueID         *types.PrimitiveU64
-	NEXUniqueIDPassword *types.PrimitiveU64
+	NEXUniqueID         types.UInt64
+	NEXUniqueIDPassword types.UInt64
 }
 
 // WriteTo writes the UniqueIDInfo to the given writable
-func (uidi *UniqueIDInfo) WriteTo(writable types.Writable) {
+func (uidi UniqueIDInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	uidi.NEXUniqueID.WriteTo(contentWritable)
@@ -52,23 +52,23 @@ func (uidi *UniqueIDInfo) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of UniqueIDInfo
-func (uidi *UniqueIDInfo) Copy() types.RVType {
+func (uidi UniqueIDInfo) Copy() types.RVType {
 	copied := NewUniqueIDInfo()
 
 	copied.StructureVersion = uidi.StructureVersion
-	copied.NEXUniqueID = uidi.NEXUniqueID.Copy().(*types.PrimitiveU64)
-	copied.NEXUniqueIDPassword = uidi.NEXUniqueIDPassword.Copy().(*types.PrimitiveU64)
+	copied.NEXUniqueID = uidi.NEXUniqueID.Copy().(types.UInt64)
+	copied.NEXUniqueIDPassword = uidi.NEXUniqueIDPassword.Copy().(types.UInt64)
 
 	return copied
 }
 
 // Equals checks if the given UniqueIDInfo contains the same data as the current UniqueIDInfo
-func (uidi *UniqueIDInfo) Equals(o types.RVType) bool {
-	if _, ok := o.(*UniqueIDInfo); !ok {
+func (uidi UniqueIDInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(UniqueIDInfo); !ok {
 		return false
 	}
 
-	other := o.(*UniqueIDInfo)
+	other := o.(UniqueIDInfo)
 
 	if uidi.StructureVersion != other.StructureVersion {
 		return false
@@ -81,13 +81,27 @@ func (uidi *UniqueIDInfo) Equals(o types.RVType) bool {
 	return uidi.NEXUniqueIDPassword.Equals(other.NEXUniqueIDPassword)
 }
 
+// CopyRef copies the current value of the UniqueIDInfo
+// and returns a pointer to the new copy
+func (uidi UniqueIDInfo) CopyRef() types.RVTypePtr {
+	copied := uidi.Copy().(UniqueIDInfo)
+	return &copied
+}
+
+// Deref takes a pointer to the UniqueIDInfo
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (uidi *UniqueIDInfo) Deref() types.RVType {
+	return *uidi
+}
+
 // String returns the string representation of the UniqueIDInfo
-func (uidi *UniqueIDInfo) String() string {
+func (uidi UniqueIDInfo) String() string {
 	return uidi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the UniqueIDInfo using the provided indentation level
-func (uidi *UniqueIDInfo) FormatToString(indentationLevel int) string {
+func (uidi UniqueIDInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -102,11 +116,10 @@ func (uidi *UniqueIDInfo) FormatToString(indentationLevel int) string {
 }
 
 // NewUniqueIDInfo returns a new UniqueIDInfo
-func NewUniqueIDInfo() *UniqueIDInfo {
-	uidi := &UniqueIDInfo{
-		NEXUniqueID:         types.NewPrimitiveU64(0),
-		NEXUniqueIDPassword: types.NewPrimitiveU64(0),
+func NewUniqueIDInfo() UniqueIDInfo {
+	return UniqueIDInfo{
+		NEXUniqueID:         types.NewUInt64(0),
+		NEXUniqueIDPassword: types.NewUInt64(0),
 	}
 
-	return uidi
 }

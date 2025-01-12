@@ -11,12 +11,12 @@ import (
 // ServiceItemPurchaseServiceItemResponse is a type within the ServiceItem protocol
 type ServiceItemPurchaseServiceItemResponse struct {
 	types.Structure
-	*ServiceItemEShopResponse
-	NullablePurchaseInfo *types.List[*ServiceItemPurchaseInfo]
+	ServiceItemEShopResponse
+	NullablePurchaseInfo types.List[ServiceItemPurchaseInfo]
 }
 
 // WriteTo writes the ServiceItemPurchaseServiceItemResponse to the given writable
-func (sipsir *ServiceItemPurchaseServiceItemResponse) WriteTo(writable types.Writable) {
+func (sipsir ServiceItemPurchaseServiceItemResponse) WriteTo(writable types.Writable) {
 	sipsir.ServiceItemEShopResponse.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (sipsir *ServiceItemPurchaseServiceItemResponse) ExtractFrom(readable types
 }
 
 // Copy returns a new copied instance of ServiceItemPurchaseServiceItemResponse
-func (sipsir *ServiceItemPurchaseServiceItemResponse) Copy() types.RVType {
+func (sipsir ServiceItemPurchaseServiceItemResponse) Copy() types.RVType {
 	copied := NewServiceItemPurchaseServiceItemResponse()
 
 	copied.StructureVersion = sipsir.StructureVersion
-	copied.ServiceItemEShopResponse = sipsir.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.NullablePurchaseInfo = sipsir.NullablePurchaseInfo.Copy().(*types.List[*ServiceItemPurchaseInfo])
+	copied.ServiceItemEShopResponse = sipsir.ServiceItemEShopResponse.Copy().(ServiceItemEShopResponse)
+	copied.NullablePurchaseInfo = sipsir.NullablePurchaseInfo.Copy().(types.List[ServiceItemPurchaseInfo])
 
 	return copied
 }
 
 // Equals checks if the given ServiceItemPurchaseServiceItemResponse contains the same data as the current ServiceItemPurchaseServiceItemResponse
-func (sipsir *ServiceItemPurchaseServiceItemResponse) Equals(o types.RVType) bool {
-	if _, ok := o.(*ServiceItemPurchaseServiceItemResponse); !ok {
+func (sipsir ServiceItemPurchaseServiceItemResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(ServiceItemPurchaseServiceItemResponse); !ok {
 		return false
 	}
 
-	other := o.(*ServiceItemPurchaseServiceItemResponse)
+	other := o.(ServiceItemPurchaseServiceItemResponse)
 
 	if sipsir.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (sipsir *ServiceItemPurchaseServiceItemResponse) Equals(o types.RVType) boo
 	return sipsir.NullablePurchaseInfo.Equals(other.NullablePurchaseInfo)
 }
 
+// CopyRef copies the current value of the ServiceItemPurchaseServiceItemResponse
+// and returns a pointer to the new copy
+func (sipsir ServiceItemPurchaseServiceItemResponse) CopyRef() types.RVTypePtr {
+	copied := sipsir.Copy().(ServiceItemPurchaseServiceItemResponse)
+	return &copied
+}
+
+// Deref takes a pointer to the ServiceItemPurchaseServiceItemResponse
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (sipsir *ServiceItemPurchaseServiceItemResponse) Deref() types.RVType {
+	return *sipsir
+}
+
 // String returns the string representation of the ServiceItemPurchaseServiceItemResponse
-func (sipsir *ServiceItemPurchaseServiceItemResponse) String() string {
+func (sipsir ServiceItemPurchaseServiceItemResponse) String() string {
 	return sipsir.FormatToString(0)
 }
 
 // FormatToString pretty-prints the ServiceItemPurchaseServiceItemResponse using the provided indentation level
-func (sipsir *ServiceItemPurchaseServiceItemResponse) FormatToString(indentationLevel int) string {
+func (sipsir ServiceItemPurchaseServiceItemResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,13 +117,10 @@ func (sipsir *ServiceItemPurchaseServiceItemResponse) FormatToString(indentation
 }
 
 // NewServiceItemPurchaseServiceItemResponse returns a new ServiceItemPurchaseServiceItemResponse
-func NewServiceItemPurchaseServiceItemResponse() *ServiceItemPurchaseServiceItemResponse {
-	sipsir := &ServiceItemPurchaseServiceItemResponse{
+func NewServiceItemPurchaseServiceItemResponse() ServiceItemPurchaseServiceItemResponse {
+	return ServiceItemPurchaseServiceItemResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullablePurchaseInfo:     types.NewList[*ServiceItemPurchaseInfo](),
+		NullablePurchaseInfo:     types.NewList[ServiceItemPurchaseInfo](),
 	}
 
-	sipsir.NullablePurchaseInfo.Type = NewServiceItemPurchaseInfo()
-
-	return sipsir
 }

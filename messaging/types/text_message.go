@@ -11,12 +11,12 @@ import (
 // TextMessage is a type within the MessageDelivery protocol
 type TextMessage struct {
 	types.Structure
-	*UserMessage
-	StrTextBody *types.String
+	UserMessage
+	StrTextBody types.String
 }
 
 // WriteTo writes the TextMessage to the given writable
-func (tm *TextMessage) WriteTo(writable types.Writable) {
+func (tm TextMessage) WriteTo(writable types.Writable) {
 	tm.UserMessage.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
@@ -53,23 +53,23 @@ func (tm *TextMessage) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of TextMessage
-func (tm *TextMessage) Copy() types.RVType {
+func (tm TextMessage) Copy() types.RVType {
 	copied := NewTextMessage()
 
 	copied.StructureVersion = tm.StructureVersion
-	copied.UserMessage = tm.UserMessage.Copy().(*UserMessage)
-	copied.StrTextBody = tm.StrTextBody.Copy().(*types.String)
+	copied.UserMessage = tm.UserMessage.Copy().(UserMessage)
+	copied.StrTextBody = tm.StrTextBody.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given TextMessage contains the same data as the current TextMessage
-func (tm *TextMessage) Equals(o types.RVType) bool {
-	if _, ok := o.(*TextMessage); !ok {
+func (tm TextMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(TextMessage); !ok {
 		return false
 	}
 
-	other := o.(*TextMessage)
+	other := o.(TextMessage)
 
 	if tm.StructureVersion != other.StructureVersion {
 		return false
@@ -82,13 +82,27 @@ func (tm *TextMessage) Equals(o types.RVType) bool {
 	return tm.StrTextBody.Equals(other.StrTextBody)
 }
 
+// CopyRef copies the current value of the TextMessage
+// and returns a pointer to the new copy
+func (tm TextMessage) CopyRef() types.RVTypePtr {
+	copied := tm.Copy().(TextMessage)
+	return &copied
+}
+
+// Deref takes a pointer to the TextMessage
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (tm *TextMessage) Deref() types.RVType {
+	return *tm
+}
+
 // String returns the string representation of the TextMessage
-func (tm *TextMessage) String() string {
+func (tm TextMessage) String() string {
 	return tm.FormatToString(0)
 }
 
 // FormatToString pretty-prints the TextMessage using the provided indentation level
-func (tm *TextMessage) FormatToString(indentationLevel int) string {
+func (tm TextMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -103,11 +117,10 @@ func (tm *TextMessage) FormatToString(indentationLevel int) string {
 }
 
 // NewTextMessage returns a new TextMessage
-func NewTextMessage() *TextMessage {
-	tm := &TextMessage{
+func NewTextMessage() TextMessage {
+	return TextMessage{
 		UserMessage: NewUserMessage(),
 		StrTextBody: types.NewString(""),
 	}
 
-	return tm
 }

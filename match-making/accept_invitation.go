@@ -25,14 +25,14 @@ func (protocol *Protocol) handleAcceptInvitation(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idGathering := types.NewPrimitiveU32(0)
-	strMessage := types.NewString("")
+	var idGathering types.UInt32
+	var strMessage types.String
 
 	var err error
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AcceptInvitation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AcceptInvitation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleAcceptInvitation(packet nex.PacketInterface) {
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AcceptInvitation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.AcceptInvitation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, idGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

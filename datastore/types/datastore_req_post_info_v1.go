@@ -11,15 +11,15 @@ import (
 // DataStoreReqPostInfoV1 is a type within the DataStore protocol
 type DataStoreReqPostInfoV1 struct {
 	types.Structure
-	DataID         *types.PrimitiveU32
-	URL            *types.String
-	RequestHeaders *types.List[*DataStoreKeyValue]
-	FormFields     *types.List[*DataStoreKeyValue]
-	RootCACert     *types.Buffer
+	DataID         types.UInt32
+	URL            types.String
+	RequestHeaders types.List[DataStoreKeyValue]
+	FormFields     types.List[DataStoreKeyValue]
+	RootCACert     types.Buffer
 }
 
 // WriteTo writes the DataStoreReqPostInfoV1 to the given writable
-func (dsrpiv *DataStoreReqPostInfoV1) WriteTo(writable types.Writable) {
+func (dsrpiv DataStoreReqPostInfoV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsrpiv.DataID.WriteTo(contentWritable)
@@ -73,26 +73,26 @@ func (dsrpiv *DataStoreReqPostInfoV1) ExtractFrom(readable types.Readable) error
 }
 
 // Copy returns a new copied instance of DataStoreReqPostInfoV1
-func (dsrpiv *DataStoreReqPostInfoV1) Copy() types.RVType {
+func (dsrpiv DataStoreReqPostInfoV1) Copy() types.RVType {
 	copied := NewDataStoreReqPostInfoV1()
 
 	copied.StructureVersion = dsrpiv.StructureVersion
-	copied.DataID = dsrpiv.DataID.Copy().(*types.PrimitiveU32)
-	copied.URL = dsrpiv.URL.Copy().(*types.String)
-	copied.RequestHeaders = dsrpiv.RequestHeaders.Copy().(*types.List[*DataStoreKeyValue])
-	copied.FormFields = dsrpiv.FormFields.Copy().(*types.List[*DataStoreKeyValue])
-	copied.RootCACert = dsrpiv.RootCACert.Copy().(*types.Buffer)
+	copied.DataID = dsrpiv.DataID.Copy().(types.UInt32)
+	copied.URL = dsrpiv.URL.Copy().(types.String)
+	copied.RequestHeaders = dsrpiv.RequestHeaders.Copy().(types.List[DataStoreKeyValue])
+	copied.FormFields = dsrpiv.FormFields.Copy().(types.List[DataStoreKeyValue])
+	copied.RootCACert = dsrpiv.RootCACert.Copy().(types.Buffer)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreReqPostInfoV1 contains the same data as the current DataStoreReqPostInfoV1
-func (dsrpiv *DataStoreReqPostInfoV1) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreReqPostInfoV1); !ok {
+func (dsrpiv DataStoreReqPostInfoV1) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreReqPostInfoV1); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreReqPostInfoV1)
+	other := o.(DataStoreReqPostInfoV1)
 
 	if dsrpiv.StructureVersion != other.StructureVersion {
 		return false
@@ -117,13 +117,27 @@ func (dsrpiv *DataStoreReqPostInfoV1) Equals(o types.RVType) bool {
 	return dsrpiv.RootCACert.Equals(other.RootCACert)
 }
 
+// CopyRef copies the current value of the DataStoreReqPostInfoV1
+// and returns a pointer to the new copy
+func (dsrpiv DataStoreReqPostInfoV1) CopyRef() types.RVTypePtr {
+	copied := dsrpiv.Copy().(DataStoreReqPostInfoV1)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreReqPostInfoV1
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsrpiv *DataStoreReqPostInfoV1) Deref() types.RVType {
+	return *dsrpiv
+}
+
 // String returns the string representation of the DataStoreReqPostInfoV1
-func (dsrpiv *DataStoreReqPostInfoV1) String() string {
+func (dsrpiv DataStoreReqPostInfoV1) String() string {
 	return dsrpiv.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreReqPostInfoV1 using the provided indentation level
-func (dsrpiv *DataStoreReqPostInfoV1) FormatToString(indentationLevel int) string {
+func (dsrpiv DataStoreReqPostInfoV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -141,17 +155,13 @@ func (dsrpiv *DataStoreReqPostInfoV1) FormatToString(indentationLevel int) strin
 }
 
 // NewDataStoreReqPostInfoV1 returns a new DataStoreReqPostInfoV1
-func NewDataStoreReqPostInfoV1() *DataStoreReqPostInfoV1 {
-	dsrpiv := &DataStoreReqPostInfoV1{
-		DataID:         types.NewPrimitiveU32(0),
+func NewDataStoreReqPostInfoV1() DataStoreReqPostInfoV1 {
+	return DataStoreReqPostInfoV1{
+		DataID:         types.NewUInt32(0),
 		URL:            types.NewString(""),
-		RequestHeaders: types.NewList[*DataStoreKeyValue](),
-		FormFields:     types.NewList[*DataStoreKeyValue](),
+		RequestHeaders: types.NewList[DataStoreKeyValue](),
+		FormFields:     types.NewList[DataStoreKeyValue](),
 		RootCACert:     types.NewBuffer(nil),
 	}
 
-	dsrpiv.RequestHeaders.Type = NewDataStoreKeyValue()
-	dsrpiv.FormFields.Type = NewDataStoreKeyValue()
-
-	return dsrpiv
 }

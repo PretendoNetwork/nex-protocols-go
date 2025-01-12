@@ -11,14 +11,14 @@ import (
 // DataStoreGetCustomRankingParam is a type within the DataStore protocol
 type DataStoreGetCustomRankingParam struct {
 	types.Structure
-	ApplicationID *types.PrimitiveU32
-	Condition     *DataStoreCustomRankingRatingCondition
-	ResultOption  *types.PrimitiveU8
-	ResultRange   *types.ResultRange
+	ApplicationID types.UInt32
+	Condition     DataStoreCustomRankingRatingCondition
+	ResultOption  types.UInt8
+	ResultRange   types.ResultRange
 }
 
 // WriteTo writes the DataStoreGetCustomRankingParam to the given writable
-func (dsgcrp *DataStoreGetCustomRankingParam) WriteTo(writable types.Writable) {
+func (dsgcrp DataStoreGetCustomRankingParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	dsgcrp.ApplicationID.WriteTo(contentWritable)
@@ -66,25 +66,25 @@ func (dsgcrp *DataStoreGetCustomRankingParam) ExtractFrom(readable types.Readabl
 }
 
 // Copy returns a new copied instance of DataStoreGetCustomRankingParam
-func (dsgcrp *DataStoreGetCustomRankingParam) Copy() types.RVType {
+func (dsgcrp DataStoreGetCustomRankingParam) Copy() types.RVType {
 	copied := NewDataStoreGetCustomRankingParam()
 
 	copied.StructureVersion = dsgcrp.StructureVersion
-	copied.ApplicationID = dsgcrp.ApplicationID.Copy().(*types.PrimitiveU32)
-	copied.Condition = dsgcrp.Condition.Copy().(*DataStoreCustomRankingRatingCondition)
-	copied.ResultOption = dsgcrp.ResultOption.Copy().(*types.PrimitiveU8)
-	copied.ResultRange = dsgcrp.ResultRange.Copy().(*types.ResultRange)
+	copied.ApplicationID = dsgcrp.ApplicationID.Copy().(types.UInt32)
+	copied.Condition = dsgcrp.Condition.Copy().(DataStoreCustomRankingRatingCondition)
+	copied.ResultOption = dsgcrp.ResultOption.Copy().(types.UInt8)
+	copied.ResultRange = dsgcrp.ResultRange.Copy().(types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the given DataStoreGetCustomRankingParam contains the same data as the current DataStoreGetCustomRankingParam
-func (dsgcrp *DataStoreGetCustomRankingParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetCustomRankingParam); !ok {
+func (dsgcrp DataStoreGetCustomRankingParam) Equals(o types.RVType) bool {
+	if _, ok := o.(DataStoreGetCustomRankingParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetCustomRankingParam)
+	other := o.(DataStoreGetCustomRankingParam)
 
 	if dsgcrp.StructureVersion != other.StructureVersion {
 		return false
@@ -105,13 +105,27 @@ func (dsgcrp *DataStoreGetCustomRankingParam) Equals(o types.RVType) bool {
 	return dsgcrp.ResultRange.Equals(other.ResultRange)
 }
 
+// CopyRef copies the current value of the DataStoreGetCustomRankingParam
+// and returns a pointer to the new copy
+func (dsgcrp DataStoreGetCustomRankingParam) CopyRef() types.RVTypePtr {
+	copied := dsgcrp.Copy().(DataStoreGetCustomRankingParam)
+	return &copied
+}
+
+// Deref takes a pointer to the DataStoreGetCustomRankingParam
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (dsgcrp *DataStoreGetCustomRankingParam) Deref() types.RVType {
+	return *dsgcrp
+}
+
 // String returns the string representation of the DataStoreGetCustomRankingParam
-func (dsgcrp *DataStoreGetCustomRankingParam) String() string {
+func (dsgcrp DataStoreGetCustomRankingParam) String() string {
 	return dsgcrp.FormatToString(0)
 }
 
 // FormatToString pretty-prints the DataStoreGetCustomRankingParam using the provided indentation level
-func (dsgcrp *DataStoreGetCustomRankingParam) FormatToString(indentationLevel int) string {
+func (dsgcrp DataStoreGetCustomRankingParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -128,13 +142,12 @@ func (dsgcrp *DataStoreGetCustomRankingParam) FormatToString(indentationLevel in
 }
 
 // NewDataStoreGetCustomRankingParam returns a new DataStoreGetCustomRankingParam
-func NewDataStoreGetCustomRankingParam() *DataStoreGetCustomRankingParam {
-	dsgcrp := &DataStoreGetCustomRankingParam{
-		ApplicationID: types.NewPrimitiveU32(0),
+func NewDataStoreGetCustomRankingParam() DataStoreGetCustomRankingParam {
+	return DataStoreGetCustomRankingParam{
+		ApplicationID: types.NewUInt32(0),
 		Condition:     NewDataStoreCustomRankingRatingCondition(),
-		ResultOption:  types.NewPrimitiveU8(0),
+		ResultOption:  types.NewUInt8(0),
 		ResultRange:   types.NewResultRange(),
 	}
 
-	return dsgcrp
 }

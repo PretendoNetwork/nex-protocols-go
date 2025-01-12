@@ -25,14 +25,14 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idGathering := types.NewPrimitiveU32(0)
-	bOnlyActive := types.NewPrimitiveBool(false)
+	var idGathering types.UInt32
+	var bOnlyActive types.Bool
 
 	var err error
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, bOnlyActive)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 
 	err = bOnlyActive.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.GetParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, idGathering, bOnlyActive)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

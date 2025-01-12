@@ -25,12 +25,11 @@ func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	dataIDLst := types.NewList[*types.PrimitiveU64]()
-	dataIDLst.Type = types.NewPrimitiveU64(0)
+	var dataIDLst types.List[types.UInt64]
 
 	err := dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, dataIDLst)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

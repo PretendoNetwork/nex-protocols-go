@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 
 	err := getServiceItemRightParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, getServiceItemRightParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

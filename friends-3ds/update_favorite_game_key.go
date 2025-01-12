@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 
 	err := gameKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateFavoriteGameKey(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.UpdateFavoriteGameKey(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, gameKey)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

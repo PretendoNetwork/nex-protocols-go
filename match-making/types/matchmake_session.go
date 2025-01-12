@@ -12,27 +12,37 @@ import (
 // MatchmakeSession is a type within the Matchmaking protocol
 type MatchmakeSession struct {
 	types.Structure
-	*Gathering
-	GameMode              *types.PrimitiveU32
-	Attributes            *types.List[*types.PrimitiveU32]
-	OpenParticipation     *types.PrimitiveBool
-	MatchmakeSystemType   *types.PrimitiveU32
-	ApplicationBuffer     *types.Buffer
-	ParticipationCount    *types.PrimitiveU32
-	ProgressScore         *types.PrimitiveU8   // * NEX v3.4.0
-	SessionKey            *types.Buffer        // * NEX v3.0.0
-	Option                *types.PrimitiveU32  // * NEX v3.5.0
-	MatchmakeParam        *MatchmakeParam      // * NEX v3.6.0
-	StartedTime           *types.DateTime      // * NEX v3.6.0
-	UserPassword          *types.String        // * NEX v3.7.0
-	ReferGID              *types.PrimitiveU32  // * NEX v3.8.0
-	UserPasswordEnabled   *types.PrimitiveBool // * NEX v3.8.0
-	SystemPasswordEnabled *types.PrimitiveBool // * NEX v3.8.0
-	CodeWord              *types.String        // * NEX v4.0.0
+	Gathering
+	GameMode              types.UInt32
+	Attributes            types.List[types.UInt32]
+	OpenParticipation     types.Bool
+	MatchmakeSystemType   types.UInt32
+	ApplicationBuffer     types.Buffer
+	ParticipationCount    types.UInt32
+	ProgressScore         types.UInt8    // * NEX v3.4.0
+	SessionKey            types.Buffer   // * NEX v3.0.0
+	Option                types.UInt32   // * NEX v3.5.0
+	MatchmakeParam        MatchmakeParam // * NEX v3.6.0
+	StartedTime           types.DateTime // * NEX v3.6.0
+	UserPassword          types.String   // * NEX v3.7.0
+	ReferGID              types.UInt32   // * NEX v3.8.0
+	UserPasswordEnabled   types.Bool     // * NEX v3.8.0
+	SystemPasswordEnabled types.Bool     // * NEX v3.8.0
+	CodeWord              types.String   // * NEX v4.0.0
+}
+
+// ObjectID returns the object identifier of the type
+func (ms MatchmakeSession) ObjectID() types.RVType {
+	return ms.GatheringObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Gathering
+func (ms MatchmakeSession) GatheringObjectID() types.RVType {
+	return types.NewString("MatchmakeSession")
 }
 
 // WriteTo writes the MatchmakeSession to the given writable
-func (ms *MatchmakeSession) WriteTo(writable types.Writable) {
+func (ms MatchmakeSession) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
@@ -215,38 +225,38 @@ func (ms *MatchmakeSession) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of MatchmakeSession
-func (ms *MatchmakeSession) Copy() types.RVType {
+func (ms MatchmakeSession) Copy() types.RVType {
 	copied := NewMatchmakeSession()
 
 	copied.StructureVersion = ms.StructureVersion
-	copied.Gathering = ms.Gathering.Copy().(*Gathering)
-	copied.GameMode = ms.GameMode.Copy().(*types.PrimitiveU32)
-	copied.Attributes = ms.Attributes.Copy().(*types.List[*types.PrimitiveU32])
-	copied.OpenParticipation = ms.OpenParticipation.Copy().(*types.PrimitiveBool)
-	copied.MatchmakeSystemType = ms.MatchmakeSystemType.Copy().(*types.PrimitiveU32)
-	copied.ApplicationBuffer = ms.ApplicationBuffer.Copy().(*types.Buffer)
-	copied.ParticipationCount = ms.ParticipationCount.Copy().(*types.PrimitiveU32)
-	copied.ProgressScore = ms.ProgressScore.Copy().(*types.PrimitiveU8)
-	copied.SessionKey = ms.SessionKey.Copy().(*types.Buffer)
-	copied.Option = ms.Option.Copy().(*types.PrimitiveU32)
-	copied.MatchmakeParam = ms.MatchmakeParam.Copy().(*MatchmakeParam)
-	copied.StartedTime = ms.StartedTime.Copy().(*types.DateTime)
-	copied.UserPassword = ms.UserPassword.Copy().(*types.String)
-	copied.ReferGID = ms.ReferGID.Copy().(*types.PrimitiveU32)
-	copied.UserPasswordEnabled = ms.UserPasswordEnabled.Copy().(*types.PrimitiveBool)
-	copied.SystemPasswordEnabled = ms.SystemPasswordEnabled.Copy().(*types.PrimitiveBool)
-	copied.CodeWord = ms.CodeWord.Copy().(*types.String)
+	copied.Gathering = ms.Gathering.Copy().(Gathering)
+	copied.GameMode = ms.GameMode.Copy().(types.UInt32)
+	copied.Attributes = ms.Attributes.Copy().(types.List[types.UInt32])
+	copied.OpenParticipation = ms.OpenParticipation.Copy().(types.Bool)
+	copied.MatchmakeSystemType = ms.MatchmakeSystemType.Copy().(types.UInt32)
+	copied.ApplicationBuffer = ms.ApplicationBuffer.Copy().(types.Buffer)
+	copied.ParticipationCount = ms.ParticipationCount.Copy().(types.UInt32)
+	copied.ProgressScore = ms.ProgressScore.Copy().(types.UInt8)
+	copied.SessionKey = ms.SessionKey.Copy().(types.Buffer)
+	copied.Option = ms.Option.Copy().(types.UInt32)
+	copied.MatchmakeParam = ms.MatchmakeParam.Copy().(MatchmakeParam)
+	copied.StartedTime = ms.StartedTime.Copy().(types.DateTime)
+	copied.UserPassword = ms.UserPassword.Copy().(types.String)
+	copied.ReferGID = ms.ReferGID.Copy().(types.UInt32)
+	copied.UserPasswordEnabled = ms.UserPasswordEnabled.Copy().(types.Bool)
+	copied.SystemPasswordEnabled = ms.SystemPasswordEnabled.Copy().(types.Bool)
+	copied.CodeWord = ms.CodeWord.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given MatchmakeSession contains the same data as the current MatchmakeSession
-func (ms *MatchmakeSession) Equals(o types.RVType) bool {
-	if _, ok := o.(*MatchmakeSession); !ok {
+func (ms MatchmakeSession) Equals(o types.RVType) bool {
+	if _, ok := o.(MatchmakeSession); !ok {
 		return false
 	}
 
-	other := o.(*MatchmakeSession)
+	other := o.(MatchmakeSession)
 
 	if ms.StructureVersion != other.StructureVersion {
 		return false
@@ -319,13 +329,27 @@ func (ms *MatchmakeSession) Equals(o types.RVType) bool {
 	return ms.CodeWord.Equals(other.CodeWord)
 }
 
+// CopyRef copies the current value of the MatchmakeSession
+// and returns a pointer to the new copy
+func (ms MatchmakeSession) CopyRef() types.RVTypePtr {
+	copied := ms.Copy().(MatchmakeSession)
+	return &copied
+}
+
+// Deref takes a pointer to the MatchmakeSession
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (ms *MatchmakeSession) Deref() types.RVType {
+	return *ms
+}
+
 // String returns the string representation of the MatchmakeSession
-func (ms *MatchmakeSession) String() string {
+func (ms MatchmakeSession) String() string {
 	return ms.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MatchmakeSession using the provided indentation level
-func (ms *MatchmakeSession) FormatToString(indentationLevel int) string {
+func (ms MatchmakeSession) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -355,28 +379,25 @@ func (ms *MatchmakeSession) FormatToString(indentationLevel int) string {
 }
 
 // NewMatchmakeSession returns a new MatchmakeSession
-func NewMatchmakeSession() *MatchmakeSession {
-	ms := &MatchmakeSession{
+func NewMatchmakeSession() MatchmakeSession {
+	return MatchmakeSession{
 		Gathering:             NewGathering(),
-		GameMode:              types.NewPrimitiveU32(0),
-		Attributes:            types.NewList[*types.PrimitiveU32](),
-		OpenParticipation:     types.NewPrimitiveBool(false),
-		MatchmakeSystemType:   types.NewPrimitiveU32(0),
+		GameMode:              types.NewUInt32(0),
+		Attributes:            types.NewList[types.UInt32](),
+		OpenParticipation:     types.NewBool(false),
+		MatchmakeSystemType:   types.NewUInt32(0),
 		ApplicationBuffer:     types.NewBuffer(nil),
-		ParticipationCount:    types.NewPrimitiveU32(0),
-		ProgressScore:         types.NewPrimitiveU8(0),
+		ParticipationCount:    types.NewUInt32(0),
+		ProgressScore:         types.NewUInt8(0),
 		SessionKey:            types.NewBuffer(nil),
-		Option:                types.NewPrimitiveU32(0),
+		Option:                types.NewUInt32(0),
 		MatchmakeParam:        NewMatchmakeParam(),
 		StartedTime:           types.NewDateTime(0),
 		UserPassword:          types.NewString(""),
-		ReferGID:              types.NewPrimitiveU32(0),
-		UserPasswordEnabled:   types.NewPrimitiveBool(false),
-		SystemPasswordEnabled: types.NewPrimitiveBool(false),
+		ReferGID:              types.NewUInt32(0),
+		UserPasswordEnabled:   types.NewBool(false),
+		SystemPasswordEnabled: types.NewBool(false),
 		CodeWord:              types.NewString(""),
 	}
 
-	ms.Attributes.Type = types.NewPrimitiveU32(0)
-
-	return ms
 }

@@ -12,19 +12,19 @@ import (
 // RankingRankData is a type within the Ranking protocol
 type RankingRankData struct {
 	types.Structure
-	PrincipalID *types.PID
-	UniqueID    *types.PrimitiveU64
-	Order       *types.PrimitiveU32
-	Category    *types.PrimitiveU32
-	Score       *types.PrimitiveU32
-	Groups      *types.Buffer
-	Param       *types.PrimitiveU64
-	CommonData  *types.Buffer
-	UpdateTime  *types.DateTime // * NEX v3.6.0
+	PrincipalID types.PID
+	UniqueID    types.UInt64
+	Order       types.UInt32
+	Category    types.UInt32
+	Score       types.UInt32
+	Groups      types.Buffer
+	Param       types.UInt64
+	CommonData  types.Buffer
+	UpdateTime  types.DateTime // * NEX v3.6.0
 }
 
 // WriteTo writes the RankingRankData to the given writable
-func (rrd *RankingRankData) WriteTo(writable types.Writable) {
+func (rrd RankingRankData) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
 	libraryVersion := stream.LibraryVersions.Ranking
 
@@ -113,30 +113,30 @@ func (rrd *RankingRankData) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of RankingRankData
-func (rrd *RankingRankData) Copy() types.RVType {
+func (rrd RankingRankData) Copy() types.RVType {
 	copied := NewRankingRankData()
 
 	copied.StructureVersion = rrd.StructureVersion
-	copied.PrincipalID = rrd.PrincipalID.Copy().(*types.PID)
-	copied.UniqueID = rrd.UniqueID.Copy().(*types.PrimitiveU64)
-	copied.Order = rrd.Order.Copy().(*types.PrimitiveU32)
-	copied.Category = rrd.Category.Copy().(*types.PrimitiveU32)
-	copied.Score = rrd.Score.Copy().(*types.PrimitiveU32)
-	copied.Groups = rrd.Groups.Copy().(*types.Buffer)
-	copied.Param = rrd.Param.Copy().(*types.PrimitiveU64)
-	copied.CommonData = rrd.CommonData.Copy().(*types.Buffer)
-	copied.UpdateTime = rrd.UpdateTime.Copy().(*types.DateTime)
+	copied.PrincipalID = rrd.PrincipalID.Copy().(types.PID)
+	copied.UniqueID = rrd.UniqueID.Copy().(types.UInt64)
+	copied.Order = rrd.Order.Copy().(types.UInt32)
+	copied.Category = rrd.Category.Copy().(types.UInt32)
+	copied.Score = rrd.Score.Copy().(types.UInt32)
+	copied.Groups = rrd.Groups.Copy().(types.Buffer)
+	copied.Param = rrd.Param.Copy().(types.UInt64)
+	copied.CommonData = rrd.CommonData.Copy().(types.Buffer)
+	copied.UpdateTime = rrd.UpdateTime.Copy().(types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the given RankingRankData contains the same data as the current RankingRankData
-func (rrd *RankingRankData) Equals(o types.RVType) bool {
-	if _, ok := o.(*RankingRankData); !ok {
+func (rrd RankingRankData) Equals(o types.RVType) bool {
+	if _, ok := o.(RankingRankData); !ok {
 		return false
 	}
 
-	other := o.(*RankingRankData)
+	other := o.(RankingRankData)
 
 	if rrd.StructureVersion != other.StructureVersion {
 		return false
@@ -177,13 +177,27 @@ func (rrd *RankingRankData) Equals(o types.RVType) bool {
 	return rrd.UpdateTime.Equals(other.UpdateTime)
 }
 
+// CopyRef copies the current value of the RankingRankData
+// and returns a pointer to the new copy
+func (rrd RankingRankData) CopyRef() types.RVTypePtr {
+	copied := rrd.Copy().(RankingRankData)
+	return &copied
+}
+
+// Deref takes a pointer to the RankingRankData
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (rrd *RankingRankData) Deref() types.RVType {
+	return *rrd
+}
+
 // String returns the string representation of the RankingRankData
-func (rrd *RankingRankData) String() string {
+func (rrd RankingRankData) String() string {
 	return rrd.FormatToString(0)
 }
 
 // FormatToString pretty-prints the RankingRankData using the provided indentation level
-func (rrd *RankingRankData) FormatToString(indentationLevel int) string {
+func (rrd RankingRankData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -205,18 +219,17 @@ func (rrd *RankingRankData) FormatToString(indentationLevel int) string {
 }
 
 // NewRankingRankData returns a new RankingRankData
-func NewRankingRankData() *RankingRankData {
-	rrd := &RankingRankData{
+func NewRankingRankData() RankingRankData {
+	return RankingRankData{
 		PrincipalID: types.NewPID(0),
-		UniqueID:    types.NewPrimitiveU64(0),
-		Order:       types.NewPrimitiveU32(0),
-		Category:    types.NewPrimitiveU32(0),
-		Score:       types.NewPrimitiveU32(0),
+		UniqueID:    types.NewUInt64(0),
+		Order:       types.NewUInt32(0),
+		Category:    types.NewUInt32(0),
+		Score:       types.NewUInt32(0),
 		Groups:      types.NewBuffer(nil),
-		Param:       types.NewPrimitiveU64(0),
+		Param:       types.NewUInt64(0),
 		CommonData:  types.NewBuffer(nil),
 		UpdateTime:  types.NewDateTime(0),
 	}
 
-	return rrd
 }

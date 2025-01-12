@@ -25,16 +25,15 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	idGathering := types.NewPrimitiveU32(0)
-	lstPrincipals := types.NewList[*types.PID]()
-	lstPrincipals.Type = types.NewPID(0)
-	strMessage := types.NewString("")
+	var idGathering types.UInt32
+	var lstPrincipals types.List[types.PID]
+	var strMessage types.String
 
 	var err error
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +43,7 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 
 	err = lstPrincipals.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +53,7 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

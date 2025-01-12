@@ -11,20 +11,30 @@ import (
 // Gathering is a type within the Matchmaking protocol
 type Gathering struct {
 	types.Structure
-	ID                  *types.PrimitiveU32
-	OwnerPID            *types.PID
-	HostPID             *types.PID
-	MinimumParticipants *types.PrimitiveU16
-	MaximumParticipants *types.PrimitiveU16
-	ParticipationPolicy *types.PrimitiveU32
-	PolicyArgument      *types.PrimitiveU32
-	Flags               *types.PrimitiveU32
-	State               *types.PrimitiveU32
-	Description         *types.String
+	ID                  types.UInt32
+	OwnerPID            types.PID
+	HostPID             types.PID
+	MinimumParticipants types.UInt16
+	MaximumParticipants types.UInt16
+	ParticipationPolicy types.UInt32
+	PolicyArgument      types.UInt32
+	Flags               types.UInt32
+	State               types.UInt32
+	Description         types.String
+}
+
+// ObjectID returns the object identifier of the type
+func (g Gathering) ObjectID() types.RVType {
+	return g.GatheringObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Gathering
+func (g Gathering) GatheringObjectID() types.RVType {
+	return types.NewString("Gathering")
 }
 
 // WriteTo writes the Gathering to the given writable
-func (g *Gathering) WriteTo(writable types.Writable) {
+func (g Gathering) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
 	g.ID.WriteTo(contentWritable)
@@ -108,31 +118,31 @@ func (g *Gathering) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Gathering
-func (g *Gathering) Copy() types.RVType {
+func (g Gathering) Copy() types.RVType {
 	copied := NewGathering()
 
 	copied.StructureVersion = g.StructureVersion
-	copied.ID = g.ID.Copy().(*types.PrimitiveU32)
-	copied.OwnerPID = g.OwnerPID.Copy().(*types.PID)
-	copied.HostPID = g.HostPID.Copy().(*types.PID)
-	copied.MinimumParticipants = g.MinimumParticipants.Copy().(*types.PrimitiveU16)
-	copied.MaximumParticipants = g.MaximumParticipants.Copy().(*types.PrimitiveU16)
-	copied.ParticipationPolicy = g.ParticipationPolicy.Copy().(*types.PrimitiveU32)
-	copied.PolicyArgument = g.PolicyArgument.Copy().(*types.PrimitiveU32)
-	copied.Flags = g.Flags.Copy().(*types.PrimitiveU32)
-	copied.State = g.State.Copy().(*types.PrimitiveU32)
-	copied.Description = g.Description.Copy().(*types.String)
+	copied.ID = g.ID.Copy().(types.UInt32)
+	copied.OwnerPID = g.OwnerPID.Copy().(types.PID)
+	copied.HostPID = g.HostPID.Copy().(types.PID)
+	copied.MinimumParticipants = g.MinimumParticipants.Copy().(types.UInt16)
+	copied.MaximumParticipants = g.MaximumParticipants.Copy().(types.UInt16)
+	copied.ParticipationPolicy = g.ParticipationPolicy.Copy().(types.UInt32)
+	copied.PolicyArgument = g.PolicyArgument.Copy().(types.UInt32)
+	copied.Flags = g.Flags.Copy().(types.UInt32)
+	copied.State = g.State.Copy().(types.UInt32)
+	copied.Description = g.Description.Copy().(types.String)
 
 	return copied
 }
 
 // Equals checks if the given Gathering contains the same data as the current Gathering
-func (g *Gathering) Equals(o types.RVType) bool {
-	if _, ok := o.(*Gathering); !ok {
+func (g Gathering) Equals(o types.RVType) bool {
+	if _, ok := o.(Gathering); !ok {
 		return false
 	}
 
-	other := o.(*Gathering)
+	other := o.(Gathering)
 
 	if g.StructureVersion != other.StructureVersion {
 		return false
@@ -177,13 +187,27 @@ func (g *Gathering) Equals(o types.RVType) bool {
 	return g.Description.Equals(other.Description)
 }
 
+// CopyRef copies the current value of the Gathering
+// and returns a pointer to the new copy
+func (g Gathering) CopyRef() types.RVTypePtr {
+	copied := g.Copy().(Gathering)
+	return &copied
+}
+
+// Deref takes a pointer to the Gathering
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (g *Gathering) Deref() types.RVType {
+	return *g
+}
+
 // String returns the string representation of the Gathering
-func (g *Gathering) String() string {
+func (g Gathering) String() string {
 	return g.FormatToString(0)
 }
 
 // FormatToString pretty-prints the Gathering using the provided indentation level
-func (g *Gathering) FormatToString(indentationLevel int) string {
+func (g Gathering) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
@@ -206,19 +230,18 @@ func (g *Gathering) FormatToString(indentationLevel int) string {
 }
 
 // NewGathering returns a new Gathering
-func NewGathering() *Gathering {
-	g := &Gathering{
-		ID:                  types.NewPrimitiveU32(0),
+func NewGathering() Gathering {
+	return Gathering{
+		ID:                  types.NewUInt32(0),
 		OwnerPID:            types.NewPID(0),
 		HostPID:             types.NewPID(0),
-		MinimumParticipants: types.NewPrimitiveU16(0),
-		MaximumParticipants: types.NewPrimitiveU16(0),
-		ParticipationPolicy: types.NewPrimitiveU32(0),
-		PolicyArgument:      types.NewPrimitiveU32(0),
-		Flags:               types.NewPrimitiveU32(0),
-		State:               types.NewPrimitiveU32(0),
+		MinimumParticipants: types.NewUInt16(0),
+		MaximumParticipants: types.NewUInt16(0),
+		ParticipationPolicy: types.NewUInt32(0),
+		PolicyArgument:      types.NewUInt32(0),
+		Flags:               types.NewUInt32(0),
+		State:               types.NewUInt32(0),
 		Description:         types.NewString(""),
 	}
 
-	return g
 }

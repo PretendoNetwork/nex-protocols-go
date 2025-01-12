@@ -27,13 +27,13 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	community := match_making_types.NewPersistentGathering()
-	strMessage := types.NewString("")
+	var strMessage types.String
 
 	var err error
 
 	err = community.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.CreateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, community, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.CreateCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, community, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

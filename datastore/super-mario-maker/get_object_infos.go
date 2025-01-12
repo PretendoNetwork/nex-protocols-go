@@ -25,12 +25,11 @@ func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	dataIDs := types.NewList[*types.PrimitiveU64]()
-	dataIDs.Type = types.NewPrimitiveU64(0)
+	var dataIDs types.List[types.UInt64]
 
 	err := dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetObjectInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.GetObjectInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

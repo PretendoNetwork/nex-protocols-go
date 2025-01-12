@@ -92,3 +92,25 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	globals.Respond(packet, rmcMessage)
 }
+
+type rankingModes struct {
+	// Global leaderboards
+	Global uint8
+	// Ranks close to caller on global leaderboards
+	NearbyGlobal uint8
+	// Friends of caller only
+	Friends uint8
+	// Ranks close to caller on friends leaderboards
+	NearbyFriends uint8
+	// Rank of caller only
+	Self uint8
+}
+
+// RankingModes is an enum of all the types of ranking request that can be made in the GetRanking method
+var RankingModes = rankingModes{
+	Global:        0,
+	NearbyGlobal:  1,
+	Friends:       2,
+	NearbyFriends: 3,
+	Self:          4,
+}

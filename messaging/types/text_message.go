@@ -15,6 +15,16 @@ type TextMessage struct {
 	StrTextBody types.String
 }
 
+// ObjectID returns the object identifier of the type
+func (tm TextMessage) ObjectID() types.RVType {
+	return tm.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (tm TextMessage) DataObjectID() types.RVType {
+	return types.NewString("TextMessage")
+}
+
 // WriteTo writes the TextMessage to the given writable
 func (tm TextMessage) WriteTo(writable types.Writable) {
 	tm.UserMessage.WriteTo(writable)

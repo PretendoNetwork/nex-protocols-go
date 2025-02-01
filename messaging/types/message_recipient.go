@@ -5,24 +5,36 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
 // MessageRecipient is a type within the MessageDelivery protocol
 type MessageRecipient struct {
 	types.Structure
+	IDRecipient     types.UInt32 // * NEX <4.0.0
 	UIRecipientType types.UInt32
-	PrincipalID     types.PID
-	GatheringID     types.UInt32
+	PrincipalID     types.PID    // * NEX 4.0.0
+	GatheringID     types.UInt32 // * NEX 4.0.0
 }
 
 // WriteTo writes the MessageRecipient to the given writable
 func (mr MessageRecipient) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.Messaging
+
 	contentWritable := writable.CopyNew()
 
+	if !libraryVersion.GreaterOrEqual("4.0.0") {
+		mr.IDRecipient.WriteTo(contentWritable)
+	}
+
 	mr.UIRecipientType.WriteTo(contentWritable)
-	mr.PrincipalID.WriteTo(contentWritable)
-	mr.GatheringID.WriteTo(contentWritable)
+
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		mr.PrincipalID.WriteTo(contentWritable)
+		mr.GatheringID.WriteTo(contentWritable)
+	}
 
 	content := contentWritable.Bytes()
 
@@ -33,6 +45,9 @@ func (mr MessageRecipient) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MessageRecipient from the given readable
 func (mr *MessageRecipient) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.Messaging
+
 	var err error
 
 	err = mr.ExtractHeaderFrom(readable)
@@ -40,19 +55,28 @@ func (mr *MessageRecipient) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract MessageRecipient header. %s", err.Error())
 	}
 
+	if !libraryVersion.GreaterOrEqual("4.0.0") {
+		err = mr.IDRecipient.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract MessageRecipient.IDRecipient. %s", err.Error())
+		}
+	}
+
 	err = mr.UIRecipientType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MessageRecipient.UIRecipientType. %s", err.Error())
 	}
 
-	err = mr.PrincipalID.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient.PrincipalID. %s", err.Error())
-	}
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		err = mr.PrincipalID.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract MessageRecipient.PrincipalID. %s", err.Error())
+		}
 
-	err = mr.GatheringID.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient.GatheringID. %s", err.Error())
+		err = mr.GatheringID.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract MessageRecipient.GatheringID. %s", err.Error())
+		}
 	}
 
 	return nil
@@ -63,6 +87,7 @@ func (mr MessageRecipient) Copy() types.RVType {
 	copied := NewMessageRecipient()
 
 	copied.StructureVersion = mr.StructureVersion
+	copied.IDRecipient = mr.IDRecipient.Copy().(types.UInt32)
 	copied.UIRecipientType = mr.UIRecipientType.Copy().(types.UInt32)
 	copied.PrincipalID = mr.PrincipalID.Copy().(types.PID)
 	copied.GatheringID = mr.GatheringID.Copy().(types.UInt32)
@@ -79,6 +104,10 @@ func (mr MessageRecipient) Equals(o types.RVType) bool {
 	other := o.(MessageRecipient)
 
 	if mr.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !mr.IDRecipient.Equals(other.IDRecipient) {
 		return false
 	}
 
@@ -120,6 +149,7 @@ func (mr MessageRecipient) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MessageRecipient{\n")
+	b.WriteString(fmt.Sprintf("%sIDRecipient: %s,\n", indentationValues, mr.IDRecipient))
 	b.WriteString(fmt.Sprintf("%sUIRecipientType: %s,\n", indentationValues, mr.UIRecipientType))
 	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, mr.PrincipalID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, mr.GatheringID))
@@ -131,6 +161,7 @@ func (mr MessageRecipient) FormatToString(indentationLevel int) string {
 // NewMessageRecipient returns a new MessageRecipient
 func NewMessageRecipient() MessageRecipient {
 	return MessageRecipient{
+		IDRecipient:     types.NewUInt32(0),
 		UIRecipientType: types.NewUInt32(0),
 		PrincipalID:     types.NewPID(0),
 		GatheringID:     types.NewUInt32(0),

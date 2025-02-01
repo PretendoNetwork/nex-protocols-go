@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -13,6 +14,8 @@ type UserMessage struct {
 	types.Structure
 	types.Data
 	UIID             types.UInt32
+	IDRecipient      types.UInt32     // * NEX <4.0.0
+	UIRecipientType  types.UInt32     // * NEX <4.0.0
 	UIParentID       types.UInt32
 	PIDSender        types.PID
 	Receptiontime    types.DateTime
@@ -20,16 +23,35 @@ type UserMessage struct {
 	UIFlags          types.UInt32
 	StrSubject       types.String
 	StrSender        types.String
-	MessageRecipient MessageRecipient
+	MessageRecipient MessageRecipient // * NEX 4.0.0
+}
+
+// ObjectID returns the object identifier of the type
+func (um UserMessage) ObjectID() types.RVType {
+	return um.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (um UserMessage) DataObjectID() types.RVType {
+	return types.NewString("UserMessage")
 }
 
 // WriteTo writes the UserMessage to the given writable
 func (um UserMessage) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.Messaging
+
 	um.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
 
 	um.UIID.WriteTo(contentWritable)
+
+	if !libraryVersion.GreaterOrEqual("4.0.0") {
+		um.IDRecipient.WriteTo(contentWritable)
+		um.UIRecipientType.WriteTo(contentWritable)
+	}
+
 	um.UIParentID.WriteTo(contentWritable)
 	um.PIDSender.WriteTo(contentWritable)
 	um.Receptiontime.WriteTo(contentWritable)
@@ -37,7 +59,10 @@ func (um UserMessage) WriteTo(writable types.Writable) {
 	um.UIFlags.WriteTo(contentWritable)
 	um.StrSubject.WriteTo(contentWritable)
 	um.StrSender.WriteTo(contentWritable)
-	um.MessageRecipient.WriteTo(contentWritable)
+
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		um.MessageRecipient.WriteTo(contentWritable)
+	}
 
 	content := contentWritable.Bytes()
 
@@ -48,6 +73,9 @@ func (um UserMessage) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the UserMessage from the given readable
 func (um *UserMessage) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.Messaging
+
 	var err error
 
 	err = um.Data.ExtractFrom(readable)
@@ -63,6 +91,18 @@ func (um *UserMessage) ExtractFrom(readable types.Readable) error {
 	err = um.UIID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIID. %s", err.Error())
+	}
+
+	if !libraryVersion.GreaterOrEqual("4.0.0") {
+		err = um.IDRecipient.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract UserMessage.IDRecipient. %s", err.Error())
+		}
+
+		err = um.UIRecipientType.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract UserMessage.UIRecipientType. %s", err.Error())
+		}
 	}
 
 	err = um.UIParentID.ExtractFrom(readable)
@@ -100,10 +140,13 @@ func (um *UserMessage) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract UserMessage.StrSender. %s", err.Error())
 	}
 
-	err = um.MessageRecipient.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.MessageRecipient. %s", err.Error())
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		err = um.MessageRecipient.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract UserMessage.MessageRecipient. %s", err.Error())
+		}
 	}
+
 
 	return nil
 }
@@ -115,6 +158,8 @@ func (um UserMessage) Copy() types.RVType {
 	copied.StructureVersion = um.StructureVersion
 	copied.Data = um.Data.Copy().(types.Data)
 	copied.UIID = um.UIID.Copy().(types.UInt32)
+	copied.IDRecipient = um.IDRecipient.Copy().(types.UInt32)
+	copied.UIRecipientType = um.UIRecipientType.Copy().(types.UInt32)
 	copied.UIParentID = um.UIParentID.Copy().(types.UInt32)
 	copied.PIDSender = um.PIDSender.Copy().(types.PID)
 	copied.Receptiontime = um.Receptiontime.Copy().(types.DateTime)
@@ -144,6 +189,14 @@ func (um UserMessage) Equals(o types.RVType) bool {
 	}
 
 	if !um.UIID.Equals(other.UIID) {
+		return false
+	}
+
+	if !um.IDRecipient.Equals(other.IDRecipient) {
+		return false
+	}
+
+	if !um.UIRecipientType.Equals(other.UIRecipientType) {
 		return false
 	}
 
@@ -207,6 +260,8 @@ func (um UserMessage) FormatToString(indentationLevel int) string {
 	b.WriteString("UserMessage{\n")
 	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, um.Data.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sUIID: %s,\n", indentationValues, um.UIID))
+	b.WriteString(fmt.Sprintf("%sIDRecipient: %s,\n", indentationValues, um.IDRecipient))
+	b.WriteString(fmt.Sprintf("%sUIRecipientType: %s,\n", indentationValues, um.UIRecipientType))
 	b.WriteString(fmt.Sprintf("%sUIParentID: %s,\n", indentationValues, um.UIParentID))
 	b.WriteString(fmt.Sprintf("%sPIDSender: %s,\n", indentationValues, um.PIDSender.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sReceptiontime: %s,\n", indentationValues, um.Receptiontime.FormatToString(indentationLevel+1)))
@@ -225,6 +280,8 @@ func NewUserMessage() UserMessage {
 	return UserMessage{
 		Data:             types.NewData(),
 		UIID:             types.NewUInt32(0),
+		IDRecipient:      types.NewUInt32(0),
+		UIRecipientType:  types.NewUInt32(0),
 		UIParentID:       types.NewUInt32(0),
 		PIDSender:        types.NewPID(0),
 		Receptiontime:    types.NewDateTime(0),

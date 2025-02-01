@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	account_management_types "github.com/PretendoNetwork/nex-protocols-go/v2/account-management/types"
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
+	messaging_types "github.com/PretendoNetwork/nex-protocols-go/v2/messaging/types"
 	ticket_granting_types "github.com/PretendoNetwork/nex-protocols-go/v2/ticket-granting/types"
 )
 
@@ -18,4 +19,7 @@ func init() {
 	types.RegisterObjectHolderType(ticket_granting_types.NewAuthenticationInfo())
 	types.RegisterObjectHolderType(match_making_types.NewGathering())
 	types.RegisterObjectHolderType(match_making_types.NewMatchmakeSession())
+	types.RegisterObjectHolderType(messaging_types.NewUserMessage())
+	types.RegisterObjectHolderType(messaging_types.NewTextMessage())
+	types.RegisterObjectHolderType(messaging_types.NewBinaryMessage())
 }

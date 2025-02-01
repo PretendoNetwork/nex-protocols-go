@@ -15,6 +15,16 @@ type BinaryMessage struct {
 	BinaryBody types.QBuffer
 }
 
+// ObjectID returns the object identifier of the type
+func (bm BinaryMessage) ObjectID() types.RVType {
+	return bm.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (bm BinaryMessage) DataObjectID() types.RVType {
+	return types.NewString("BinaryMessage")
+}
+
 // WriteTo writes the BinaryMessage to the given writable
 func (bm BinaryMessage) WriteTo(writable types.Writable) {
 	bm.UserMessage.WriteTo(writable)

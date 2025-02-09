@@ -6,7 +6,10 @@ type notificationTypes struct {
 	FriendFavoriteGameUpdated3DS           uint32
 	FriendCommentUpdated3DS                uint32
 	FriendMiiChanged3DS                    uint32
+	FriendProfileUpdated3DS                uint32
 	FriendshipCompleted3DS                 uint32
+	FriendshipRemoved3DS                   uint32
+	FriendSentInvitation3DS                uint32
 	FriendOffline                          uint32
 	FriendMiiChanged                       uint32
 	Unknown1MiiRelated                     uint32
@@ -33,7 +36,10 @@ var NotificationTypes = notificationTypes{
 	FriendFavoriteGameUpdated3DS:           2,
 	FriendCommentUpdated3DS:                3,
 	FriendMiiChanged3DS:                    5,
+	FriendProfileUpdated3DS:                6,
 	FriendshipCompleted3DS:                 7,
+	FriendshipRemoved3DS:                   8,
+	FriendSentInvitation3DS:                9,
 	FriendOffline:                          10,
 	FriendMiiChanged:                       21,
 	Unknown1MiiRelated:                     22,

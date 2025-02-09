@@ -11,10 +11,9 @@ import (
 // AccountExtraInfo is a type within the AccountManagement protocol
 type AccountExtraInfo struct {
 	types.Structure
-	Unknown  types.UInt32
-	Unknown2 types.UInt32
-	Unknown3 types.UInt32
-	NEXToken types.String
+	LocalFriendCode types.UInt64
+	MoveCount       types.UInt32
+	NEXToken        types.String
 }
 
 // ObjectID returns the object identifier of the type
@@ -31,9 +30,8 @@ func (aei AccountExtraInfo) DataObjectID() types.RVType {
 func (aei AccountExtraInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	aei.Unknown.WriteTo(contentWritable)
-	aei.Unknown2.WriteTo(contentWritable)
-	aei.Unknown3.WriteTo(contentWritable)
+	aei.LocalFriendCode.WriteTo(contentWritable)
+	aei.MoveCount.WriteTo(contentWritable)
 	aei.NEXToken.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
@@ -52,19 +50,14 @@ func (aei *AccountExtraInfo) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract AccountExtraInfo header. %s", err.Error())
 	}
 
-	err = aei.Unknown.ExtractFrom(readable)
+	err = aei.LocalFriendCode.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown. %s", err.Error())
+		return fmt.Errorf("Failed to extract AccountExtraInfo.LocalFriendCode. %s", err.Error())
 	}
 
-	err = aei.Unknown2.ExtractFrom(readable)
+	err = aei.MoveCount.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown2. %s", err.Error())
-	}
-
-	err = aei.Unknown3.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown3. %s", err.Error())
+		return fmt.Errorf("Failed to extract AccountExtraInfo.MoveCount. %s", err.Error())
 	}
 
 	err = aei.NEXToken.ExtractFrom(readable)
@@ -80,9 +73,8 @@ func (aei AccountExtraInfo) Copy() types.RVType {
 	copied := NewAccountExtraInfo()
 
 	copied.StructureVersion = aei.StructureVersion
-	copied.Unknown = aei.Unknown.Copy().(types.UInt32)
-	copied.Unknown2 = aei.Unknown2.Copy().(types.UInt32)
-	copied.Unknown3 = aei.Unknown3.Copy().(types.UInt32)
+	copied.LocalFriendCode = aei.LocalFriendCode.Copy().(types.UInt64)
+	copied.MoveCount = aei.MoveCount.Copy().(types.UInt32)
 	copied.NEXToken = aei.NEXToken.Copy().(types.String)
 
 	return copied
@@ -100,15 +92,11 @@ func (aei AccountExtraInfo) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !aei.Unknown.Equals(other.Unknown) {
+	if !aei.LocalFriendCode.Equals(other.LocalFriendCode) {
 		return false
 	}
 
-	if !aei.Unknown2.Equals(other.Unknown2) {
-		return false
-	}
-
-	if !aei.Unknown3.Equals(other.Unknown3) {
+	if !aei.MoveCount.Equals(other.MoveCount) {
 		return false
 	}
 
@@ -142,9 +130,8 @@ func (aei AccountExtraInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("AccountExtraInfo{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, aei.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, aei.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, aei.Unknown3))
+	b.WriteString(fmt.Sprintf("%sLocalFriendCode: %s,\n", indentationValues, aei.LocalFriendCode))
+	b.WriteString(fmt.Sprintf("%sMoveCount: %s,\n", indentationValues, aei.MoveCount))
 	b.WriteString(fmt.Sprintf("%sNEXToken: %s,\n", indentationValues, aei.NEXToken))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
@@ -154,10 +141,9 @@ func (aei AccountExtraInfo) FormatToString(indentationLevel int) string {
 // NewAccountExtraInfo returns a new AccountExtraInfo
 func NewAccountExtraInfo() AccountExtraInfo {
 	return AccountExtraInfo{
-		Unknown:  types.NewUInt32(0),
-		Unknown2: types.NewUInt32(0),
-		Unknown3: types.NewUInt32(0),
-		NEXToken: types.NewString(""),
+		LocalFriendCode: types.NewUInt64(0),
+		MoveCount:       types.NewUInt32(0),
+		NEXToken:        types.NewString(""),
 	}
 
 }

@@ -2,7 +2,7 @@ package constants
 
 // RatingLockPeriod tells the rating slot locks what day
 // the lock should expire
-type RatingLockPeriod int
+type RatingLockPeriod int16
 
 const (
 	// RatingLockPeriodDay1 means the day the lock will expire

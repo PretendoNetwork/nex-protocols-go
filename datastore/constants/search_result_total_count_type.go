@@ -5,7 +5,6 @@ package constants
 type SearchResultTotalCountType uint8
 
 const (
-
 	// SearchResultTotalExact means the returned count is the
 	// exact number of objects which match the search criteria
 	SearchResultTotalExact SearchResultTotalCountType = iota

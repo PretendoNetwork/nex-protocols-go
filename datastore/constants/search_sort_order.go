@@ -4,7 +4,6 @@ package constants
 type SearchSortOrder uint8
 
 const (
-
 	// SearchSortOrderAsc means the results should be ordered in ascending order
 	SearchSortOrderAsc SearchSortOrder = iota
 

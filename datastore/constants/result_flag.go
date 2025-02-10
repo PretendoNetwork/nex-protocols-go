@@ -5,7 +5,6 @@ package constants
 type ResultFlag uint8
 
 const (
-
 	// ResultFlagTags means the object tags should be populated
 	ResultFlagTags ResultFlag = 0x1
 

@@ -6,7 +6,6 @@ package constants
 type Permission uint8
 
 const (
-
 	// PermissionPublic means that anyone is allowed
 	// to perform the operation
 	PermissionPublic Permission = iota

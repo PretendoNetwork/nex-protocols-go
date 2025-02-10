@@ -6,7 +6,6 @@ package constants
 type SearchType uint8
 
 const (
-
 	// SearchTypePublic selects objects whose access permission
 	// is set to PermissionPublic
 	SearchTypePublic SearchType = iota + 1

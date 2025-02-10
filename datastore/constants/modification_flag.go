@@ -4,7 +4,6 @@ package constants
 type ModificationFlag uint16
 
 const (
-
 	// ModificationFlagNone means that nothing has changed
 	ModificationFlagNone ModificationFlag = 0x0
 

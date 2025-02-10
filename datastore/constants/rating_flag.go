@@ -5,7 +5,6 @@ package constants
 type RatingFlag uint8
 
 const (
-
 	// RatingFlagModifiable means that if a user rates an object
 	// rating slot more than once, update the existing rating
 	// rather than create a new one. If this flag is set, ratings

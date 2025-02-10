@@ -5,7 +5,6 @@ package constants
 type SearchSortColumn uint8
 
 const (
-
 	// SearchSortColumnDataID means the objects should be sorted based on the objects DataIDs
 	SearchSortColumnDataID SearchSortColumn = iota
 
@@ -29,7 +28,6 @@ const (
 )
 
 const (
-
 	// SearchSortColumnRating0 means the objects should be sorted based on total combined ratings of slot 0
 	SearchSortColumnRating0 SearchSortColumn = iota + 64
 
@@ -80,7 +78,6 @@ const (
 )
 
 const (
-
 	// SearchSortColumnRatingAverage0 means the objects should be sorted based on the average value of ratings of slot 0
 	SearchSortColumnRatingAverage0 SearchSortColumn = iota + 96
 

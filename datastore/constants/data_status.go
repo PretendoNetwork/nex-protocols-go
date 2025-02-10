@@ -7,7 +7,6 @@ package constants
 type DataStatus uint8
 
 const (
-
 	// DataStatusNone means the object is uploaded and
 	// visible to those who have access permissions
 	DataStatusNone DataStatus = 0

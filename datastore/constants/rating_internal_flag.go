@@ -5,7 +5,6 @@ package constants
 type RatingInternalFlag uint8
 
 const (
-
 	// RatingInternalFlagUseRangeMin means that the DataStoreRatingInitParam.rangeMin
 	// value should be respected. If this flag is not set, the minimum value is ignored.
 	// If this flag is set and a rating is below the minimum, `DataStore::InvalidArgument`

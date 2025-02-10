@@ -5,7 +5,6 @@ package constants
 type RatingLockPeriod int
 
 const (
-
 	// RatingLockPeriodDay1 means the day the lock will expire
 	// is the 1st of the following month
 	RatingLockPeriodDay1 RatingLockPeriod = -17

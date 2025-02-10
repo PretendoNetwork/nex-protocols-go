@@ -1,12 +1,11 @@
 package constants
 
-// RatingLockType represents the type of lock applied to object ratings.
+// RatingLockType indicates the type of lock applied to object ratings.
 // Locks are applied per-user, not per-object. If a user tries to rate
 // an object while a lock is in place, DataStore::OperationNotAllowed is thrown
 type RatingLockType uint8
 
 const (
-
 	// RatingLockNone means that the ratings should have no locks
 	RatingLockNone RatingLockType = iota
 

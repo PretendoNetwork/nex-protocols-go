@@ -16,7 +16,7 @@ const (
 	// ModificationFlagUpdatePermission means that the object update permission has changed
 	ModificationFlagUpdatePermission ModificationFlag = 0x4
 
-	// ModificationFlagPeriod means that the object data epiration period has changed
+	// ModificationFlagPeriod means that the object data expiration period has changed
 	ModificationFlagPeriod ModificationFlag = 0x8
 
 	// ModificationFlagMetabinary means that the object MetaBinary has changed

@@ -29,9 +29,9 @@ const (
 	// notification
 	DataFlagUseNotificationOnPost DataFlag = 0x8
 
-	// DataFlagUseNotificationOnPost means that when an object is created and it's
-	// access permission is not set to PermissionPublic or PermissionPrivate, then
-	// all users who have access permission for the object receive a DataStore
+	// DataFlagUseNotificationOnPost means that when an existing object is updated
+	// and it's access permission is not set to PermissionPublic or PermissionPrivate,
+	// then all users who have access permission for the object receive a DataStore
 	// notification
 	DataFlagUseNotificationOnUpdate DataFlag = 0x10
 

@@ -12,8 +12,9 @@ const (
 	DataStatusNone DataStatus = 0
 
 	// DataStatusPending means the object is uploaded but
-	// pending review. The can only be seen by the owner until reviewed.
-	// Trying to query for objects under review will result in DataStore::UnderReviewing
+	// pending review. The object can only be seen by the
+	// owner until reviewed. Trying to query for objects
+	// under review will result in DataStore::UnderReviewing
 	DataStatusPending DataStatus = 2
 
 	// DataStatusRejected means the object is uploaded but

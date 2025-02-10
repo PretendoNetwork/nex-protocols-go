@@ -19,8 +19,8 @@ const (
 	// ModificationFlagPeriod means that the object data expiration period has changed
 	ModificationFlagPeriod ModificationFlag = 0x8
 
-	// ModificationFlagMetabinary means that the object MetaBinary has changed
-	ModificationFlagMetabinary ModificationFlag = 0x10
+	// ModificationFlagMetaBinary means that the object MetaBinary has changed
+	ModificationFlagMetaBinary ModificationFlag = 0x10
 
 	// ModificationFlagTags means that the object tags have changed.
 	// Tags are replaced, not appended

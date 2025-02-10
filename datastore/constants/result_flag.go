@@ -11,8 +11,8 @@ const (
 	// ResultFlagRatings means the object ratings should be populated
 	ResultFlagRatings ResultFlag = 0x2
 
-	// ResultFlagMetabinary means the object MetaBinary should be populated
-	ResultFlagMetabinary ResultFlag = 0x4
+	// ResultFlagMetaBinary means the object MetaBinary should be populated
+	ResultFlagMetaBinary ResultFlag = 0x4
 
 	// ResultFlagPermittedIDs means the object permissions should be populated
 	ResultFlagPermittedIDs ResultFlag = 0x8

@@ -23,14 +23,16 @@ const (
 	// DataFlagUseReadLock has an unknown use. Seems to do nothing, likely unused?
 	DataFlagUseReadLock DataFlag = 0x4
 
-	// DataFlagUseNotificationOnPost means that all users who are given access through via
-	// recipientIds are sent DataStore notifications when the data is published. Does not seem
-	// to send a notification if the object is set to be public?
+	// DataFlagUseNotificationOnPost means that when an object is created and it's
+	// access permission is not set to PermissionPublic or PermissionPrivate, then
+	// all users who have access permission for the object receive a DataStore
+	// notification
 	DataFlagUseNotificationOnPost DataFlag = 0x8
 
-	// DataFlagUseNotificationOnPost means that all users who are given access through via
-	// recipientIds are sent DataStore notifications when the data is updated. Does not seem
-	// to send a notification if the object is set to be public?
+	// DataFlagUseNotificationOnPost means that when an object is created and it's
+	// access permission is not set to PermissionPublic or PermissionPrivate, then
+	// all users who have access permission for the object receive a DataStore
+	// notification
 	DataFlagUseNotificationOnUpdate DataFlag = 0x10
 
 	// DataFlagNotUseFileServer means the entry in the game server has no physical object in the

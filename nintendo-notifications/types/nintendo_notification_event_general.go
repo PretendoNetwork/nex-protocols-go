@@ -17,6 +17,16 @@ type NintendoNotificationEventGeneral struct {
 	StrParam  types.String
 }
 
+// ObjectID returns the object identifier of the type
+func (nneg NintendoNotificationEventGeneral) ObjectID() types.RVType {
+	return nneg.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (nneg NintendoNotificationEventGeneral) DataObjectID() types.RVType {
+	return types.NewString("NintendoNotificationEventGeneral")
+}
+
 // WriteTo writes the NintendoNotificationEventGeneral to the given writable
 func (nneg NintendoNotificationEventGeneral) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()

@@ -15,6 +15,16 @@ type PersistentNotificationList struct {
 	Notifications types.List[PersistentNotification]
 }
 
+// ObjectID returns the object identifier of the type
+func (pnl PersistentNotificationList) ObjectID() types.RVType {
+	return pnl.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (pnl PersistentNotificationList) DataObjectID() types.RVType {
+	return types.NewString("PersistentNotificationList")
+}
+
 // WriteTo writes the PersistentNotificationList to the given writable
 func (pnl PersistentNotificationList) WriteTo(writable types.Writable) {
 	pnl.Data.WriteTo(writable)

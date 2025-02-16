@@ -17,6 +17,16 @@ type PrincipalPreference struct {
 	BlockFriendRequests types.Bool
 }
 
+// ObjectID returns the object identifier of the type
+func (pp PrincipalPreference) ObjectID() types.RVType {
+	return pp.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (pp PrincipalPreference) DataObjectID() types.RVType {
+	return types.NewString("PrincipalPreference")
+}
+
 // WriteTo writes the PrincipalPreference to the given writable
 func (pp PrincipalPreference) WriteTo(writable types.Writable) {
 	pp.Data.WriteTo(writable)

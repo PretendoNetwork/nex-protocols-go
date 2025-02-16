@@ -17,6 +17,16 @@ type FriendRequest struct {
 	SentOn        types.DateTime
 }
 
+// ObjectID returns the object identifier of the type
+func (fr FriendRequest) ObjectID() types.RVType {
+	return fr.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (fr FriendRequest) DataObjectID() types.RVType {
+	return types.NewString("FriendRequest")
+}
+
 // WriteTo writes the FriendRequest to the given writable
 func (fr FriendRequest) WriteTo(writable types.Writable) {
 	fr.Data.WriteTo(writable)

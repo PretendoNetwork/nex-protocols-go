@@ -29,6 +29,16 @@ type NintendoPresenceV2 struct {
 	Unknown7        types.UInt8
 }
 
+// ObjectID returns the object identifier of the type
+func (npv NintendoPresenceV2) ObjectID() types.RVType {
+	return npv.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (npv NintendoPresenceV2) DataObjectID() types.RVType {
+	return types.NewString("NintendoPresenceV2")
+}
+
 // WriteTo writes the NintendoPresenceV2 to the given writable
 func (npv NintendoPresenceV2) WriteTo(writable types.Writable) {
 	npv.Data.WriteTo(writable)

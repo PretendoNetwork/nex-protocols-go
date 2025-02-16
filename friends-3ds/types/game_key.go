@@ -16,6 +16,16 @@ type GameKey struct {
 	TitleVersion types.UInt16
 }
 
+// ObjectID returns the object identifier of the type
+func (gk GameKey) ObjectID() types.RVType {
+	return gk.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (gk GameKey) DataObjectID() types.RVType {
+	return types.NewString("GameKey")
+}
+
 // WriteTo writes the GameKey to the given writable
 func (gk GameKey) WriteTo(writable types.Writable) {
 	gk.Data.WriteTo(writable)

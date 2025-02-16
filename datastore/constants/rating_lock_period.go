@@ -1,6 +1,6 @@
 package constants
 
-// RatingLockPeriod tells the rating slot locks what day
+// RatingLockPeriodDay tells the rating slot locks what day
 // the lock should expire.
 //
 // NOTE: Original name is RatingLockPeriod, changed to

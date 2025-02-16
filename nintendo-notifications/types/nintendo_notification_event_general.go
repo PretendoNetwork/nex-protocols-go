@@ -11,14 +11,27 @@ import (
 // NintendoNotificationEventGeneral is a type within the NintendoNotifications protocol
 type NintendoNotificationEventGeneral struct {
 	types.Structure
+	types.Data
 	U32Param  types.UInt32
 	U64Param1 types.UInt64
 	U64Param2 types.UInt64
 	StrParam  types.String
 }
 
+// ObjectID returns the object identifier of the type
+func (nneg NintendoNotificationEventGeneral) ObjectID() types.RVType {
+	return nneg.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (nneg NintendoNotificationEventGeneral) DataObjectID() types.RVType {
+	return types.NewString("NintendoNotificationEventGeneral")
+}
+
 // WriteTo writes the NintendoNotificationEventGeneral to the given writable
 func (nneg NintendoNotificationEventGeneral) WriteTo(writable types.Writable) {
+	nneg.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
 	nneg.U32Param.WriteTo(contentWritable)
@@ -36,6 +49,11 @@ func (nneg NintendoNotificationEventGeneral) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NintendoNotificationEventGeneral from the given readable
 func (nneg *NintendoNotificationEventGeneral) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	err = nneg.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoNotificationEventGeneral.Data. %s", err.Error())
+	}
 
 	err = nneg.ExtractHeaderFrom(readable)
 	if err != nil {
@@ -70,6 +88,7 @@ func (nneg NintendoNotificationEventGeneral) Copy() types.RVType {
 	copied := NewNintendoNotificationEventGeneral()
 
 	copied.StructureVersion = nneg.StructureVersion
+	copied.Data = nneg.Data.Copy().(types.Data)
 	copied.U32Param = nneg.U32Param.Copy().(types.UInt32)
 	copied.U64Param1 = nneg.U64Param1.Copy().(types.UInt64)
 	copied.U64Param2 = nneg.U64Param2.Copy().(types.UInt64)
@@ -87,6 +106,10 @@ func (nneg NintendoNotificationEventGeneral) Equals(o types.RVType) bool {
 	other := o.(NintendoNotificationEventGeneral)
 
 	if nneg.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !nneg.Data.Equals(other.Data) {
 		return false
 	}
 
@@ -132,6 +155,7 @@ func (nneg NintendoNotificationEventGeneral) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("NintendoNotificationEventGeneral{\n")
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, nneg.Data.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sU32Param: %s,\n", indentationValues, nneg.U32Param))
 	b.WriteString(fmt.Sprintf("%sU64Param1: %s,\n", indentationValues, nneg.U64Param1))
 	b.WriteString(fmt.Sprintf("%sU64Param2: %s,\n", indentationValues, nneg.U64Param2))

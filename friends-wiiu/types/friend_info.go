@@ -20,6 +20,16 @@ type FriendInfo struct {
 	Unknown      types.UInt64
 }
 
+// ObjectID returns the object identifier of the type
+func (fi FriendInfo) ObjectID() types.RVType {
+	return fi.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (fi FriendInfo) DataObjectID() types.RVType {
+	return types.NewString("FriendInfo")
+}
+
 // WriteTo writes the FriendInfo to the given writable
 func (fi FriendInfo) WriteTo(writable types.Writable) {
 	fi.Data.WriteTo(writable)

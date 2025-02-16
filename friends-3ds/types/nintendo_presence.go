@@ -24,6 +24,16 @@ type NintendoPresence struct {
 	ApplicationArg    types.Buffer
 }
 
+// ObjectID returns the object identifier of the type
+func (np NintendoPresence) ObjectID() types.RVType {
+	return np.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (np NintendoPresence) DataObjectID() types.RVType {
+	return types.NewString("NintendoPresence")
+}
+
 // WriteTo writes the NintendoPresence to the given writable
 func (np NintendoPresence) WriteTo(writable types.Writable) {
 	np.Data.WriteTo(writable)

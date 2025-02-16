@@ -17,6 +17,16 @@ type NNAInfo struct {
 	Unknown2           types.UInt8
 }
 
+// ObjectID returns the object identifier of the type
+func (nnai NNAInfo) ObjectID() types.RVType {
+	return nnai.DataObjectID()
+}
+
+// DataObjectID returns the object identifier of the type embedding Data
+func (nnai NNAInfo) DataObjectID() types.RVType {
+	return types.NewString("NNAInfo")
+}
+
 // WriteTo writes the NNAInfo to the given writable
 func (nnai NNAInfo) WriteTo(writable types.Writable) {
 	nnai.Data.WriteTo(writable)

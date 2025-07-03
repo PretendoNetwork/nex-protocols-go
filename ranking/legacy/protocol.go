@@ -134,19 +134,19 @@ type Protocol struct {
 	DeleteAllScore        func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32) (*nex.RMCMessage, *nex.Error)
 	UploadCommonData      func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, commonData types.Buffer) (*nex.RMCMessage, *nex.Error)
 	DeleteCommonData      func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32) (*nex.RMCMessage, *nex.Error)
-	Unk0x7                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error)
-	Unk0x8                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error)
-	Unk0x9                func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)
+	Unk0x7                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error) // TODO - Find name if possible
+	Unk0x8                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error) // TODO - Find name if possible
+	Unk0x9                func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error) // TODO - Find name if possible
 	GetTopScore           func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error)
 	GetCommonData         func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32) (*nex.RMCMessage, *nex.Error)
-	Unk0xC                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error)
-	Unk0xD                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)
+	Unk0xC                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error) // TODO - Find name if possible
+	Unk0xD                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error) // TODO - Find name if possible
 	GetScore              func(err error, packet nex.PacketInterface, callID uint32, rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, offset types.UInt32, length types.UInt8) (*nex.RMCMessage, *nex.Error)
 	GetSelfScore          func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam, length types.UInt8) (*nex.RMCMessage, *nex.Error)
 	GetTotal              func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown1 types.UInt8, unknown2 types.UInt8, unknown3 types.UInt8, unknown4 types.UInt32) (*nex.RMCMessage, *nex.Error)
 	UploadScoreWithLimit  func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, scores types.List[types.UInt32], unknown1 types.UInt8, unknown2 types.UInt32, limit types.UInt16) (*nex.RMCMessage, *nex.Error)
 	UploadScoresWithLimit func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, scores types.List[ranking_types.RankingScoreWithLimit]) (*nex.RMCMessage, *nex.Error)
-	Unk0x13               func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8], unknown5 types.Bool, unknown6 types.UInt16) (*nex.RMCMessage, *nex.Error)
+	Unk0x13               func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8], unknown5 types.Bool, unknown6 types.UInt16) (*nex.RMCMessage, *nex.Error) // TODO - Find name if possible
 	Patches               nex.ServiceProtocol
 	PatchedMethods        []uint32
 }
@@ -161,19 +161,19 @@ type Interface interface {
 	SetHandlerDeleteAllScore(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUploadCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, commonData types.Buffer) (*nex.RMCMessage, *nex.Error))
 	SetHandlerDeleteCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUnk0x7(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUnk0x8(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUnk0x9(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUnk0x7(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error)) // TODO - Find name if possible
+	SetHandlerUnk0x8(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error)) // TODO - Find name if possible
+	SetHandlerUnk0x9(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)) // TODO - Find name if possible
 	SetHandlerGetTopScore(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUnk0xC(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUnk0xD(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUnk0xC(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error)) // TODO - Find name if possible
+	SetHandlerUnk0xD(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)) // TODO - Find name if possible
 	SetHandlerGetScore(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, offset types.UInt32, length types.UInt8) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetSelfScore(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam, length types.UInt8) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetTotal(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown1 types.UInt8, unknown2 types.UInt8, unknown3 types.UInt8, unknown4 types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUploadScoreWithLimit(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, scores types.List[types.UInt32], unknown1 types.UInt8, unknown2 types.UInt32, limit types.UInt16) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUploadScoresWithLimit(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, scores types.List[ranking_types.RankingScoreWithLimit]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUnk0x13(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8], unknown5 types.Bool, unknown6 types.UInt16) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUnk0x13(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8], unknown5 types.Bool, unknown6 types.UInt16) (*nex.RMCMessage, *nex.Error)) // TODO - Find name if possible
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -217,16 +217,19 @@ func (protocol *Protocol) SetHandlerDeleteCommonData(handler func(err error, pac
 }
 
 // SetHandlerUnk0x7 sets the handler for the Unk0x7 method
+// TODO - Find name if possible
 func (protocol *Protocol) SetHandlerUnk0x7(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Unk0x7 = handler
 }
 
 // SetHandlerUnk0x8 sets the handler for the Unk0x8 method
+// TODO - Find name if possible
 func (protocol *Protocol) SetHandlerUnk0x8(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown types.UInt8) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Unk0x8 = handler
 }
 
 // SetHandlerUnk0x9 sets the handler for the Unk0x9 method
+// TODO - Find name if possible
 func (protocol *Protocol) SetHandlerUnk0x9(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Unk0x9 = handler
 }
@@ -242,11 +245,13 @@ func (protocol *Protocol) SetHandlerGetCommonData(handler func(err error, packet
 }
 
 // SetHandlerUnk0xC sets the handler for the Unk0xC method
+// TODO - Find name if possible
 func (protocol *Protocol) SetHandlerUnk0xC(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Unk0xC = handler
 }
 
 // SetHandlerUnk0xD sets the handler for the Unk0xD method
+// TODO - Find name if possible
 func (protocol *Protocol) SetHandlerUnk0xD(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Unk0xD = handler
 }
@@ -277,6 +282,7 @@ func (protocol *Protocol) SetHandlerUploadScoresWithLimit(handler func(err error
 }
 
 // SetHandlerUnk0x13 sets the handler for the Unk0x13 method
+// TODO - Find name if possible
 func (protocol *Protocol) SetHandlerUnk0x13(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.UInt32, unknown2 types.UInt32, unknown3 types.List[types.UInt32], unknown4 types.List[types.UInt8], unknown5 types.Bool, unknown6 types.UInt16) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Unk0x13 = handler
 }
@@ -313,19 +319,19 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		case MethodDeleteCommonData:
 			protocol.handleDeleteCommonData(packet)
 		case MethodUnk0x7:
-			protocol.handleUnk0x7(packet)
+			protocol.handleUnk0x7(packet) // TODO - Find name if possible
 		case MethodUnk0x8:
-			protocol.handleUnk0x8(packet)
+			protocol.handleUnk0x8(packet) // TODO - Find name if possible
 		case MethodUnk0x9:
-			protocol.handleUnk0x9(packet)
+			protocol.handleUnk0x9(packet) // TODO - Find name if possible
 		case MethodGetTopScore:
 			protocol.handleGetTopScore(packet)
 		case MethodGetCommonData:
 			protocol.handleGetCommonData(packet)
 		case MethodUnk0xC:
-			protocol.handleUnk0xC(packet)
+			protocol.handleUnk0xC(packet) // TODO - Find name if possible
 		case MethodUnk0xD:
-			protocol.handleUnk0xD(packet)
+			protocol.handleUnk0xD(packet) // TODO - Find name if possible
 		case MethodGetScore:
 			protocol.handleGetScore(packet)
 		case MethodGetSelfScore:
@@ -337,7 +343,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		case MethodUploadScoresWithLimit:
 			protocol.handleUploadScoresWithLimit(packet)
 		case MethodUnk0x13:
-			protocol.handleUnk0x13(packet)
+			protocol.handleUnk0x13(packet) // TODO - Find name if possible
 		default:
 			errMessage := fmt.Sprintf("Unsupported Ranking method ID: %#v\n", message.MethodID)
 			err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
@@ -358,17 +364,17 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		case MethodDeleteCommonDataNEX1:
 			protocol.handleDeleteCommonData(packet)
 		case MethodUnk0x7NEX1:
-			protocol.handleUnk0x7(packet)
+			protocol.handleUnk0x7(packet) // TODO - Find name if possible
 		case MethodUnk0x8NEX1:
-			protocol.handleUnk0x8(packet)
+			protocol.handleUnk0x8(packet) // TODO - Find name if possible
 		case MethodGetTopScoreNEX1:
 			protocol.handleGetTopScore(packet)
 		case MethodGetCommonDataNEX1:
 			protocol.handleGetCommonData(packet)
 		case MethodUnk0xCNEX1:
-			protocol.handleUnk0xC(packet)
+			protocol.handleUnk0xC(packet) // TODO - Find name if possible
 		case MethodUnk0xDNEX1:
-			protocol.handleUnk0xD(packet)
+			protocol.handleUnk0xD(packet) // TODO - Find name if possible
 		case MethodGetScoreNEX1:
 			protocol.handleGetScore(packet)
 		case MethodGetSelfScoreNEX1:

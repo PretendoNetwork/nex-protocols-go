@@ -6,7 +6,6 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
@@ -26,14 +25,14 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	target := datastore_types.NewDataStoreRatingTarget()
 	var transactional types.Bool
+	var dataIDs types.List[types.UInt64]
 
 	var err error
 
-	err = target.ExtractFrom(parametersStream)
+	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, target, transactional)
+		_, rmcError := protocol.GetPasswordInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, target, transactional)
+		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, dataIDs, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.ResetRatings(nil, packet, callID, target, transactional)
+	rmcMessage, rmcError := protocol.ResetRatings(nil, packet, callID, dataIDs, transactional)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

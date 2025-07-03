@@ -9,9 +9,9 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
-	if protocol.ActivateWithCardID == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "StorageManager::ActivateWithCardID not implemented")
+func (protocol *Protocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
+	if protocol.AcquireNexUniqueID == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "StorageManager::AcquireNexUniqueID not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)
@@ -26,13 +26,12 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var slot types.UInt8
-	var cardID types.UInt64
 
 	var err error
 
 	err = slot.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read slot from parameters. %s", err.Error()), packet, callID, slot, cardID)
+		_, rmcError := protocol.AcquireNexUniqueID(fmt.Errorf("Failed to read slot from parameters. %s", err.Error()), packet, callID, slot)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -40,17 +39,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	err = cardID.ExtractFrom(parametersStream)
-	if err != nil {
-		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, slot, cardID)
-		if rmcError != nil {
-			globals.RespondError(packet, ProtocolID, rmcError)
-		}
-
-		return
-	}
-
-	rmcMessage, rmcError := protocol.ActivateWithCardID(nil, packet, callID, slot, cardID)
+	rmcMessage, rmcError := protocol.AcquireNexUniqueID(nil, packet, callID, slot)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

@@ -10,6 +10,7 @@ import (
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/types"
 )
 
+// TODO - Find name if possible
 func (protocol *Protocol) handleUnk0xD(packet nex.PacketInterface) {
 	if protocol.Unk0xD == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::Unk0xD not implemented")

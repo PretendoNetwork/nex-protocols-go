@@ -9,6 +9,7 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
+// TODO - Find name if possible
 func (protocol *Protocol) handleUnk0x8(packet nex.PacketInterface) {
 	if protocol.Unk0x8 == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::Unk0x8 not implemented")

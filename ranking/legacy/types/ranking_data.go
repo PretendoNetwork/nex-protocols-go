@@ -134,14 +134,13 @@ func (rd RankingData) Copy() types.RVType {
 
 	copied.StructureVersion = rd.StructureVersion
 	copied.PrincipalID = rd.PrincipalID.Copy().(types.PID)
-	copied.UniqueID = rd.UniqueID.Copy().(types.UInt64)
+	copied.UniqueID = rd.UniqueID.Copy().(types.UInt32)
 	copied.Order = rd.Order.Copy().(types.UInt32)
 	copied.Category = rd.Category.Copy().(types.UInt32)
-	copied.Scores = rd.Scores.Copy().(types.UInt32)
-	copied.Unknown1 = rd.Unknown1.Copy().(types.Buffer)
-	copied.Unknown2 = rd.Unknown2.Copy().(types.UInt64)
+	copied.Scores = rd.Scores.Copy().(types.List[types.UInt32])
+	copied.Unknown1 = rd.Unknown1.Copy().(types.UInt8)
+	copied.Unknown2 = rd.Unknown2.Copy().(types.UInt32)
 	copied.CommonData = rd.CommonData.Copy().(types.Buffer)
-	copied.UpdateTime = rd.UpdateTime.Copy().(types.DateTime)
 
 	return copied
 }
@@ -186,11 +185,7 @@ func (rd RankingData) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rd.CommonData.Equals(other.CommonData) {
-		return false
-	}
-
-	return rd.UpdateTime.Equals(other.UpdateTime)
+	return rd.CommonData.Equals(other.CommonData)
 }
 
 // CopyRef copies the current value of the RankingData
@@ -228,7 +223,6 @@ func (rd RankingData) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rd.Unknown1))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rd.Unknown2))
 	b.WriteString(fmt.Sprintf("%sCommonData: %s,\n", indentationValues, rd.CommonData))
-	b.WriteString(fmt.Sprintf("%sUpdateTime: %s,\n", indentationValues, rd.UpdateTime.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -238,14 +232,13 @@ func (rd RankingData) FormatToString(indentationLevel int) string {
 func NewRankingData() RankingData {
 	return RankingData{
 		PrincipalID: types.NewPID(0),
-		UniqueID:    types.NewUInt64(0),
+		UniqueID:    types.NewUInt32(0),
 		Order:       types.NewUInt32(0),
 		Category:    types.NewUInt32(0),
-		Scores:       types.NewUInt32(0),
-		Unknown1:      types.NewBuffer(nil),
-		Unknown2:       types.NewUInt64(0),
+		Scores:      types.NewList[types.UInt32](),
+		Unknown1:    types.NewUInt8(0),
+		Unknown2:    types.NewUInt32(0),
 		CommonData:  types.NewBuffer(nil),
-		UpdateTime:  types.NewDateTime(0),
 	}
 
 }

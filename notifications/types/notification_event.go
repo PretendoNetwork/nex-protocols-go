@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -13,22 +14,43 @@ type NotificationEvent struct {
 	types.Structure
 	PIDSource types.PID
 	Type      types.UInt32
-	Param1    types.UInt32
-	Param2    types.UInt32
+	Param1    types.UInt64
+	Param2    types.UInt64
 	StrParam  types.String
-	Param3    types.UInt32
+	Param3    types.UInt64
 }
 
 // WriteTo writes the NotificationEvent to the given writable
 func (ne NotificationEvent) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.Main
+
 	contentWritable := writable.CopyNew()
 
 	ne.PIDSource.WriteTo(contentWritable)
 	ne.Type.WriteTo(contentWritable)
-	ne.Param1.WriteTo(contentWritable)
-	ne.Param2.WriteTo(contentWritable)
+
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		ne.Param1.WriteTo(contentWritable)
+	} else {
+		types.NewUInt32(uint32(ne.Param1)).WriteTo(contentWritable)
+	}
+
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		ne.Param2.WriteTo(contentWritable)
+	} else {
+		types.NewUInt32(uint32(ne.Param2)).WriteTo(contentWritable)
+	}
+
 	ne.StrParam.WriteTo(contentWritable)
-	ne.Param3.WriteTo(contentWritable)
+
+	if libraryVersion.GreaterOrEqual("3.4.0") {
+		if libraryVersion.GreaterOrEqual("4.0.0") {
+			ne.Param3.WriteTo(contentWritable)
+		} else {
+			types.NewUInt32(uint32(ne.Param3)).WriteTo(contentWritable)
+		}
+	}
 
 	content := contentWritable.Bytes()
 
@@ -40,6 +62,9 @@ func (ne NotificationEvent) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NotificationEvent from the given readable
 func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.Main
 
 	err = ne.ExtractHeaderFrom(readable)
 	if err != nil {
@@ -56,14 +81,34 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract NotificationEvent.Type. %s", err.Error())
 	}
 
-	err = ne.Param1.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		err = ne.Param1.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
+		}
+	} else {
+		var Param1 types.UInt32
+		err = Param1.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
+		}
+
+		ne.Param1 = types.NewUInt64(uint64(Param1))
 	}
 
-	err = ne.Param2.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		err = ne.Param2.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
+		}
+	} else {
+		var Param2 types.UInt32
+		err = Param2.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
+		}
+
+		ne.Param2 = types.NewUInt64(uint64(Param2))
 	}
 
 	err = ne.StrParam.ExtractFrom(readable)
@@ -71,9 +116,21 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract NotificationEvent.StrParam. %s", err.Error())
 	}
 
-	err = ne.Param3.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
+	if libraryVersion.GreaterOrEqual("3.4.0") {
+		if libraryVersion.GreaterOrEqual("4.0.0") {
+			err = ne.Param3.ExtractFrom(readable)
+			if err != nil {
+				return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
+			}
+		} else {
+			var Param3 types.UInt32
+			err = Param3.ExtractFrom(readable)
+			if err != nil {
+				return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
+			}
+
+			ne.Param3 = types.NewUInt64(uint64(Param3))
+		}
 	}
 
 	return nil
@@ -86,10 +143,10 @@ func (ne NotificationEvent) Copy() types.RVType {
 	copied.StructureVersion = ne.StructureVersion
 	copied.PIDSource = ne.PIDSource.Copy().(types.PID)
 	copied.Type = ne.Type.Copy().(types.UInt32)
-	copied.Param1 = ne.Param1.Copy().(types.UInt32)
-	copied.Param2 = ne.Param2.Copy().(types.UInt32)
+	copied.Param1 = ne.Param1.Copy().(types.UInt64)
+	copied.Param2 = ne.Param2.Copy().(types.UInt64)
 	copied.StrParam = ne.StrParam.Copy().(types.String)
-	copied.Param3 = ne.Param3.Copy().(types.UInt32)
+	copied.Param3 = ne.Param3.Copy().(types.UInt64)
 
 	return copied
 }
@@ -172,10 +229,10 @@ func NewNotificationEvent() NotificationEvent {
 	return NotificationEvent{
 		PIDSource: types.NewPID(0),
 		Type:      types.NewUInt32(0),
-		Param1:    types.NewUInt32(0),
-		Param2:    types.NewUInt32(0),
+		Param1:    types.NewUInt64(0),
+		Param2:    types.NewUInt64(0),
 		StrParam:  types.NewString(""),
-		Param3:    types.NewUInt32(0),
+		Param3:    types.NewUInt64(0),
 	}
 
 }

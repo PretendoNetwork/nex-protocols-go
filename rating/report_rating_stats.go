@@ -27,7 +27,7 @@ func (protocol *Protocol) handleReportRatingStats(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	sessionToken := rating_types.NewRatingSessionToken()
+	var sessionToken rating_types.RatingSessionToken
 	var stats types.List[rating_types.RatingStats]
 
 	var err error

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUnk2(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	sessionToken := rating_types.NewRatingSessionToken()
+	var sessionToken rating_types.RatingSessionToken
 
 	var err error
 

@@ -6,8 +6,7 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// TODO: find name if possible
-// TODO: implement correctly
+// TODO - Find name if possible
 func (protocol *Protocol) handleUnk1(packet nex.PacketInterface) {
 	if protocol.Unk1 == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Rating::Unk1 not implemented")

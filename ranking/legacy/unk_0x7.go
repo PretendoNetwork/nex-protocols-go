@@ -47,7 +47,7 @@ func (protocol *Protocol) handleUnk0x7(packet nex.PacketInterface) {
 	if rankingVersion.GreaterOrEqual("2.0.0") {
 		err = category.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.Unk0x7(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category, unknown)
+			_, rmcError := protocol.Unk0x7(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category, unknown)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}

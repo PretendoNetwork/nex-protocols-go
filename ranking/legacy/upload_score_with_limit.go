@@ -85,6 +85,16 @@ func (protocol *Protocol) handleUploadScoreWithLimit(packet nex.PacketInterface)
 		return
 	}
 
+	err = limit.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("Failed to read limit from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
 	rmcMessage, rmcError := protocol.UploadScoreWithLimit(nil, packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)

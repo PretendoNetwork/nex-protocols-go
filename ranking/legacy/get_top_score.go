@@ -45,7 +45,7 @@ func (protocol *Protocol) handleGetTopScore(packet nex.PacketInterface) {
 	if rankingVersion.GreaterOrEqual("2.0.0") {
 		err = category.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.GetTopScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category)
+			_, rmcError := protocol.GetTopScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}

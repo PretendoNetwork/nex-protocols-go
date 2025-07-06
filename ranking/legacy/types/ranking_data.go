@@ -40,7 +40,6 @@ func (rd RankingData) WriteTo(writable types.Writable) {
 		category.WriteTo(contentWritable)
 	}
 
-	rd.Category.WriteTo(contentWritable)
 	rd.Scores.WriteTo(contentWritable)
 	rd.Unknown1.WriteTo(contentWritable)
 	rd.Unknown2.WriteTo(contentWritable)

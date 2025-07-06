@@ -31,7 +31,7 @@ func (protocol *Protocol) handleUnk0xD(packet nex.PacketInterface) {
 
 	var uniqueID types.UInt32
 	var category types.UInt32
-	orderParam := ranking_types.NewRankingOrderParam()
+	var orderParam ranking_types.RankingOrderParam
 
 	var err error
 
@@ -48,7 +48,7 @@ func (protocol *Protocol) handleUnk0xD(packet nex.PacketInterface) {
 	if rankingVersion.GreaterOrEqual("2.0.0") {
 		err = category.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.Unk0xD(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
+			_, rmcError := protocol.Unk0xD(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}

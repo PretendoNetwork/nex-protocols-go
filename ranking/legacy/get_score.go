@@ -30,7 +30,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 
 	var rankingMode types.UInt8
 	var category types.UInt32
-	orderParam := ranking_types.NewRankingOrderParam()
+	var orderParam ranking_types.RankingOrderParam
 	var offset types.UInt32
 	var length types.UInt8
 
@@ -49,7 +49,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 	if rankingVersion.GreaterOrEqual("2.0.0") {
 		err = category.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read rankingMode from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
+			_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}

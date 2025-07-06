@@ -99,11 +99,6 @@ func (rd *RankingData) ExtractFrom(readable types.Readable) error {
 		rd.Category = types.UInt32(category[0])
 	}
 
-	err = rd.Category.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract RankingData.Category. %s", err.Error())
-	}
-
 	err = rd.Scores.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingData.Scores. %s", err.Error())

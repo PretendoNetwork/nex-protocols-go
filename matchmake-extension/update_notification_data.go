@@ -46,36 +46,50 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		err = uiParam1.ExtractFrom(parametersStream)
-	} else {
-		var Param1 types.UInt32
-		err = Param1.ExtractFrom(parametersStream)
-		uiParam1 = types.NewUInt64(uint64(Param1))
-	}
+		if err != nil {
+			_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
+			if rmcError != nil {
+				globals.RespondError(packet, ProtocolID, rmcError)
+			}
 
-	if err != nil {
-		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
-		if rmcError != nil {
-			globals.RespondError(packet, ProtocolID, rmcError)
+			return
+		}
+	} else {
+		param1, err := parametersStream.ReadUInt32LE()
+		if err != nil {
+			_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
+			if rmcError != nil {
+				globals.RespondError(packet, ProtocolID, rmcError)
+			}
+
+			return
 		}
 
-		return
+		uiParam1 = types.UInt64(param1)
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		err = uiParam2.ExtractFrom(parametersStream)
-	} else {
-		var Param2 types.UInt32
-		err = Param2.ExtractFrom(parametersStream)
-		uiParam2 = types.NewUInt64(uint64(Param2))
-	}
+		if err != nil {
+			_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
+			if rmcError != nil {
+				globals.RespondError(packet, ProtocolID, rmcError)
+			}
 
-	if err != nil {
-		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
-		if rmcError != nil {
-			globals.RespondError(packet, ProtocolID, rmcError)
+			return
+		}
+	} else {
+		param2, err := parametersStream.ReadUInt32LE()
+		if err != nil {
+			_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), packet, callID, uiType, uiParam1, uiParam2, strParam)
+			if rmcError != nil {
+				globals.RespondError(packet, ProtocolID, rmcError)
+			}
+
+			return
 		}
 
-		return
+		uiParam2 = types.UInt64(param2)
 	}
 
 	err = strParam.ExtractFrom(parametersStream)

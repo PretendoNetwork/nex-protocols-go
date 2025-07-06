@@ -33,23 +33,21 @@ func (ne NotificationEvent) WriteTo(writable types.Writable) {
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		ne.Param1.WriteTo(contentWritable)
 	} else {
-		types.NewUInt32(uint32(ne.Param1)).WriteTo(contentWritable)
+		contentWritable.WriteUInt32LE(uint32(ne.Param1))
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		ne.Param2.WriteTo(contentWritable)
 	} else {
-		types.NewUInt32(uint32(ne.Param2)).WriteTo(contentWritable)
+		contentWritable.WriteUInt32LE(uint32(ne.Param2))
 	}
 
 	ne.StrParam.WriteTo(contentWritable)
 
-	if libraryVersion.GreaterOrEqual("3.4.0") {
-		if libraryVersion.GreaterOrEqual("4.0.0") {
-			ne.Param3.WriteTo(contentWritable)
-		} else {
-			types.NewUInt32(uint32(ne.Param3)).WriteTo(contentWritable)
-		}
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		ne.Param3.WriteTo(contentWritable)
+	} else if libraryVersion.GreaterOrEqual("3.4.0") {
+		contentWritable.WriteUInt32LE(uint32(ne.Param3))
 	}
 
 	content := contentWritable.Bytes()
@@ -87,13 +85,12 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
 		}
 	} else {
-		var Param1 types.UInt32
-		err = Param1.ExtractFrom(readable)
+		param1, err := readable.ReadUInt64LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
 		}
 
-		ne.Param1 = types.NewUInt64(uint64(Param1))
+		ne.Param1 = types.UInt64(param1)
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
@@ -102,13 +99,12 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
 		}
 	} else {
-		var Param2 types.UInt32
-		err = Param2.ExtractFrom(readable)
+		param2, err := readable.ReadUInt64LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
 		}
 
-		ne.Param2 = types.NewUInt64(uint64(Param2))
+		ne.Param2 = types.UInt64(param2)
 	}
 
 	err = ne.StrParam.ExtractFrom(readable)
@@ -116,21 +112,18 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract NotificationEvent.StrParam. %s", err.Error())
 	}
 
-	if libraryVersion.GreaterOrEqual("3.4.0") {
-		if libraryVersion.GreaterOrEqual("4.0.0") {
-			err = ne.Param3.ExtractFrom(readable)
-			if err != nil {
-				return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
-			}
-		} else {
-			var Param3 types.UInt32
-			err = Param3.ExtractFrom(readable)
-			if err != nil {
-				return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
-			}
-
-			ne.Param3 = types.NewUInt64(uint64(Param3))
+	if libraryVersion.GreaterOrEqual("4.0.0") {
+		err = ne.Param3.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
 		}
+	} else if libraryVersion.GreaterOrEqual("3.4.0") {
+		param3, err := readable.ReadUInt64LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
+		}
+
+		ne.Param3 = types.UInt64(param3)
 	}
 
 	return nil

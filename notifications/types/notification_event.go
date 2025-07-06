@@ -85,7 +85,7 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
 		}
 	} else {
-		param1, err := readable.ReadUInt64LE()
+		param1, err := readable.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
 		}
@@ -99,7 +99,7 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
 		}
 	} else {
-		param2, err := readable.ReadUInt64LE()
+		param2, err := readable.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
 		}
@@ -118,7 +118,7 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
 		}
 	} else if libraryVersion.GreaterOrEqual("3.4.0") {
-		param3, err := readable.ReadUInt64LE()
+		param3, err := readable.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
 		}

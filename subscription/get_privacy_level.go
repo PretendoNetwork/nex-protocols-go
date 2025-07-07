@@ -6,9 +6,9 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-func (protocol *Protocol) handleGetPrivacyLevels(packet nex.PacketInterface) {
-	if protocol.GetPrivacyLevels == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::GetPrivacyLevels not implemented")
+func (protocol *Protocol) handleGetPrivacyLevel(packet nex.PacketInterface) {
+	if protocol.GetPrivacyLevel == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::GetPrivacyLevel not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)
@@ -19,7 +19,7 @@ func (protocol *Protocol) handleGetPrivacyLevels(packet nex.PacketInterface) {
 	request := packet.RMCMessage()
 	callID := request.CallID
 
-	rmcMessage, rmcError := protocol.GetPrivacyLevels(nil, packet, callID)
+	rmcMessage, rmcError := protocol.GetPrivacyLevel(nil, packet, callID)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

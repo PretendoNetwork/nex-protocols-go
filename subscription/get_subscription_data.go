@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetSubscriptionData(packet nex.PacketInterface) 
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var pids types.List[types.UInt32]
+	var pids types.List[types.PID]
 
 	err := pids.ExtractFrom(parametersStream)
 	if err != nil {

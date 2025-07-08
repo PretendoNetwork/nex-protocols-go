@@ -174,7 +174,7 @@ type Protocol struct {
 	RateObject                   func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, param datastore_types.DataStoreRateObjectParam, fetchRatings types.Bool) (*nex.RMCMessage, *nex.Error)
 	GetRating                    func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, accessPassword types.UInt64) (*nex.RMCMessage, *nex.Error)
 	GetRatings                   func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.List[types.UInt64], accessPassword types.UInt64) (*nex.RMCMessage, *nex.Error)
-	ResetRating                  func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, accessPassword types.UInt64) (*nex.RMCMessage, *nex.Error)
+	ResetRating                  func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, updatePassword types.UInt64) (*nex.RMCMessage, *nex.Error)
 	ResetRatings                 func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.List[types.UInt64], transactional types.Bool) (*nex.RMCMessage, *nex.Error)
 	GetSpecificMetaV1            func(err error, packet nex.PacketInterface, callID uint32, param datastore_types.DataStoreGetSpecificMetaParamV1) (*nex.RMCMessage, *nex.Error)
 	PostMetaBinary               func(err error, packet nex.PacketInterface, callID uint32, param datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, *nex.Error)
@@ -228,7 +228,7 @@ type Interface interface {
 	SetHandlerRateObject(handler func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, param datastore_types.DataStoreRateObjectParam, fetchRatings types.Bool) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, accessPassword types.UInt64) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.List[types.UInt64], accessPassword types.UInt64) (*nex.RMCMessage, *nex.Error))
-	SetHandlerResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, accessPassword types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, updatePassword types.UInt64) (*nex.RMCMessage, *nex.Error))
 	SetHandlerResetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.List[types.UInt64], transactional types.Bool) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetSpecificMetaV1(handler func(err error, packet nex.PacketInterface, callID uint32, param datastore_types.DataStoreGetSpecificMetaParamV1) (*nex.RMCMessage, *nex.Error))
 	SetHandlerPostMetaBinary(handler func(err error, packet nex.PacketInterface, callID uint32, param datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, *nex.Error))
@@ -355,7 +355,7 @@ func (protocol *Protocol) SetHandlerGetRatings(handler func(err error, packet ne
 }
 
 // SetHandlerResetRating sets the handler for the ResetRating method
-func (protocol *Protocol) SetHandlerResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, accessPassword types.UInt64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, updatePassword types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ResetRating = handler
 }
 

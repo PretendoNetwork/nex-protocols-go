@@ -6,7 +6,9 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	subscription_types "github.com/PretendoNetwork/nex-protocols-go/v2/subscription/types"
 )
 
 func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterface) {
@@ -25,11 +27,15 @@ func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterf
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var unk types.UInt64
+	var unknown1 types.UInt32
+	var param subscription_types.SubscriptionData
+	var unknown2 types.Bool
 
-	err := unk.ExtractFrom(parametersStream)
+	var err error
+
+	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unk from parameters. %s", err.Error()), packet, callID, unk, nil)
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -37,12 +43,27 @@ func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterf
 		return
 	}
 
-	// * This is done since the server doesn't need to care about the data here (it's game-specific),
-	// * so we just pass it along to store however the handler wants
-	// TODO - Is this really the best way to do this?
-	content := parametersStream.ReadRemaining()
+	err = param.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
 
-	rmcMessage, rmcError := protocol.CreateMySubscriptionData(nil, packet, callID, unk, content)
+		return
+	}
+
+	err = unknown2.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
+	rmcMessage, rmcError := protocol.CreateMySubscriptionData(nil, packet, callID, unknown1, param, unknown2)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

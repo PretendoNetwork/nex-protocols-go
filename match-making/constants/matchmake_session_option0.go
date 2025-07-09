@@ -6,7 +6,7 @@ package constants
 type MatchmakeSessionOption0 int64
 
 const (
-	// MatchmakeSessionOption0Random has an unknown use.
+	// MatchmakeSessionOption0None has an unknown use.
 	MatchmakeSessionOption0None MatchmakeSessionOption0 = 0
 
 	// MatchmakeSessionOption0ForceAutoMatchDelay has an unknown use.

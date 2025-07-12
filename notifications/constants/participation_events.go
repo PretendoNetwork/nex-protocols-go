@@ -14,7 +14,7 @@ const (
 	// - m_uiParam2: The joining player PID
 	// - m_strParam: The join message
 	// - m_uiParam3: The number of participants
-	ParticipationParticipate ParticipationEvents = 1
+	ParticipationEventsParticipate ParticipationEvents = 1
 
 	// ParticipationEventsCancelParticipation is delivered when a player
 	// cancels their participation through MatchMake::CancelParticipation.

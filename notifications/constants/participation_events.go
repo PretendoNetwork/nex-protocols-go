@@ -4,7 +4,7 @@ package constants
 type ParticipationEvents = subType
 
 const (
-	// ParticipationParticipate is delivered when a new player has joined
+	// ParticipationEventsParticipate is delivered when a new player has joined
 	// the gathering.
 	//
 	// The parameters are:

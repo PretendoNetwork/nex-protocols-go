@@ -51,72 +51,72 @@ const (
 	//
 	// Note: Name is a guess, as we don't know the real name. Guess is based
 	// on the fact that NotificationEventsGameNotificationLogout seems to only
-	// be delivered when UpdateNotificationData has been called by the user,
-	// and UpdateNotificationData sends notifications of this type, and the
-	// event has "GameNotification" in the name.
+	// be delivered when MatchmakeExtension::UpdateNotificationData has been
+	// called by the user, and MatchmakeExtension::UpdateNotificationData sends
+	// notifications of this type, and the  event has "GameNotification" in the name.
 	NotificationEventsGameNotification1 NotificationEvents = 101
 
 	// NotificationEventsGameNotification2 is reserved for game-specific use.
 	//
 	// Note: Name is a guess, as we don't know the real name. Guess is based
 	// on the fact that NotificationEventsGameNotificationLogout seems to only
-	// be delivered when UpdateNotificationData has been called by the user,
-	// and UpdateNotificationData sends notifications of this type, and the
-	// event has "GameNotification" in the name.
+	// be delivered when MatchmakeExtension::UpdateNotificationData has been
+	// called by the user, and MatchmakeExtension::UpdateNotificationData sends
+	// notifications of this type, and the  event has "GameNotification" in the name.
 	NotificationEventsGameNotification2 NotificationEvents = 102
 
 	// NotificationEventsGameNotification3 is reserved for game-specific use.
 	//
 	// Note: Name is a guess, as we don't know the real name. Guess is based
 	// on the fact that NotificationEventsGameNotificationLogout seems to only
-	// be delivered when UpdateNotificationData has been called by the user,
-	// and UpdateNotificationData sends notifications of this type, and the
-	// event has "GameNotification" in the name.
+	// be delivered when MatchmakeExtension::UpdateNotificationData has been
+	// called by the user, and MatchmakeExtension::UpdateNotificationData sends
+	// notifications of this type, and the  event has "GameNotification" in the name.
 	NotificationEventsGameNotification3 NotificationEvents = 103
 
 	// NotificationEventsGameNotification4 is reserved for game-specific use.
 	//
 	// Note: Name is a guess, as we don't know the real name. Guess is based
 	// on the fact that NotificationEventsGameNotificationLogout seems to only
-	// be delivered when UpdateNotificationData has been called by the user,
-	// and UpdateNotificationData sends notifications of this type, and the
-	// event has "GameNotification" in the name.
+	// be delivered when MatchmakeExtension::UpdateNotificationData has been
+	// called by the user, and MatchmakeExtension::UpdateNotificationData sends
+	// notifications of this type, and the  event has "GameNotification" in the name.
 	NotificationEventsGameNotification4 NotificationEvents = 104
 
 	// NotificationEventsGameNotification5 is reserved for game-specific use.
 	//
 	// Note: Name is a guess, as we don't know the real name. Guess is based
 	// on the fact that NotificationEventsGameNotificationLogout seems to only
-	// be delivered when UpdateNotificationData has been called by the user,
-	// and UpdateNotificationData sends notifications of this type, and the
-	// event has "GameNotification" in the name.
+	// be delivered when MatchmakeExtension::UpdateNotificationData has been
+	// called by the user, and MatchmakeExtension::UpdateNotificationData sends
+	// notifications of this type, and the  event has "GameNotification" in the name.
 	NotificationEventsGameNotification5 NotificationEvents = 105
 
 	// NotificationEventsGameNotification6 is reserved for game-specific use.
 	//
 	// Note: Name is a guess, as we don't know the real name. Guess is based
 	// on the fact that NotificationEventsGameNotificationLogout seems to only
-	// be delivered when UpdateNotificationData has been called by the user,
-	// and UpdateNotificationData sends notifications of this type, and the
-	// event has "GameNotification" in the name.
+	// be delivered when MatchmakeExtension::UpdateNotificationData has been
+	// called by the user, and MatchmakeExtension::UpdateNotificationData sends
+	// notifications of this type, and the  event has "GameNotification" in the name.
 	NotificationEventsGameNotification6 NotificationEvents = 106
 
 	// NotificationEventsGameNotification7 is reserved for game-specific use.
 	//
 	// Note: Name is a guess, as we don't know the real name. Guess is based
 	// on the fact that NotificationEventsGameNotificationLogout seems to only
-	// be delivered when UpdateNotificationData has been called by the user,
-	// and UpdateNotificationData sends notifications of this type, and the
-	// event has "GameNotification" in the name.
+	// be delivered when MatchmakeExtension::UpdateNotificationData has been
+	// called by the user, and MatchmakeExtension::UpdateNotificationData sends
+	// notifications of this type, and the  event has "GameNotification" in the name.
 	NotificationEventsGameNotification7 NotificationEvents = 107
 
 	// NotificationEventsGameNotification8 is reserved for game-specific use.
 	//
 	// Note: Name is a guess, as we don't know the real name. Guess is based
 	// on the fact that NotificationEventsGameNotificationLogout seems to only
-	// be delivered when UpdateNotificationData has been called by the user,
-	// and UpdateNotificationData sends notifications of this type, and the
-	// event has "GameNotification" in the name.
+	// be delivered when MatchmakeExtension::UpdateNotificationData has been
+	// called by the user, and MatchmakeExtension::UpdateNotificationData sends
+	// notifications of this type, and the  event has "GameNotification" in the name.
 	NotificationEventsGameNotification8 NotificationEvents = 108
 
 	// NotificationEventsGatheringUnregistered is delivered to everyone in a gathering
@@ -138,10 +138,11 @@ const (
 	NotificationEventsHostChangeEvent NotificationEvents = 110
 
 	// NotificationEventsGameNotificationLogout is delivered to the users friends when
-	// the user disconnects, but seemingly only when UpdateNotificationData has been
-	// called in the past by the disconnecting user?
+	// the user disconnects, but seemingly only when MatchmakeExtension::UpdateNotificationData
+	// has been called in the past by the disconnecting user?
 	//
-	// Parameters unknown, though likely have to do with the data sent in UpdateNotificationData?
+	// Parameters unknown, though likely have to do with the data sent in
+	// MatchmakeExtension::UpdateNotificationData?
 	NotificationEventsGameNotificationLogout NotificationEvents = 111
 
 	// NotificationEventsSubscriptionEvent is delivered when an event relating to
@@ -242,6 +243,7 @@ const (
 	// as a participant of a gathering. Users may be participants in more than one gatering
 	// at a time, such as with persistent gatherings. This does not *move* a user *from* an
 	// existing gathering, only *adds* to the new one.
+	//
 	// The parameters are:
 	//
 	// - m_pidSource: The player who called the method

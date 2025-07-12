@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 // AutoMatchmakeParam is a type within the Matchmaking protocol
@@ -14,7 +15,7 @@ type AutoMatchmakeParam struct {
 	SourceMatchmakeSession   MatchmakeSession
 	AdditionalParticipants   types.List[types.PID]
 	GIDForParticipationCheck types.UInt32
-	AutoMatchmakeOption      types.UInt32
+	AutoMatchmakeOption      constants.AutoMatchmakeOption
 	JoinMessage              types.String
 	ParticipationCount       types.UInt16
 	LstSearchCriteria        types.List[MatchmakeSessionSearchCriteria]
@@ -28,7 +29,7 @@ func (amp AutoMatchmakeParam) WriteTo(writable types.Writable) {
 	amp.SourceMatchmakeSession.WriteTo(contentWritable)
 	amp.AdditionalParticipants.WriteTo(contentWritable)
 	amp.GIDForParticipationCheck.WriteTo(contentWritable)
-	amp.AutoMatchmakeOption.WriteTo(contentWritable)
+	types.UInt32(amp.AutoMatchmakeOption).WriteTo(contentWritable)
 	amp.JoinMessage.WriteTo(contentWritable)
 	amp.ParticipationCount.WriteTo(contentWritable)
 	amp.LstSearchCriteria.WriteTo(contentWritable)
@@ -65,9 +66,14 @@ func (amp *AutoMatchmakeParam) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
-	err = amp.AutoMatchmakeOption.ExtractFrom(readable)
+	autoMatchmakeOption, err := readable.ReadUInt32LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AutoMatchmakeOption. %s", err.Error())
+	}
+
+	amp.AutoMatchmakeOption = constants.AutoMatchmakeOption(autoMatchmakeOption)
+	if !amp.AutoMatchmakeOption.IsValid() {
+		return fmt.Errorf("AutoMatchmakeParam.AutoMatchmakeOption is invalid. Value %d is out of range", autoMatchmakeOption)
 	}
 
 	err = amp.JoinMessage.ExtractFrom(readable)
@@ -101,7 +107,7 @@ func (amp AutoMatchmakeParam) Copy() types.RVType {
 	copied.SourceMatchmakeSession = amp.SourceMatchmakeSession.Copy().(MatchmakeSession)
 	copied.AdditionalParticipants = amp.AdditionalParticipants.Copy().(types.List[types.PID])
 	copied.GIDForParticipationCheck = amp.GIDForParticipationCheck.Copy().(types.UInt32)
-	copied.AutoMatchmakeOption = amp.AutoMatchmakeOption.Copy().(types.UInt32)
+	copied.AutoMatchmakeOption = amp.AutoMatchmakeOption
 	copied.JoinMessage = amp.JoinMessage.Copy().(types.String)
 	copied.ParticipationCount = amp.ParticipationCount.Copy().(types.UInt16)
 	copied.LstSearchCriteria = amp.LstSearchCriteria.Copy().(types.List[MatchmakeSessionSearchCriteria])
@@ -134,7 +140,7 @@ func (amp AutoMatchmakeParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !amp.AutoMatchmakeOption.Equals(other.AutoMatchmakeOption) {
+	if amp.AutoMatchmakeOption != other.AutoMatchmakeOption {
 		return false
 	}
 
@@ -199,7 +205,7 @@ func NewAutoMatchmakeParam() AutoMatchmakeParam {
 		SourceMatchmakeSession:   NewMatchmakeSession(),
 		AdditionalParticipants:   types.NewList[types.PID](),
 		GIDForParticipationCheck: types.NewUInt32(0),
-		AutoMatchmakeOption:      types.NewUInt32(0),
+		AutoMatchmakeOption:      constants.AutoMatchmakeOptionNone,
 		JoinMessage:              types.NewString(""),
 		ParticipationCount:       types.NewUInt16(0),
 		LstSearchCriteria:        types.NewList[MatchmakeSessionSearchCriteria](),

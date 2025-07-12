@@ -3,6 +3,11 @@ package constants
 // AutoMatchmakeOption has an unknown use.
 type AutoMatchmakeOption uint32
 
+func (amo AutoMatchmakeOption) IsValid() bool {
+	checkValue := uint32(amo)
+	return checkValue >= uint32(AutoMatchmakeOptionNone) && checkValue <= uint32(AutoMatchmakeOptionUniqueGatheringByCodeword)
+}
+
 const (
 	// AutoMatchmakeOptionNone has an unknown use.
 	AutoMatchmakeOptionNone AutoMatchmakeOption = iota

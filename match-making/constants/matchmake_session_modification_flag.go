@@ -3,6 +3,24 @@ package constants
 // MatchmakeSessionModificationFlag indicates the flags set on a gathering
 type MatchmakeSessionModificationFlag uint32
 
+func (msmf MatchmakeSessionModificationFlag) HasFlag(flag MatchmakeSessionModificationFlag) bool {
+	return msmf&flag == flag
+}
+
+func (msmf MatchmakeSessionModificationFlag) HasFlags(flags ...MatchmakeSessionModificationFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if msmf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
+
 const (
 	// MatchmakeSessionModificationFlagNone modifies nothing.
 	MatchmakeSessionModificationFlagNone MatchmakeSessionModificationFlag = 0x0

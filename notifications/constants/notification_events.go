@@ -9,6 +9,20 @@ package constants
 // behavior, or a best guess.
 type NotificationEvents uint32
 
+// subType exists solely to restrict the kinds of values that can be passed
+// to NotificationEvents.Build()
+type subType uint32
+
+func (ne NotificationEvents) Build(subtype ...subType) NotificationEvents {
+	category := ne * 1000
+
+	if len(subtype) == 0 {
+		return category
+	}
+
+	return category + NotificationEvents(subtype[0])
+}
+
 const (
 	// NotificationEventsSessionLaunched is delivered to everyone in a gathering
 	// when MatchMaking::LaunchSession is fired.

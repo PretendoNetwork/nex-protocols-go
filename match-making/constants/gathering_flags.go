@@ -3,6 +3,24 @@ package constants
 // GatheringFlags indicates the flags set on a gathering
 type GatheringFlags uint16
 
+func (gf GatheringFlags) HasFlag(flag GatheringFlags) bool {
+	return gf&flag == flag
+}
+
+func (gf GatheringFlags) HasFlags(flags ...GatheringFlags) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if gf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
+
 const (
 	// GatheringFlagNone means that no flags are set
 	GatheringFlagNone GatheringFlags = 0x0

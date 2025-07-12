@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // NotificationEvents represents the main category of a notification type.
 //
 // Notifications may also include an optional subtype.
@@ -16,14 +18,14 @@ type subType uint32
 // Build creates the final notification type ID used in NotificationEvent.m_uiType.
 //
 // Takes an optional subtype. Only the first subtype defined is used.
-func (ne NotificationEvents) Build(subtype ...subType) NotificationEvents {
-	category := ne * 1000
+func (ne NotificationEvents) Build(subtype ...subType) types.UInt32 {
+	category := types.UInt32(ne * 1000)
 
 	if len(subtype) == 0 {
 		return category
 	}
 
-	return category + NotificationEvents(subtype[0])
+	return category + types.UInt32(subtype[0])
 }
 
 const (

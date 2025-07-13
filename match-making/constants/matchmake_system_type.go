@@ -3,6 +3,12 @@ package constants
 // MatchmakeSystemType represents the method of matchmaking being used
 type MatchmakeSystemType uint32
 
+// IsValid ensures the value of the MatchmakeSystemType is within
+// the expected range
+func (mst MatchmakeSystemType) IsValid() bool {
+	return mst >= MatchmakeSystemTypeInvalid && mst <= MatchmakeSystemTypePersistentGathering
+}
+
 const (
 	// MatchmakeSystemTypeInvalid indicates an invalid value
 	MatchmakeSystemTypeInvalid MatchmakeSystemType = iota

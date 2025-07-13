@@ -3,9 +3,10 @@ package constants
 // AutoMatchmakeOption has an unknown use.
 type AutoMatchmakeOption uint32
 
+// IsValid ensures the value of the AutoMatchmakeOption is within
+// the expected range
 func (amo AutoMatchmakeOption) IsValid() bool {
-	checkValue := uint32(amo)
-	return checkValue >= uint32(AutoMatchmakeOptionNone) && checkValue <= uint32(AutoMatchmakeOptionUniqueGatheringByCodeword)
+	return amo >= AutoMatchmakeOptionNone && amo <= AutoMatchmakeOptionUniqueGatheringByCodeword
 }
 
 const (

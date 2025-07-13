@@ -3,6 +3,12 @@ package constants
 // JoinMatchmakeSessionBehavior is used to indicate the behavior that joining a matchmake session will have
 type JoinMatchmakeSessionBehavior uint8
 
+// IsValid ensures the value of the JoinMatchmakeSessionBehavior is within
+// the expected range
+func (jmsb JoinMatchmakeSessionBehavior) IsValid() bool {
+	return jmsb >= JoinMatchmakeSessionBehaviorJoinMyself && jmsb <= JoinMatchmakeSessionBehaviorImAlreadyJoined
+}
+
 const (
 	// JoinMatchmakeSessionBehaviorJoinMyself indicates that the caller wants to join the session.
 	JoinMatchmakeSessionBehaviorJoinMyself JoinMatchmakeSessionBehavior = iota

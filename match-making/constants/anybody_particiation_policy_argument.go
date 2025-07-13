@@ -5,6 +5,12 @@ package constants
 // is used?
 type AnybodyParticipationPolicyArgument uint32
 
+// IsValid ensures the value of the AnybodyParticipationPolicyArgument is within
+// the expected range
+func (appa AnybodyParticipationPolicyArgument) IsValid() bool {
+	return appa >= AnybodyParticipationPolicyArgumentWithoutClose && appa <= AnybodyParticipationPolicyArgumentCloseOnOwnerMigration
+}
+
 const (
 	// AnybodyParticipationPolicyArgumentWithoutClose means that participation should not
 	// close when a new owner is selected.

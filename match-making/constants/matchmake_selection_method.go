@@ -3,6 +3,12 @@ package constants
 // MatchmakeSelectionMethod is used to indicate the selection method used when selecting a gathering
 type MatchmakeSelectionMethod uint32
 
+// IsValid ensures the value of the MatchmakeSelectionMethod is within
+// the expected range
+func (msm MatchmakeSelectionMethod) IsValid() bool {
+	return msm >= MatchmakeSelectionMethodRandom && msm <= MatchmakeSelectionMethodScoreBased
+}
+
 const (
 	// MatchmakeSelectionMethodRandom indicates a random selection
 	MatchmakeSelectionMethodRandom MatchmakeSelectionMethod = iota

@@ -2,7 +2,10 @@
 package protocol
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
@@ -16,12 +19,38 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 		return
 	}
 
-	globals.Logger.Warning("Messaging::DeliverMessageMultiTarget STUBBED")
-
 	request := packet.RMCMessage()
 	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	rmcMessage, rmcError := protocol.DeliverMessageMultiTarget(nil, packet, callID, packet.Payload())
+	var lstTarget types.List[types.PID]
+	var oUserMessage types.DataHolder
+
+	var err error
+
+	err = lstTarget.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.DeliverMessageMultiTarget(fmt.Errorf("Failed to read lstTarget from parameters. %s", err.Error()), packet, callID, lstTarget, oUserMessage)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
+	err = oUserMessage.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.DeliverMessageMultiTarget(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, lstTarget, oUserMessage)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
+	rmcMessage, rmcError := protocol.DeliverMessageMultiTarget(nil, packet, callID, lstTarget, oUserMessage)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

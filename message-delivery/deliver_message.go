@@ -1,4 +1,4 @@
-// Package protocol implements the Message Deliver protocol
+// Package protocol implements the Message Delivery protocol
 package protocol
 
 import (

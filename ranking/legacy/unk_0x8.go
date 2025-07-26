@@ -1,0 +1,62 @@
+// Package protocol implements the legacy Ranking protocol
+package protocol
+
+import (
+	"fmt"
+
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+)
+
+// TODO - Find name if possible
+func (protocol *Protocol) handleUnk0x8(packet nex.PacketInterface) {
+	if protocol.Unk0x8 == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::Unk0x8 not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
+		return
+	}
+
+	endpoint := packet.Sender().Endpoint()
+
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
+
+	var uniqueID types.UInt32
+	var unknown types.UInt8
+
+	var err error
+
+	err = uniqueID.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.Unk0x8(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, unknown)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
+	err = unknown.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.Unk0x8(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, unknown)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
+	rmcMessage, rmcError := protocol.Unk0x8(nil, packet, callID, uniqueID, unknown)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
+}

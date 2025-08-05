@@ -3,7 +3,7 @@ package constants
 // AnybodyParticipationPolicyArgument seems to determine whether or not to
 // close participation when the gathering owner changes when MatchmakeSystemTypeAnybody
 // is used?
-type AnybodyParticipationPolicyArgument uint32
+type AnybodyParticipationPolicyArgument = PolicyArgument
 
 // IsValid ensures the value of the AnybodyParticipationPolicyArgument is within
 // the expected range

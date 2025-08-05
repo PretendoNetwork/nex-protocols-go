@@ -9,7 +9,7 @@ type ParticipationPolicy uint32
 // IsValid ensures the value of the ParticipationPolicy is within
 // the expected range
 func (pp ParticipationPolicy) IsValid() bool {
-	// * Kinda janke but whatever, screw it. Once we know all the
+	// * Kinda jank but whatever, screw it. Once we know all the
 	// * real values of this enum we can do it like the others
 	switch pp {
 	case ParticipationPolicyOpenParticipation:

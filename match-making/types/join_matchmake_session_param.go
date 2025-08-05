@@ -37,7 +37,7 @@ func (jmsp JoinMatchmakeSessionParam) WriteTo(writable types.Writable) {
 	jmsp.AdditionalParticipants.WriteTo(contentWritable)
 	jmsp.GIDForParticipationCheck.WriteTo(contentWritable)
 	jmsp.JoinMatchmakeSessionOption.WriteTo(contentWritable)
-	types.UInt8(jmsp.JoinMatchmakeSessionBehavior).WriteTo(contentWritable)
+	jmsp.JoinMatchmakeSessionBehavior.WriteTo(contentWritable)
 	jmsp.StrUserPassword.WriteTo(contentWritable)
 	jmsp.StrSystemPassword.WriteTo(contentWritable)
 	jmsp.JoinMessage.WriteTo(contentWritable)
@@ -90,14 +90,9 @@ func (jmsp *JoinMatchmakeSessionParam) ExtractFrom(readable types.Readable) erro
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionOption. %s", err.Error())
 	}
 
-	joinMatchmakeSessionBehavior, err := readable.ReadUInt8()
+	err = jmsp.JoinMatchmakeSessionBehavior.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior. %s", err.Error())
-	}
-
-	jmsp.JoinMatchmakeSessionBehavior = constants.JoinMatchmakeSessionBehavior(joinMatchmakeSessionBehavior)
-	if !jmsp.JoinMatchmakeSessionBehavior.IsValid() {
-		return fmt.Errorf("JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior is invalid. Value %d is out of range", joinMatchmakeSessionBehavior)
 	}
 
 	err = jmsp.StrUserPassword.ExtractFrom(readable)

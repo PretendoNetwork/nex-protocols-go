@@ -1,8 +1,26 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // FindMatchmakeSessionResultOption indicates how to populate the
 // responses from FindMatchmakeSessionByParticipant
 type FindMatchmakeSessionResultOption uint32
+
+// WriteTo writes the FindMatchmakeSessionResultOption to the given writable
+func (fmsr FindMatchmakeSessionResultOption) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(fmsr))
+}
+
+// ExtractFrom extracts the FindMatchmakeSessionResultOption value from the given readable
+func (fmsr *FindMatchmakeSessionResultOption) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*fmsr = FindMatchmakeSessionResultOption(value)
+	return nil
+}
 
 func (fmsr FindMatchmakeSessionResultOption) HasFlag(flag FindMatchmakeSessionResultOption) bool {
 	return fmsr&flag == flag

@@ -29,7 +29,7 @@ func (amp AutoMatchmakeParam) WriteTo(writable types.Writable) {
 	amp.SourceMatchmakeSession.WriteTo(contentWritable)
 	amp.AdditionalParticipants.WriteTo(contentWritable)
 	amp.GIDForParticipationCheck.WriteTo(contentWritable)
-	types.UInt32(amp.AutoMatchmakeOption).WriteTo(contentWritable)
+	amp.AutoMatchmakeOption.WriteTo(contentWritable)
 	amp.JoinMessage.WriteTo(contentWritable)
 	amp.ParticipationCount.WriteTo(contentWritable)
 	amp.LstSearchCriteria.WriteTo(contentWritable)
@@ -66,14 +66,9 @@ func (amp *AutoMatchmakeParam) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
-	autoMatchmakeOption, err := readable.ReadUInt32LE()
+	err = amp.AutoMatchmakeOption.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AutoMatchmakeOption. %s", err.Error())
-	}
-
-	amp.AutoMatchmakeOption = constants.AutoMatchmakeOption(autoMatchmakeOption)
-	if !amp.AutoMatchmakeOption.IsValid() {
-		return fmt.Errorf("AutoMatchmakeParam.AutoMatchmakeOption is invalid. Value %d is out of range", autoMatchmakeOption)
 	}
 
 	err = amp.JoinMessage.ExtractFrom(readable)

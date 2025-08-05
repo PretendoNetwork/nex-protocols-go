@@ -1,10 +1,36 @@
 package constants
 
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
 // ParticipationPolicy indicates the session participation policy.
 //
 // Note: We do not know the real names for any of these, this is
 // all guess work.
 type ParticipationPolicy uint32
+
+// WriteTo writes the ParticipationPolicy to the given writable
+func (pp ParticipationPolicy) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(pp))
+}
+
+// ExtractFrom extracts the ParticipationPolicy value from the given readable
+func (pp *ParticipationPolicy) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*pp = ParticipationPolicy(value)
+	if !pp.IsValid() {
+		return fmt.Errorf("Value %d is out of range", *pp)
+	}
+
+	return nil
+}
 
 // IsValid ensures the value of the ParticipationPolicy is within
 // the expected range

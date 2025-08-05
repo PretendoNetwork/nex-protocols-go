@@ -49,13 +49,13 @@ func (mssc MatchmakeSessionSearchCriteria) WriteTo(writable types.Writable) {
 		mssc.MaxParticipants.WriteTo(contentWritable)
 	}
 
-	types.String(mssc.MatchmakeSystemType).WriteTo(contentWritable)
+	mssc.MatchmakeSystemType.WriteTo(contentWritable)
 	mssc.VacantOnly.WriteTo(contentWritable)
 	mssc.ExcludeLocked.WriteTo(contentWritable)
 	mssc.ExcludeNonHostPID.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		types.UInt32(mssc.SelectionMethod).WriteTo(contentWritable)
+		mssc.SelectionMethod.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.4.0") {
@@ -129,13 +129,10 @@ func (mssc *MatchmakeSessionSearchCriteria) ExtractFrom(readable types.Readable)
 		}
 	}
 
-	// TODO - This is kinda gross. Only done this way because types.Readable lacks a ReadString method
-	var matchmakeSystemType types.String
-	if err = matchmakeSystemType.ExtractFrom(readable); err != nil { // TODO - Move all "if err != nil" checks to the if-ok syntax?
+	err = mssc.MatchmakeSystemType.ExtractFrom(readable)
+	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeSystemType. %s", err.Error())
 	}
-
-	mssc.MatchmakeSystemType = constants.MatchmakeSystemTypeString(matchmakeSystemType)
 
 	err = mssc.VacantOnly.ExtractFrom(readable)
 	if err != nil {
@@ -153,12 +150,10 @@ func (mssc *MatchmakeSessionSearchCriteria) ExtractFrom(readable types.Readable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		selectionMethod, err := readable.ReadUInt32LE()
+		err = mssc.SelectionMethod.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
 		}
-
-		mssc.SelectionMethod = constants.MatchmakeSelectionMethod(selectionMethod)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.4.0") {

@@ -1,5 +1,11 @@
 package constants
 
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
 // GatheringState indicates the state of a gathering.
 //
 // Note: We do not know the real names for any of these, this is
@@ -8,12 +14,32 @@ package constants
 // values in practice?
 type GatheringState uint32
 
+// WriteTo writes the GatheringState to the given writable
+func (gs GatheringState) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(gs))
+}
+
+// ExtractFrom extracts the GatheringState value from the given readable
+func (gs *GatheringState) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*gs = GatheringState(value)
+	if !gs.IsValid() {
+		return fmt.Errorf("Value %d is out of range", *gs)
+	}
+
+	return nil
+}
+
 // IsValid ensures the value of the GatheringState is within
 // the expected range
-func (pp GatheringState) IsValid() bool {
+func (gs GatheringState) IsValid() bool {
 	// * Kinda jank but whatever, screw it. Once we know all the
 	// * real values of this enum we can do it like the others
-	switch pp {
+	switch gs {
 	case GatheringStateLocked:
 	case GatheringStateStarted:
 	case GatheringStateFinished:

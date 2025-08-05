@@ -43,10 +43,10 @@ func (g Gathering) WriteTo(writable types.Writable) {
 	g.HostPID.WriteTo(contentWritable)
 	g.MinimumParticipants.WriteTo(contentWritable)
 	g.MaximumParticipants.WriteTo(contentWritable)
-	types.UInt32(g.ParticipationPolicy).WriteTo(contentWritable)
-	types.UInt32(g.PolicyArgument).WriteTo(contentWritable)
-	types.UInt16(g.Flags).WriteTo(contentWritable)
-	types.UInt32(g.State).WriteTo(contentWritable)
+	g.ParticipationPolicy.WriteTo(contentWritable)
+	g.PolicyArgument.WriteTo(contentWritable)
+	g.Flags.WriteTo(contentWritable)
+	g.State.WriteTo(contentWritable)
 	g.Description.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
@@ -90,38 +90,24 @@ func (g *Gathering) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract Gathering.MaximumParticipants. %s", err.Error())
 	}
 
-	participationPolicy, err := readable.ReadUInt32LE()
+	err = g.ParticipationPolicy.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.ParticipationPolicy. %s", err.Error())
 	}
 
-	g.ParticipationPolicy = constants.ParticipationPolicy(participationPolicy)
-	if !g.ParticipationPolicy.IsValid() {
-		return fmt.Errorf("Gathering.ParticipationPolicy is invalid. Value %d is out of range", participationPolicy)
-	}
-
-	policyArgument, err := readable.ReadUInt32LE()
+	err = g.PolicyArgument.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.PolicyArgument. %s", err.Error())
 	}
 
-	g.PolicyArgument = constants.PolicyArgument(policyArgument)
-
-	flags, err := readable.ReadUInt32LE()
+	err = g.Flags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.Flags. %s", err.Error())
 	}
 
-	g.Flags = constants.GatheringFlags(flags)
-
-	state, err := readable.ReadUInt32LE()
+	err = g.State.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.State. %s", err.Error())
-	}
-
-	g.State = constants.GatheringState(state)
-	if !g.State.IsValid() {
-		return fmt.Errorf("Gathering.State is invalid. Value %d is out of range", state)
 	}
 
 	err = g.Description.ExtractFrom(readable)

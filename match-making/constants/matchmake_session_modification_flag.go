@@ -1,7 +1,25 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // MatchmakeSessionModificationFlag indicates the flags set on a gathering
 type MatchmakeSessionModificationFlag uint32
+
+// WriteTo writes the MatchmakeSessionModificationFlag to the given writable
+func (msmf MatchmakeSessionModificationFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(msmf))
+}
+
+// ExtractFrom extracts the MatchmakeSessionModificationFlag value from the given readable
+func (msmf *MatchmakeSessionModificationFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*msmf = MatchmakeSessionModificationFlag(value)
+	return nil
+}
 
 func (msmf MatchmakeSessionModificationFlag) HasFlag(flag MatchmakeSessionModificationFlag) bool {
 	return msmf&flag == flag

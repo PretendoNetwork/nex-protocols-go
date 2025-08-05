@@ -1,7 +1,33 @@
 package constants
 
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
 // MatchmakeSelectionMethod is used to indicate the selection method used when selecting a gathering
 type MatchmakeSelectionMethod uint32
+
+// WriteTo writes the MatchmakeSelectionMethod to the given writable
+func (msm MatchmakeSelectionMethod) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(msm))
+}
+
+// ExtractFrom extracts the MatchmakeSelectionMethod value from the given readable
+func (msm *MatchmakeSelectionMethod) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*msm = MatchmakeSelectionMethod(value)
+	if !msm.IsValid() {
+		return fmt.Errorf("Value %d is out of range", *msm)
+	}
+
+	return nil
+}
 
 // IsValid ensures the value of the MatchmakeSelectionMethod is within
 // the expected range

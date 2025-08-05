@@ -1,7 +1,25 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // GatheringFlags indicates the flags set on a gathering
 type GatheringFlags uint16
+
+// WriteTo writes the GatheringFlags to the given writable
+func (gf GatheringFlags) WriteTo(writable types.Writable) {
+	writable.WriteUInt16LE(uint16(gf))
+}
+
+// ExtractFrom extracts the GatheringFlags value from the given readable
+func (gf *GatheringFlags) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt16LE()
+	if err != nil {
+		return err
+	}
+
+	*gf = GatheringFlags(value)
+	return nil
+}
 
 func (gf GatheringFlags) HasFlag(flag GatheringFlags) bool {
 	return gf&flag == flag

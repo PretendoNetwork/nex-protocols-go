@@ -1,7 +1,33 @@
 package constants
 
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
 // MatchmakeSystemType represents the method of matchmaking being used
 type MatchmakeSystemType uint32
+
+// WriteTo writes the MatchmakeSystemType to the given writable
+func (mst MatchmakeSystemType) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(mst))
+}
+
+// ExtractFrom extracts the MatchmakeSystemType value from the given readable
+func (mst *MatchmakeSystemType) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*mst = MatchmakeSystemType(value)
+	if !mst.IsValid() {
+		return fmt.Errorf("Value %d is out of range", *mst)
+	}
+
+	return nil
+}
 
 // IsValid ensures the value of the MatchmakeSystemType is within
 // the expected range

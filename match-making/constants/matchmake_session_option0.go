@@ -1,9 +1,27 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // MatchmakeSessionOption0 has an unknown use.
 // Seems related to whether or not the delay the response for "Auto"
 // matchmaking methods, for some reason?
-type MatchmakeSessionOption0 int64
+type MatchmakeSessionOption0 uint32
+
+// WriteTo writes the MatchmakeSessionOption0 to the given writable
+func (mso MatchmakeSessionOption0) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(mso))
+}
+
+// ExtractFrom extracts the MatchmakeSessionOption0 value from the given readable
+func (mso *MatchmakeSessionOption0) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*mso = MatchmakeSessionOption0(value)
+	return nil
+}
 
 func (mso MatchmakeSessionOption0) HasFlag(flag MatchmakeSessionOption0) bool {
 	return mso&flag == flag

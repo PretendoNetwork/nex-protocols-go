@@ -22,7 +22,7 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) WriteTo(writable types.Writ
 	contentWritable := writable.CopyNew()
 
 	fmsbpp.PrincipalIDList.WriteTo(contentWritable)
-	types.UInt32(fmsbpp.ResultOptions).WriteTo(contentWritable)
+	fmsbpp.ResultOptions.WriteTo(contentWritable)
 	fmsbpp.BlockListParam.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
@@ -46,12 +46,10 @@ func (fmsbpp *FindMatchmakeSessionByParticipantParam) ExtractFrom(readable types
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.PrincipalIDList. %s", err.Error())
 	}
 
-	resultOptions, err := readable.ReadUInt32LE()
+	err = fmsbpp.ResultOptions.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.ResultOptions. %s", err.Error())
 	}
-
-	fmsbpp.ResultOptions = constants.FindMatchmakeSessionResultOption(resultOptions)
 
 	err = fmsbpp.BlockListParam.ExtractFrom(readable)
 	if err != nil {

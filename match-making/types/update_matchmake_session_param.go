@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 // UpdateMatchmakeSessionParam is a type within the Matchmaking protocol
 type UpdateMatchmakeSessionParam struct {
 	types.Structure
 	GID                 types.UInt32
-	ModificationFlag    types.UInt32
+	ModificationFlag    constants.MatchmakeSessionModificationFlag
 	Attributes          types.List[types.UInt32]
 	OpenParticipation   types.Bool
 	ApplicationBuffer   types.Buffer
@@ -24,9 +25,9 @@ type UpdateMatchmakeSessionParam struct {
 	Description         types.String
 	MinParticipants     types.UInt16
 	MaxParticipants     types.UInt16
-	MatchmakeSystemType types.UInt32
-	ParticipationPolicy types.UInt32
-	PolicyArgument      types.UInt32
+	MatchmakeSystemType constants.MatchmakeSystemType
+	ParticipationPolicy constants.ParticipationPolicy
+	PolicyArgument      constants.PolicyArgument
 	Codeword            types.String
 }
 
@@ -162,7 +163,7 @@ func (umsp UpdateMatchmakeSessionParam) Copy() types.RVType {
 
 	copied.StructureVersion = umsp.StructureVersion
 	copied.GID = umsp.GID.Copy().(types.UInt32)
-	copied.ModificationFlag = umsp.ModificationFlag.Copy().(types.UInt32)
+	copied.ModificationFlag = umsp.ModificationFlag
 	copied.Attributes = umsp.Attributes.Copy().(types.List[types.UInt32])
 	copied.OpenParticipation = umsp.OpenParticipation.Copy().(types.Bool)
 	copied.ApplicationBuffer = umsp.ApplicationBuffer.Copy().(types.Buffer)
@@ -174,9 +175,9 @@ func (umsp UpdateMatchmakeSessionParam) Copy() types.RVType {
 	copied.Description = umsp.Description.Copy().(types.String)
 	copied.MinParticipants = umsp.MinParticipants.Copy().(types.UInt16)
 	copied.MaxParticipants = umsp.MaxParticipants.Copy().(types.UInt16)
-	copied.MatchmakeSystemType = umsp.MatchmakeSystemType.Copy().(types.UInt32)
-	copied.ParticipationPolicy = umsp.ParticipationPolicy.Copy().(types.UInt32)
-	copied.PolicyArgument = umsp.PolicyArgument.Copy().(types.UInt32)
+	copied.MatchmakeSystemType = umsp.MatchmakeSystemType
+	copied.ParticipationPolicy = umsp.ParticipationPolicy
+	copied.PolicyArgument = umsp.PolicyArgument
 	copied.Codeword = umsp.Codeword.Copy().(types.String)
 
 	return copied
@@ -198,7 +199,7 @@ func (umsp UpdateMatchmakeSessionParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !umsp.ModificationFlag.Equals(other.ModificationFlag) {
+	if umsp.ModificationFlag != other.ModificationFlag {
 		return false
 	}
 
@@ -246,15 +247,15 @@ func (umsp UpdateMatchmakeSessionParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !umsp.MatchmakeSystemType.Equals(other.MatchmakeSystemType) {
+	if umsp.MatchmakeSystemType != other.MatchmakeSystemType {
 		return false
 	}
 
-	if !umsp.ParticipationPolicy.Equals(other.ParticipationPolicy) {
+	if umsp.ParticipationPolicy != other.ParticipationPolicy {
 		return false
 	}
 
-	if !umsp.PolicyArgument.Equals(other.PolicyArgument) {
+	if umsp.PolicyArgument != other.PolicyArgument {
 		return false
 	}
 
@@ -314,7 +315,7 @@ func (umsp UpdateMatchmakeSessionParam) FormatToString(indentationLevel int) str
 func NewUpdateMatchmakeSessionParam() UpdateMatchmakeSessionParam {
 	return UpdateMatchmakeSessionParam{
 		GID:                 types.NewUInt32(0),
-		ModificationFlag:    types.NewUInt32(0),
+		ModificationFlag:    constants.MatchmakeSessionModificationFlagNone,
 		Attributes:          types.NewList[types.UInt32](),
 		OpenParticipation:   types.NewBool(false),
 		ApplicationBuffer:   types.NewBuffer(nil),
@@ -326,9 +327,9 @@ func NewUpdateMatchmakeSessionParam() UpdateMatchmakeSessionParam {
 		Description:         types.NewString(""),
 		MinParticipants:     types.NewUInt16(0),
 		MaxParticipants:     types.NewUInt16(0),
-		MatchmakeSystemType: types.NewUInt32(0),
-		ParticipationPolicy: types.NewUInt32(0),
-		PolicyArgument:      types.NewUInt32(0),
+		MatchmakeSystemType: constants.MatchmakeSystemTypeInvalid,
+		ParticipationPolicy: constants.ParticipationPolicy(0), // TODO - Unsure what the real values are for these
+		PolicyArgument:      constants.PolicyArgument(0),      // TODO - Unsure what the real values are for these
 		Codeword:            types.NewString(""),
 	}
 

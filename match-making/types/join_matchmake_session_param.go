@@ -7,6 +7,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 // JoinMatchmakeSessionParam is a type within the Matchmaking protocol
@@ -16,7 +17,7 @@ type JoinMatchmakeSessionParam struct {
 	AdditionalParticipants       types.List[types.PID]
 	GIDForParticipationCheck     types.UInt32
 	JoinMatchmakeSessionOption   types.UInt32
-	JoinMatchmakeSessionBehavior types.UInt8
+	JoinMatchmakeSessionBehavior constants.JoinMatchmakeSessionBehavior
 	StrUserPassword              types.String
 	StrSystemPassword            types.String
 	JoinMessage                  types.String
@@ -36,7 +37,7 @@ func (jmsp JoinMatchmakeSessionParam) WriteTo(writable types.Writable) {
 	jmsp.AdditionalParticipants.WriteTo(contentWritable)
 	jmsp.GIDForParticipationCheck.WriteTo(contentWritable)
 	jmsp.JoinMatchmakeSessionOption.WriteTo(contentWritable)
-	jmsp.JoinMatchmakeSessionBehavior.WriteTo(contentWritable)
+	types.UInt8(jmsp.JoinMatchmakeSessionBehavior).WriteTo(contentWritable)
 	jmsp.StrUserPassword.WriteTo(contentWritable)
 	jmsp.StrSystemPassword.WriteTo(contentWritable)
 	jmsp.JoinMessage.WriteTo(contentWritable)
@@ -89,9 +90,14 @@ func (jmsp *JoinMatchmakeSessionParam) ExtractFrom(readable types.Readable) erro
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionOption. %s", err.Error())
 	}
 
-	err = jmsp.JoinMatchmakeSessionBehavior.ExtractFrom(readable)
+	joinMatchmakeSessionBehavior, err := readable.ReadUInt8()
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior. %s", err.Error())
+	}
+
+	jmsp.JoinMatchmakeSessionBehavior = constants.JoinMatchmakeSessionBehavior(joinMatchmakeSessionBehavior)
+	if !jmsp.JoinMatchmakeSessionBehavior.IsValid() {
+		return fmt.Errorf("JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior is invalid. Value %d is out of range", joinMatchmakeSessionBehavior)
 	}
 
 	err = jmsp.StrUserPassword.ExtractFrom(readable)
@@ -140,7 +146,7 @@ func (jmsp JoinMatchmakeSessionParam) Copy() types.RVType {
 	copied.AdditionalParticipants = jmsp.AdditionalParticipants.Copy().(types.List[types.PID])
 	copied.GIDForParticipationCheck = jmsp.GIDForParticipationCheck.Copy().(types.UInt32)
 	copied.JoinMatchmakeSessionOption = jmsp.JoinMatchmakeSessionOption.Copy().(types.UInt32)
-	copied.JoinMatchmakeSessionBehavior = jmsp.JoinMatchmakeSessionBehavior.Copy().(types.UInt8)
+	copied.JoinMatchmakeSessionBehavior = jmsp.JoinMatchmakeSessionBehavior
 	copied.StrUserPassword = jmsp.StrUserPassword.Copy().(types.String)
 	copied.StrSystemPassword = jmsp.StrSystemPassword.Copy().(types.String)
 	copied.JoinMessage = jmsp.JoinMessage.Copy().(types.String)
@@ -179,7 +185,7 @@ func (jmsp JoinMatchmakeSessionParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !jmsp.JoinMatchmakeSessionBehavior.Equals(other.JoinMatchmakeSessionBehavior) {
+	if jmsp.JoinMatchmakeSessionBehavior != other.JoinMatchmakeSessionBehavior {
 		return false
 	}
 
@@ -256,7 +262,7 @@ func NewJoinMatchmakeSessionParam() JoinMatchmakeSessionParam {
 		AdditionalParticipants:       types.NewList[types.PID](),
 		GIDForParticipationCheck:     types.NewUInt32(0),
 		JoinMatchmakeSessionOption:   types.NewUInt32(0),
-		JoinMatchmakeSessionBehavior: types.NewUInt8(0),
+		JoinMatchmakeSessionBehavior: constants.JoinMatchmakeSessionBehaviorJoinMyself,
 		StrUserPassword:              types.NewString(""),
 		StrSystemPassword:            types.NewString(""),
 		JoinMessage:                  types.NewString(""),

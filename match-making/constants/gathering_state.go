@@ -14,7 +14,7 @@ func (pp GatheringState) IsValid() bool {
 	// * Kinda jank but whatever, screw it. Once we know all the
 	// * real values of this enum we can do it like the others
 	switch pp {
-	case GatheringStateClosed:
+	case GatheringStateLocked:
 	case GatheringStateStarted:
 	case GatheringStateFinished:
 		return true
@@ -24,8 +24,9 @@ func (pp GatheringState) IsValid() bool {
 }
 
 const (
-	// GatheringStateClosed indicates that a gathering is closed, and no new participants may join.
-	GatheringStateClosed GatheringState = 1
+	// GatheringStateLocked indicates that a gathering is locked, and no new participants may join
+	// Name assumed from MatchmakeSessionSearchCriteria.ExcludeLocked.
+	GatheringStateLocked GatheringState = 1
 
 	// GatheringStateStarted indicates that the gatherings session has begun.
 	GatheringStateStarted GatheringState = 2

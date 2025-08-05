@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 // FindMatchmakeSessionByParticipantParam is a type within the Matchmaking protocol
 type FindMatchmakeSessionByParticipantParam struct {
 	types.Structure
 	PrincipalIDList types.List[types.PID]
-	ResultOptions   types.UInt32
+	ResultOptions   constants.FindMatchmakeSessionResultOption
 	BlockListParam  MatchmakeBlockListParam
 }
 
@@ -21,7 +22,7 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) WriteTo(writable types.Writ
 	contentWritable := writable.CopyNew()
 
 	fmsbpp.PrincipalIDList.WriteTo(contentWritable)
-	fmsbpp.ResultOptions.WriteTo(contentWritable)
+	types.UInt32(fmsbpp.ResultOptions).WriteTo(contentWritable)
 	fmsbpp.BlockListParam.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
@@ -45,10 +46,12 @@ func (fmsbpp *FindMatchmakeSessionByParticipantParam) ExtractFrom(readable types
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.PrincipalIDList. %s", err.Error())
 	}
 
-	err = fmsbpp.ResultOptions.ExtractFrom(readable)
+	resultOptions, err := readable.ReadUInt32LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.ResultOptions. %s", err.Error())
 	}
+
+	fmsbpp.ResultOptions = constants.FindMatchmakeSessionResultOption(resultOptions)
 
 	err = fmsbpp.BlockListParam.ExtractFrom(readable)
 	if err != nil {
@@ -64,7 +67,7 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) Copy() types.RVType {
 
 	copied.StructureVersion = fmsbpp.StructureVersion
 	copied.PrincipalIDList = fmsbpp.PrincipalIDList.Copy().(types.List[types.PID])
-	copied.ResultOptions = fmsbpp.ResultOptions.Copy().(types.UInt32)
+	copied.ResultOptions = fmsbpp.ResultOptions
 	copied.BlockListParam = fmsbpp.BlockListParam.Copy().(MatchmakeBlockListParam)
 
 	return copied
@@ -86,7 +89,7 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) Equals(o types.RVType) bool
 		return false
 	}
 
-	if !fmsbpp.ResultOptions.Equals(other.ResultOptions) {
+	if fmsbpp.ResultOptions != other.ResultOptions {
 		return false
 	}
 
@@ -132,7 +135,7 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) FormatToString(indentationL
 func NewFindMatchmakeSessionByParticipantParam() FindMatchmakeSessionByParticipantParam {
 	return FindMatchmakeSessionByParticipantParam{
 		PrincipalIDList: types.NewList[types.PID](),
-		ResultOptions:   types.NewUInt32(0),
+		ResultOptions:   constants.FindMatchmakeSessionResultOptionNone,
 		BlockListParam:  NewMatchmakeBlockListParam(),
 	}
 

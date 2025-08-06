@@ -7,13 +7,14 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/notifications/constants"
 )
 
 // NotificationEvent is a type within the Notifications protocol
 type NotificationEvent struct {
 	types.Structure
 	PIDSource types.PID
-	Type      types.UInt32
+	Type      constants.NotificationEvents
 	Param1    types.UInt64 // * In NEX 3 this field is a UInt32. Storing as a UInt64
 	Param2    types.UInt64 // * In NEX 3 this field is a UInt32. Storing as a UInt64
 	StrParam  types.String
@@ -147,7 +148,7 @@ func (ne NotificationEvent) Copy() types.RVType {
 
 	copied.StructureVersion = ne.StructureVersion
 	copied.PIDSource = ne.PIDSource.Copy().(types.PID)
-	copied.Type = ne.Type.Copy().(types.UInt32)
+	copied.Type = ne.Type
 	copied.Param1 = ne.Param1.Copy().(types.UInt64)
 	copied.Param2 = ne.Param2.Copy().(types.UInt64)
 	copied.StrParam = ne.StrParam.Copy().(types.String)
@@ -173,7 +174,7 @@ func (ne NotificationEvent) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !ne.Type.Equals(other.Type) {
+	if ne.Type != other.Type {
 		return false
 	}
 
@@ -239,7 +240,7 @@ func (ne NotificationEvent) FormatToString(indentationLevel int) string {
 func NewNotificationEvent() NotificationEvent {
 	return NotificationEvent{
 		PIDSource: types.NewPID(0),
-		Type:      types.NewUInt32(0),
+		Type:      constants.NotificationEvents(0), // TODO - Unsure what this default actually is
 		Param1:    types.NewUInt64(0),
 		Param2:    types.NewUInt64(0),
 		StrParam:  types.NewString(""),

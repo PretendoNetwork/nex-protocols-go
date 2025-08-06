@@ -1,8 +1,6 @@
 package constants
 
 import (
-	"fmt"
-
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -22,17 +20,7 @@ func (amo *AutoMatchmakeOption) ExtractFrom(readable types.Readable) error {
 	}
 
 	*amo = AutoMatchmakeOption(value)
-	if !amo.IsValid() {
-		return fmt.Errorf("Value %d is out of range", *amo)
-	}
-
 	return nil
-}
-
-// IsValid ensures the value of the AutoMatchmakeOption is within
-// the expected range
-func (amo AutoMatchmakeOption) IsValid() bool {
-	return amo >= AutoMatchmakeOptionNone && amo <= AutoMatchmakeOptionUniqueGatheringByCodeword
 }
 
 const (

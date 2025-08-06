@@ -1,8 +1,6 @@
 package constants
 
 import (
-	"fmt"
-
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -27,26 +25,7 @@ func (gs *GatheringState) ExtractFrom(readable types.Readable) error {
 	}
 
 	*gs = GatheringState(value)
-	if !gs.IsValid() {
-		return fmt.Errorf("Value %d is out of range", *gs)
-	}
-
 	return nil
-}
-
-// IsValid ensures the value of the GatheringState is within
-// the expected range
-func (gs GatheringState) IsValid() bool {
-	// * Kinda jank but whatever, screw it. Once we know all the
-	// * real values of this enum we can do it like the others
-	switch gs {
-	case GatheringStateLocked:
-	case GatheringStateStarted:
-	case GatheringStateFinished:
-		return true
-	}
-
-	return false
 }
 
 const (

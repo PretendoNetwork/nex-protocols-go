@@ -1,8 +1,6 @@
 package constants
 
 import (
-	"fmt"
-
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -22,17 +20,7 @@ func (pgt *PersistentGatheringType) ExtractFrom(readable types.Readable) error {
 	}
 
 	*pgt = PersistentGatheringType(value)
-	if !pgt.IsValid() {
-		return fmt.Errorf("Value %d is out of range", *pgt)
-	}
-
 	return nil
-}
-
-// IsValid ensures the value of the PersistentGatheringType is within
-// the expected range
-func (pgt PersistentGatheringType) IsValid() bool {
-	return pgt >= PersistentGatheringTypeOpen && pgt <= PersistentGatheringTypeOfficial
 }
 
 const (

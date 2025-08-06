@@ -1,8 +1,6 @@
 package constants
 
 import (
-	"fmt"
-
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -22,17 +20,7 @@ func (msm *MatchmakeSelectionMethod) ExtractFrom(readable types.Readable) error 
 	}
 
 	*msm = MatchmakeSelectionMethod(value)
-	if !msm.IsValid() {
-		return fmt.Errorf("Value %d is out of range", *msm)
-	}
-
 	return nil
-}
-
-// IsValid ensures the value of the MatchmakeSelectionMethod is within
-// the expected range
-func (msm MatchmakeSelectionMethod) IsValid() bool {
-	return msm >= MatchmakeSelectionMethodRandom && msm <= MatchmakeSelectionMethodScoreBased
 }
 
 const (

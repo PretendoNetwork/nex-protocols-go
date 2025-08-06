@@ -1,8 +1,6 @@
 package constants
 
 import (
-	"fmt"
-
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -25,27 +23,7 @@ func (pp *ParticipationPolicy) ExtractFrom(readable types.Readable) error {
 	}
 
 	*pp = ParticipationPolicy(value)
-	if !pp.IsValid() {
-		return fmt.Errorf("Value %d is out of range", *pp)
-	}
-
 	return nil
-}
-
-// IsValid ensures the value of the ParticipationPolicy is within
-// the expected range
-func (pp ParticipationPolicy) IsValid() bool {
-	// * Kinda jank but whatever, screw it. Once we know all the
-	// * real values of this enum we can do it like the others
-	switch pp {
-	case ParticipationPolicyOpenParticipation:
-	case ParticipationPolicyNintendoOpenParticipation:
-	case ParticipationPolicyCommunity:
-	case ParticipationPolicyFriendsOnly:
-		return true
-	}
-
-	return false
 }
 
 const (

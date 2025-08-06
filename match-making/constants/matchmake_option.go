@@ -1,8 +1,6 @@
 package constants
 
 import (
-	"fmt"
-
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -22,17 +20,7 @@ func (mo *MatchmakeOption) ExtractFrom(readable types.Readable) error {
 	}
 
 	*mo = MatchmakeOption(value)
-	if !mo.IsValid() {
-		return fmt.Errorf("Value %d is out of range", *mo)
-	}
-
 	return nil
-}
-
-// IsValid ensures the value of the MatchmakeOption is within
-// the expected range
-func (mo MatchmakeOption) IsValid() bool {
-	return mo >= MatchmakeOptionNone && mo <= MatchmakeOptionReserved1
 }
 
 const (

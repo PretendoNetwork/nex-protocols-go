@@ -1,8 +1,6 @@
 package constants
 
 import (
-	"fmt"
-
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -22,17 +20,7 @@ func (mst *MatchmakeSystemType) ExtractFrom(readable types.Readable) error {
 	}
 
 	*mst = MatchmakeSystemType(value)
-	if !mst.IsValid() {
-		return fmt.Errorf("Value %d is out of range", *mst)
-	}
-
 	return nil
-}
-
-// IsValid ensures the value of the MatchmakeSystemType is within
-// the expected range
-func (mst MatchmakeSystemType) IsValid() bool {
-	return mst >= MatchmakeSystemTypeInvalid && mst <= MatchmakeSystemTypePersistentGathering
 }
 
 const (

@@ -1,8 +1,6 @@
 package constants
 
 import (
-	"fmt"
-
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -22,17 +20,7 @@ func (jmsb *JoinMatchmakeSessionBehavior) ExtractFrom(readable types.Readable) e
 	}
 
 	*jmsb = JoinMatchmakeSessionBehavior(value)
-	if !jmsb.IsValid() {
-		return fmt.Errorf("Value %d is out of range", *jmsb)
-	}
-
 	return nil
-}
-
-// IsValid ensures the value of the JoinMatchmakeSessionBehavior is within
-// the expected range
-func (jmsb JoinMatchmakeSessionBehavior) IsValid() bool {
-	return jmsb >= JoinMatchmakeSessionBehaviorJoinMyself && jmsb <= JoinMatchmakeSessionBehaviorImAlreadyJoined
 }
 
 const (

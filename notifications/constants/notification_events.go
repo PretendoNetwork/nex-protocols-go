@@ -280,4 +280,15 @@ const (
 	//
 	// Parameters unknown.
 	NotificationEventsUserStatusUpdatedEvent NotificationEvents = 128
+
+	// NotificationEventsEagleAddress is delivered to all clients of a session when the Eagle
+	// server is used and is ready to be connected to. For details of the Eagle protocol see:
+	// https://nintendo-wiki.pretendo.network/docs/switch/eagle/
+	//
+	// The parameters are:
+	//
+	// - m_pidSource: The secure server (257049437023956657 for the official Switch servers)
+	// - m_uiParam1: The gathering ID
+	// - m_mapParam: A map with 2 keys, "url" (the address of the Eagle server) and "token" (connection token)
+	NotificationEventsEagleAddress NotificationEvents = 200
 )

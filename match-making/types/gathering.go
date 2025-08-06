@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 // Gathering is a type within the Matchmaking protocol
@@ -16,10 +17,10 @@ type Gathering struct {
 	HostPID             types.PID
 	MinimumParticipants types.UInt16
 	MaximumParticipants types.UInt16
-	ParticipationPolicy types.UInt32
-	PolicyArgument      types.UInt32
-	Flags               types.UInt32
-	State               types.UInt32
+	ParticipationPolicy constants.ParticipationPolicy
+	PolicyArgument      constants.PolicyArgument
+	Flags               constants.GatheringFlags
+	State               constants.GatheringState
 	Description         types.String
 }
 
@@ -127,10 +128,10 @@ func (g Gathering) Copy() types.RVType {
 	copied.HostPID = g.HostPID.Copy().(types.PID)
 	copied.MinimumParticipants = g.MinimumParticipants.Copy().(types.UInt16)
 	copied.MaximumParticipants = g.MaximumParticipants.Copy().(types.UInt16)
-	copied.ParticipationPolicy = g.ParticipationPolicy.Copy().(types.UInt32)
-	copied.PolicyArgument = g.PolicyArgument.Copy().(types.UInt32)
-	copied.Flags = g.Flags.Copy().(types.UInt32)
-	copied.State = g.State.Copy().(types.UInt32)
+	copied.ParticipationPolicy = g.ParticipationPolicy
+	copied.PolicyArgument = g.PolicyArgument
+	copied.Flags = g.Flags
+	copied.State = g.State
 	copied.Description = g.Description.Copy().(types.String)
 
 	return copied
@@ -168,19 +169,19 @@ func (g Gathering) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !g.ParticipationPolicy.Equals(other.ParticipationPolicy) {
+	if g.ParticipationPolicy != other.ParticipationPolicy {
 		return false
 	}
 
-	if !g.PolicyArgument.Equals(other.PolicyArgument) {
+	if g.PolicyArgument != other.PolicyArgument {
 		return false
 	}
 
-	if !g.Flags.Equals(other.Flags) {
+	if g.Flags != other.Flags {
 		return false
 	}
 
-	if !g.State.Equals(other.State) {
+	if g.State != other.State {
 		return false
 	}
 
@@ -237,10 +238,10 @@ func NewGathering() Gathering {
 		HostPID:             types.NewPID(0),
 		MinimumParticipants: types.NewUInt16(0),
 		MaximumParticipants: types.NewUInt16(0),
-		ParticipationPolicy: types.NewUInt32(0),
-		PolicyArgument:      types.NewUInt32(0),
-		Flags:               types.NewUInt32(0),
-		State:               types.NewUInt32(0),
+		ParticipationPolicy: constants.ParticipationPolicy(1), // TODO - This is what the nn::nex::Gathering::Reset() function sets this to in Xenoblade. I have no idea what this value actually means
+		PolicyArgument:      constants.PolicyArgument(0),      // TODO - This is what the nn::nex::Gathering::Reset() function sets this to in Xenoblade. I have no idea what this value actually means
+		Flags:               constants.GatheringFlagNone,
+		State:               constants.GatheringState(0), // TODO - This is what the nn::nex::Gathering::Reset() function sets this to in Xenoblade. I have no idea what this value actually means
 		Description:         types.NewString(""),
 	}
 

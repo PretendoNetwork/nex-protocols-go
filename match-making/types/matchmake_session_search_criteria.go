@@ -7,6 +7,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 // MatchmakeSessionSearchCriteria is a type within the Matchmaking protocol
@@ -16,18 +17,18 @@ type MatchmakeSessionSearchCriteria struct {
 	GameMode                 types.String
 	MinParticipants          types.String // * NEX v2.0.0
 	MaxParticipants          types.String // * NEX v2.0.0
-	MatchmakeSystemType      types.String
+	MatchmakeSystemType      constants.MatchmakeSystemTypeString
 	VacantOnly               types.Bool
 	ExcludeLocked            types.Bool
 	ExcludeNonHostPID        types.Bool
-	SelectionMethod          types.UInt32      // * NEX v3.0.0
-	VacantParticipants       types.UInt16      // * NEX v3.4.0
-	MatchmakeParam           MatchmakeParam    // * NEX v3.6.0
-	ExcludeUserPasswordSet   types.Bool        // * NEX v3.7.0
-	ExcludeSystemPasswordSet types.Bool        // * NEX v3.7.0
-	ReferGID                 types.UInt32      // * NEX v3.8.0
-	CodeWord                 types.String      // * NEX v4.0.0
-	ResultRange              types.ResultRange // * NEX v4.0.0
+	SelectionMethod          constants.MatchmakeSelectionMethod // * NEX v3.0.0
+	VacantParticipants       types.UInt16                       // * NEX v3.4.0
+	MatchmakeParam           MatchmakeParam                     // * NEX v3.6.0
+	ExcludeUserPasswordSet   types.Bool                         // * NEX v3.7.0
+	ExcludeSystemPasswordSet types.Bool                         // * NEX v3.7.0
+	ReferGID                 types.UInt32                       // * NEX v3.8.0
+	CodeWord                 types.String                       // * NEX v4.0.0
+	ResultRange              types.ResultRange                  // * NEX v4.0.0
 }
 
 // WriteTo writes the MatchmakeSessionSearchCriteria to the given writable
@@ -216,11 +217,11 @@ func (mssc MatchmakeSessionSearchCriteria) Copy() types.RVType {
 	copied.GameMode = mssc.GameMode.Copy().(types.String)
 	copied.MinParticipants = mssc.MinParticipants.Copy().(types.String)
 	copied.MaxParticipants = mssc.MaxParticipants.Copy().(types.String)
-	copied.MatchmakeSystemType = mssc.MatchmakeSystemType.Copy().(types.String)
+	copied.MatchmakeSystemType = mssc.MatchmakeSystemType
 	copied.VacantOnly = mssc.VacantOnly.Copy().(types.Bool)
 	copied.ExcludeLocked = mssc.ExcludeLocked.Copy().(types.Bool)
 	copied.ExcludeNonHostPID = mssc.ExcludeNonHostPID.Copy().(types.Bool)
-	copied.SelectionMethod = mssc.SelectionMethod.Copy().(types.UInt32)
+	copied.SelectionMethod = mssc.SelectionMethod
 	copied.VacantParticipants = mssc.VacantParticipants.Copy().(types.UInt16)
 	copied.MatchmakeParam = mssc.MatchmakeParam.Copy().(MatchmakeParam)
 	copied.ExcludeUserPasswordSet = mssc.ExcludeUserPasswordSet.Copy().(types.Bool)
@@ -260,7 +261,7 @@ func (mssc MatchmakeSessionSearchCriteria) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !mssc.MatchmakeSystemType.Equals(other.MatchmakeSystemType) {
+	if mssc.MatchmakeSystemType != other.MatchmakeSystemType {
 		return false
 	}
 
@@ -276,7 +277,7 @@ func (mssc MatchmakeSessionSearchCriteria) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !mssc.SelectionMethod.Equals(other.SelectionMethod) {
+	if mssc.SelectionMethod != other.SelectionMethod {
 		return false
 	}
 
@@ -362,11 +363,11 @@ func NewMatchmakeSessionSearchCriteria() MatchmakeSessionSearchCriteria {
 		GameMode:                 types.NewString(""),
 		MinParticipants:          types.NewString(""),
 		MaxParticipants:          types.NewString(""),
-		MatchmakeSystemType:      types.NewString(""),
+		MatchmakeSystemType:      constants.MatchmakeSystemTypeStringMissing,
 		VacantOnly:               types.NewBool(false),
 		ExcludeLocked:            types.NewBool(false),
 		ExcludeNonHostPID:        types.NewBool(false),
-		SelectionMethod:          types.NewUInt32(0),
+		SelectionMethod:          constants.MatchmakeSelectionMethodRandom,
 		VacantParticipants:       types.NewUInt16(0),
 		MatchmakeParam:           NewMatchmakeParam(),
 		ExcludeUserPasswordSet:   types.NewBool(false),

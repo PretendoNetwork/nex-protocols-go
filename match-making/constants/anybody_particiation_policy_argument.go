@@ -1,0 +1,16 @@
+package constants
+
+// AnybodyParticipationPolicyArgument seems to determine whether or not to
+// close participation when the gathering owner changes when MatchmakeSystemTypeAnybody
+// is used?
+type AnybodyParticipationPolicyArgument = PolicyArgument
+
+const (
+	// AnybodyParticipationPolicyArgumentWithoutClose means that participation should not
+	// close when a new owner is selected.
+	AnybodyParticipationPolicyArgumentWithoutClose AnybodyParticipationPolicyArgument = iota
+
+	// AnybodyParticipationPolicyArgumentCloseOnOwnerMigration means that participation should
+	// close when a new owner is selected.
+	AnybodyParticipationPolicyArgumentCloseOnOwnerMigration
+)

@@ -11,24 +11,24 @@ import (
 // SubscriberContent is a type within the Shop protocol
 type SubscriberContent struct {
 	types.Structure
-	Unknown1 types.UInt64
-	Unknown2 types.String
-	Unknown3 types.Buffer
-	Unknown4 types.UInt64
-	Unknown5 types.List[types.String]
-	Unknown6 types.DateTime
+	ContentID types.UInt64
+	Message   types.String
+	Binary    types.QBuffer
+	PID       types.PID
+	Topics    types.List[types.String]
+	PostTime  types.DateTime
 }
 
 // WriteTo writes the SubscriberContent to the given writable
 func (sc SubscriberContent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sc.Unknown1.WriteTo(contentWritable)
-	sc.Unknown2.WriteTo(contentWritable)
-	sc.Unknown3.WriteTo(contentWritable)
-	sc.Unknown4.WriteTo(contentWritable)
-	sc.Unknown5.WriteTo(contentWritable)
-	sc.Unknown6.WriteTo(contentWritable)
+	sc.ContentID.WriteTo(contentWritable)
+	sc.Message.WriteTo(contentWritable)
+	sc.Binary.WriteTo(contentWritable)
+	sc.PID.WriteTo(contentWritable)
+	sc.Topics.WriteTo(contentWritable)
+	sc.PostTime.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 
@@ -46,34 +46,34 @@ func (sc *SubscriberContent) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract SubscriberContent header. %s", err.Error())
 	}
 
-	err = sc.Unknown1.ExtractFrom(readable)
+	err = sc.ContentID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown1. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.ContentID. %s", err.Error())
 	}
 
-	err = sc.Unknown2.ExtractFrom(readable)
+	err = sc.Message.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown2. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Message. %s", err.Error())
 	}
 
-	err = sc.Unknown3.ExtractFrom(readable)
+	err = sc.Binary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown3. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Binary. %s", err.Error())
 	}
 
-	err = sc.Unknown4.ExtractFrom(readable)
+	err = sc.PID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown4. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.PID. %s", err.Error())
 	}
 
-	err = sc.Unknown5.ExtractFrom(readable)
+	err = sc.Topics.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown5. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Topics. %s", err.Error())
 	}
 
-	err = sc.Unknown6.ExtractFrom(readable)
+	err = sc.PostTime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown6. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.PostTime. %s", err.Error())
 	}
 
 	return nil
@@ -84,12 +84,12 @@ func (sc SubscriberContent) Copy() types.RVType {
 	copied := NewSubscriberContent()
 
 	copied.StructureVersion = sc.StructureVersion
-	copied.Unknown1 = sc.Unknown1.Copy().(types.UInt64)
-	copied.Unknown2 = sc.Unknown2.Copy().(types.String)
-	copied.Unknown3 = sc.Unknown3.Copy().(types.Buffer)
-	copied.Unknown4 = sc.Unknown4.Copy().(types.UInt64)
-	copied.Unknown5 = sc.Unknown5.Copy().(types.List[types.String])
-	copied.Unknown6 = sc.Unknown6.Copy().(types.DateTime)
+	copied.ContentID = sc.ContentID.Copy().(types.UInt64)
+	copied.Message = sc.Message.Copy().(types.String)
+	copied.Binary = sc.Binary.Copy().(types.QBuffer)
+	copied.PID = sc.PID.Copy().(types.PID)
+	copied.Topics = sc.Topics.Copy().(types.List[types.String])
+	copied.PostTime = sc.PostTime.Copy().(types.DateTime)
 
 	return copied
 }
@@ -106,27 +106,27 @@ func (sc SubscriberContent) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !sc.Unknown1.Equals(other.Unknown1) {
+	if !sc.ContentID.Equals(other.ContentID) {
 		return false
 	}
 
-	if !sc.Unknown2.Equals(other.Unknown2) {
+	if !sc.Message.Equals(other.Message) {
 		return false
 	}
 
-	if !sc.Unknown3.Equals(other.Unknown3) {
+	if !sc.Binary.Equals(other.Binary) {
 		return false
 	}
 
-	if !sc.Unknown4.Equals(other.Unknown4) {
+	if !sc.PID.Equals(other.PID) {
 		return false
 	}
 
-	if !sc.Unknown5.Equals(other.Unknown5) {
+	if !sc.Topics.Equals(other.Topics) {
 		return false
 	}
 
-	return sc.Unknown6.Equals(other.Unknown6)
+	return sc.PostTime.Equals(other.PostTime)
 }
 
 // CopyRef copies the current value of the SubscriberContent
@@ -156,12 +156,12 @@ func (sc SubscriberContent) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SubscriberContent{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, sc.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, sc.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, sc.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, sc.Unknown4))
-	b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, sc.Unknown5))
-	b.WriteString(fmt.Sprintf("%sUnknown6: %s,\n", indentationValues, sc.Unknown6.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sContentID: %s,\n", indentationValues, sc.ContentID))
+	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, sc.Message))
+	b.WriteString(fmt.Sprintf("%sBinary: %s,\n", indentationValues, sc.Binary))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, sc.PID))
+	b.WriteString(fmt.Sprintf("%sTopics: %s,\n", indentationValues, sc.Topics))
+	b.WriteString(fmt.Sprintf("%sPostTime: %s,\n", indentationValues, sc.PostTime.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -170,12 +170,12 @@ func (sc SubscriberContent) FormatToString(indentationLevel int) string {
 // NewSubscriberContent returns a new SubscriberContent
 func NewSubscriberContent() SubscriberContent {
 	return SubscriberContent{
-		Unknown1: types.NewUInt64(0),
-		Unknown2: types.NewString(""),
-		Unknown3: types.NewBuffer(nil),
-		Unknown4: types.NewUInt64(0),
-		Unknown5: types.NewList[types.String](),
-		Unknown6: types.NewDateTime(0),
+		ContentID: types.NewUInt64(0),
+		Message:   types.NewString(""),
+		Binary:    types.NewQBuffer(nil),
+		PID:       types.NewPID(0),
+		Topics:    types.NewList[types.String](),
+		PostTime:  types.NewDateTime(0),
 	}
 
 }

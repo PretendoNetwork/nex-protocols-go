@@ -25,11 +25,11 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var unknown types.List[types.UInt8]
+	var keys types.List[types.UInt8]
 
-	err := unknown.ExtractFrom(parametersStream)
+	err := keys.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetFriendUserStatuses(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, unknown)
+		_, rmcError := protocol.GetFriendUserStatuses(fmt.Errorf("Failed to read keys from parameters. %s", err.Error()), packet, callID, keys)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 		return
 	}
 
-	rmcMessage, rmcError := protocol.GetFriendUserStatuses(nil, packet, callID, unknown)
+	rmcMessage, rmcError := protocol.GetFriendUserStatuses(nil, packet, callID, keys)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

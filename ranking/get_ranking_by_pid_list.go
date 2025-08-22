@@ -7,6 +7,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/constants"
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/types"
 )
 
@@ -27,7 +28,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var principalIDList types.List[types.PID]
-	var rankingMode types.UInt8
+	var rankingMode constants.RankingMode
 	var category types.UInt32
 	orderParam := ranking_types.NewRankingOrderParam()
 	var uniqueID types.UInt64

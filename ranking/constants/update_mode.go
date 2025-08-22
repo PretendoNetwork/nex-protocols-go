@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // UpdateMode is used by RankingScoreData.UpdateMode to control if worse scores should be discarded or not.
 type UpdateMode uint8
 
@@ -11,3 +13,19 @@ const (
 	// UpdateModeDeleteOld will always overwrite any old score, even if the new one is worse.
 	UpdateModeDeleteOld
 )
+
+// WriteTo writes the UpdateMode to the given writable
+func (um UpdateMode) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(um))
+}
+
+// ExtractFrom extracts the UpdateMode value from the given readable
+func (um *UpdateMode) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*um = UpdateMode(value)
+	return nil
+}

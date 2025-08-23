@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/constants"
 )
 
 // Ranking2CategorySetting is a type within the Ranking2 protocol
@@ -17,7 +18,7 @@ type Ranking2CategorySetting struct {
 	ResetMonth         types.UInt16
 	ResetDay           types.UInt8
 	ResetHour          types.UInt8
-	ResetMode          types.UInt8
+	ResetMode          constants.Ranking2ResetMode
 	MaxSeasonsToGoBack types.UInt8
 	ScoreOrder         types.Bool
 }
@@ -111,7 +112,7 @@ func (rcs Ranking2CategorySetting) Copy() types.RVType {
 	copied.ResetMonth = rcs.ResetMonth.Copy().(types.UInt16)
 	copied.ResetDay = rcs.ResetDay.Copy().(types.UInt8)
 	copied.ResetHour = rcs.ResetHour.Copy().(types.UInt8)
-	copied.ResetMode = rcs.ResetMode.Copy().(types.UInt8)
+	copied.ResetMode = rcs.ResetMode
 	copied.MaxSeasonsToGoBack = rcs.MaxSeasonsToGoBack.Copy().(types.UInt8)
 	copied.ScoreOrder = rcs.ScoreOrder.Copy().(types.Bool)
 
@@ -154,7 +155,7 @@ func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rcs.ResetMode.Equals(other.ResetMode) {
+	if rcs.ResetMode != other.ResetMode {
 		return false
 	}
 
@@ -215,7 +216,7 @@ func NewRanking2CategorySetting() Ranking2CategorySetting {
 		ResetMonth:         types.NewUInt16(0),
 		ResetDay:           types.NewUInt8(0),
 		ResetHour:          types.NewUInt8(0),
-		ResetMode:          types.NewUInt8(0),
+		ResetMode:          constants.Ranking2ResetModeNothing,
 		MaxSeasonsToGoBack: types.NewUInt8(0),
 		ScoreOrder:         types.NewBool(false),
 	}

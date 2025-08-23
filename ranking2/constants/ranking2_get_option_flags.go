@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // Ranking2GetOptionFlags determines what data is returned when requesting common data.
 type Ranking2GetOptionFlags uint32
 
@@ -18,3 +20,19 @@ const (
 	// name of this is unknown.
 	Ranking2GetOptionFlagsMii Ranking2GetOptionFlags = 1
 )
+
+// WriteTo writes the Ranking2GetOptionFlags to the given writable
+func (r2gof Ranking2GetOptionFlags) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(r2gof))
+}
+
+// ExtractFrom extracts the Ranking2GetOptionFlags value from the given readable
+func (r2gof *Ranking2GetOptionFlags) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*r2gof = Ranking2GetOptionFlags(value)
+	return nil
+}

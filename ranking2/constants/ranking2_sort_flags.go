@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // Ranking2SortFlags determines how ranking results should be ordered.
 type Ranking2SortFlags uint32
 
@@ -31,3 +33,19 @@ const (
 	// other user.
 	Ranking2SortFlagsMoveToTopInTie Ranking2SortFlags = 4
 )
+
+// WriteTo writes the Ranking2SortFlags to the given writable
+func (r2sf Ranking2SortFlags) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(r2sf))
+}
+
+// ExtractFrom extracts the Ranking2SortFlags value from the given readable
+func (r2sf *Ranking2SortFlags) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*r2sf = Ranking2SortFlags(value)
+	return nil
+}

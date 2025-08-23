@@ -7,6 +7,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/constants"
 )
 
 func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
@@ -25,7 +26,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var optionFlags types.UInt32
+	var optionFlags constants.Ranking2GetOptionFlags
 	var principalID types.PID
 	var nexUniqueID types.UInt64
 

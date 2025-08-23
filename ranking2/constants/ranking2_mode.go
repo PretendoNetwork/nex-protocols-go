@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // Ranking2Mode determines what rankings to return and how to order them.
 //
 // Modes refer to a "selected user". This user can be either the caller, OR
@@ -33,3 +35,19 @@ const (
 	// Ranking2ModeMax is the max value for the Ranking2Mode enum.
 	Ranking2ModeMax Ranking2Mode = 3
 )
+
+// WriteTo writes the Ranking2Mode to the given writable
+func (r2m Ranking2Mode) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(r2m))
+}
+
+// ExtractFrom extracts the Ranking2Mode value from the given readable
+func (r2m *Ranking2Mode) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*r2m = Ranking2Mode(value)
+	return nil
+}

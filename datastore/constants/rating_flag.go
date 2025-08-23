@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // RatingFlag indicates how the server should handle
 // user ratings for object rating slots
 type RatingFlag uint8
@@ -23,3 +25,19 @@ const (
 	// tries to rate an object they own, DataStore::OperationNotAllowed is thrown
 	RatingFlagDisableSelfRating RatingFlag = 0x10
 )
+
+// WriteTo writes the RatingFlag to the given writable
+func (rf RatingFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(rf))
+}
+
+// ExtractFrom extracts the RatingFlag value from the given readable
+func (rf *RatingFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*rf = RatingFlag(value)
+	return nil
+}

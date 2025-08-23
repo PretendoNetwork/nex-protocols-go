@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreChangeMetaParam is a type within the DataStore protocol
 type DataStoreChangeMetaParam struct {
 	types.Structure
 	DataID            types.UInt64
-	ModifiesFlag      types.UInt32
+	ModifiesFlag      constants.ModificationFlag
 	Name              types.String
 	Permission        DataStorePermission
 	DelPermission     DataStorePermission
@@ -22,7 +23,7 @@ type DataStoreChangeMetaParam struct {
 	UpdatePassword    types.UInt64
 	ReferredCnt       types.UInt32
 	DataType          types.UInt16
-	Status            types.UInt8
+	Status            constants.DataStatus
 	CompareParam      DataStoreChangeMetaCompareParam
 	PersistenceTarget DataStorePersistenceTarget // * Revision 1
 }
@@ -146,7 +147,7 @@ func (dscmp DataStoreChangeMetaParam) Copy() types.RVType {
 
 	copied.StructureVersion = dscmp.StructureVersion
 	copied.DataID = dscmp.DataID.Copy().(types.UInt64)
-	copied.ModifiesFlag = dscmp.ModifiesFlag.Copy().(types.UInt32)
+	copied.ModifiesFlag = dscmp.ModifiesFlag
 	copied.Name = dscmp.Name.Copy().(types.String)
 	copied.Permission = dscmp.Permission.Copy().(DataStorePermission)
 	copied.DelPermission = dscmp.DelPermission.Copy().(DataStorePermission)
@@ -156,7 +157,7 @@ func (dscmp DataStoreChangeMetaParam) Copy() types.RVType {
 	copied.UpdatePassword = dscmp.UpdatePassword.Copy().(types.UInt64)
 	copied.ReferredCnt = dscmp.ReferredCnt.Copy().(types.UInt32)
 	copied.DataType = dscmp.DataType.Copy().(types.UInt16)
-	copied.Status = dscmp.Status.Copy().(types.UInt8)
+	copied.Status = dscmp.Status
 	copied.CompareParam = dscmp.CompareParam.Copy().(DataStoreChangeMetaCompareParam)
 	copied.PersistenceTarget = dscmp.PersistenceTarget.Copy().(DataStorePersistenceTarget)
 
@@ -179,7 +180,7 @@ func (dscmp DataStoreChangeMetaParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dscmp.ModifiesFlag.Equals(other.ModifiesFlag) {
+	if dscmp.ModifiesFlag != other.ModifiesFlag {
 		return false
 	}
 
@@ -219,7 +220,7 @@ func (dscmp DataStoreChangeMetaParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dscmp.Status.Equals(other.Status) {
+	if dscmp.Status != other.Status {
 		return false
 	}
 
@@ -280,7 +281,7 @@ func (dscmp DataStoreChangeMetaParam) FormatToString(indentationLevel int) strin
 func NewDataStoreChangeMetaParam() DataStoreChangeMetaParam {
 	return DataStoreChangeMetaParam{
 		DataID:            types.NewUInt64(0),
-		ModifiesFlag:      types.NewUInt32(0),
+		ModifiesFlag:      constants.ModificationFlagNone,
 		Name:              types.NewString(""),
 		Permission:        NewDataStorePermission(),
 		DelPermission:     NewDataStorePermission(),
@@ -290,7 +291,7 @@ func NewDataStoreChangeMetaParam() DataStoreChangeMetaParam {
 		UpdatePassword:    types.NewUInt64(0),
 		ReferredCnt:       types.NewUInt32(0),
 		DataType:          types.NewUInt16(0),
-		Status:            types.NewUInt8(0),
+		Status:            constants.DataStatusNone,
 		CompareParam:      NewDataStoreChangeMetaCompareParam(),
 		PersistenceTarget: NewDataStorePersistenceTarget(),
 	}

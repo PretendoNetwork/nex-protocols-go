@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // ResultFlag tells the server what fields to populate in responses
 // to object searches
 type ResultFlag uint8
@@ -17,3 +19,19 @@ const (
 	// ResultFlagPermittedIDs means the object permissions should be populated
 	ResultFlagPermittedIDs ResultFlag = 0x8
 )
+
+// WriteTo writes the ResultFlag to the given writable
+func (rf ResultFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(rf))
+}
+
+// ExtractFrom extracts the ResultFlag value from the given readable
+func (rf *ResultFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*rf = ResultFlag(value)
+	return nil
+}

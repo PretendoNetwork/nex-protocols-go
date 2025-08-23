@@ -6,12 +6,13 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreChangeMetaCompareParam is a type within the DataStore protocol
 type DataStoreChangeMetaCompareParam struct {
 	types.Structure
-	ComparisonFlag types.UInt32
+	ComparisonFlag constants.ComparisonFlag
 	Name           types.String
 	Permission     DataStorePermission
 	DelPermission  DataStorePermission
@@ -20,7 +21,7 @@ type DataStoreChangeMetaCompareParam struct {
 	Tags           types.List[types.String]
 	ReferredCnt    types.UInt32
 	DataType       types.UInt16
-	Status         types.UInt8
+	Status         constants.DataStatus
 }
 
 // WriteTo writes the DataStoreChangeMetaCompareParam to the given writable
@@ -112,7 +113,7 @@ func (dscmcp DataStoreChangeMetaCompareParam) Copy() types.RVType {
 	copied := NewDataStoreChangeMetaCompareParam()
 
 	copied.StructureVersion = dscmcp.StructureVersion
-	copied.ComparisonFlag = dscmcp.ComparisonFlag.Copy().(types.UInt32)
+	copied.ComparisonFlag = dscmcp.ComparisonFlag
 	copied.Name = dscmcp.Name.Copy().(types.String)
 	copied.Permission = dscmcp.Permission.Copy().(DataStorePermission)
 	copied.DelPermission = dscmcp.DelPermission.Copy().(DataStorePermission)
@@ -121,7 +122,7 @@ func (dscmcp DataStoreChangeMetaCompareParam) Copy() types.RVType {
 	copied.Tags = dscmcp.Tags.Copy().(types.List[types.String])
 	copied.ReferredCnt = dscmcp.ReferredCnt.Copy().(types.UInt32)
 	copied.DataType = dscmcp.DataType.Copy().(types.UInt16)
-	copied.Status = dscmcp.Status.Copy().(types.UInt8)
+	copied.Status = dscmcp.Status
 
 	return copied
 }
@@ -138,7 +139,7 @@ func (dscmcp DataStoreChangeMetaCompareParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dscmcp.ComparisonFlag.Equals(other.ComparisonFlag) {
+	if dscmcp.ComparisonFlag != other.ComparisonFlag {
 		return false
 	}
 
@@ -174,7 +175,7 @@ func (dscmcp DataStoreChangeMetaCompareParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	return dscmcp.Status.Equals(other.Status)
+	return dscmcp.Status == other.Status
 }
 
 // CopyRef copies the current value of the DataStoreChangeMetaCompareParam
@@ -222,7 +223,7 @@ func (dscmcp DataStoreChangeMetaCompareParam) FormatToString(indentationLevel in
 // NewDataStoreChangeMetaCompareParam returns a new DataStoreChangeMetaCompareParam
 func NewDataStoreChangeMetaCompareParam() DataStoreChangeMetaCompareParam {
 	return DataStoreChangeMetaCompareParam{
-		ComparisonFlag: types.NewUInt32(0),
+		ComparisonFlag: constants.ComparisonFlagNone,
 		Name:           types.NewString(""),
 		Permission:     NewDataStorePermission(),
 		DelPermission:  NewDataStorePermission(),
@@ -231,7 +232,7 @@ func NewDataStoreChangeMetaCompareParam() DataStoreChangeMetaCompareParam {
 		Tags:           types.NewList[types.String](),
 		ReferredCnt:    types.NewUInt32(0),
 		DataType:       types.NewUInt16(0),
-		Status:         types.NewUInt8(0),
+		Status:         constants.DataStatusNone,
 	}
 
 }

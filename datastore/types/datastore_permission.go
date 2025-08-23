@@ -6,12 +6,13 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStorePermission is a type within the DataStore protocol
 type DataStorePermission struct {
 	types.Structure
-	Permission   types.UInt8
+	Permission   constants.Permission
 	RecipientIDs types.List[types.PID]
 }
 
@@ -56,7 +57,7 @@ func (dsp DataStorePermission) Copy() types.RVType {
 	copied := NewDataStorePermission()
 
 	copied.StructureVersion = dsp.StructureVersion
-	copied.Permission = dsp.Permission.Copy().(types.UInt8)
+	copied.Permission = dsp.Permission
 	copied.RecipientIDs = dsp.RecipientIDs.Copy().(types.List[types.PID])
 
 	return copied
@@ -74,7 +75,7 @@ func (dsp DataStorePermission) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsp.Permission.Equals(other.Permission) {
+	if dsp.Permission != other.Permission {
 		return false
 	}
 
@@ -118,7 +119,7 @@ func (dsp DataStorePermission) FormatToString(indentationLevel int) string {
 // NewDataStorePermission returns a new DataStorePermission
 func NewDataStorePermission() DataStorePermission {
 	return DataStorePermission{
-		Permission:   types.NewUInt8(0),
+		Permission:   constants.PermissionPublic,
 		RecipientIDs: types.NewList[types.PID](),
 	}
 

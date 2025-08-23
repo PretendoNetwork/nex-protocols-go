@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // DataStatus indicates the availablity status of an object.
 // If an object has a status other than DataStatusNone, it is
 // not available to anyone besides the owner and only under
@@ -22,3 +24,19 @@ const (
 	// from review
 	DataStatusRejected DataStatus = 5
 )
+
+// WriteTo writes the DataStatus to the given writable
+func (ds DataStatus) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(ds))
+}
+
+// ExtractFrom extracts the DataStatus value from the given readable
+func (ds *DataStatus) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*ds = DataStatus(value)
+	return nil
+}

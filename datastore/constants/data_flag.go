@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // DataFlag sets different configuration flags for uploaded objects.
 // Stored in the objects DataStoreMetaInfo.flag field
 type DataFlag uint8
@@ -46,3 +48,19 @@ const (
 	// it is treated as non-existent (DataStore::NotFound)
 	DataFlagNeedCompletion DataFlag = 0x40
 )
+
+// WriteTo writes the DataFlag to the given writable
+func (df DataFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(df))
+}
+
+// ExtractFrom extracts the DataFlag value from the given readable
+func (df *DataFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*df = DataFlag(value)
+	return nil
+}

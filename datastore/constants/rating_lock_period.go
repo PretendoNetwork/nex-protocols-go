@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // RatingLockPeriodDay tells the rating slot locks what day
 // the lock should expire.
 //
@@ -42,3 +44,19 @@ const (
 	// is the Monday of the following week
 	RatingLockPeriodMon RatingLockPeriodDay = -1
 )
+
+// WriteTo writes the RatingLockPeriodDay to the given writable
+func (rlpd RatingLockPeriodDay) WriteTo(writable types.Writable) {
+	writable.WriteInt16LE(int16(rlpd))
+}
+
+// ExtractFrom extracts the RatingLockPeriodDay value from the given readable
+func (rlpd *RatingLockPeriodDay) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadInt16LE()
+	if err != nil {
+		return err
+	}
+
+	*rlpd = RatingLockPeriodDay(value)
+	return nil
+}

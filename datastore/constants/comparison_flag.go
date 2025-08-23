@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // ComparisonFlag indicates the flags set on comparisonFlag of DataStoreChangeMetaCompareParam.
 // These flags tell the server what values to use when comparing
 // objects during search
@@ -49,3 +51,19 @@ const (
 	// Equivalent to setting each of the previous flags individually
 	ComparisonFlagAll ComparisonFlag = 0xFFFF
 )
+
+// WriteTo writes the ComparisonFlag to the given writable
+func (cf ComparisonFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt16LE(uint16(cf))
+}
+
+// ExtractFrom extracts the ComparisonFlag value from the given readable
+func (cf *ComparisonFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt16LE()
+	if err != nil {
+		return err
+	}
+
+	*cf = ComparisonFlag(value)
+	return nil
+}

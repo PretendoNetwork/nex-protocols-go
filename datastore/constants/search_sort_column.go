@@ -1,5 +1,7 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // SearchSortColumn tells the server which database column to use as the input
 // for the ordering of returned object searches
 type SearchSortColumn uint8
@@ -126,3 +128,19 @@ const (
 	// SearchSortColumnRatingAverage15 means the objects should be sorted based on the average value of ratings of slot 15
 	SearchSortColumnRatingAverage15
 )
+
+// WriteTo writes the SearchSortColumn to the given writable
+func (ssc SearchSortColumn) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(ssc))
+}
+
+// ExtractFrom extracts the SearchSortColumn value from the given readable
+func (ssc *SearchSortColumn) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*ssc = SearchSortColumn(value)
+	return nil
+}

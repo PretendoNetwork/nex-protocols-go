@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreGetMetaParam is a type within the DataStore protocol
@@ -13,7 +14,7 @@ type DataStoreGetMetaParam struct {
 	types.Structure
 	DataID            types.UInt64
 	PersistenceTarget DataStorePersistenceTarget
-	ResultOption      types.UInt8
+	ResultOption      constants.ResultFlag
 	AccessPassword    types.UInt64
 }
 
@@ -72,7 +73,7 @@ func (dsgmp DataStoreGetMetaParam) Copy() types.RVType {
 	copied.StructureVersion = dsgmp.StructureVersion
 	copied.DataID = dsgmp.DataID.Copy().(types.UInt64)
 	copied.PersistenceTarget = dsgmp.PersistenceTarget.Copy().(DataStorePersistenceTarget)
-	copied.ResultOption = dsgmp.ResultOption.Copy().(types.UInt8)
+	copied.ResultOption = dsgmp.ResultOption
 	copied.AccessPassword = dsgmp.AccessPassword.Copy().(types.UInt64)
 
 	return copied
@@ -98,7 +99,7 @@ func (dsgmp DataStoreGetMetaParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsgmp.ResultOption.Equals(other.ResultOption) {
+	if dsgmp.ResultOption != other.ResultOption {
 		return false
 	}
 
@@ -146,7 +147,7 @@ func NewDataStoreGetMetaParam() DataStoreGetMetaParam {
 	return DataStoreGetMetaParam{
 		DataID:            types.NewUInt64(0),
 		PersistenceTarget: NewDataStorePersistenceTarget(),
-		ResultOption:      types.NewUInt8(0),
+		ResultOption:      constants.ResultFlag(0), // TODO - What is the real default?
 		AccessPassword:    types.NewUInt64(0),
 	}
 

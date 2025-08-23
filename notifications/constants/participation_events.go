@@ -1,7 +1,7 @@
 package constants
 
 // ParticipationEvents represents the various subtypes of NotificationEventsParticipationEvent
-type ParticipationEvents = subType
+type ParticipationEvents = SubType
 
 const (
 	// ParticipationEventsParticipate is delivered when a new player has joined

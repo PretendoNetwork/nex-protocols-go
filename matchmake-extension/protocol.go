@@ -9,6 +9,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
+	notifications_constants "github.com/PretendoNetwork/nex-protocols-go/v2/notifications/constants"
 )
 
 const (
@@ -215,7 +216,7 @@ type Protocol struct {
 	GetSimpleCommunity                                      func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
 	AutoMatchmakeWithGatheringIDPostpone                    func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	UpdateProgressScore                                     func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, progressScore types.UInt8) (*nex.RMCMessage, *nex.Error)
-	DebugNotifyEvent                                        func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType types.UInt32, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)
+	DebugNotifyEvent                                        func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType notifications_constants.NotificationEvents, subType notifications_constants.SubType, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)
 	GenerateMatchmakeSessionSystemPassword                  func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error)
 	ClearMatchmakeSessionSystemPassword                     func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error)
 	CreateMatchmakeSessionWithParam                         func(err error, packet nex.PacketInterface, callID uint32, createMatchmakeSessionParam match_making_types.CreateMatchmakeSessionParam) (*nex.RMCMessage, *nex.Error)
@@ -480,7 +481,7 @@ func (protocol *Protocol) SetHandlerUpdateProgressScore(handler func(err error, 
 }
 
 // SetHandlerDebugNotifyEvent sets the handler for the DebugNotifyEvent method
-func (protocol *Protocol) SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType types.UInt32, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType notifications_constants.NotificationEvents, subType notifications_constants.SubType, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DebugNotifyEvent = handler
 }
 

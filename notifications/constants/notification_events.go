@@ -11,10 +11,6 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // behavior, or a best guess.
 type NotificationEvents uint32
 
-// subType exists solely to restrict the kinds of values that can be passed
-// to NotificationEvents.Build()
-type subType uint32
-
 // WriteTo writes the NotificationEvents to the given writable
 func (ne NotificationEvents) WriteTo(writable types.Writable) {
 	writable.WriteUInt32LE(uint32(ne))
@@ -34,7 +30,7 @@ func (ne *NotificationEvents) ExtractFrom(readable types.Readable) error {
 // Build creates the final notification type ID used in NotificationEvent.m_uiType.
 //
 // Takes an optional subtype. Only the first subtype defined is used.
-func (ne NotificationEvents) Build(subtype ...subType) NotificationEvents {
+func (ne NotificationEvents) Build(subtype ...SubType) NotificationEvents {
 	category := ne * 1000
 
 	if len(subtype) == 0 {

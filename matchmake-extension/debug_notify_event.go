@@ -7,6 +7,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	notifications_constants "github.com/PretendoNetwork/nex-protocols-go/v2/notifications/constants"
 )
 
 func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
@@ -26,8 +27,8 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var pid types.PID
-	var mainType types.UInt32
-	var subType types.UInt32
+	var mainType notifications_constants.NotificationEvents
+	var subType notifications_constants.SubType
 	var param1 types.UInt64
 	var param2 types.UInt64
 	var stringParam types.String

@@ -4,7 +4,7 @@ package constants
 //
 // Note: Name is a guess, as we don't know the real name. Guess is based
 // on the structure of ParticipationEvents.
-type SubscriptionEvents = subType
+type SubscriptionEvents = SubType
 
 const (
 	// SubscriptionEventsEvent0 has an unknown use.

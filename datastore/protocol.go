@@ -201,7 +201,7 @@ type Protocol struct {
 	PostMetaBinariesWithDataID   func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.List[types.UInt64], params types.List[datastore_types.DataStorePreparePostParam], transactional types.Bool) (*nex.RMCMessage, *nex.Error)
 	RateObjectWithPosting        func(err error, packet nex.PacketInterface, callID uint32, target datastore_types.DataStoreRatingTarget, rateParam datastore_types.DataStoreRateObjectParam, postParam datastore_types.DataStorePreparePostParam, fetchRatings types.Bool) (*nex.RMCMessage, *nex.Error)
 	RateObjectsWithPosting       func(err error, packet nex.PacketInterface, callID uint32, targets types.List[datastore_types.DataStoreRatingTarget], rateParams types.List[datastore_types.DataStoreRateObjectParam], postParams types.List[datastore_types.DataStorePreparePostParam], transactional types.Bool, fetchRatings types.Bool) (*nex.RMCMessage, *nex.Error)
-	GetObjectInfos               func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.UInt64) (*nex.RMCMessage, *nex.Error)
+	GetObjectInfos               func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.List[types.UInt64]) (*nex.RMCMessage, *nex.Error)
 	SearchObjectLight            func(err error, packet nex.PacketInterface, callID uint32, param datastore_types.DataStoreSearchParam) (*nex.RMCMessage, *nex.Error)
 	Patches                      nex.ServiceProtocol
 	PatchedMethods               []uint32
@@ -490,7 +490,7 @@ func (protocol *Protocol) SetHandlerRateObjectsWithPosting(handler func(err erro
 }
 
 // SetHandlerGetObjectInfos sets the handler for the GetObjectInfos method
-func (protocol *Protocol) SetHandlerGetObjectInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.UInt64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetObjectInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs types.List[types.UInt64]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetObjectInfos = handler
 }
 

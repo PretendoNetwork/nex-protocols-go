@@ -15,7 +15,7 @@ type Ranking2CategorySetting struct {
 	MinScore           types.UInt32
 	MaxScore           types.UInt32
 	LowestRank         types.UInt32
-	ResetMonth         types.UInt16
+	ResetMonth         constants.Ranking2ResetMonth
 	ResetDay           constants.Ranking2ResetDay
 	ResetHour          types.UInt8
 	ResetMode          constants.Ranking2ResetMode
@@ -109,7 +109,7 @@ func (rcs Ranking2CategorySetting) Copy() types.RVType {
 	copied.MinScore = rcs.MinScore.Copy().(types.UInt32)
 	copied.MaxScore = rcs.MaxScore.Copy().(types.UInt32)
 	copied.LowestRank = rcs.LowestRank.Copy().(types.UInt32)
-	copied.ResetMonth = rcs.ResetMonth.Copy().(types.UInt16)
+	copied.ResetMonth = rcs.ResetMonth
 	copied.ResetDay = rcs.ResetDay
 	copied.ResetHour = rcs.ResetHour.Copy().(types.UInt8)
 	copied.ResetMode = rcs.ResetMode
@@ -143,7 +143,7 @@ func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rcs.ResetMonth.Equals(other.ResetMonth) {
+	if rcs.ResetMonth != other.ResetMonth {
 		return false
 	}
 
@@ -213,7 +213,7 @@ func NewRanking2CategorySetting() Ranking2CategorySetting {
 		MinScore:           types.NewUInt32(0),
 		MaxScore:           types.NewUInt32(0),
 		LowestRank:         types.NewUInt32(0),
-		ResetMonth:         types.NewUInt16(0),
+		ResetMonth:         constants.Ranking2ResetMonthNone,
 		ResetDay:           constants.Ranking2ResetDayMonday,
 		ResetHour:          types.NewUInt8(0),
 		ResetMode:          constants.Ranking2ResetModeNothing,

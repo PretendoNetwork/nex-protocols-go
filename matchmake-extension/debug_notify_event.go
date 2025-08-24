@@ -27,7 +27,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var pid types.PID
-	var mainType notifications_constants.NotificationEvents
+	var mainType notifications_constants.NotificationCategory
 	var subType notifications_constants.SubType
 	var param1 types.UInt64
 	var param2 types.UInt64

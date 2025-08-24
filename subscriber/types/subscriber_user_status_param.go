@@ -1,4 +1,4 @@
-// Package types implements all the types used by the Shop protocol
+// Package types implements all the types used by the Subscriber protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// SubscriberUserStatusParam is a type within the Shop protocol
+// SubscriberUserStatusParam is a type within the Subscriber protocol
 type SubscriberUserStatusParam struct {
 	types.Structure
 	Value types.QBuffer

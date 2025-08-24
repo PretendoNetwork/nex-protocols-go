@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ticket-granting/constants"
 )
 
 // ValidateAndRequestTicketParam is a type within the TicketGranting protocol
@@ -17,7 +18,7 @@ type ValidateAndRequestTicketParam struct {
 	IgnoreAPIVersionCheck      types.Bool
 	APIVersionGeneral          types.UInt32
 	APIVersionCustom           types.UInt32
-	PlatformTypeForPlatformPID types.UInt8 // * Only present on games with crossplay between Switch and 3DS/Wii U
+	PlatformTypeForPlatformPID constants.PlatformType // * Only present on games with crossplay between Switch and 3DS/Wii U
 }
 
 // WriteTo writes the ValidateAndRequestTicketParam to the given writable
@@ -216,7 +217,7 @@ func NewValidateAndRequestTicketParam() ValidateAndRequestTicketParam {
 		IgnoreAPIVersionCheck:      types.NewBool(false),
 		APIVersionGeneral:          types.NewUInt32(0),
 		APIVersionCustom:           types.NewUInt32(0),
-		PlatformTypeForPlatformPID: types.NewUInt8(0),
+		PlatformTypeForPlatformPID: constants.PlatformType(0), // TODO - What is the real default?
 	}
 
 }

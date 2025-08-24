@@ -8,6 +8,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ticket_granting_types "github.com/PretendoNetwork/nex-protocols-go/v2/ticket-granting/types"
 )
 
 const (
@@ -35,15 +36,18 @@ const (
 
 // Protocol stores all the RMC method handlers for the Ticket Granting protocol and listens for requests
 type Protocol struct {
-	endpoint         nex.EndpointInterface
-	Login            func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
-	LoginEx          func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.DataHolder) (*nex.RMCMessage, *nex.Error)
-	RequestTicket    func(err error, packet nex.PacketInterface, callID uint32, idSource types.PID, idTarget types.PID) (*nex.RMCMessage, *nex.Error)
-	GetPID           func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
-	GetName          func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error)
-	LoginWithContext func(err error, packet nex.PacketInterface, callID uint32, loginData types.DataHolder) (*nex.RMCMessage, *nex.Error)
-	Patches          nex.ServiceProtocol
-	PatchedMethods   []uint32
+	endpoint                               nex.EndpointInterface
+	Login                                  func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
+	LoginEx                                func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.DataHolder) (*nex.RMCMessage, *nex.Error)
+	RequestTicket                          func(err error, packet nex.PacketInterface, callID uint32, idSource types.PID, idTarget types.PID) (*nex.RMCMessage, *nex.Error)
+	GetPID                                 func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
+	GetName                                func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error)
+	LoginWithContext                       func(err error, packet nex.PacketInterface, callID uint32, loginData types.DataHolder) (*nex.RMCMessage, *nex.Error)
+	ValidateAndRequestTicket               func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
+	ValidateAndRequestTicketWithCustomData func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.DataHolder) (*nex.RMCMessage, *nex.Error)
+	ValidateAndRequestTicketWithParam      func(err error, packet nex.PacketInterface, callID uint32, param ticket_granting_types.ValidateAndRequestTicketParam) (*nex.RMCMessage, *nex.Error)
+	Patches                                nex.ServiceProtocol
+	PatchedMethods                         []uint32
 }
 
 // Interface implements the methods present on the Ticket Granting protocol struct
@@ -56,6 +60,12 @@ type Interface interface {
 	SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32, loginData types.DataHolder) (*nex.RMCMessage, *nex.Error))
+
+	// * NEX 4+ names
+
+	SetHandlerValidateAndRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerValidateAndRequestTicketWithCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.DataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerValidateAndRequestTicketWithParam(handler func(err error, packet nex.PacketInterface, callID uint32, param ticket_granting_types.ValidateAndRequestTicketParam) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -98,6 +108,21 @@ func (protocol *Protocol) SetHandlerLoginWithContext(handler func(err error, pac
 	protocol.LoginWithContext = handler
 }
 
+// SetHandlerLogin sets the handler for the Login method
+func (protocol *Protocol) SetHandlerValidateAndRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.ValidateAndRequestTicket = handler
+}
+
+// SetHandlerLoginEx sets the handler for the LoginEx method
+func (protocol *Protocol) SetHandlerValidateAndRequestTicketWithCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
+	protocol.ValidateAndRequestTicketWithCustomData = handler
+}
+
+// SetHandlerLoginWithContext sets the handler for the LoginWithContext method
+func (protocol *Protocol) SetHandlerValidateAndRequestTicketWithParam(handler func(err error, packet nex.PacketInterface, callID uint32, param ticket_granting_types.ValidateAndRequestTicketParam) (*nex.RMCMessage, *nex.Error)) {
+	protocol.ValidateAndRequestTicketWithParam = handler
+}
+
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
@@ -111,11 +136,21 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		return
 	}
 
+	libraryVersion := packet.RMCMessage().Endpoint.LibraryVersions().Main
+
 	switch message.MethodID {
 	case MethodLogin:
-		protocol.handleLogin(packet)
+		if libraryVersion.GreaterOrEqual("4.0.0") {
+			protocol.handleValidateAndRequestTicket(packet)
+		} else {
+			protocol.handleLogin(packet)
+		}
 	case MethodLoginEx:
-		protocol.handleLoginEx(packet)
+		if libraryVersion.GreaterOrEqual("4.0.0") {
+			protocol.handleValidateAndRequestTicketWithCustomData(packet)
+		} else {
+			protocol.handleLoginEx(packet)
+		}
 	case MethodRequestTicket:
 		protocol.handleRequestTicket(packet)
 	case MethodGetPID:
@@ -123,7 +158,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetName:
 		protocol.handleGetName(packet)
 	case MethodLoginWithContext:
-		protocol.handleLoginWithContext(packet)
+		if libraryVersion.GreaterOrEqual("4.0.0") {
+			protocol.handleValidateAndRequestTicketWithParam(packet)
+		} else {
+			protocol.handleLoginWithContext(packet)
+		}
 	default:
 		errMessage := fmt.Sprintf("Unsupported Ticket Granting method ID: %#v\n", message.MethodID)
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)

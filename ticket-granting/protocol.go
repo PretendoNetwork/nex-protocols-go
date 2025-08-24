@@ -41,7 +41,7 @@ type Protocol struct {
 	RequestTicket    func(err error, packet nex.PacketInterface, callID uint32, idSource types.PID, idTarget types.PID) (*nex.RMCMessage, *nex.Error)
 	GetPID           func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
 	GetName          func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error)
-	LoginWithContext func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	LoginWithContext func(err error, packet nex.PacketInterface, callID uint32, loginData types.DataHolder) (*nex.RMCMessage, *nex.Error)
 	Patches          nex.ServiceProtocol
 	PatchedMethods   []uint32
 }
@@ -55,7 +55,7 @@ type Interface interface {
 	SetHandlerRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, idSource types.PID, idTarget types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error))
-	SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32, loginData types.DataHolder) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -94,7 +94,7 @@ func (protocol *Protocol) SetHandlerGetName(handler func(err error, packet nex.P
 }
 
 // SetHandlerLoginWithContext sets the handler for the LoginWithContext method
-func (protocol *Protocol) SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32, loginData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.LoginWithContext = handler
 }
 

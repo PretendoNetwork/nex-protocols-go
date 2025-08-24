@@ -2,7 +2,10 @@
 package protocol
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
@@ -18,8 +21,23 @@ func (protocol *Protocol) handleLoginWithContext(packet nex.PacketInterface) {
 
 	request := packet.RMCMessage()
 	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	rmcMessage, rmcError := protocol.LoginWithContext(nil, packet, callID)
+	var loginData types.DataHolder
+
+	err := loginData.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.LoginWithContext(fmt.Errorf("Failed to read loginData from parameters. %s", err.Error()), packet, callID, loginData)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
+	rmcMessage, rmcError := protocol.LoginWithContext(nil, packet, callID, loginData)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

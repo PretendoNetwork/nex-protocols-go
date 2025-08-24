@@ -44,6 +44,11 @@ func (nc NotificationCategory) Build(subtype ...SubType) NotificationEvents {
 	return category + NotificationEvents(subtype[0])
 }
 
+// ToSigned converts a NotificationCategory to a NotificationCategorySigned
+func (nc NotificationCategory) ToSigned() NotificationCategorySigned {
+	return NotificationCategorySigned(nc)
+}
+
 const (
 	// NotificationCategorySessionLaunched is delivered to everyone in a gathering
 	// when MatchMaking::LaunchSession is fired.

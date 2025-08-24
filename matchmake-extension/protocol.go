@@ -191,7 +191,7 @@ type Protocol struct {
 	JoinMatchmakeSession                                    func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	ModifyCurrentGameAttribute                              func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribIndex types.UInt32, newValue types.UInt32) (*nex.RMCMessage, *nex.Error)
 	UpdateNotificationData                                  func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategory, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error)
-	GetFriendNotificationData                               func(err error, packet nex.PacketInterface, callID uint32, uiType types.Int32) (*nex.RMCMessage, *nex.Error)
+	GetFriendNotificationData                               func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategorySigned) (*nex.RMCMessage, *nex.Error)
 	UpdateApplicationBuffer                                 func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, applicationBuffer types.Buffer) (*nex.RMCMessage, *nex.Error)
 	UpdateMatchmakeSessionAttribute                         func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribs types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
 	GetlstFriendNotificationData                            func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
@@ -356,7 +356,7 @@ func (protocol *Protocol) SetHandlerUpdateNotificationData(handler func(err erro
 }
 
 // SetHandlerGetFriendNotificationData sets the handler for the GetFriendNotificationData method
-func (protocol *Protocol) SetHandlerGetFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.Int32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategorySigned) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendNotificationData = handler
 }
 

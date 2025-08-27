@@ -41,3 +41,23 @@ func (rf *RatingFlag) ExtractFrom(readable types.Readable) error {
 	*rf = RatingFlag(value)
 	return nil
 }
+
+// HasFlag checks if a given flag is set
+func (rf RatingFlag) HasFlag(flag RatingFlag) bool {
+	return rf&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (rf RatingFlag) HasFlags(flags ...RatingFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if rf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}

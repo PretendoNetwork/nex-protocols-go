@@ -35,3 +35,23 @@ func (rf *ResultFlag) ExtractFrom(readable types.Readable) error {
 	*rf = ResultFlag(value)
 	return nil
 }
+
+// HasFlag checks if a given flag is set
+func (rf ResultFlag) HasFlag(flag ResultFlag) bool {
+	return rf&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (rf ResultFlag) HasFlags(flags ...ResultFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if rf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}

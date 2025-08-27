@@ -67,3 +67,23 @@ func (cf *ComparisonFlag) ExtractFrom(readable types.Readable) error {
 	*cf = ComparisonFlag(value)
 	return nil
 }
+
+// HasFlag checks if a given flag is set
+func (cf ComparisonFlag) HasFlag(flag ComparisonFlag) bool {
+	return cf&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (cf ComparisonFlag) HasFlags(flags ...ComparisonFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if cf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}

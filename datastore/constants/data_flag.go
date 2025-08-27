@@ -64,3 +64,23 @@ func (df *DataFlag) ExtractFrom(readable types.Readable) error {
 	*df = DataFlag(value)
 	return nil
 }
+
+// HasFlag checks if a given flag is set
+func (df DataFlag) HasFlag(flag DataFlag) bool {
+	return df&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (df DataFlag) HasFlags(flags ...DataFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if df&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}

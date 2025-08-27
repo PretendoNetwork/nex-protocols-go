@@ -35,3 +35,23 @@ func (rif *RatingInternalFlag) ExtractFrom(readable types.Readable) error {
 	*rif = RatingInternalFlag(value)
 	return nil
 }
+
+// HasFlag checks if a given flag is set
+func (rif RatingInternalFlag) HasFlag(flag RatingInternalFlag) bool {
+	return rif&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (rif RatingInternalFlag) HasFlags(flags ...RatingInternalFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if rif&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}

@@ -36,3 +36,23 @@ func (r2gof *Ranking2GetOptionFlags) ExtractFrom(readable types.Readable) error 
 	*r2gof = Ranking2GetOptionFlags(value)
 	return nil
 }
+
+// HasFlag checks if a given flag is set
+func (r2gof Ranking2GetOptionFlags) HasFlag(flag Ranking2GetOptionFlags) bool {
+	return r2gof&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (r2gof Ranking2GetOptionFlags) HasFlags(flags ...Ranking2GetOptionFlags) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if r2gof&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}

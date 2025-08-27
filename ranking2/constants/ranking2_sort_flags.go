@@ -49,3 +49,23 @@ func (r2sf *Ranking2SortFlags) ExtractFrom(readable types.Readable) error {
 	*r2sf = Ranking2SortFlags(value)
 	return nil
 }
+
+// HasFlag checks if a given flag is set
+func (r2sf Ranking2SortFlags) HasFlag(flag Ranking2SortFlags) bool {
+	return r2sf&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (r2sf Ranking2SortFlags) HasFlags(flags ...Ranking2SortFlags) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if r2sf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}

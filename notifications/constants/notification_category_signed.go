@@ -10,12 +10,12 @@ type NotificationCategorySigned int32
 
 // WriteTo writes the NotificationCategorySigned to the given writable
 func (nc NotificationCategorySigned) WriteTo(writable types.Writable) {
-	writable.WriteUInt32LE(uint32(nc))
+	writable.WriteInt32LE(int32(nc))
 }
 
 // ExtractFrom extracts the NotificationCategorySigned value from the given readable
 func (nc *NotificationCategorySigned) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt32LE()
+	value, err := readable.ReadInt32LE()
 	if err != nil {
 		return err
 	}

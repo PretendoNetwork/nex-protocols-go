@@ -5,15 +5,6 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // UpdateMode is used by RankingScoreData.UpdateMode to control if worse scores should be discarded or not.
 type UpdateMode uint8
 
-const (
-	// UpdateModeNormal will only commit the updated score if it's better than the old score in that category.
-	// "better" is determined by the ranking order of the category.
-	UpdateModeNormal UpdateMode = iota
-
-	// UpdateModeDeleteOld will always overwrite any old score, even if the new one is worse.
-	UpdateModeDeleteOld
-)
-
 // WriteTo writes the UpdateMode to the given writable
 func (um UpdateMode) WriteTo(writable types.Writable) {
 	writable.WriteUInt8(uint8(um))
@@ -29,3 +20,12 @@ func (um *UpdateMode) ExtractFrom(readable types.Readable) error {
 	*um = UpdateMode(value)
 	return nil
 }
+
+const (
+	// UpdateModeNormal will only commit the updated score if it's better than the old score in that category.
+	// "better" is determined by the ranking order of the category.
+	UpdateModeNormal UpdateMode = iota
+
+	// UpdateModeDeleteOld will always overwrite any old score, even if the new one is worse.
+	UpdateModeDeleteOld
+)

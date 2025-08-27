@@ -7,6 +7,42 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // objects during search
 type ComparisonFlag uint16
 
+// WriteTo writes the ComparisonFlag to the given writable
+func (cf ComparisonFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt16LE(uint16(cf))
+}
+
+// ExtractFrom extracts the ComparisonFlag value from the given readable
+func (cf *ComparisonFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt16LE()
+	if err != nil {
+		return err
+	}
+
+	*cf = ComparisonFlag(value)
+	return nil
+}
+
+// HasFlag checks if a given flag is set
+func (cf ComparisonFlag) HasFlag(flag ComparisonFlag) bool {
+	return cf&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (cf ComparisonFlag) HasFlags(flags ...ComparisonFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if cf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
+
 const (
 	// ComparisonFlagNone means that no fields should be compared
 	ComparisonFlagNone ComparisonFlag = 0x0
@@ -51,39 +87,3 @@ const (
 	// Equivalent to setting each of the previous flags individually
 	ComparisonFlagAll ComparisonFlag = 0xFFFF
 )
-
-// WriteTo writes the ComparisonFlag to the given writable
-func (cf ComparisonFlag) WriteTo(writable types.Writable) {
-	writable.WriteUInt16LE(uint16(cf))
-}
-
-// ExtractFrom extracts the ComparisonFlag value from the given readable
-func (cf *ComparisonFlag) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt16LE()
-	if err != nil {
-		return err
-	}
-
-	*cf = ComparisonFlag(value)
-	return nil
-}
-
-// HasFlag checks if a given flag is set
-func (cf ComparisonFlag) HasFlag(flag ComparisonFlag) bool {
-	return cf&flag == flag
-}
-
-// HasFlag checks if all given flags are set
-func (cf ComparisonFlag) HasFlags(flags ...ComparisonFlag) bool {
-	if len(flags) == 0 {
-		return false
-	}
-
-	for _, flag := range flags {
-		if cf&flag != flag {
-			return false
-		}
-	}
-
-	return true
-}

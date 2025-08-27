@@ -8,6 +8,22 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // Note: This is not a real type. This is a bespoke type made for our convenience.
 type Ranking2ResetDay uint8
 
+// WriteTo writes the Ranking2ResetDay to the given writable
+func (r2rd Ranking2ResetDay) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(r2rd))
+}
+
+// ExtractFrom extracts the Ranking2ResetDay value from the given readable
+func (r2rd *Ranking2ResetDay) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*r2rd = Ranking2ResetDay(value)
+	return nil
+}
+
 const (
 	// Ranking2ResetDayMonday means that season rankings should reset every Monday
 	// when the category reset mod is set to Ranking2ResetModeWeekday. This also means
@@ -165,19 +181,3 @@ const (
 	// the month in an enabled month when the category reset mode is set to Ranking2ResetModeMultiMonth
 	Ranking2ResetDay28 Ranking2ResetDay = 28
 )
-
-// WriteTo writes the Ranking2ResetDay to the given writable
-func (r2rd Ranking2ResetDay) WriteTo(writable types.Writable) {
-	writable.WriteUInt8(uint8(r2rd))
-}
-
-// ExtractFrom extracts the Ranking2ResetDay value from the given readable
-func (r2rd *Ranking2ResetDay) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt8()
-	if err != nil {
-		return err
-	}
-
-	*r2rd = Ranking2ResetDay(value)
-	return nil
-}

@@ -6,6 +6,42 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // Stored in the objects DataStoreMetaInfo.flag field
 type DataFlag uint8
 
+// WriteTo writes the DataFlag to the given writable
+func (df DataFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(df))
+}
+
+// ExtractFrom extracts the DataFlag value from the given readable
+func (df *DataFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*df = DataFlag(value)
+	return nil
+}
+
+// HasFlag checks if a given flag is set
+func (df DataFlag) HasFlag(flag DataFlag) bool {
+	return df&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (df DataFlag) HasFlags(flags ...DataFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if df&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
+
 const (
 	// DataFlagNone means no extra configurations
 	DataFlagNone DataFlag = 0x0
@@ -48,39 +84,3 @@ const (
 	// it is treated as non-existent (DataStore::NotFound)
 	DataFlagNeedCompletion DataFlag = 0x40
 )
-
-// WriteTo writes the DataFlag to the given writable
-func (df DataFlag) WriteTo(writable types.Writable) {
-	writable.WriteUInt8(uint8(df))
-}
-
-// ExtractFrom extracts the DataFlag value from the given readable
-func (df *DataFlag) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt8()
-	if err != nil {
-		return err
-	}
-
-	*df = DataFlag(value)
-	return nil
-}
-
-// HasFlag checks if a given flag is set
-func (df DataFlag) HasFlag(flag DataFlag) bool {
-	return df&flag == flag
-}
-
-// HasFlag checks if all given flags are set
-func (df DataFlag) HasFlags(flags ...DataFlag) bool {
-	if len(flags) == 0 {
-		return false
-	}
-
-	for _, flag := range flags {
-		if df&flag != flag {
-			return false
-		}
-	}
-
-	return true
-}

@@ -9,17 +9,6 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // for our convenience.
 type PlatformType uint32
 
-const (
-	// PlatformType3DS means that the connecting client is on a 3DS.
-	PlatformType3DS PlatformType = iota + 1
-
-	// PlatformTypeWiiU means that the connecting client is on a Wii U.
-	PlatformTypeWiiU
-
-	// PlatformTypeSwitch means that the connecting client is on a Nintendo Switch.
-	PlatformTypeSwitch
-)
-
 // WriteTo writes the PlatformType to the given writable
 func (pt PlatformType) WriteTo(writable types.Writable) {
 	writable.WriteUInt32LE(uint32(pt))
@@ -35,3 +24,14 @@ func (pt *PlatformType) ExtractFrom(readable types.Readable) error {
 	*pt = PlatformType(value)
 	return nil
 }
+
+const (
+	// PlatformType3DS means that the connecting client is on a 3DS.
+	PlatformType3DS PlatformType = iota + 1
+
+	// PlatformTypeWiiU means that the connecting client is on a Wii U.
+	PlatformTypeWiiU
+
+	// PlatformTypeSwitch means that the connecting client is on a Nintendo Switch.
+	PlatformTypeSwitch
+)

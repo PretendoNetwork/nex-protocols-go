@@ -8,18 +8,6 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // Used to narrow search results based on owner type
 type SearchTarget uint8
 
-const (
-	// SearchTargetAnybody selects objects owned by anyone
-	SearchTargetAnybody SearchTarget = iota
-
-	// SearchTargetFriend selects objects owned by the users friends
-	SearchTargetFriend
-
-	// SearchTargetAnybodyExcludeSpecified selects objects owned by anyone
-	// EXCEPT those set in DataStoreSearchParam.ownerIds
-	SearchTargetAnybodyExcludeSpecified
-)
-
 // WriteTo writes the SearchTarget to the given writable
 func (st SearchTarget) WriteTo(writable types.Writable) {
 	writable.WriteUInt8(uint8(st))
@@ -35,3 +23,15 @@ func (st *SearchTarget) ExtractFrom(readable types.Readable) error {
 	*st = SearchTarget(value)
 	return nil
 }
+
+const (
+	// SearchTargetAnybody selects objects owned by anyone
+	SearchTargetAnybody SearchTarget = iota
+
+	// SearchTargetFriend selects objects owned by the users friends
+	SearchTargetFriend
+
+	// SearchTargetAnybodyExcludeSpecified selects objects owned by anyone
+	// EXCEPT those set in DataStoreSearchParam.ownerIds
+	SearchTargetAnybodyExcludeSpecified
+)

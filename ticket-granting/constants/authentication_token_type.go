@@ -9,20 +9,6 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // for our convenience.
 type AuthenticationTokenType uint8
 
-const (
-	// AuthenticationTokenTypeNASC means that the connecting client used NASC
-	// to authenticate themselves.
-	AuthenticationTokenTypeNASC AuthenticationTokenType = iota
-
-	// AuthenticationTokenTypeNNAS means that the connecting client used NNAS
-	// to authenticate themselves.
-	AuthenticationTokenTypeNNAS
-
-	// AuthenticationTokenTypeSwitch means that the connecting client used the
-	// Nintendo Switch authentication servers to authenticate themselves.
-	AuthenticationTokenTypeSwitch
-)
-
 // WriteTo writes the AuthenticationTokenType to the given writable
 func (att AuthenticationTokenType) WriteTo(writable types.Writable) {
 	writable.WriteUInt8(uint8(att))
@@ -38,3 +24,17 @@ func (att *AuthenticationTokenType) ExtractFrom(readable types.Readable) error {
 	*att = AuthenticationTokenType(value)
 	return nil
 }
+
+const (
+	// AuthenticationTokenTypeNASC means that the connecting client used NASC
+	// to authenticate themselves.
+	AuthenticationTokenTypeNASC AuthenticationTokenType = iota
+
+	// AuthenticationTokenTypeNNAS means that the connecting client used NNAS
+	// to authenticate themselves.
+	AuthenticationTokenTypeNNAS
+
+	// AuthenticationTokenTypeSwitch means that the connecting client used the
+	// Nintendo Switch authentication servers to authenticate themselves.
+	AuthenticationTokenTypeSwitch
+)

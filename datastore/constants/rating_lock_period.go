@@ -11,6 +11,22 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // represent the "day" a period lock ends.
 type RatingLockPeriodDay int16
 
+// WriteTo writes the RatingLockPeriodDay to the given writable
+func (rlpd RatingLockPeriodDay) WriteTo(writable types.Writable) {
+	writable.WriteInt16LE(int16(rlpd))
+}
+
+// ExtractFrom extracts the RatingLockPeriodDay value from the given readable
+func (rlpd *RatingLockPeriodDay) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadInt16LE()
+	if err != nil {
+		return err
+	}
+
+	*rlpd = RatingLockPeriodDay(value)
+	return nil
+}
+
 const (
 	// RatingLockPeriodDay1 means the day the lock will expire
 	// is the 1st of the following month
@@ -44,19 +60,3 @@ const (
 	// is the Monday of the following week
 	RatingLockPeriodMon RatingLockPeriodDay = -1
 )
-
-// WriteTo writes the RatingLockPeriodDay to the given writable
-func (rlpd RatingLockPeriodDay) WriteTo(writable types.Writable) {
-	writable.WriteInt16LE(int16(rlpd))
-}
-
-// ExtractFrom extracts the RatingLockPeriodDay value from the given readable
-func (rlpd *RatingLockPeriodDay) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadInt16LE()
-	if err != nil {
-		return err
-	}
-
-	*rlpd = RatingLockPeriodDay(value)
-	return nil
-}

@@ -6,6 +6,22 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // begin a new "season" in Ranking2.
 type Ranking2ResetMode uint8
 
+// WriteTo writes the Ranking2ResetMode to the given writable
+func (r2rm Ranking2ResetMode) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(r2rm))
+}
+
+// ExtractFrom extracts the Ranking2ResetMode value from the given readable
+func (r2rm *Ranking2ResetMode) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*r2rm = Ranking2ResetMode(value)
+	return nil
+}
+
 const (
 	// Ranking2ResetModeNothing means that ranking data never resets.
 	Ranking2ResetModeNothing Ranking2ResetMode = 0
@@ -53,19 +69,3 @@ const (
 	// functionality of the other modes. It could be entirely incorrect.
 	Ranking2ResetModeMultiMonthWeekday Ranking2ResetMode = 4
 )
-
-// WriteTo writes the Ranking2ResetMode to the given writable
-func (r2rm Ranking2ResetMode) WriteTo(writable types.Writable) {
-	writable.WriteUInt8(uint8(r2rm))
-}
-
-// ExtractFrom extracts the Ranking2ResetMode value from the given readable
-func (r2rm *Ranking2ResetMode) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt8()
-	if err != nil {
-		return err
-	}
-
-	*r2rm = Ranking2ResetMode(value)
-	return nil
-}

@@ -6,20 +6,6 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // to object searches
 type ResultFlag uint8
 
-const (
-	// ResultFlagTags means the object tags should be populated
-	ResultFlagTags ResultFlag = 0x1
-
-	// ResultFlagRatings means the object ratings should be populated
-	ResultFlagRatings ResultFlag = 0x2
-
-	// ResultFlagMetaBinary means the object MetaBinary should be populated
-	ResultFlagMetaBinary ResultFlag = 0x4
-
-	// ResultFlagPermittedIDs means the object permissions should be populated
-	ResultFlagPermittedIDs ResultFlag = 0x8
-)
-
 // WriteTo writes the ResultFlag to the given writable
 func (rf ResultFlag) WriteTo(writable types.Writable) {
 	writable.WriteUInt8(uint8(rf))
@@ -55,3 +41,17 @@ func (rf ResultFlag) HasFlags(flags ...ResultFlag) bool {
 
 	return true
 }
+
+const (
+	// ResultFlagTags means the object tags should be populated
+	ResultFlagTags ResultFlag = 0x1
+
+	// ResultFlagRatings means the object ratings should be populated
+	ResultFlagRatings ResultFlag = 0x2
+
+	// ResultFlagMetaBinary means the object MetaBinary should be populated
+	ResultFlagMetaBinary ResultFlag = 0x4
+
+	// ResultFlagPermittedIDs means the object permissions should be populated
+	ResultFlagPermittedIDs ResultFlag = 0x8
+)

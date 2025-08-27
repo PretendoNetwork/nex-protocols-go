@@ -7,6 +7,22 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // an object while a lock is in place, DataStore::OperationNotAllowed is thrown
 type RatingLockType uint8
 
+// WriteTo writes the RatingLockType to the given writable
+func (rlt RatingLockType) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(rlt))
+}
+
+// ExtractFrom extracts the RatingLockType value from the given readable
+func (rlt *RatingLockType) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*rlt = RatingLockType(value)
+	return nil
+}
+
 const (
 	// RatingLockNone means that the ratings should have no locks
 	RatingLockNone RatingLockType = iota
@@ -33,19 +49,3 @@ const (
 	// RatingLockPermanent locks the user from rating the slot again forever
 	RatingLockPermanent
 )
-
-// WriteTo writes the RatingLockType to the given writable
-func (rlt RatingLockType) WriteTo(writable types.Writable) {
-	writable.WriteUInt8(uint8(rlt))
-}
-
-// ExtractFrom extracts the RatingLockType value from the given readable
-func (rlt *RatingLockType) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt8()
-	if err != nil {
-		return err
-	}
-
-	*rlt = RatingLockType(value)
-	return nil
-}

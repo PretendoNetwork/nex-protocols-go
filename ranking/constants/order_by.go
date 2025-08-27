@@ -5,11 +5,6 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // OrderBy is used in RankingScoreData.OrderBy to set the "golf scoring" mode for a category.
 type OrderBy uint8
 
-const (
-	OrderByAscending OrderBy = iota
-	OrderByDescending
-)
-
 // WriteTo writes the OrderBy to the given writable
 func (ob OrderBy) WriteTo(writable types.Writable) {
 	writable.WriteUInt8(uint8(ob))
@@ -25,3 +20,8 @@ func (ob *OrderBy) ExtractFrom(readable types.Readable) error {
 	*ob = OrderBy(value)
 	return nil
 }
+
+const (
+	OrderByAscending OrderBy = iota
+	OrderByDescending
+)

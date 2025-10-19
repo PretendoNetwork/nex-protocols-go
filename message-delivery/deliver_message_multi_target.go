@@ -1,4 +1,4 @@
-// Package protocol implements the Messaging protocol
+// Package protocol implements the Message Delivery protocol
 package protocol
 
 import (
@@ -11,7 +11,7 @@ import (
 
 func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
 	if protocol.DeliverMessageMultiTarget == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Messaging::DeliverMessageMultiTarget not implemented")
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MessageDelivery::DeliverMessageMultiTarget not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)

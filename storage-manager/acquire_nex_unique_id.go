@@ -1,4 +1,4 @@
-// Package protocol implements the Subscription protocol
+// Package protocol implements the StorageManager protocol
 package protocol
 
 import (
@@ -6,13 +6,12 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
-
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-func (protocol *Protocol) handleReplaceTargetAndGetSubscriptionData(packet nex.PacketInterface) {
-	if protocol.ReplaceTargetAndGetSubscriptionData == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::ReplaceTargetAndGetSubscriptionData not implemented")
+func (protocol *Protocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
+	if protocol.AcquireNexUniqueID == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "StorageManager::AcquireNexUniqueID not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)
@@ -26,11 +25,13 @@ func (protocol *Protocol) handleReplaceTargetAndGetSubscriptionData(packet nex.P
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var newTargets types.List[types.PID]
+	var slot types.UInt8
 
-	err := newTargets.ExtractFrom(parametersStream)
+	var err error
+
+	err = slot.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReplaceTargetAndGetSubscriptionData(fmt.Errorf("Failed to read newTargets from parameters. %s", err.Error()), packet, callID, newTargets)
+		_, rmcError := protocol.AcquireNexUniqueID(fmt.Errorf("Failed to read slot from parameters. %s", err.Error()), packet, callID, slot)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -38,7 +39,7 @@ func (protocol *Protocol) handleReplaceTargetAndGetSubscriptionData(packet nex.P
 		return
 	}
 
-	rmcMessage, rmcError := protocol.ReplaceTargetAndGetSubscriptionData(nil, packet, callID, newTargets)
+	rmcMessage, rmcError := protocol.AcquireNexUniqueID(nil, packet, callID, slot)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

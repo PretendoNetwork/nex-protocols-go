@@ -35,10 +35,15 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, err error) {
 
 		endpoint := sender.(*nex.PRUDPConnection).Endpoint()
 		server := endpoint.(*nex.PRUDPEndPoint).Server
-		if packet.Version() == 1 {
-			prudpPacket, _ = nex.NewPRUDPPacketV1(server, sender.(*nex.PRUDPConnection), nil)
-		} else {
+		switch packet.Version() {
+		case 0:
 			prudpPacket, _ = nex.NewPRUDPPacketV0(server, sender.(*nex.PRUDPConnection), nil)
+		case 1:
+			prudpPacket, _ = nex.NewPRUDPPacketV1(server, sender.(*nex.PRUDPConnection), nil)
+		case 2:
+			prudpPacket, _ = nex.NewPRUDPPacketLite(server, sender.(*nex.PRUDPConnection), nil)
+		default:
+			Logger.Errorf("PRUDP version %d is not supported", packet.Version())
 		}
 
 		prudpPacket.SetType(constants.DataPacket)

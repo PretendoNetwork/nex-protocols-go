@@ -1,4 +1,4 @@
-// Package protocol implements the StorageManager protocol
+// Package protocol implements the legacy Ranking protocol
 package protocol
 
 import (
@@ -9,9 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
-	if protocol.ActivateWithCardID == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "StorageManager::ActivateWithCardID not implemented")
+// TODO - Find name if possible
+func (protocol *Protocol) handleUnk0x8(packet nex.PacketInterface) {
+	if protocol.Unk0x8 == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::Unk0x8 not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)
@@ -19,20 +20,21 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
+	endpoint := packet.Sender().Endpoint()
+
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var slot types.UInt8
-	var cardID types.UInt64
+	var uniqueID types.UInt32
+	var unknown types.UInt8
 
 	var err error
 
-	err = slot.ExtractFrom(parametersStream)
+	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read slot from parameters. %s", err.Error()), packet, callID, slot, cardID)
+		_, rmcError := protocol.Unk0x8(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, unknown)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -40,9 +42,9 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	err = cardID.ExtractFrom(parametersStream)
+	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, slot, cardID)
+		_, rmcError := protocol.Unk0x8(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, unknown)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -50,7 +52,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.ActivateWithCardID(nil, packet, callID, slot, cardID)
+	rmcMessage, rmcError := protocol.Unk0x8(nil, packet, callID, uniqueID, unknown)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

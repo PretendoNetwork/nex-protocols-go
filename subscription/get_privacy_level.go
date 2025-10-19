@@ -1,4 +1,4 @@
-// Package protocol implements the Rating protocol
+// Package protocol implements the Subscription protocol
 package protocol
 
 import (
@@ -6,10 +6,9 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// TODO - Find name if possible
-func (protocol *Protocol) handleUnk1(packet nex.PacketInterface) {
-	if protocol.Unk1 == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Rating::Unk1 not implemented")
+func (protocol *Protocol) handleGetPrivacyLevel(packet nex.PacketInterface) {
+	if protocol.GetPrivacyLevel == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::GetPrivacyLevel not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)
@@ -20,7 +19,7 @@ func (protocol *Protocol) handleUnk1(packet nex.PacketInterface) {
 	request := packet.RMCMessage()
 	callID := request.CallID
 
-	rmcMessage, rmcError := protocol.Unk1(nil, packet, callID)
+	rmcMessage, rmcError := protocol.GetPrivacyLevel(nil, packet, callID)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

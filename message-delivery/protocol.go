@@ -1,4 +1,4 @@
-// Package protocol implements the Message Deliver protocol
+// Package protocol implements the Message Delivery protocol
 package protocol
 
 import (
@@ -16,14 +16,18 @@ const (
 
 	// MethodDeliverMessage is the method ID for the method DeliverMessage
 	MethodDeliverMessage = 0x1
+
+	// MethodDeliverMessageMultiTarget is the method ID for the method DeliverMessageMultiTarget
+	MethodDeliverMessageMultiTarget = 0x2
 )
 
 // Protocol stores all the RMC method handlers for the Message Delivery protocol and listens for requests
 type Protocol struct {
-	endpoint       nex.EndpointInterface
-	DeliverMessage func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)
-	Patches        nex.ServiceProtocol
-	PatchedMethods []uint32
+	endpoint                  nex.EndpointInterface
+	DeliverMessage            func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)
+	DeliverMessageMultiTarget func(err error, packet nex.PacketInterface, callID uint32, lstTarget types.List[types.PID], oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)
+	Patches                   nex.ServiceProtocol
+	PatchedMethods            []uint32
 }
 
 // Interface implements the methods present on the Message Deliver protocol struct
@@ -31,6 +35,7 @@ type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, lstTarget types.List[types.PID], oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -46,6 +51,11 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 // SetHandlerDeliverMessage sets the handler for the DeliverMessage method
 func (protocol *Protocol) SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DeliverMessage = handler
+}
+
+// SetHandlerDeliverMessageMultiTarget sets the handler for the DeliverMessageMultiTarget method
+func (protocol *Protocol) SetHandlerDeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, lstTarget types.List[types.PID], oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
+	protocol.DeliverMessageMultiTarget = handler
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
@@ -64,6 +74,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	switch message.MethodID {
 	case MethodDeliverMessage:
 		protocol.handleDeliverMessage(packet)
+	case MethodDeliverMessageMultiTarget:
+		protocol.handleDeliverMessageMultiTarget(packet)
 	default:
 		errMessage := fmt.Sprintf("Unsupported MessageDelivery method ID: %#v\n", message.MethodID)
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)

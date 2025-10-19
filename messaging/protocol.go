@@ -50,7 +50,7 @@ type Protocol struct {
 	RetrieveMessages               func(err error, packet nex.PacketInterface, callID uint32, recipient messaging_types.MessageRecipient, lstMsgIDs types.List[types.UInt32], bLeaveOnServer types.Bool) (*nex.RMCMessage, *nex.Error)
 	DeleteMessages                 func(err error, packet nex.PacketInterface, callID uint32, recipient messaging_types.MessageRecipient, lstMessagesToDelete types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
 	DeleteAllMessages              func(err error, packet nex.PacketInterface, callID uint32, recipient messaging_types.MessageRecipient) (*nex.RMCMessage, *nex.Error)
-	DeliverMessageMultiTarget      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error) // TODO - Unknown request/response format
+	DeliverMessageMultiTarget      func(err error, packet nex.PacketInterface, callID uint32, lstTarget types.List[types.PID], oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)
 	Patches                        nex.ServiceProtocol
 	PatchedMethods                 []uint32
 }
@@ -66,7 +66,7 @@ type Interface interface {
 	SetHandlerRetrieveMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient messaging_types.MessageRecipient, lstMsgIDs types.List[types.UInt32], bLeaveOnServer types.Bool) (*nex.RMCMessage, *nex.Error))
 	SetHandlerDeleteMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient messaging_types.MessageRecipient, lstMessagesToDelete types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerDeleteAllMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient messaging_types.MessageRecipient) (*nex.RMCMessage, *nex.Error))
-	SetHandlerDeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, lstTarget types.List[types.PID], oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -115,7 +115,7 @@ func (protocol *Protocol) SetHandlerDeleteAllMessages(handler func(err error, pa
 }
 
 // SetHandlerDeliverMessageMultiTarget sets the handler for the DeliverMessageMultiTarget method
-func (protocol *Protocol) SetHandlerDeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerDeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, lstTarget types.List[types.PID], oUserMessage types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DeliverMessageMultiTarget = handler
 }
 

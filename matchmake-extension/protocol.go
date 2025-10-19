@@ -189,7 +189,7 @@ type Protocol struct {
 	CreateMatchmakeSession                                  func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error)
 	JoinMatchmakeSession                                    func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	ModifyCurrentGameAttribute                              func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribIndex types.UInt32, newValue types.UInt32) (*nex.RMCMessage, *nex.Error)
-	UpdateNotificationData                                  func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt32, uiParam2 types.UInt32, strParam types.String) (*nex.RMCMessage, *nex.Error)
+	UpdateNotificationData                                  func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error)
 	GetFriendNotificationData                               func(err error, packet nex.PacketInterface, callID uint32, uiType types.Int32) (*nex.RMCMessage, *nex.Error)
 	UpdateApplicationBuffer                                 func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, applicationBuffer types.Buffer) (*nex.RMCMessage, *nex.Error)
 	UpdateMatchmakeSessionAttribute                         func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribs types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
@@ -251,7 +251,7 @@ type Interface interface {
 	SetHandlerCreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error))
 	SetHandlerJoinMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerModifyCurrentGameAttribute(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribIndex types.UInt32, newValue types.UInt32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt32, uiParam2 types.UInt32, strParam types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.Int32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateApplicationBuffer(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, applicationBuffer types.Buffer) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateMatchmakeSessionAttribute(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribs types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
@@ -350,7 +350,7 @@ func (protocol *Protocol) SetHandlerModifyCurrentGameAttribute(handler func(err 
 }
 
 // SetHandlerUpdateNotificationData sets the handler for the UpdateNotificationData method
-func (protocol *Protocol) SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt32, uiParam2 types.UInt32, strParam types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateNotificationData = handler
 }
 

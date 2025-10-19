@@ -43,7 +43,7 @@ func main() {
 	nexServer.SessionKeyLength = 16
 	nexServer.AccessKey = "ridfebb9"
 
-	ticketGrantingProtocol := ticket_granting.NewProtocol(endpoint)
+	ticketGrantingProtocol := ticket_granting.NewProtocol()
 
 	// Handle Login RMC method
 	ticketGrantingProtocol.Login = login

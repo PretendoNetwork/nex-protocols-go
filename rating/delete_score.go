@@ -1,4 +1,4 @@
-// Package protocol implements the StorageManager protocol
+// Package protocol implements the Rating protocol
 package protocol
 
 import (
@@ -6,12 +6,13 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
-	if protocol.ActivateWithCardID == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "StorageManager::ActivateWithCardID not implemented")
+func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
+	if protocol.DeleteScore == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Rating::DeleteScore not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)
@@ -25,14 +26,14 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var slot types.UInt8
-	var cardID types.UInt64
+	var category types.UInt32
+	var uniqueID types.UInt64
 
 	var err error
 
-	err = slot.ExtractFrom(parametersStream)
+	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read slot from parameters. %s", err.Error()), packet, callID, slot, cardID)
+		_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, category, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -40,9 +41,9 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	err = cardID.ExtractFrom(parametersStream)
+	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, slot, cardID)
+		_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, category, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -50,7 +51,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.ActivateWithCardID(nil, packet, callID, slot, cardID)
+	rmcMessage, rmcError := protocol.DeleteScore(nil, packet, callID, category, uniqueID)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

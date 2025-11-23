@@ -33,9 +33,9 @@ const (
 	// ParticipationPolicyOpenParticipation indicates that a session is open to anyone.
 	ParticipationPolicyOpenParticipation ParticipationPolicy = 8
 
-	// ParticipationPolicyNintendoOpenParticipation seems to function the exact same
+	// ParticipationPolicyAnybody seems to function the exact same
 	// as ParticipationPolicyOpenParticipation.
-	ParticipationPolicyNintendoOpenParticipation ParticipationPolicy = 95
+	ParticipationPolicyAnybody ParticipationPolicy = 95
 
 	// ParticipationPolicyInviteOnly has an unknown function. This is used when MatchmakeSystemTypeInvite
 	// is used, and thus is assumed to be invitation-based, but not limited to friend invitations.

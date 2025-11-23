@@ -1,8 +1,7 @@
 package constants
 
-// AnybodyParticipationPolicyArgument seems to determine whether or not to
-// close participation when the gathering owner changes when MatchmakeSystemTypeAnybody
-// is used?
+// AnybodyParticipationPolicyArgument represents the participation policy
+// arguments for when ParticipationPolicyAnybody is used.
 type AnybodyParticipationPolicyArgument = PolicyArgument
 
 const (

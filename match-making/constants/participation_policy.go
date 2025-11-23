@@ -37,7 +37,11 @@ const (
 	// as ParticipationPolicyOpenParticipation.
 	ParticipationPolicyNintendoOpenParticipation ParticipationPolicy = 95
 
-	// ParticipationPolicyCommunity indicates that a session is a community//persistent
+	// ParticipationPolicyInviteOnly has an unknown function. This is used when MatchmakeSystemTypeInvite
+	// is used, and thus is assumed to be invitation-based, but not limited to friend invitations.
+	ParticipationPolicyInviteOnly ParticipationPolicy = 96
+
+	// ParticipationPolicyCommunity indicates that a session is a community/persistent
 	// gathering.
 	//
 	// Seen in Mario Kart 7, Mario Golf, etc.

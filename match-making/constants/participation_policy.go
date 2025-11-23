@@ -27,6 +27,9 @@ func (pp *ParticipationPolicy) ExtractFrom(readable types.Readable) error {
 }
 
 const (
+	// ParticipationPolicyPasswordProtected indicates that a session is protected by as password.
+	ParticipationPolicyPasswordProtected ParticipationPolicy = 4
+
 	// ParticipationPolicyOpenParticipation indicates that a session is open to anyone.
 	ParticipationPolicyOpenParticipation ParticipationPolicy = 8
 

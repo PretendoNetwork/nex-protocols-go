@@ -7,17 +7,17 @@ const (
 	//
 	// NOTE: We don't know the real name of this constant, if there is one. This
 	// name is based on the DataStore constant `MaxNameLength`
-	MaxStringLength uint32 = 256
+	MaxStringLength int = 256
 
 	// MaxBinarySize is the max size a BinaryMessage body may be
 	//
 	// NOTE: We don't know the real name of this constant, if there is one. This
 	// name is based on the DataStore constant `MaxMetaBinSize`
-	MaxBinarySize uint32 = 512
+	MaxBinarySize int = 512
 
 	// MaxStrSubjectSize is the max size of a message StrSubject
 	//
 	// NOTE: We don't know the real name of this constant, if there is one. This
 	// name is based on the DataStore constant `MaxNameLength`
-	MaxStrSubjectLength uint32 = 60
+	MaxStrSubjectLength int = 60
 )

@@ -2,7 +2,7 @@ package constants
 
 const (
 	// MaxCommonDataSize is the maximum length a users common data may be.
-	MaxCommonDataSize uint8 = 255
+	MaxCommonDataSize int = 255
 
 	// MaxRangeRankingOrder is the maximum value an offset may be when
 	// requesting ranking data.

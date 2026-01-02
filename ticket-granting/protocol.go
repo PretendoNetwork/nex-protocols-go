@@ -35,6 +35,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Ticket Granting protocol and listens for requests
 type Protocol struct {
+	useCrossplay     bool
 	endpoint         nex.EndpointInterface
 	Login            func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)
 	LoginEx          func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.DataHolder) (*nex.RMCMessage, *nex.Error)
@@ -48,6 +49,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Ticket Granting protocol struct
 type Interface interface {
+	UseCrossplay() bool
+	SetUseCrossplay(useCrossplay bool)
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerLogin(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error))
@@ -56,6 +59,16 @@ type Interface interface {
 	SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+}
+
+// UseCrossplay returns if switch crossplay is supported by the game
+func (protocol *Protocol) UseCrossplay() bool {
+	return protocol.useCrossplay
+}
+
+// SetUseCrossplay sets if switch crossplay is supported by the game
+func (protocol *Protocol) SetUseCrossplay(useCrossplay bool) {
+	protocol.useCrossplay = useCrossplay
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -135,5 +148,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Ticket Granting protocol
 func NewProtocol() *Protocol {
-	return &Protocol{}
+	return &Protocol{
+		useCrossplay: false,
+	}
 }

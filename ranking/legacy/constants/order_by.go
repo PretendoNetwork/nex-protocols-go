@@ -2,7 +2,7 @@ package constants
 
 import "github.com/PretendoNetwork/nex-go/v2/types"
 
-// OrderBy is used in RankingScoreData.OrderBy to set the "golf scoring" mode for a category.
+// OrderBy is used to set the "golf scoring" mode for a category.
 type OrderBy uint8
 
 // WriteTo writes the OrderBy to the given writable

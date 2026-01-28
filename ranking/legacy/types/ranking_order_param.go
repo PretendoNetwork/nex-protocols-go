@@ -6,14 +6,15 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/constants"
 )
 
 // RankingOrderParam is a type within the Ranking protocol
 type RankingOrderParam struct {
 	types.Structure
-	ScoreIndex      types.UInt8
-	ScoreOrder      types.UInt8
-	RankCalculation types.UInt8
+	ScoreIndex      constants.ScoreIndex
+	ScoreOrder      constants.OrderBy
+	RankCalculation constants.OrderCalculation
 	Unknown1        types.UInt8
 	Unknown2        types.UInt8
 	Unknown3        types.UInt8
@@ -91,9 +92,9 @@ func (rop RankingOrderParam) Copy() types.RVType {
 	copied := NewRankingOrderParam()
 
 	copied.StructureVersion = rop.StructureVersion
-	copied.ScoreIndex = rop.ScoreIndex.Copy().(types.UInt8)
-	copied.ScoreOrder = rop.ScoreOrder.Copy().(types.UInt8)
-	copied.RankCalculation = rop.RankCalculation.Copy().(types.UInt8)
+	copied.ScoreIndex = rop.ScoreIndex
+	copied.ScoreOrder = rop.ScoreOrder
+	copied.RankCalculation = rop.RankCalculation
 	copied.Unknown1 = rop.Unknown1.Copy().(types.UInt8)
 	copied.Unknown2 = rop.Unknown2.Copy().(types.UInt8)
 	copied.Unknown3 = rop.Unknown3.Copy().(types.UInt8)
@@ -114,15 +115,15 @@ func (rop RankingOrderParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rop.ScoreIndex.Equals(other.ScoreIndex) {
+	if rop.ScoreIndex != other.ScoreIndex {
 		return false
 	}
 
-	if !rop.ScoreOrder.Equals(other.ScoreOrder) {
+	if rop.ScoreOrder != other.ScoreOrder {
 		return false
 	}
 
-	if !rop.RankCalculation.Equals(other.RankCalculation) {
+	if rop.RankCalculation != other.RankCalculation {
 		return false
 	}
 
@@ -183,9 +184,9 @@ func (rop RankingOrderParam) FormatToString(indentationLevel int) string {
 // NewRankingOrderParam returns a new RankingOrderParam
 func NewRankingOrderParam() RankingOrderParam {
 	return RankingOrderParam{
-		ScoreIndex:      types.NewUInt8(0),
-		ScoreOrder:      types.NewUInt8(0),
-		RankCalculation: types.NewUInt8(0),
+		ScoreIndex:      constants.ScoreIndex0,
+		ScoreOrder:      constants.OrderByAscending,
+		RankCalculation: constants.OrderCalculation113,
 		Unknown1:        types.NewUInt8(0),
 		Unknown2:        types.NewUInt8(0),
 		Unknown3:        types.NewUInt8(0),

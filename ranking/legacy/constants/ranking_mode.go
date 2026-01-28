@@ -1,0 +1,59 @@
+package constants
+
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
+// RankingMode represents the selection of who will be included on the leaderboard (global, friends, nearby etc.).
+type RankingMode uint8
+
+// WriteTo writes the RankingMode to the given writable
+func (rm RankingMode) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(rm))
+}
+
+// ExtractFrom extracts the RankingMode value from the given readable
+func (rm *RankingMode) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*rm = RankingMode(value)
+	return nil
+}
+
+const (
+	// RankingModeRange retrieves the entire global leaderboard up to 1000 entries.
+	// This uses the offset provided on methods as the base rank to offset from (0 being world record), no higher than 1000 (MAX_RANGE_RANKING_ORDER?).
+	// PIDs and unique IDs are ignored.
+	RankingModeRange RankingMode = iota
+
+	// RankingModeNear retrieves the selected users rankings and those surrounding the selected user,
+	// placing the selected user in the middle. For example if the length provided on methods is 11, then
+	// the selected user's ranking would be in the 5th index (6th place), with 5 rankings on both sides.
+	// The selected user may not be in the middle if in first or last place.
+	// "Selected user" can mean both the connected user OR specific user(s). If a user is specified
+	// (PID/Unique ID), that becomes "selected user". Otherwise this is the connected user.
+	// More than 1 "selected user" may be selected in methods such as `GetRankingByPIDList`
+	// The offset provided on methods is ignored.
+	RankingModeNear
+
+	// RankingModeFriendRange functions identically to RankingModeRange, but only returns rankings
+	// of friends and the connected user. All data from all unique IDs for the connected user and
+	// friends are retrieved.
+	// If the connected user has no friends, functions identically to RankingModeUser.
+	// PIDs and unique IDs are ignored.
+	RankingModeFriendRange
+
+	// RankingModeFriendNear retrieves the connected users rankings and the rankings of friends surrounding
+	// the connected user, placing the connected user in the middle. For example if the length provided on methods
+	// is 11, then the connected user's ranking would be in the 5th index (6th place), with 5 friends on both sides.
+	// The connected user may not be in the middle if in first or last place.
+	// If the connected user has more than 1 unique ID, only respect the ones requested (if any).
+	// The offset provided on methods is ignored.
+	// PIDs and the offset provided on methods are ignored.
+	RankingModeFriendNear
+
+	// RankingModeUser retrieves all the ranking data for the connected user, including all unique IDs.
+	// The offset provided on methods is ignored.
+	RankingModeUser
+)

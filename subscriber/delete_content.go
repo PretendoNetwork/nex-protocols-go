@@ -25,14 +25,14 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var unknown1 types.List[types.String]
-	var unknown2 types.UInt64
+	var topics types.List[types.String]
+	var contentID types.UInt64
 
 	var err error
 
-	err = unknown1.ExtractFrom(parametersStream)
+	err = topics.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2)
+		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read topics from parameters. %s", err.Error()), packet, callID, topics, contentID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -40,9 +40,9 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 		return
 	}
 
-	err = unknown2.ExtractFrom(parametersStream)
+	err = contentID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2)
+		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read contentID from parameters. %s", err.Error()), packet, callID, topics, contentID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -50,7 +50,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.DeleteContent(nil, packet, callID, unknown1, unknown2)
+	rmcMessage, rmcError := protocol.DeleteContent(nil, packet, callID, topics, contentID)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreMetaInfo is a type within the DataStore protocol
@@ -22,10 +23,10 @@ type DataStoreMetaInfo struct {
 	CreatedTime   types.DateTime
 	UpdatedTime   types.DateTime
 	Period        types.UInt16
-	Status        types.UInt8
+	Status        constants.DataStatus
 	ReferredCnt   types.UInt32
 	ReferDataID   types.UInt32
-	Flag          types.UInt32
+	Flag          constants.DataFlag
 	ReferredTime  types.DateTime
 	ExpireTime    types.DateTime
 	Tags          types.List[types.String]
@@ -186,10 +187,10 @@ func (dsmi DataStoreMetaInfo) Copy() types.RVType {
 	copied.CreatedTime = dsmi.CreatedTime.Copy().(types.DateTime)
 	copied.UpdatedTime = dsmi.UpdatedTime.Copy().(types.DateTime)
 	copied.Period = dsmi.Period.Copy().(types.UInt16)
-	copied.Status = dsmi.Status.Copy().(types.UInt8)
+	copied.Status = dsmi.Status
 	copied.ReferredCnt = dsmi.ReferredCnt.Copy().(types.UInt32)
 	copied.ReferDataID = dsmi.ReferDataID.Copy().(types.UInt32)
-	copied.Flag = dsmi.Flag.Copy().(types.UInt32)
+	copied.Flag = dsmi.Flag
 	copied.ReferredTime = dsmi.ReferredTime.Copy().(types.DateTime)
 	copied.ExpireTime = dsmi.ExpireTime.Copy().(types.DateTime)
 	copied.Tags = dsmi.Tags.Copy().(types.List[types.String])
@@ -254,7 +255,7 @@ func (dsmi DataStoreMetaInfo) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsmi.Status.Equals(other.Status) {
+	if dsmi.Status != other.Status {
 		return false
 	}
 
@@ -266,7 +267,7 @@ func (dsmi DataStoreMetaInfo) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsmi.Flag.Equals(other.Flag) {
+	if dsmi.Flag != other.Flag {
 		return false
 	}
 
@@ -376,10 +377,10 @@ func NewDataStoreMetaInfo() DataStoreMetaInfo {
 		CreatedTime:   types.NewDateTime(0),
 		UpdatedTime:   types.NewDateTime(0),
 		Period:        types.NewUInt16(0),
-		Status:        types.NewUInt8(0),
+		Status:        constants.DataStatusNone,
 		ReferredCnt:   types.NewUInt32(0),
 		ReferDataID:   types.NewUInt32(0),
-		Flag:          types.NewUInt32(0),
+		Flag:          constants.DataFlagNone,
 		ReferredTime:  types.NewDateTime(0),
 		ExpireTime:    types.NewDateTime(0),
 		Tags:          types.NewList[types.String](),

@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/friends-wiiu/constants"
 )
 
 // NintendoPresenceV2 is a type within the FriendsWiiU protocol
 type NintendoPresenceV2 struct {
 	types.Structure
 	types.Data
-	ChangedFlags    types.UInt32
+	ChangedFlags    constants.PresenceChangedFlag
 	Online          types.Bool
 	GameKey         GameKey
 	Unknown1        types.UInt8
@@ -166,7 +167,7 @@ func (npv NintendoPresenceV2) Copy() types.RVType {
 
 	copied.StructureVersion = npv.StructureVersion
 	copied.Data = npv.Data.Copy().(types.Data)
-	copied.ChangedFlags = npv.ChangedFlags.Copy().(types.UInt32)
+	copied.ChangedFlags = npv.ChangedFlags
 	copied.Online = npv.Online.Copy().(types.Bool)
 	copied.GameKey = npv.GameKey.Copy().(GameKey)
 	copied.Unknown1 = npv.Unknown1.Copy().(types.UInt8)
@@ -201,7 +202,7 @@ func (npv NintendoPresenceV2) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !npv.ChangedFlags.Equals(other.ChangedFlags) {
+	if npv.ChangedFlags != other.ChangedFlags {
 		return false
 	}
 
@@ -288,7 +289,7 @@ func (npv NintendoPresenceV2) FormatToString(indentationLevel int) string {
 
 	b.WriteString("NintendoPresenceV2{\n")
 	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, npv.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sChangedFlags: %s,\n", indentationValues, npv.ChangedFlags))
+	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, npv.ChangedFlags))
 	b.WriteString(fmt.Sprintf("%sOnline: %s,\n", indentationValues, npv.Online))
 	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, npv.GameKey.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, npv.Unknown1))
@@ -312,7 +313,7 @@ func (npv NintendoPresenceV2) FormatToString(indentationLevel int) string {
 func NewNintendoPresenceV2() NintendoPresenceV2 {
 	return NintendoPresenceV2{
 		Data:            types.NewData(),
-		ChangedFlags:    types.NewUInt32(0),
+		ChangedFlags:    constants.PresenceChangedFlagNone,
 		Online:          types.NewBool(false),
 		GameKey:         NewGameKey(),
 		Unknown1:        types.NewUInt8(0),

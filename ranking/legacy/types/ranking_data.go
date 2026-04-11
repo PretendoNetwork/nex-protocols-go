@@ -7,6 +7,8 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/constants"
 )
 
 // RankingData is a type within the Ranking protocol
@@ -92,7 +94,7 @@ func (rd *RankingData) ExtractFrom(readable types.Readable) error {
 			return fmt.Errorf("Failed to extract RankingData.Category. %s", err.Error())
 		}
 
-		if len(category) != 1 {
+		if len(category) != constants.NumRankingDataCategories {
 			return fmt.Errorf("Failed to extract RankingData.Category. Expected length of 1, got %d", len(category))
 		}
 

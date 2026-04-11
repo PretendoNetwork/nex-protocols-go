@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/constants"
 )
 
 // Ranking2CategorySetting is a type within the Ranking2 protocol
@@ -14,10 +15,10 @@ type Ranking2CategorySetting struct {
 	MinScore           types.UInt32
 	MaxScore           types.UInt32
 	LowestRank         types.UInt32
-	ResetMonth         types.UInt16
-	ResetDay           types.UInt8
+	ResetMonth         constants.Ranking2ResetMonth
+	ResetDay           constants.Ranking2ResetDay
 	ResetHour          types.UInt8
-	ResetMode          types.UInt8
+	ResetMode          constants.Ranking2ResetMode
 	MaxSeasonsToGoBack types.UInt8
 	ScoreOrder         types.Bool
 }
@@ -108,10 +109,10 @@ func (rcs Ranking2CategorySetting) Copy() types.RVType {
 	copied.MinScore = rcs.MinScore.Copy().(types.UInt32)
 	copied.MaxScore = rcs.MaxScore.Copy().(types.UInt32)
 	copied.LowestRank = rcs.LowestRank.Copy().(types.UInt32)
-	copied.ResetMonth = rcs.ResetMonth.Copy().(types.UInt16)
-	copied.ResetDay = rcs.ResetDay.Copy().(types.UInt8)
+	copied.ResetMonth = rcs.ResetMonth
+	copied.ResetDay = rcs.ResetDay
 	copied.ResetHour = rcs.ResetHour.Copy().(types.UInt8)
-	copied.ResetMode = rcs.ResetMode.Copy().(types.UInt8)
+	copied.ResetMode = rcs.ResetMode
 	copied.MaxSeasonsToGoBack = rcs.MaxSeasonsToGoBack.Copy().(types.UInt8)
 	copied.ScoreOrder = rcs.ScoreOrder.Copy().(types.Bool)
 
@@ -142,11 +143,11 @@ func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rcs.ResetMonth.Equals(other.ResetMonth) {
+	if rcs.ResetMonth != other.ResetMonth {
 		return false
 	}
 
-	if !rcs.ResetDay.Equals(other.ResetDay) {
+	if rcs.ResetDay != other.ResetDay {
 		return false
 	}
 
@@ -154,7 +155,7 @@ func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rcs.ResetMode.Equals(other.ResetMode) {
+	if rcs.ResetMode != other.ResetMode {
 		return false
 	}
 
@@ -212,10 +213,10 @@ func NewRanking2CategorySetting() Ranking2CategorySetting {
 		MinScore:           types.NewUInt32(0),
 		MaxScore:           types.NewUInt32(0),
 		LowestRank:         types.NewUInt32(0),
-		ResetMonth:         types.NewUInt16(0),
-		ResetDay:           types.NewUInt8(0),
+		ResetMonth:         constants.Ranking2ResetMonthNone,
+		ResetDay:           constants.Ranking2ResetDayMonday,
 		ResetHour:          types.NewUInt8(0),
-		ResetMode:          types.NewUInt8(0),
+		ResetMode:          constants.Ranking2ResetModeNothing,
 		MaxSeasonsToGoBack: types.NewUInt8(0),
 		ScoreOrder:         types.NewBool(false),
 	}

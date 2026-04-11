@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/friends-3ds/constants"
 )
 
 // NintendoPresence is a type within the Friends3DS protocol
 type NintendoPresence struct {
 	types.Structure
 	types.Data
-	ChangedFlags      types.UInt32
+	ChangedFlags      constants.PresenceChangedFlag
 	GameKey           GameKey
 	Message           types.String
 	JoinAvailableFlag types.UInt32
@@ -131,7 +132,7 @@ func (np NintendoPresence) Copy() types.RVType {
 
 	copied.StructureVersion = np.StructureVersion
 	copied.Data = np.Data.Copy().(types.Data)
-	copied.ChangedFlags = np.ChangedFlags.Copy().(types.UInt32)
+	copied.ChangedFlags = np.ChangedFlags
 	copied.GameKey = np.GameKey.Copy().(GameKey)
 	copied.Message = np.Message.Copy().(types.String)
 	copied.JoinAvailableFlag = np.JoinAvailableFlag.Copy().(types.UInt32)
@@ -161,7 +162,7 @@ func (np NintendoPresence) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !np.ChangedFlags.Equals(other.ChangedFlags) {
+	if np.ChangedFlags != other.ChangedFlags {
 		return false
 	}
 
@@ -228,7 +229,7 @@ func (np NintendoPresence) FormatToString(indentationLevel int) string {
 
 	b.WriteString("NintendoPresence{\n")
 	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, np.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sChangedFlags: %s,\n", indentationValues, np.ChangedFlags))
+	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, np.ChangedFlags))
 	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, np.GameKey.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, np.Message))
 	b.WriteString(fmt.Sprintf("%sJoinAvailableFlag: %s,\n", indentationValues, np.JoinAvailableFlag))
@@ -247,7 +248,7 @@ func (np NintendoPresence) FormatToString(indentationLevel int) string {
 func NewNintendoPresence() NintendoPresence {
 	return NintendoPresence{
 		Data:              types.NewData(),
-		ChangedFlags:      types.NewUInt32(0),
+		ChangedFlags:      constants.PresenceChangedFlagNone,
 		GameKey:           NewGameKey(),
 		Message:           types.NewString(""),
 		JoinAvailableFlag: types.NewUInt32(0),

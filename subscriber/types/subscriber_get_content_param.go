@@ -11,20 +11,20 @@ import (
 // SubscriberGetContentParam is a type within the Shop protocol
 type SubscriberGetContentParam struct {
 	types.Structure
-	Unknown1 types.String
-	Unknown2 types.UInt32
-	Unknown3 types.UInt32
-	Unknown4 types.UInt64
+	Topic            types.String
+	Size             types.UInt32
+	Offset           types.UInt32
+	MinimumContentID types.UInt64
 }
 
 // WriteTo writes the SubscriberGetContentParam to the given writable
 func (sgcp SubscriberGetContentParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sgcp.Unknown1.WriteTo(contentWritable)
-	sgcp.Unknown2.WriteTo(contentWritable)
-	sgcp.Unknown3.WriteTo(contentWritable)
-	sgcp.Unknown4.WriteTo(contentWritable)
+	sgcp.Topic.WriteTo(contentWritable)
+	sgcp.Size.WriteTo(contentWritable)
+	sgcp.Offset.WriteTo(contentWritable)
+	sgcp.MinimumContentID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 
@@ -42,24 +42,24 @@ func (sgcp *SubscriberGetContentParam) ExtractFrom(readable types.Readable) erro
 		return fmt.Errorf("Failed to extract SubscriberGetContentParam header. %s", err.Error())
 	}
 
-	err = sgcp.Unknown1.ExtractFrom(readable)
+	err = sgcp.Topic.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown1. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Topic. %s", err.Error())
 	}
 
-	err = sgcp.Unknown2.ExtractFrom(readable)
+	err = sgcp.Size.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown2. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Size. %s", err.Error())
 	}
 
-	err = sgcp.Unknown3.ExtractFrom(readable)
+	err = sgcp.Offset.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown3. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Offset. %s", err.Error())
 	}
 
-	err = sgcp.Unknown4.ExtractFrom(readable)
+	err = sgcp.MinimumContentID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown4. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam.MinimumContentID. %s", err.Error())
 	}
 
 	return nil
@@ -70,10 +70,10 @@ func (sgcp SubscriberGetContentParam) Copy() types.RVType {
 	copied := NewSubscriberGetContentParam()
 
 	copied.StructureVersion = sgcp.StructureVersion
-	copied.Unknown1 = sgcp.Unknown1.Copy().(types.String)
-	copied.Unknown2 = sgcp.Unknown2.Copy().(types.UInt32)
-	copied.Unknown3 = sgcp.Unknown3.Copy().(types.UInt32)
-	copied.Unknown4 = sgcp.Unknown4.Copy().(types.UInt64)
+	copied.Topic = sgcp.Topic.Copy().(types.String)
+	copied.Size = sgcp.Size.Copy().(types.UInt32)
+	copied.Offset = sgcp.Offset.Copy().(types.UInt32)
+	copied.MinimumContentID = sgcp.MinimumContentID.Copy().(types.UInt64)
 
 	return copied
 }
@@ -90,19 +90,19 @@ func (sgcp SubscriberGetContentParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !sgcp.Unknown1.Equals(other.Unknown1) {
+	if !sgcp.Topic.Equals(other.Topic) {
 		return false
 	}
 
-	if !sgcp.Unknown2.Equals(other.Unknown2) {
+	if !sgcp.Size.Equals(other.Size) {
 		return false
 	}
 
-	if !sgcp.Unknown3.Equals(other.Unknown3) {
+	if !sgcp.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	return sgcp.Unknown4.Equals(other.Unknown4)
+	return sgcp.MinimumContentID.Equals(other.MinimumContentID)
 }
 
 // CopyRef copies the current value of the SubscriberGetContentParam
@@ -132,10 +132,10 @@ func (sgcp SubscriberGetContentParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("SubscriberGetContentParam{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, sgcp.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, sgcp.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, sgcp.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, sgcp.Unknown4))
+	b.WriteString(fmt.Sprintf("%sTopic: %s,\n", indentationValues, sgcp.Topic))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, sgcp.Size))
+	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, sgcp.Offset))
+	b.WriteString(fmt.Sprintf("%sMinimumContentID: %s,\n", indentationValues, sgcp.MinimumContentID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -144,10 +144,10 @@ func (sgcp SubscriberGetContentParam) FormatToString(indentationLevel int) strin
 // NewSubscriberGetContentParam returns a new SubscriberGetContentParam
 func NewSubscriberGetContentParam() SubscriberGetContentParam {
 	return SubscriberGetContentParam{
-		Unknown1: types.NewString(""),
-		Unknown2: types.NewUInt32(0),
-		Unknown3: types.NewUInt32(0),
-		Unknown4: types.NewUInt64(0),
+		Topic:            types.NewString(""),
+		Size:             types.NewUInt32(0),
+		Offset:           types.NewUInt32(0),
+		MinimumContentID: types.NewUInt64(0),
 	}
 
 }

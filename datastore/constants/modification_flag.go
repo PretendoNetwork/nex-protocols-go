@@ -1,7 +1,45 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // ModificationFlag indicates what fields of an object have been modified
 type ModificationFlag uint16
+
+// WriteTo writes the ModificationFlag to the given writable
+func (mf ModificationFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt16LE(uint16(mf))
+}
+
+// ExtractFrom extracts the ModificationFlag value from the given readable
+func (mf *ModificationFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt16LE()
+	if err != nil {
+		return err
+	}
+
+	*mf = ModificationFlag(value)
+	return nil
+}
+
+// HasFlag checks if a given flag is set
+func (mf ModificationFlag) HasFlag(flag ModificationFlag) bool {
+	return mf&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (mf ModificationFlag) HasFlags(flags ...ModificationFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if mf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
 
 const (
 	// ModificationFlagNone means that nothing has changed

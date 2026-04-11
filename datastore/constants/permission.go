@@ -1,9 +1,27 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // Permission defines what users can perform access and update
 // operations for an object. Access and update operations are
 // stored separately
 type Permission uint8
+
+// WriteTo writes the Permission to the given writable
+func (p Permission) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(p))
+}
+
+// ExtractFrom extracts the Permission value from the given readable
+func (p *Permission) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*p = Permission(value)
+	return nil
+}
 
 const (
 	// PermissionPublic means that anyone is allowed

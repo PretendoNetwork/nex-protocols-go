@@ -1,8 +1,46 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // RatingFlag indicates how the server should handle
 // user ratings for object rating slots
 type RatingFlag uint8
+
+// WriteTo writes the RatingFlag to the given writable
+func (rf RatingFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(rf))
+}
+
+// ExtractFrom extracts the RatingFlag value from the given readable
+func (rf *RatingFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*rf = RatingFlag(value)
+	return nil
+}
+
+// HasFlag checks if a given flag is set
+func (rf RatingFlag) HasFlag(flag RatingFlag) bool {
+	return rf&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (rf RatingFlag) HasFlags(flags ...RatingFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if rf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
 
 const (
 	// RatingFlagModifiable means that if a user rates an object

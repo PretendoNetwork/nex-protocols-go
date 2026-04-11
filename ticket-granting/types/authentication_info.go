@@ -7,6 +7,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ticket-granting/constants"
 )
 
 // AuthenticationInfo is a type within the TicketGranting protocol
@@ -15,7 +16,7 @@ type AuthenticationInfo struct {
 	types.Data
 	Token         types.String
 	NGSVersion    types.UInt32
-	TokenType     types.UInt8
+	TokenType     constants.AuthenticationTokenType
 	ServerVersion types.UInt32
 }
 
@@ -103,7 +104,7 @@ func (ai AuthenticationInfo) Copy() types.RVType {
 	copied.Data = ai.Data.Copy().(types.Data)
 	copied.Token = ai.Token.Copy().(types.String)
 	copied.NGSVersion = ai.NGSVersion.Copy().(types.UInt32)
-	copied.TokenType = ai.TokenType.Copy().(types.UInt8)
+	copied.TokenType = ai.TokenType
 	copied.ServerVersion = ai.ServerVersion.Copy().(types.UInt32)
 
 	return copied
@@ -133,7 +134,7 @@ func (ai AuthenticationInfo) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !ai.TokenType.Equals(other.TokenType) {
+	if ai.TokenType != other.TokenType {
 		return false
 	}
 
@@ -183,7 +184,7 @@ func NewAuthenticationInfo() AuthenticationInfo {
 		Data:          types.NewData(),
 		Token:         types.NewString(""),
 		NGSVersion:    types.NewUInt32(0),
-		TokenType:     types.NewUInt8(0),
+		TokenType:     constants.AuthenticationTokenTypeNASC,
 		ServerVersion: types.NewUInt32(0),
 	}
 

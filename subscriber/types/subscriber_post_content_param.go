@@ -11,18 +11,18 @@ import (
 // SubscriberPostContentParam is a type within the Shop protocol
 type SubscriberPostContentParam struct {
 	types.Structure
-	Unknown1 types.List[types.String]
-	Unknown2 types.String
-	Unknown3 types.QBuffer
+	Topic   types.List[types.String]
+	Message types.String
+	Binary  types.QBuffer
 }
 
 // WriteTo writes the SubscriberPostContentParam to the given writable
 func (spcp SubscriberPostContentParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	spcp.Unknown1.WriteTo(contentWritable)
-	spcp.Unknown2.WriteTo(contentWritable)
-	spcp.Unknown3.WriteTo(contentWritable)
+	spcp.Topic.WriteTo(contentWritable)
+	spcp.Message.WriteTo(contentWritable)
+	spcp.Binary.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 
@@ -40,19 +40,19 @@ func (spcp *SubscriberPostContentParam) ExtractFrom(readable types.Readable) err
 		return fmt.Errorf("Failed to extract SubscriberPostContentParam header. %s", err.Error())
 	}
 
-	err = spcp.Unknown1.ExtractFrom(readable)
+	err = spcp.Topic.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Unknown1. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Topic. %s", err.Error())
 	}
 
-	err = spcp.Unknown2.ExtractFrom(readable)
+	err = spcp.Message.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Unknown2. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Message. %s", err.Error())
 	}
 
-	err = spcp.Unknown3.ExtractFrom(readable)
+	err = spcp.Binary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Unknown3. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Binary. %s", err.Error())
 	}
 
 	return nil
@@ -63,9 +63,9 @@ func (spcp SubscriberPostContentParam) Copy() types.RVType {
 	copied := NewSubscriberPostContentParam()
 
 	copied.StructureVersion = spcp.StructureVersion
-	copied.Unknown1 = spcp.Unknown1.Copy().(types.List[types.String])
-	copied.Unknown2 = spcp.Unknown2.Copy().(types.String)
-	copied.Unknown3 = spcp.Unknown3.Copy().(types.QBuffer)
+	copied.Topic = spcp.Topic.Copy().(types.List[types.String])
+	copied.Message = spcp.Message.Copy().(types.String)
+	copied.Binary = spcp.Binary.Copy().(types.QBuffer)
 
 	return copied
 }
@@ -82,15 +82,15 @@ func (spcp SubscriberPostContentParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !spcp.Unknown1.Equals(other.Unknown1) {
+	if !spcp.Topic.Equals(other.Topic) {
 		return false
 	}
 
-	if !spcp.Unknown2.Equals(other.Unknown2) {
+	if !spcp.Message.Equals(other.Message) {
 		return false
 	}
 
-	return spcp.Unknown3.Equals(other.Unknown3)
+	return spcp.Binary.Equals(other.Binary)
 }
 
 // CopyRef copies the current value of the SubscriberPostContentParam
@@ -120,9 +120,9 @@ func (spcp SubscriberPostContentParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("SubscriberPostContentParam{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, spcp.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, spcp.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, spcp.Unknown3))
+	b.WriteString(fmt.Sprintf("%sTopic: %s,\n", indentationValues, spcp.Topic))
+	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, spcp.Message))
+	b.WriteString(fmt.Sprintf("%sBinary: %s,\n", indentationValues, spcp.Binary))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -131,9 +131,9 @@ func (spcp SubscriberPostContentParam) FormatToString(indentationLevel int) stri
 // NewSubscriberPostContentParam returns a new SubscriberPostContentParam
 func NewSubscriberPostContentParam() SubscriberPostContentParam {
 	return SubscriberPostContentParam{
-		Unknown1: types.NewList[types.String](),
-		Unknown2: types.NewString(""),
-		Unknown3: types.NewQBuffer(nil),
+		Topic:   types.NewList[types.String](),
+		Message: types.NewString(""),
+		Binary:  types.NewQBuffer(nil),
 	}
 
 }

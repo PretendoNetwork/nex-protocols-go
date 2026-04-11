@@ -1,9 +1,27 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // RatingLockType indicates the type of lock applied to object ratings.
 // Locks are applied per-user, not per-object. If a user tries to rate
 // an object while a lock is in place, DataStore::OperationNotAllowed is thrown
 type RatingLockType uint8
+
+// WriteTo writes the RatingLockType to the given writable
+func (rlt RatingLockType) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(rlt))
+}
+
+// ExtractFrom extracts the RatingLockType value from the given readable
+func (rlt *RatingLockType) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*rlt = RatingLockType(value)
+	return nil
+}
 
 const (
 	// RatingLockNone means that the ratings should have no locks

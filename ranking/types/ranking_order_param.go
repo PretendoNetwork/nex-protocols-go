@@ -6,15 +6,16 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/constants"
 )
 
 // RankingOrderParam is a type within the Ranking protocol
 type RankingOrderParam struct {
 	types.Structure
-	OrderCalculation types.UInt8
-	GroupIndex       types.UInt8
+	OrderCalculation constants.OrderCalculation
+	GroupIndex       constants.FilterGroupIndex
 	GroupNum         types.UInt8
-	TimeScope        types.UInt8
+	TimeScope        constants.TimeScope
 	Offset           types.UInt32
 	Length           types.UInt8
 }
@@ -84,10 +85,10 @@ func (rop RankingOrderParam) Copy() types.RVType {
 	copied := NewRankingOrderParam()
 
 	copied.StructureVersion = rop.StructureVersion
-	copied.OrderCalculation = rop.OrderCalculation.Copy().(types.UInt8)
-	copied.GroupIndex = rop.GroupIndex.Copy().(types.UInt8)
+	copied.OrderCalculation = rop.OrderCalculation
+	copied.GroupIndex = rop.GroupIndex
 	copied.GroupNum = rop.GroupNum.Copy().(types.UInt8)
-	copied.TimeScope = rop.TimeScope.Copy().(types.UInt8)
+	copied.TimeScope = rop.TimeScope
 	copied.Offset = rop.Offset.Copy().(types.UInt32)
 	copied.Length = rop.Length.Copy().(types.UInt8)
 
@@ -106,11 +107,11 @@ func (rop RankingOrderParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rop.OrderCalculation.Equals(other.OrderCalculation) {
+	if rop.OrderCalculation != other.OrderCalculation {
 		return false
 	}
 
-	if !rop.GroupIndex.Equals(other.GroupIndex) {
+	if rop.GroupIndex != other.GroupIndex {
 		return false
 	}
 
@@ -118,7 +119,7 @@ func (rop RankingOrderParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rop.TimeScope.Equals(other.TimeScope) {
+	if rop.TimeScope != other.TimeScope {
 		return false
 	}
 
@@ -170,10 +171,10 @@ func (rop RankingOrderParam) FormatToString(indentationLevel int) string {
 // NewRankingOrderParam returns a new RankingOrderParam
 func NewRankingOrderParam() RankingOrderParam {
 	return RankingOrderParam{
-		OrderCalculation: types.NewUInt8(0),
-		GroupIndex:       types.NewUInt8(0),
+		OrderCalculation: constants.OrderCalculation113,
+		GroupIndex:       constants.FilterGroupIndex0,
 		GroupNum:         types.NewUInt8(0),
-		TimeScope:        types.NewUInt8(0),
+		TimeScope:        constants.TimeScopeCustom0,
 		Offset:           types.NewUInt32(0),
 		Length:           types.NewUInt8(0),
 	}

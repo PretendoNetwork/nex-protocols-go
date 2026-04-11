@@ -8,6 +8,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/constants"
 	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/types"
 )
 
@@ -50,7 +51,7 @@ const (
 type Protocol struct {
 	endpoint                nex.EndpointInterface
 	PutScore                func(err error, packet nex.PacketInterface, callID uint32, scoreDataList types.List[ranking2_types.Ranking2ScoreData], nexUniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
-	GetCommonData           func(err error, packet nex.PacketInterface, callID uint32, optionFlags types.UInt32, principalID types.PID, nexUniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
+	GetCommonData           func(err error, packet nex.PacketInterface, callID uint32, optionFlags constants.Ranking2GetOptionFlags, principalID types.PID, nexUniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
 	PutCommonData           func(err error, packet nex.PacketInterface, callID uint32, commonData ranking2_types.Ranking2CommonData, nexUniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
 	DeleteCommonData        func(err error, packet nex.PacketInterface, callID uint32, nexUniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)
 	GetRanking              func(err error, packet nex.PacketInterface, callID uint32, getParam ranking2_types.Ranking2GetParam) (*nex.RMCMessage, *nex.Error)
@@ -95,7 +96,7 @@ func (protocol *Protocol) SetHandlerPutScore(handler func(err error, packet nex.
 }
 
 // SetHandlerGetCommonData sets the handler for the GetCommonData method
-func (protocol *Protocol) SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, optionFlags types.UInt32, principalID types.PID, nexUniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, optionFlags constants.Ranking2GetOptionFlags, principalID types.PID, nexUniqueID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetCommonData = handler
 }
 

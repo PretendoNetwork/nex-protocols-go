@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStorePreparePostParamV1 is a type within the DataStore protocol
@@ -17,7 +18,7 @@ type DataStorePreparePostParamV1 struct {
 	MetaBinary       types.QBuffer
 	Permission       DataStorePermission
 	DelPermission    DataStorePermission
-	Flag             types.UInt32
+	Flag             constants.DataFlag
 	Period           types.UInt16
 	ReferDataID      types.UInt32
 	Tags             types.List[types.String]
@@ -125,7 +126,7 @@ func (dspppv DataStorePreparePostParamV1) Copy() types.RVType {
 	copied.MetaBinary = dspppv.MetaBinary.Copy().(types.QBuffer)
 	copied.Permission = dspppv.Permission.Copy().(DataStorePermission)
 	copied.DelPermission = dspppv.DelPermission.Copy().(DataStorePermission)
-	copied.Flag = dspppv.Flag.Copy().(types.UInt32)
+	copied.Flag = dspppv.Flag
 	copied.Period = dspppv.Period.Copy().(types.UInt16)
 	copied.ReferDataID = dspppv.ReferDataID.Copy().(types.UInt32)
 	copied.Tags = dspppv.Tags.Copy().(types.List[types.String])
@@ -170,7 +171,7 @@ func (dspppv DataStorePreparePostParamV1) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dspppv.Flag.Equals(other.Flag) {
+	if dspppv.Flag != other.Flag {
 		return false
 	}
 
@@ -241,7 +242,7 @@ func NewDataStorePreparePostParamV1() DataStorePreparePostParamV1 {
 		MetaBinary:       types.NewQBuffer(nil),
 		Permission:       NewDataStorePermission(),
 		DelPermission:    NewDataStorePermission(),
-		Flag:             types.NewUInt32(0),
+		Flag:             constants.DataFlagNone,
 		Period:           types.NewUInt16(0),
 		ReferDataID:      types.NewUInt32(0),
 		Tags:             types.NewList[types.String](),

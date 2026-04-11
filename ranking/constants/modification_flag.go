@@ -1,8 +1,46 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // ModificationFlag is used by RankingChangeAttributesParam.ModificationFlag to set which fields should be
 // updated.
 type ModificationFlag uint8
+
+// WriteTo writes the ModificationFlag to the given writable
+func (mf ModificationFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(mf))
+}
+
+// ExtractFrom extracts the ModificationFlag value from the given readable
+func (mf *ModificationFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*mf = ModificationFlag(value)
+	return nil
+}
+
+// HasFlag checks if a given flag is set
+func (mf ModificationFlag) HasFlag(flag ModificationFlag) bool {
+	return mf&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (mf ModificationFlag) HasFlags(flags ...ModificationFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if mf&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
 
 const (
 	// ModificationFlagNone indicates that no updates should occur.

@@ -7,6 +7,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/messaging/constants"
 )
 
 // UserMessage is a type within the MessageDelivery protocol
@@ -14,13 +15,13 @@ type UserMessage struct {
 	types.Structure
 	types.Data
 	UIID             types.UInt32
-	IDRecipient      types.UInt32     // * NEX <4.0.0
-	UIRecipientType  types.UInt32     // * NEX <4.0.0
+	IDRecipient      types.UInt32            // * NEX <4.0.0
+	UIRecipientType  constants.RecipientType // * NEX <4.0.0
 	UIParentID       types.UInt32
 	PIDSender        types.PID
 	Receptiontime    types.DateTime
 	UILifeTime       types.UInt32
-	UIFlags          types.UInt32
+	UIFlags          constants.MessageFlag
 	StrSubject       types.String
 	StrSender        types.String
 	MessageRecipient MessageRecipient // * NEX 4.0.0
@@ -147,7 +148,6 @@ func (um *UserMessage) ExtractFrom(readable types.Readable) error {
 		}
 	}
 
-
 	return nil
 }
 
@@ -159,12 +159,12 @@ func (um UserMessage) Copy() types.RVType {
 	copied.Data = um.Data.Copy().(types.Data)
 	copied.UIID = um.UIID.Copy().(types.UInt32)
 	copied.IDRecipient = um.IDRecipient.Copy().(types.UInt32)
-	copied.UIRecipientType = um.UIRecipientType.Copy().(types.UInt32)
+	copied.UIRecipientType = um.UIRecipientType
 	copied.UIParentID = um.UIParentID.Copy().(types.UInt32)
 	copied.PIDSender = um.PIDSender.Copy().(types.PID)
 	copied.Receptiontime = um.Receptiontime.Copy().(types.DateTime)
 	copied.UILifeTime = um.UILifeTime.Copy().(types.UInt32)
-	copied.UIFlags = um.UIFlags.Copy().(types.UInt32)
+	copied.UIFlags = um.UIFlags
 	copied.StrSubject = um.StrSubject.Copy().(types.String)
 	copied.StrSender = um.StrSender.Copy().(types.String)
 	copied.MessageRecipient = um.MessageRecipient.Copy().(MessageRecipient)
@@ -196,7 +196,7 @@ func (um UserMessage) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !um.UIRecipientType.Equals(other.UIRecipientType) {
+	if um.UIRecipientType != other.UIRecipientType {
 		return false
 	}
 
@@ -216,7 +216,7 @@ func (um UserMessage) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !um.UIFlags.Equals(other.UIFlags) {
+	if um.UIFlags != other.UIFlags {
 		return false
 	}
 
@@ -281,12 +281,12 @@ func NewUserMessage() UserMessage {
 		Data:             types.NewData(),
 		UIID:             types.NewUInt32(0),
 		IDRecipient:      types.NewUInt32(0),
-		UIRecipientType:  types.NewUInt32(0),
+		UIRecipientType:  constants.RecipientType(0), // TODO - What is the real default?,
 		UIParentID:       types.NewUInt32(0),
 		PIDSender:        types.NewPID(0),
 		Receptiontime:    types.NewDateTime(0),
 		UILifeTime:       types.NewUInt32(0),
-		UIFlags:          types.NewUInt32(0),
+		UIFlags:          constants.MessageFlagPersistentMessage,
 		StrSubject:       types.NewString(""),
 		StrSender:        types.NewString(""),
 		MessageRecipient: NewMessageRecipient(),

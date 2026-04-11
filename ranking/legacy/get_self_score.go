@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/constants"
 )
 
 func (protocol *Protocol) handleGetSelfScore(packet nex.PacketInterface) {
@@ -68,7 +69,7 @@ func (protocol *Protocol) handleGetSelfScore(packet nex.PacketInterface) {
 			return
 		}
 
-		if len(categories) != 1 {
+		if len(categories) != constants.NumRankingDataCategories {
 			_, rmcError := protocol.GetSelfScore(fmt.Errorf("Failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, uniqueID, category, orderParam, length)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)

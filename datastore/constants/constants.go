@@ -7,11 +7,11 @@ const (
 	MaxPeriod uint16 = 365
 
 	// MaxMetaBinSize is the maximum size of an object MetaBinary
-	MaxMetaBinSize uint32 = 1024
+	MaxMetaBinSize int = 1024
 
 	// DatastorePermissionRecipientIDsMax is the maximum number of
 	// recipient IDs allowed for permissions
-	DatastorePermissionRecipientIDsMax uint32 = 100
+	DatastorePermissionRecipientIDsMax int = 100
 
 	// InvalidDataID represents an invalid DataID. This usually
 	// indicates that the field should be ignored
@@ -27,17 +27,17 @@ const (
 	InvalidPassword uint64 = 0
 
 	// MaxNameLength is the maximum object name length
-	MaxNameLength uint32 = 64
+	MaxNameLength int = 64
 
 	// MaxSearchResultSize is the maximum number of object search results
-	MaxSearchResultSize uint32 = 100
+	MaxSearchResultSize int = 100
 
 	// MaxSearchAnyResultSize is the maximum number of search-any results
-	MaxSearchAnyResultSize uint32 = 20
+	MaxSearchAnyResultSize int = 20
 
 	// MaxSearchDataTypeSize is the maximum number of DataTypes
 	// allowed in DataStoreSearchParam.dataTypes
-	MaxSearchDataTypeSize uint32 = 10
+	MaxSearchDataTypeSize int = 10
 
 	// NumTagSlot is the maximum number of tags an object can have.
 	// Slots may use IDs 0-15
@@ -51,7 +51,7 @@ const (
 	NumRatingSlot uint32 = 16
 
 	// MaxTagLength is the maximum length of an object tag
-	MaxTagLength uint32 = 24
+	MaxTagLength int = 24
 
 	// DefaultPeriod is the default object expiration period
 	DefaultPeriod uint16 = 90
@@ -64,12 +64,12 @@ const (
 	// DefaultRelayBufferSize has a currently unknown use.
 	// Likely only used by clients when downloading/uploading
 	// objects to the storage server?
-	DefaultRelayBufferSize uint32 = 16384
+	DefaultRelayBufferSize int = 16384
 
 	// DefaultHTTPBufferSize has a currently unknown use.
 	// Likely only used by clients when downloading/uploading
 	// objects to the storage server?
-	DefaultHTTPBufferSize uint32 = 32768
+	DefaultHTTPBufferSize int = 32768
 
 	// DefaultDataTransferTimeoutBytesPerSecond has a currently unknown use.
 	// Likely only used by clients when downloading/uploading
@@ -84,12 +84,12 @@ const (
 	// DefaultHTTPSendSocketBufferSize has a currently unknown use.
 	// Likely only used by clients when downloading/uploading
 	// objects to the storage server?
-	DefaultHTTPSendSocketBufferSize uint32 = 65536
+	DefaultHTTPSendSocketBufferSize int = 65536
 
 	// DefaultHTTPRecvSocketBufferSize has a currently unknown use.
 	// Likely only used by clients when downloading/uploading
 	// objects to the storage server?
-	DefaultHTTPRecvSocketBufferSize uint32 = 65536
+	DefaultHTTPRecvSocketBufferSize int = 65536
 
 	// InvalidPersistenceSlotID represents an invalid persistence slot.
 	// This indicates that an object should not be persisted
@@ -102,11 +102,11 @@ const (
 	// BatchProcessingCapacityPostObject is the maximum number of
 	// objects which the server create at one time. For example,
 	// RateObjectsWithPosting
-	BatchProcessingCapacityPostObject uint32 = 16
+	BatchProcessingCapacityPostObject int = 16
 
 	// BatchProcessingCapacity is the maximum number of objects which
 	// the server can process in a single request. For example, GetMetas
-	BatchProcessingCapacity uint32 = 100
+	BatchProcessingCapacity int = 100
 
 	// ResultRangeAnyOffset has a currently unknown use. Likely means
 	// that the server should pick any random offset?

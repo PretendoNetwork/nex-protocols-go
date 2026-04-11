@@ -7,6 +7,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	notifications_constants "github.com/PretendoNetwork/nex-protocols-go/v2/notifications/constants"
 )
 
 func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterface) {
@@ -27,7 +28,7 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 
 	libraryVersion := endpoint.LibraryVersions().Main
 
-	var uiType types.UInt32
+	var uiType notifications_constants.NotificationCategory
 	var uiParam1 types.UInt64
 	var uiParam2 types.UInt64
 	var strParam types.String

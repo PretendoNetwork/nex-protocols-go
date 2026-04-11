@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreChangeMetaParamV1 is a type within the DataStore protocol
 type DataStoreChangeMetaParamV1 struct {
 	types.Structure
 	DataID         types.UInt64
-	ModifiesFlag   types.UInt32
+	ModifiesFlag   constants.ModificationFlag
 	Name           types.String
 	Permission     DataStorePermission
 	DelPermission  DataStorePermission
@@ -106,7 +107,7 @@ func (dscmpv DataStoreChangeMetaParamV1) Copy() types.RVType {
 
 	copied.StructureVersion = dscmpv.StructureVersion
 	copied.DataID = dscmpv.DataID.Copy().(types.UInt64)
-	copied.ModifiesFlag = dscmpv.ModifiesFlag.Copy().(types.UInt32)
+	copied.ModifiesFlag = dscmpv.ModifiesFlag
 	copied.Name = dscmpv.Name.Copy().(types.String)
 	copied.Permission = dscmpv.Permission.Copy().(DataStorePermission)
 	copied.DelPermission = dscmpv.DelPermission.Copy().(DataStorePermission)
@@ -134,7 +135,7 @@ func (dscmpv DataStoreChangeMetaParamV1) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dscmpv.ModifiesFlag.Equals(other.ModifiesFlag) {
+	if dscmpv.ModifiesFlag != other.ModifiesFlag {
 		return false
 	}
 
@@ -210,7 +211,7 @@ func (dscmpv DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) st
 func NewDataStoreChangeMetaParamV1() DataStoreChangeMetaParamV1 {
 	return DataStoreChangeMetaParamV1{
 		DataID:         types.NewUInt64(0),
-		ModifiesFlag:   types.NewUInt32(0),
+		ModifiesFlag:   constants.ModificationFlagNone,
 		Name:           types.NewString(""),
 		Permission:     NewDataStorePermission(),
 		DelPermission:  NewDataStorePermission(),

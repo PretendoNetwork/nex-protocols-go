@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/constants"
 )
 
 // Ranking2GetParam is a type within the Ranking2 protocol
@@ -16,9 +17,9 @@ type Ranking2GetParam struct {
 	Category           types.UInt32
 	Offset             types.UInt32
 	Length             types.UInt32
-	SortFlags          types.UInt32
-	OptionFlags        types.UInt32
-	Mode               types.UInt8
+	SortFlags          constants.Ranking2SortFlags
+	OptionFlags        constants.Ranking2GetOptionFlags
+	Mode               constants.Ranking2Mode
 	NumSeasonsToGoBack types.UInt8
 }
 
@@ -110,9 +111,9 @@ func (rgp Ranking2GetParam) Copy() types.RVType {
 	copied.Category = rgp.Category.Copy().(types.UInt32)
 	copied.Offset = rgp.Offset.Copy().(types.UInt32)
 	copied.Length = rgp.Length.Copy().(types.UInt32)
-	copied.SortFlags = rgp.SortFlags.Copy().(types.UInt32)
-	copied.OptionFlags = rgp.OptionFlags.Copy().(types.UInt32)
-	copied.Mode = rgp.Mode.Copy().(types.UInt8)
+	copied.SortFlags = rgp.SortFlags
+	copied.OptionFlags = rgp.OptionFlags
+	copied.Mode = rgp.Mode
 	copied.NumSeasonsToGoBack = rgp.NumSeasonsToGoBack.Copy().(types.UInt8)
 
 	return copied
@@ -150,15 +151,15 @@ func (rgp Ranking2GetParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rgp.SortFlags.Equals(other.SortFlags) {
+	if rgp.SortFlags != other.SortFlags {
 		return false
 	}
 
-	if !rgp.OptionFlags.Equals(other.OptionFlags) {
+	if rgp.OptionFlags != other.OptionFlags {
 		return false
 	}
 
-	if !rgp.Mode.Equals(other.Mode) {
+	if rgp.Mode != other.Mode {
 		return false
 	}
 
@@ -214,9 +215,9 @@ func NewRanking2GetParam() Ranking2GetParam {
 		Category:           types.NewUInt32(0),
 		Offset:             types.NewUInt32(0),
 		Length:             types.NewUInt32(0),
-		SortFlags:          types.NewUInt32(0),
-		OptionFlags:        types.NewUInt32(0),
-		Mode:               types.NewUInt8(0),
+		SortFlags:          constants.Ranking2SortFlagsNothing,
+		OptionFlags:        constants.Ranking2GetOptionFlagsNothing,
+		Mode:               constants.Ranking2ModeMin,
 		NumSeasonsToGoBack: types.NewUInt8(0),
 	}
 

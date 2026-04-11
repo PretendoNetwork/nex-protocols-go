@@ -10,6 +10,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/constants"
 )
 
 const (
@@ -141,7 +142,7 @@ type Protocol struct {
 	GetCommonData         func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32) (*nex.RMCMessage, *nex.Error)
 	Unk0xC                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error) // TODO - Find name if possible
 	Unk0xD                func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error) // TODO - Find name if possible
-	GetScore              func(err error, packet nex.PacketInterface, callID uint32, rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, offset types.UInt32, length types.UInt8) (*nex.RMCMessage, *nex.Error)
+	GetScore              func(err error, packet nex.PacketInterface, callID uint32, rankingMode constants.RankingMode, category types.UInt32, orderParam ranking_types.RankingOrderParam, offset types.UInt32, length types.UInt8) (*nex.RMCMessage, *nex.Error)
 	GetSelfScore          func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam, length types.UInt8) (*nex.RMCMessage, *nex.Error)
 	GetTotal              func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown1 types.UInt8, unknown2 types.UInt8, unknown3 types.UInt8, unknown4 types.UInt32) (*nex.RMCMessage, *nex.Error)
 	UploadScoreWithLimit  func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, scores types.List[types.UInt32], unknown1 types.UInt8, unknown2 types.UInt32, limit types.UInt16) (*nex.RMCMessage, *nex.Error)
@@ -168,7 +169,7 @@ type Interface interface {
 	SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUnk0xC(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32) (*nex.RMCMessage, *nex.Error)) // TODO - Find name if possible
 	SetHandlerUnk0xD(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)) // TODO - Find name if possible
-	SetHandlerGetScore(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, offset types.UInt32, length types.UInt8) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetScore(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode constants.RankingMode, category types.UInt32, orderParam ranking_types.RankingOrderParam, offset types.UInt32, length types.UInt8) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetSelfScore(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, orderParam ranking_types.RankingOrderParam, length types.UInt8) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetTotal(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, unknown1 types.UInt8, unknown2 types.UInt8, unknown3 types.UInt8, unknown4 types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUploadScoreWithLimit(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID types.UInt32, category types.UInt32, scores types.List[types.UInt32], unknown1 types.UInt8, unknown2 types.UInt32, limit types.UInt16) (*nex.RMCMessage, *nex.Error))
@@ -257,7 +258,7 @@ func (protocol *Protocol) SetHandlerUnk0xD(handler func(err error, packet nex.Pa
 }
 
 // SetHandlerGetScore sets the handler for the GetScore method
-func (protocol *Protocol) SetHandlerGetScore(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode types.UInt8, category types.UInt32, orderParam ranking_types.RankingOrderParam, offset types.UInt32, length types.UInt8) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetScore(handler func(err error, packet nex.PacketInterface, callID uint32, rankingMode constants.RankingMode, category types.UInt32, orderParam ranking_types.RankingOrderParam, offset types.UInt32, length types.UInt8) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetScore = handler
 }
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 // MatchmakeSession is a type within the Matchmaking protocol
@@ -16,19 +17,19 @@ type MatchmakeSession struct {
 	GameMode              types.UInt32
 	Attributes            types.List[types.UInt32]
 	OpenParticipation     types.Bool
-	MatchmakeSystemType   types.UInt32
+	MatchmakeSystemType   constants.MatchmakeSystemType
 	ApplicationBuffer     types.Buffer
 	ParticipationCount    types.UInt32
-	ProgressScore         types.UInt8    // * NEX v3.4.0
-	SessionKey            types.Buffer   // * NEX v3.0.0
-	Option                types.UInt32   // * NEX v3.5.0
-	MatchmakeParam        MatchmakeParam // * NEX v3.6.0
-	StartedTime           types.DateTime // * NEX v3.6.0
-	UserPassword          types.String   // * NEX v3.7.0
-	ReferGID              types.UInt32   // * NEX v3.8.0
-	UserPasswordEnabled   types.Bool     // * NEX v3.8.0
-	SystemPasswordEnabled types.Bool     // * NEX v3.8.0
-	CodeWord              types.String   // * NEX v4.0.0
+	ProgressScore         types.UInt8                       // * NEX v3.4.0
+	SessionKey            types.Buffer                      // * NEX v3.0.0
+	Option0               constants.MatchmakeSessionOption0 // * NEX v3.5.0
+	MatchmakeParam        MatchmakeParam                    // * NEX v3.6.0
+	StartedTime           types.DateTime                    // * NEX v3.6.0
+	UserPassword          types.String                      // * NEX v3.7.0
+	ReferGID              types.UInt32                      // * NEX v3.8.0
+	UserPasswordEnabled   types.Bool                        // * NEX v3.8.0
+	SystemPasswordEnabled types.Bool                        // * NEX v3.8.0
+	CodeWord              types.String                      // * NEX v4.0.0
 }
 
 // ObjectID returns the object identifier of the type
@@ -66,7 +67,7 @@ func (ms MatchmakeSession) WriteTo(writable types.Writable) {
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		ms.Option.WriteTo(contentWritable)
+		ms.Option0.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
@@ -166,9 +167,9 @@ func (ms *MatchmakeSession) ExtractFrom(readable types.Readable) error {
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		err = ms.Option.ExtractFrom(readable)
+		err = ms.Option0.ExtractFrom(readable)
 		if err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.Option. %s", err.Error())
+			return fmt.Errorf("Failed to extract MatchmakeSession.Option0. %s", err.Error())
 		}
 	}
 
@@ -216,7 +217,7 @@ func (ms *MatchmakeSession) ExtractFrom(readable types.Readable) error {
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		err = ms.CodeWord.ExtractFrom(readable)
-		if err != nil {
+		if err = ms.CodeWord.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.CodeWord. %s", err.Error())
 		}
 	}
@@ -233,12 +234,12 @@ func (ms MatchmakeSession) Copy() types.RVType {
 	copied.GameMode = ms.GameMode.Copy().(types.UInt32)
 	copied.Attributes = ms.Attributes.Copy().(types.List[types.UInt32])
 	copied.OpenParticipation = ms.OpenParticipation.Copy().(types.Bool)
-	copied.MatchmakeSystemType = ms.MatchmakeSystemType.Copy().(types.UInt32)
+	copied.MatchmakeSystemType = ms.MatchmakeSystemType
 	copied.ApplicationBuffer = ms.ApplicationBuffer.Copy().(types.Buffer)
 	copied.ParticipationCount = ms.ParticipationCount.Copy().(types.UInt32)
 	copied.ProgressScore = ms.ProgressScore.Copy().(types.UInt8)
 	copied.SessionKey = ms.SessionKey.Copy().(types.Buffer)
-	copied.Option = ms.Option.Copy().(types.UInt32)
+	copied.Option0 = ms.Option0
 	copied.MatchmakeParam = ms.MatchmakeParam.Copy().(MatchmakeParam)
 	copied.StartedTime = ms.StartedTime.Copy().(types.DateTime)
 	copied.UserPassword = ms.UserPassword.Copy().(types.String)
@@ -278,7 +279,7 @@ func (ms MatchmakeSession) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !ms.MatchmakeSystemType.Equals(other.MatchmakeSystemType) {
+	if ms.MatchmakeSystemType != other.MatchmakeSystemType {
 		return false
 	}
 
@@ -298,7 +299,7 @@ func (ms MatchmakeSession) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !ms.Option.Equals(other.Option) {
+	if ms.Option0 != other.Option0 {
 		return false
 	}
 
@@ -365,7 +366,7 @@ func (ms MatchmakeSession) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, ms.ParticipationCount))
 	b.WriteString(fmt.Sprintf("%sProgressScore: %s,\n", indentationValues, ms.ProgressScore))
 	b.WriteString(fmt.Sprintf("%sSessionKey: %s,\n", indentationValues, ms.SessionKey))
-	b.WriteString(fmt.Sprintf("%sOption: %s,\n", indentationValues, ms.Option))
+	b.WriteString(fmt.Sprintf("%sOption: %s,\n", indentationValues, ms.Option0))
 	b.WriteString(fmt.Sprintf("%sMatchmakeParam: %s,\n", indentationValues, ms.MatchmakeParam.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sStartedTime: %s,\n", indentationValues, ms.StartedTime.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sUserPassword: %s,\n", indentationValues, ms.UserPassword))
@@ -385,12 +386,12 @@ func NewMatchmakeSession() MatchmakeSession {
 		GameMode:              types.NewUInt32(0),
 		Attributes:            types.NewList[types.UInt32](),
 		OpenParticipation:     types.NewBool(false),
-		MatchmakeSystemType:   types.NewUInt32(0),
+		MatchmakeSystemType:   constants.MatchmakeSystemTypeInvalid,
 		ApplicationBuffer:     types.NewBuffer(nil),
 		ParticipationCount:    types.NewUInt32(0),
 		ProgressScore:         types.NewUInt8(0),
 		SessionKey:            types.NewBuffer(nil),
-		Option:                types.NewUInt32(0),
+		Option0:               constants.MatchmakeSessionOption0None,
 		MatchmakeParam:        NewMatchmakeParam(),
 		StartedTime:           types.NewDateTime(0),
 		UserPassword:          types.NewString(""),

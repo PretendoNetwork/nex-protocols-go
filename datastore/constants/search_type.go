@@ -1,9 +1,27 @@
 package constants
 
+import "github.com/PretendoNetwork/nex-go/v2/types"
+
 // SearchType represents the type of user who can access an object.
 // This is stored in DataStoreSearchParam.searchTarget.
 // Used to narrow search results based on access rights
 type SearchType uint8
+
+// WriteTo writes the SearchType to the given writable
+func (st SearchType) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(st))
+}
+
+// ExtractFrom extracts the SearchType value from the given readable
+func (st *SearchType) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*st = SearchType(value)
+	return nil
+}
 
 const (
 	// SearchTypePublic selects objects whose access permission

@@ -6,19 +6,20 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreRatingInitParam is a type within the DataStore protocol
 type DataStoreRatingInitParam struct {
 	types.Structure
-	Flag           types.UInt8
-	InternalFlag   types.UInt8
-	LockType       types.UInt8
+	Flag           constants.RatingFlag
+	InternalFlag   constants.RatingInternalFlag
+	LockType       constants.RatingLockType
 	InitialValue   types.Int64
 	RangeMin       types.Int32
 	RangeMax       types.Int32
 	PeriodHour     types.Int8
-	PeriodDuration types.Int16
+	PeriodDuration constants.RatingLockPeriodDay
 }
 
 // WriteTo writes the DataStoreRatingInitParam to the given writable
@@ -98,14 +99,14 @@ func (dsrip DataStoreRatingInitParam) Copy() types.RVType {
 	copied := NewDataStoreRatingInitParam()
 
 	copied.StructureVersion = dsrip.StructureVersion
-	copied.Flag = dsrip.Flag.Copy().(types.UInt8)
-	copied.InternalFlag = dsrip.InternalFlag.Copy().(types.UInt8)
-	copied.LockType = dsrip.LockType.Copy().(types.UInt8)
+	copied.Flag = dsrip.Flag
+	copied.InternalFlag = dsrip.InternalFlag
+	copied.LockType = dsrip.LockType
 	copied.InitialValue = dsrip.InitialValue.Copy().(types.Int64)
 	copied.RangeMin = dsrip.RangeMin.Copy().(types.Int32)
 	copied.RangeMax = dsrip.RangeMax.Copy().(types.Int32)
 	copied.PeriodHour = dsrip.PeriodHour.Copy().(types.Int8)
-	copied.PeriodDuration = dsrip.PeriodDuration.Copy().(types.Int16)
+	copied.PeriodDuration = dsrip.PeriodDuration
 
 	return copied
 }
@@ -122,15 +123,15 @@ func (dsrip DataStoreRatingInitParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsrip.Flag.Equals(other.Flag) {
+	if dsrip.Flag != other.Flag {
 		return false
 	}
 
-	if !dsrip.InternalFlag.Equals(other.InternalFlag) {
+	if dsrip.InternalFlag != other.InternalFlag {
 		return false
 	}
 
-	if !dsrip.LockType.Equals(other.LockType) {
+	if dsrip.LockType != other.LockType {
 		return false
 	}
 
@@ -150,7 +151,7 @@ func (dsrip DataStoreRatingInitParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	return dsrip.PeriodDuration.Equals(other.PeriodDuration)
+	return dsrip.PeriodDuration == other.PeriodDuration
 }
 
 // CopyRef copies the current value of the DataStoreRatingInitParam
@@ -196,14 +197,14 @@ func (dsrip DataStoreRatingInitParam) FormatToString(indentationLevel int) strin
 // NewDataStoreRatingInitParam returns a new DataStoreRatingInitParam
 func NewDataStoreRatingInitParam() DataStoreRatingInitParam {
 	return DataStoreRatingInitParam{
-		Flag:           types.NewUInt8(0),
-		InternalFlag:   types.NewUInt8(0),
-		LockType:       types.NewUInt8(0),
+		Flag:           constants.RatingFlag(0),         // TODO - What is the real default?
+		InternalFlag:   constants.RatingInternalFlag(0), // TODO - What is the real default?
+		LockType:       constants.RatingLockNone,
 		InitialValue:   types.NewInt64(0),
 		RangeMin:       types.NewInt32(0),
 		RangeMax:       types.NewInt32(0),
 		PeriodHour:     types.NewInt8(0),
-		PeriodDuration: types.NewInt16(0),
+		PeriodDuration: constants.RatingLockPeriodDay(0), // TODO - What is the real default?
 	}
 
 }

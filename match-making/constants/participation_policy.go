@@ -28,6 +28,9 @@ func (pp *ParticipationPolicy) ExtractFrom(readable types.Readable) error {
 
 const (
 	// ParticipationPolicyPasswordProtected indicates that a session is protected by as password.
+	//
+	// When used, the PolicyArgument is the first four bytes of the MD5 hash of the key given
+	// to the participant
 	ParticipationPolicyPasswordProtected ParticipationPolicy = 4
 
 	// ParticipationPolicyOpenParticipation indicates that a session is open to anyone.

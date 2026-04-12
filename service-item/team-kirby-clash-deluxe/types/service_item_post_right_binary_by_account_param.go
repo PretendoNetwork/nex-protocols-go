@@ -39,40 +39,31 @@ func (siprbbap ServiceItemPostRightBinaryByAccountParam) WriteTo(writable types.
 
 // ExtractFrom extracts the ServiceItemPostRightBinaryByAccountParam from the given readable
 func (siprbbap *ServiceItemPostRightBinaryByAccountParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siprbbap.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siprbbap.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam header. %s", err.Error())
 	}
 
-	err = siprbbap.ReferenceID.ExtractFrom(readable)
-	if err != nil {
+	if err := siprbbap.ReferenceID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.ReferenceID. %s", err.Error())
 	}
 
-	err = siprbbap.UseType.ExtractFrom(readable)
-	if err != nil {
+	if err := siprbbap.UseType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UseType. %s", err.Error())
 	}
 
-	err = siprbbap.RightBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := siprbbap.RightBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.RightBinary. %s", err.Error())
 	}
 
-	err = siprbbap.LogMessage.ExtractFrom(readable)
-	if err != nil {
+	if err := siprbbap.LogMessage.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.LogMessage. %s", err.Error())
 	}
 
-	err = siprbbap.UniqueID.ExtractFrom(readable)
-	if err != nil {
+	if err := siprbbap.UniqueID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UniqueID. %s", err.Error())
 	}
 
-	err = siprbbap.Platform.ExtractFrom(readable)
-	if err != nil {
+	if err := siprbbap.Platform.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.Platform. %s", err.Error())
 	}
 

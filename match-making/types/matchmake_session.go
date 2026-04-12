@@ -110,114 +110,94 @@ func (ms *MatchmakeSession) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
-	var err error
-
-	err = ms.Gathering.ExtractFrom(readable)
-	if err != nil {
+	if err := ms.Gathering.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.Gathering. %s", err.Error())
 	}
 
-	err = ms.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := ms.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession header. %s", err.Error())
 	}
 
-	err = ms.GameMode.ExtractFrom(readable)
-	if err != nil {
+	if err := ms.GameMode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.GameMode. %s", err.Error())
 	}
 
-	err = ms.Attributes.ExtractFrom(readable)
-	if err != nil {
+	if err := ms.Attributes.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.Attributes. %s", err.Error())
 	}
 
-	err = ms.OpenParticipation.ExtractFrom(readable)
-	if err != nil {
+	if err := ms.OpenParticipation.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.OpenParticipation. %s", err.Error())
 	}
 
-	err = ms.MatchmakeSystemType.ExtractFrom(readable)
-	if err != nil {
+	if err := ms.MatchmakeSystemType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeSystemType. %s", err.Error())
 	}
 
-	err = ms.ApplicationBuffer.ExtractFrom(readable)
-	if err != nil {
+	if err := ms.ApplicationBuffer.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.ApplicationBuffer. %s", err.Error())
 	}
 
-	err = ms.ParticipationCount.ExtractFrom(readable)
-	if err != nil {
+	if err := ms.ParticipationCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.ParticipationCount. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.4.0") {
-		err = ms.ProgressScore.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.ProgressScore.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.ProgressScore. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		err = ms.SessionKey.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.SessionKey.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.SessionKey. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		err = ms.Option0.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.Option0.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.Option0. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
-		err = ms.MatchmakeParam.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.MatchmakeParam.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeParam. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
-		err = ms.StartedTime.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.StartedTime.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.StartedTime. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
-		err = ms.UserPassword.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.UserPassword.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.UserPassword. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
-		err = ms.ReferGID.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.ReferGID.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.ReferGID. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
-		err = ms.UserPasswordEnabled.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.UserPasswordEnabled.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.UserPasswordEnabled. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
-		err = ms.SystemPasswordEnabled.ExtractFrom(readable)
-		if err != nil {
+		if err := ms.SystemPasswordEnabled.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.SystemPasswordEnabled. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		err = ms.CodeWord.ExtractFrom(readable)
-		if err = ms.CodeWord.ExtractFrom(readable); err != nil {
+		if err := ms.CodeWord.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.CodeWord. %s", err.Error())
 		}
 	}

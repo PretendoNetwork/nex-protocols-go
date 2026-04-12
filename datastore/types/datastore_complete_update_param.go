@@ -50,16 +50,12 @@ func (dscup *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) 
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.DataStore
 
-	var err error
-
-	err = dscup.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dscup.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam header. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		err = dscup.DataID.ExtractFrom(readable)
-		if err != nil {
+		if err := dscup.DataID.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 	} else {
@@ -72,8 +68,7 @@ func (dscup *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) 
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		err = dscup.Version.ExtractFrom(readable)
-		if err != nil {
+		if err := dscup.Version.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 	} else {
@@ -85,8 +80,7 @@ func (dscup *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) 
 		dscup.Version = types.UInt32(version)
 	}
 
-	err = dscup.IsSuccess.ExtractFrom(readable)
-	if err != nil {
+	if err := dscup.IsSuccess.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.IsSuccess. %s", err.Error())
 	}
 

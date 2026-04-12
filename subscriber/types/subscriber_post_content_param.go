@@ -33,25 +33,19 @@ func (spcp SubscriberPostContentParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the SubscriberPostContentParam from the given readable
 func (spcp *SubscriberPostContentParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = spcp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := spcp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberPostContentParam header. %s", err.Error())
 	}
 
-	err = spcp.Topic.ExtractFrom(readable)
-	if err != nil {
+	if err := spcp.Topic.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Topic. %s", err.Error())
 	}
 
-	err = spcp.Message.ExtractFrom(readable)
-	if err != nil {
+	if err := spcp.Message.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Message. %s", err.Error())
 	}
 
-	err = spcp.Binary.ExtractFrom(readable)
-	if err != nil {
+	if err := spcp.Binary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Binary. %s", err.Error())
 	}
 

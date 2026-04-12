@@ -55,56 +55,44 @@ func (rrd *RankingRankData) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.Ranking
 
-	var err error
-
-	err = rrd.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rrd.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData header. %s", err.Error())
 	}
 
-	err = rrd.PrincipalID.ExtractFrom(readable)
-	if err != nil {
+	if err := rrd.PrincipalID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.PrincipalID. %s", err.Error())
 	}
 
-	err = rrd.UniqueID.ExtractFrom(readable)
-	if err != nil {
+	if err := rrd.UniqueID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.UniqueID. %s", err.Error())
 	}
 
-	err = rrd.Order.ExtractFrom(readable)
-	if err != nil {
+	if err := rrd.Order.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.Order. %s", err.Error())
 	}
 
-	err = rrd.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rrd.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.Category. %s", err.Error())
 	}
 
-	err = rrd.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := rrd.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.Score. %s", err.Error())
 	}
 
-	err = rrd.Groups.ExtractFrom(readable)
-	if err != nil {
+	if err := rrd.Groups.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.Groups. %s", err.Error())
 	}
 
-	err = rrd.Param.ExtractFrom(readable)
-	if err != nil {
+	if err := rrd.Param.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.Param. %s", err.Error())
 	}
 
-	err = rrd.CommonData.ExtractFrom(readable)
-	if err != nil {
+	if err := rrd.CommonData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.CommonData. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
-		err = rrd.UpdateTime.ExtractFrom(readable)
-		if err != nil {
+		if err := rrd.UpdateTime.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract RankingRankData.UpdateTime. %s", err.Error())
 		}
 	}

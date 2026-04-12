@@ -35,30 +35,23 @@ func (si ShopItem) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ShopItem from the given readable
 func (si *ShopItem) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = si.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := si.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItem header. %s", err.Error())
 	}
 
-	err = si.ItemID.ExtractFrom(readable)
-	if err != nil {
+	if err := si.ItemID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItem.ItemID. %s", err.Error())
 	}
 
-	err = si.ReferenceID.ExtractFrom(readable)
-	if err != nil {
+	if err := si.ReferenceID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItem.ReferenceID. %s", err.Error())
 	}
 
-	err = si.ServiceName.ExtractFrom(readable)
-	if err != nil {
+	if err := si.ServiceName.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItem.ServiceName. %s", err.Error())
 	}
 
-	err = si.ItemCode.ExtractFrom(readable)
-	if err != nil {
+	if err := si.ItemCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItem.ItemCode. %s", err.Error())
 	}
 

@@ -39,35 +39,27 @@ func (m Mii) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Mii from the given readable
 func (m *Mii) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = m.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := m.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.Data. %s", err.Error())
 	}
 
-	err = m.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := m.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii header. %s", err.Error())
 	}
 
-	err = m.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := m.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.Name. %s", err.Error())
 	}
 
-	err = m.ProfanityFlag.ExtractFrom(readable)
-	if err != nil {
+	if err := m.ProfanityFlag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.ProfanityFlag. %s", err.Error())
 	}
 
-	err = m.CharacterSet.ExtractFrom(readable)
-	if err != nil {
+	if err := m.CharacterSet.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.CharacterSet. %s", err.Error())
 	}
 
-	err = m.MiiData.ExtractFrom(readable)
-	if err != nil {
+	if err := m.MiiData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.MiiData. %s", err.Error())
 	}
 

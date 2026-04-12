@@ -34,25 +34,19 @@ func (dscrr DataStoreCustomRankingResult) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreCustomRankingResult from the given readable
 func (dscrr *DataStoreCustomRankingResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dscrr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dscrr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult header. %s", err.Error())
 	}
 
-	err = dscrr.Order.ExtractFrom(readable)
-	if err != nil {
+	if err := dscrr.Order.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Order. %s", err.Error())
 	}
 
-	err = dscrr.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := dscrr.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Score. %s", err.Error())
 	}
 
-	err = dscrr.MetaInfo.ExtractFrom(readable)
-	if err != nil {
+	if err := dscrr.MetaInfo.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.MetaInfo. %s", err.Error())
 	}
 

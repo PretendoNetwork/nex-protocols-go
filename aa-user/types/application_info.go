@@ -34,25 +34,19 @@ func (ai ApplicationInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ApplicationInfo from the given readable
 func (ai *ApplicationInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = ai.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := ai.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ApplicationInfo.Data. %s", err.Error())
 	}
 
-	err = ai.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := ai.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ApplicationInfo header. %s", err.Error())
 	}
 
-	err = ai.TitleID.ExtractFrom(readable)
-	if err != nil {
+	if err := ai.TitleID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ApplicationInfo.TitleID. %s", err.Error())
 	}
 
-	err = ai.TitleVersion.ExtractFrom(readable)
-	if err != nil {
+	if err := ai.TitleVersion.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ApplicationInfo.TitleVersion. %s", err.Error())
 	}
 

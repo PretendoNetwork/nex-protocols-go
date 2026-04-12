@@ -35,30 +35,23 @@ func (rs RankingScore) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingScore from the given readable
 func (rs *RankingScore) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rs.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rs.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScore header. %s", err.Error())
 	}
 
-	err = rs.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rs.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScore.Category. %s", err.Error())
 	}
 
-	err = rs.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := rs.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScore.Score. %s", err.Error())
 	}
 
-	err = rs.Unknown1.ExtractFrom(readable)
-	if err != nil {
+	if err := rs.Unknown1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScore.Unknown1. %s", err.Error())
 	}
 
-	err = rs.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := rs.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScore.Unknown2. %s", err.Error())
 	}
 

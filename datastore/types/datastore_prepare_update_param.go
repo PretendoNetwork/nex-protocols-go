@@ -53,16 +53,12 @@ func (dspup *DataStorePrepareUpdateParam) ExtractFrom(readable types.Readable) e
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.DataStore
 
-	var err error
-
-	err = dspup.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dspup.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam header. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		err = dspup.DataID.ExtractFrom(readable)
-		if err != nil {
+		if err := dspup.DataID.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 	} else {
@@ -74,21 +70,18 @@ func (dspup *DataStorePrepareUpdateParam) ExtractFrom(readable types.Readable) e
 		dspup.DataID = types.UInt64(dataID)
 	}
 
-	err = dspup.Size.ExtractFrom(readable)
-	if err != nil {
+	if err := dspup.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.Size. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		err = dspup.UpdatePassword.ExtractFrom(readable)
-		if err != nil {
+		if err := dspup.UpdatePassword.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.UpdatePassword. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		err = dspup.ExtraData.ExtractFrom(readable)
-		if err != nil {
+		if err := dspup.ExtraData.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.ExtraData. %s", err.Error())
 		}
 	}

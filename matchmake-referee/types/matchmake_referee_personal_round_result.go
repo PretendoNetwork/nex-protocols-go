@@ -40,40 +40,31 @@ func (mrprr MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writable
 
 // ExtractFrom extracts the MatchmakeRefereePersonalRoundResult from the given readable
 func (mrprr *MatchmakeRefereePersonalRoundResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = mrprr.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := mrprr.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.Data. %s", err.Error())
 	}
 
-	err = mrprr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := mrprr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult header. %s", err.Error())
 	}
 
-	err = mrprr.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := mrprr.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PID. %s", err.Error())
 	}
 
-	err = mrprr.PersonalRoundResultFlag.ExtractFrom(readable)
-	if err != nil {
+	if err := mrprr.PersonalRoundResultFlag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PersonalRoundResultFlag. %s", err.Error())
 	}
 
-	err = mrprr.RoundWinLoss.ExtractFrom(readable)
-	if err != nil {
+	if err := mrprr.RoundWinLoss.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.RoundWinLoss. %s", err.Error())
 	}
 
-	err = mrprr.RatingValueChange.ExtractFrom(readable)
-	if err != nil {
+	if err := mrprr.RatingValueChange.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.RatingValueChange. %s", err.Error())
 	}
 
-	err = mrprr.Buffer.ExtractFrom(readable)
-	if err != nil {
+	if err := mrprr.Buffer.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.Buffer. %s", err.Error())
 	}
 

@@ -44,50 +44,39 @@ func (amp AutoMatchmakeParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the AutoMatchmakeParam from the given readable
 func (amp *AutoMatchmakeParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = amp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := amp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam header. %s", err.Error())
 	}
 
-	err = amp.SourceMatchmakeSession.ExtractFrom(readable)
-	if err != nil {
+	if err := amp.SourceMatchmakeSession.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
-	err = amp.AdditionalParticipants.ExtractFrom(readable)
-	if err != nil {
+	if err := amp.AdditionalParticipants.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AdditionalParticipants. %s", err.Error())
 	}
 
-	err = amp.GIDForParticipationCheck.ExtractFrom(readable)
-	if err != nil {
+	if err := amp.GIDForParticipationCheck.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
-	err = amp.AutoMatchmakeOption.ExtractFrom(readable)
-	if err != nil {
+	if err := amp.AutoMatchmakeOption.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AutoMatchmakeOption. %s", err.Error())
 	}
 
-	err = amp.JoinMessage.ExtractFrom(readable)
-	if err != nil {
+	if err := amp.JoinMessage.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.JoinMessage. %s", err.Error())
 	}
 
-	err = amp.ParticipationCount.ExtractFrom(readable)
-	if err != nil {
+	if err := amp.ParticipationCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.ParticipationCount. %s", err.Error())
 	}
 
-	err = amp.LstSearchCriteria.ExtractFrom(readable)
-	if err != nil {
+	if err := amp.LstSearchCriteria.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.LstSearchCriteria. %s", err.Error())
 	}
 
-	err = amp.TargetGIDs.ExtractFrom(readable)
-	if err != nil {
+	if err := amp.TargetGIDs.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.TargetGIDs. %s", err.Error())
 	}
 

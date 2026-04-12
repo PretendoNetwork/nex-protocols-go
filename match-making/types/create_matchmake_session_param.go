@@ -39,40 +39,31 @@ func (cmsp CreateMatchmakeSessionParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the CreateMatchmakeSessionParam from the given readable
 func (cmsp *CreateMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = cmsp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := cmsp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam header. %s", err.Error())
 	}
 
-	err = cmsp.SourceMatchmakeSession.ExtractFrom(readable)
-	if err != nil {
+	if err := cmsp.SourceMatchmakeSession.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
-	err = cmsp.AdditionalParticipants.ExtractFrom(readable)
-	if err != nil {
+	if err := cmsp.AdditionalParticipants.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
 
-	err = cmsp.GIDForParticipationCheck.ExtractFrom(readable)
-	if err != nil {
+	if err := cmsp.GIDForParticipationCheck.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
-	err = cmsp.CreateMatchmakeSessionOption.ExtractFrom(readable)
-	if err != nil {
+	if err := cmsp.CreateMatchmakeSessionOption.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.CreateMatchmakeSessionOption. %s", err.Error())
 	}
 
-	err = cmsp.JoinMessage.ExtractFrom(readable)
-	if err != nil {
+	if err := cmsp.JoinMessage.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.JoinMessage. %s", err.Error())
 	}
 
-	err = cmsp.ParticipationCount.ExtractFrom(readable)
-	if err != nil {
+	if err := cmsp.ParticipationCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
 

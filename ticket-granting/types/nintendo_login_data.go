@@ -39,15 +39,11 @@ func (nld NintendoLoginData) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NintendoLoginData from the given readable
 func (nld *NintendoLoginData) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = nld.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := nld.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoLoginData header. %s", err.Error())
 	}
 
-	err = nld.Token.ExtractFrom(readable)
-	if err != nil {
+	if err := nld.Token.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoLoginData.Token. %s", err.Error())
 	}
 

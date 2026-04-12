@@ -47,40 +47,31 @@ func (vartr ValidateAndRequestTicketResult) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ValidateAndRequestTicketResult from the given readable
 func (vartr *ValidateAndRequestTicketResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = vartr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := vartr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult header. %s", err.Error())
 	}
 
-	err = vartr.SourcePID.ExtractFrom(readable)
-	if err != nil {
+	if err := vartr.SourcePID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.PlatformType. %s", err.Error())
 	}
 
-	err = vartr.BufResponse.ExtractFrom(readable)
-	if err != nil {
+	if err := vartr.BufResponse.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.Username. %s", err.Error())
 	}
 
-	err = vartr.ServiceNodeURL.ExtractFrom(readable)
-	if err != nil {
+	if err := vartr.ServiceNodeURL.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.ExtraData. %s", err.Error())
 	}
 
-	err = vartr.CurrentUTCTime.ExtractFrom(readable)
-	if err != nil {
+	if err := vartr.CurrentUTCTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.IgnoreAPIVersionCheck. %s", err.Error())
 	}
 
-	err = vartr.ReturnMsg.ExtractFrom(readable)
-	if err != nil {
+	if err := vartr.ReturnMsg.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.APIVersionGeneral. %s", err.Error())
 	}
 
-	err = vartr.SourceKey.ExtractFrom(readable)
-	if err != nil {
+	if err := vartr.SourceKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.APIVersionCustom. %s", err.Error())
 	}
 
@@ -91,8 +82,7 @@ func (vartr *ValidateAndRequestTicketResult) ExtractFrom(readable types.Readable
 	// * or not a game has crossplay at this stage, this is
 	// * the best we can do
 	if readable.Remaining() != 0 {
-		err = vartr.PlatformPID.ExtractFrom(readable)
-		if err != nil {
+		if err := vartr.PlatformPID.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.PlatformTypeForPlatformPID. %s", err.Error())
 		}
 	}

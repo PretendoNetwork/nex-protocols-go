@@ -31,20 +31,15 @@ func (dsnv DataStoreNotificationV1) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreNotificationV1 from the given readable
 func (dsnv *DataStoreNotificationV1) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsnv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsnv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreNotificationV1 header. %s", err.Error())
 	}
 
-	err = dsnv.NotificationID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsnv.NotificationID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreNotificationV1.NotificationID. %s", err.Error())
 	}
 
-	err = dsnv.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsnv.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreNotificationV1.DataID. %s", err.Error())
 	}
 

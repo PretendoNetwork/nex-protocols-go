@@ -33,25 +33,19 @@ func (sigpip ServiceItemGetPrepurchaseInfoParam) WriteTo(writable types.Writable
 
 // ExtractFrom extracts the ServiceItemGetPrepurchaseInfoParam from the given readable
 func (sigpip *ServiceItemGetPrepurchaseInfoParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sigpip.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sigpip.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam header. %s", err.Error())
 	}
 
-	err = sigpip.ItemCode.ExtractFrom(readable)
-	if err != nil {
+	if err := sigpip.ItemCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ItemCode. %s", err.Error())
 	}
 
-	err = sigpip.Language.ExtractFrom(readable)
-	if err != nil {
+	if err := sigpip.Language.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Language. %s", err.Error())
 	}
 
-	err = sigpip.TitleID.ExtractFrom(readable)
-	if err != nil {
+	if err := sigpip.TitleID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.TitleID. %s", err.Error())
 	}
 

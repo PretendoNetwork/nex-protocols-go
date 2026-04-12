@@ -33,25 +33,19 @@ func (i Invitation) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Invitation from the given readable
 func (i *Invitation) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = i.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := i.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Invitation header. %s", err.Error())
 	}
 
-	err = i.IDGathering.ExtractFrom(readable)
-	if err != nil {
+	if err := i.IDGathering.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Invitation.IDGathering. %s", err.Error())
 	}
 
-	err = i.IDGuest.ExtractFrom(readable)
-	if err != nil {
+	if err := i.IDGuest.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Invitation.IDGuest. %s", err.Error())
 	}
 
-	err = i.StrMessage.ExtractFrom(readable)
-	if err != nil {
+	if err := i.StrMessage.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Invitation.StrMessage. %s", err.Error())
 	}
 

@@ -31,20 +31,15 @@ func (dspip DataStorePersistenceInitParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStorePersistenceInitParam from the given readable
 func (dspip *DataStorePersistenceInitParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dspip.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dspip.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam header. %s", err.Error())
 	}
 
-	err = dspip.PersistenceSlotID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspip.PersistenceSlotID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.PersistenceSlotID. %s", err.Error())
 	}
 
-	err = dspip.DeleteLastObject.ExtractFrom(readable)
-	if err != nil {
+	if err := dspip.DeleteLastObject.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.DeleteLastObject. %s", err.Error())
 	}
 

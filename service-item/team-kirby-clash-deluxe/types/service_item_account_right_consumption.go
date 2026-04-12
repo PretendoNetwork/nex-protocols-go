@@ -36,30 +36,23 @@ func (siarc ServiceItemAccountRightConsumption) WriteTo(writable types.Writable)
 
 // ExtractFrom extracts the ServiceItemAccountRightConsumption from the given readable
 func (siarc *ServiceItemAccountRightConsumption) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siarc.ServiceItemAccountRight.ExtractFrom(readable)
-	if err != nil {
+	if err := siarc.ServiceItemAccountRight.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightConsumption.ServiceItemAccountRight. %s", err.Error())
 	}
 
-	err = siarc.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siarc.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightConsumption header. %s", err.Error())
 	}
 
-	err = siarc.UsedCount.ExtractFrom(readable)
-	if err != nil {
+	if err := siarc.UsedCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightConsumption.UsedCount. %s", err.Error())
 	}
 
-	err = siarc.ExpiredCount.ExtractFrom(readable)
-	if err != nil {
+	if err := siarc.ExpiredCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightConsumption.ExpiredCount. %s", err.Error())
 	}
 
-	err = siarc.ExpiryCounts.ExtractFrom(readable)
-	if err != nil {
+	if err := siarc.ExpiryCounts.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightConsumption.ExpiryCounts. %s", err.Error())
 	}
 

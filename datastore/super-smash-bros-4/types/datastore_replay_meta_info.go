@@ -45,55 +45,43 @@ func (dsrmi DataStoreReplayMetaInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreReplayMetaInfo from the given readable
 func (dsrmi *DataStoreReplayMetaInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsrmi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrmi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo header. %s", err.Error())
 	}
 
-	err = dsrmi.ReplayID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.ReplayID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.ReplayID. %s", err.Error())
 	}
 
-	err = dsrmi.Size.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Size. %s", err.Error())
 	}
 
-	err = dsrmi.Mode.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.Mode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Mode. %s", err.Error())
 	}
 
-	err = dsrmi.Style.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.Style.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Style. %s", err.Error())
 	}
 
-	err = dsrmi.Rule.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.Rule.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Rule. %s", err.Error())
 	}
 
-	err = dsrmi.Stage.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.Stage.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Stage. %s", err.Error())
 	}
 
-	err = dsrmi.ReplayType.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.ReplayType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.ReplayType. %s", err.Error())
 	}
 
-	err = dsrmi.Players.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.Players.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Players. %s", err.Error())
 	}
 
-	err = dsrmi.Winners.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrmi.Winners.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Winners. %s", err.Error())
 	}
 

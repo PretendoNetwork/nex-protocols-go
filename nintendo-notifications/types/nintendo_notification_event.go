@@ -34,25 +34,19 @@ func (nne NintendoNotificationEvent) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NintendoNotificationEvent from the given readable
 func (nne *NintendoNotificationEvent) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = nne.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := nne.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEvent header. %s", err.Error())
 	}
 
-	err = nne.Type.ExtractFrom(readable)
-	if err != nil {
+	if err := nne.Type.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEvent.Type. %s", err.Error())
 	}
 
-	err = nne.SenderPID.ExtractFrom(readable)
-	if err != nil {
+	if err := nne.SenderPID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEvent.SenderPID. %s", err.Error())
 	}
 
-	err = nne.DataHolder.ExtractFrom(readable)
-	if err != nil {
+	if err := nne.DataHolder.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEvent.DataHolder. %s", err.Error())
 	}
 

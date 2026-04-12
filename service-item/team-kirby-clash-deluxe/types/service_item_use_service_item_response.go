@@ -32,20 +32,15 @@ func (siusir ServiceItemUseServiceItemResponse) WriteTo(writable types.Writable)
 
 // ExtractFrom extracts the ServiceItemUseServiceItemResponse from the given readable
 func (siusir *ServiceItemUseServiceItemResponse) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siusir.ServiceItemEShopResponse.ExtractFrom(readable)
-	if err != nil {
+	if err := siusir.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
-	err = siusir.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siusir.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemResponse header. %s", err.Error())
 	}
 
-	err = siusir.NullableUsedInfo.ExtractFrom(readable)
-	if err != nil {
+	if err := siusir.NullableUsedInfo.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemResponse.NullableUsedInfo. %s", err.Error())
 	}
 

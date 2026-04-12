@@ -36,30 +36,23 @@ func (bp BlacklistedPrincipal) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the BlacklistedPrincipal from the given readable
 func (bp *BlacklistedPrincipal) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = bp.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := bp.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.Data. %s", err.Error())
 	}
 
-	err = bp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := bp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal header. %s", err.Error())
 	}
 
-	err = bp.PrincipalBasicInfo.ExtractFrom(readable)
-	if err != nil {
+	if err := bp.PrincipalBasicInfo.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	err = bp.GameKey.ExtractFrom(readable)
-	if err != nil {
+	if err := bp.GameKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.GameKey. %s", err.Error())
 	}
 
-	err = bp.BlackListedSince.ExtractFrom(readable)
-	if err != nil {
+	if err := bp.BlackListedSince.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.BlackListedSince. %s", err.Error())
 	}
 

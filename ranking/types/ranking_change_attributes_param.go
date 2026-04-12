@@ -34,25 +34,19 @@ func (rcap RankingChangeAttributesParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingChangeAttributesParam from the given readable
 func (rcap *RankingChangeAttributesParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rcap.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rcap.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam header. %s", err.Error())
 	}
 
-	err = rcap.ModificationFlag.ExtractFrom(readable)
-	if err != nil {
+	if err := rcap.ModificationFlag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.ModificationFlag. %s", err.Error())
 	}
 
-	err = rcap.Groups.ExtractFrom(readable)
-	if err != nil {
+	if err := rcap.Groups.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Groups. %s", err.Error())
 	}
 
-	err = rcap.Param.ExtractFrom(readable)
-	if err != nil {
+	if err := rcap.Param.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Param. %s", err.Error())
 	}
 

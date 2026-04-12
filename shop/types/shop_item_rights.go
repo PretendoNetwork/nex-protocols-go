@@ -33,25 +33,19 @@ func (sir ShopItemRights) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ShopItemRights from the given readable
 func (sir *ShopItemRights) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sir.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sir.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItemRights header. %s", err.Error())
 	}
 
-	err = sir.ReferenceID.ExtractFrom(readable)
-	if err != nil {
+	if err := sir.ReferenceID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItemRights.ReferenceID. %s", err.Error())
 	}
 
-	err = sir.ItemType.ExtractFrom(readable)
-	if err != nil {
+	if err := sir.ItemType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItemRights.ItemType. %s", err.Error())
 	}
 
-	err = sir.Attribute.ExtractFrom(readable)
-	if err != nil {
+	if err := sir.Attribute.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopItemRights.Attribute. %s", err.Error())
 	}
 

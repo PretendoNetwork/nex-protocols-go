@@ -31,20 +31,15 @@ func (siecp ServiceItemEndChallengeParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemEndChallengeParam from the given readable
 func (siecp *ServiceItemEndChallengeParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siecp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siecp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam header. %s", err.Error())
 	}
 
-	err = siecp.ChallengeScheduleID.ExtractFrom(readable)
-	if err != nil {
+	if err := siecp.ChallengeScheduleID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.ChallengeScheduleID. %s", err.Error())
 	}
 
-	err = siecp.UserInfo.ExtractFrom(readable)
-	if err != nil {
+	if err := siecp.UserInfo.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.UserInfo. %s", err.Error())
 	}
 

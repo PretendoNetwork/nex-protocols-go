@@ -33,25 +33,19 @@ func (fui FriendUserInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the FriendUserInfo from the given readable
 func (fui *FriendUserInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = fui.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := fui.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendUserInfo header. %s", err.Error())
 	}
 
-	err = fui.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := fui.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendUserInfo.PID. %s", err.Error())
 	}
 
-	err = fui.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := fui.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendUserInfo.Name. %s", err.Error())
 	}
 
-	err = fui.Presence.ExtractFrom(readable)
-	if err != nil {
+	if err := fui.Presence.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendUserInfo.Presence. %s", err.Error())
 	}
 

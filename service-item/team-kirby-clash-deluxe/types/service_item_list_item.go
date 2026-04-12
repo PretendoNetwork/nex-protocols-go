@@ -39,40 +39,31 @@ func (sili ServiceItemListItem) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemListItem from the given readable
 func (sili *ServiceItemListItem) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sili.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sili.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem header. %s", err.Error())
 	}
 
-	err = sili.ItemCode.ExtractFrom(readable)
-	if err != nil {
+	if err := sili.ItemCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.ItemCode. %s", err.Error())
 	}
 
-	err = sili.RegularPrice.ExtractFrom(readable)
-	if err != nil {
+	if err := sili.RegularPrice.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.RegularPrice. %s", err.Error())
 	}
 
-	err = sili.TaxExcluded.ExtractFrom(readable)
-	if err != nil {
+	if err := sili.TaxExcluded.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.TaxExcluded. %s", err.Error())
 	}
 
-	err = sili.InitialPurchaseOnly.ExtractFrom(readable)
-	if err != nil {
+	if err := sili.InitialPurchaseOnly.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.InitialPurchaseOnly. %s", err.Error())
 	}
 
-	err = sili.Limitation.ExtractFrom(readable)
-	if err != nil {
+	if err := sili.Limitation.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.Limitation. %s", err.Error())
 	}
 
-	err = sili.Attributes.ExtractFrom(readable)
-	if err != nil {
+	if err := sili.Attributes.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.Attributes. %s", err.Error())
 	}
 

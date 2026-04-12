@@ -47,36 +47,28 @@ func (dspgp *DataStorePrepareGetParam) ExtractFrom(readable types.Readable) erro
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.DataStore
 
-	var err error
-
-	err = dspgp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dspgp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam header. %s", err.Error())
 	}
 
-	err = dspgp.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspgp.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.DataID. %s", err.Error())
 	}
 
-	err = dspgp.LockID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspgp.LockID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.LockID. %s", err.Error())
 	}
 
-	err = dspgp.PersistenceTarget.ExtractFrom(readable)
-	if err != nil {
+	if err := dspgp.PersistenceTarget.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.PersistenceTarget. %s", err.Error())
 	}
 
-	err = dspgp.AccessPassword.ExtractFrom(readable)
-	if err != nil {
+	if err := dspgp.AccessPassword.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.AccessPassword. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		err = dspgp.ExtraData.ExtractFrom(readable)
-		if err != nil {
+		if err := dspgp.ExtraData.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStorePrepareGetParam.ExtraData. %s", err.Error())
 		}
 	}

@@ -29,15 +29,11 @@ func (u SubscriberUserStatusParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the SubscriberUserStatusParam from the given readable
 func (u *SubscriberUserStatusParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = u.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := u.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberUserStatusParam header. %s", err.Error())
 	}
 
-	err = u.Value.ExtractFrom(readable)
-	if err != nil {
+	if err := u.Value.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberUserStatusParam.Value. %s", err.Error())
 	}
 

@@ -41,45 +41,35 @@ func (sso SimpleSearchObject) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the SimpleSearchObject from the given readable
 func (sso *SimpleSearchObject) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sso.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sso.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject header. %s", err.Error())
 	}
 
-	err = sso.ObjectID.ExtractFrom(readable)
-	if err != nil {
+	if err := sso.ObjectID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.ObjectID. %s", err.Error())
 	}
 
-	err = sso.OwnerPID.ExtractFrom(readable)
-	if err != nil {
+	if err := sso.OwnerPID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.OwnerPID. %s", err.Error())
 	}
 
-	err = sso.Attributes.ExtractFrom(readable)
-	if err != nil {
+	if err := sso.Attributes.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.Attributes. %s", err.Error())
 	}
 
-	err = sso.Metadata.ExtractFrom(readable)
-	if err != nil {
+	if err := sso.Metadata.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.Metadata. %s", err.Error())
 	}
 
-	err = sso.CommunityIDMiiverse.ExtractFrom(readable)
-	if err != nil {
+	if err := sso.CommunityIDMiiverse.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.CommunityIDMiiverse. %s", err.Error())
 	}
 
-	err = sso.CommunityCode.ExtractFrom(readable)
-	if err != nil {
+	if err := sso.CommunityCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.CommunityCode. %s", err.Error())
 	}
 
-	err = sso.DatetimeAttribute.ExtractFrom(readable)
-	if err != nil {
+	if err := sso.DatetimeAttribute.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.DatetimeAttribute. %s", err.Error())
 	}
 

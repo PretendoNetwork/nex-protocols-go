@@ -36,26 +36,20 @@ func (sigbp ServiceItemGetBalanceParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemGetBalanceParam from the given readable
 func (sigbp *ServiceItemGetBalanceParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sigbp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sigbp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam header. %s", err.Error())
 	}
 
-	err = sigbp.Language.ExtractFrom(readable)
-	if err != nil {
+	if err := sigbp.Language.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.Language. %s", err.Error())
 	}
 
-	err = sigbp.UniqueID.ExtractFrom(readable)
-	if err != nil {
+	if err := sigbp.UniqueID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.UniqueID. %s", err.Error())
 	}
 
 	if sigbp.StructureVersion >= 1 {
-		err = sigbp.Platform.ExtractFrom(readable)
-		if err != nil {
+		if err := sigbp.Platform.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.Platform. %s", err.Error())
 		}
 	}

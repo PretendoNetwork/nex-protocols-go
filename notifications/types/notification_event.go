@@ -65,29 +65,23 @@ func (ne NotificationEvent) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NotificationEvent from the given readable
 func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
-	var err error
-
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.Main
 
-	err = ne.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := ne.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NotificationEvent header. %s", err.Error())
 	}
 
-	err = ne.PIDSource.ExtractFrom(readable)
-	if err != nil {
+	if err := ne.PIDSource.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NotificationEvent.PIDSource. %s", err.Error())
 	}
 
-	err = ne.Type.ExtractFrom(readable)
-	if err != nil {
+	if err := ne.Type.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NotificationEvent.Type. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		err = ne.Param1.ExtractFrom(readable)
-		if err != nil {
+		if err := ne.Param1.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
 		}
 	} else {
@@ -100,8 +94,7 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		err = ne.Param2.ExtractFrom(readable)
-		if err != nil {
+		if err := ne.Param2.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
 		}
 	} else {
@@ -113,14 +106,12 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 		ne.Param2 = types.UInt64(param2)
 	}
 
-	err = ne.StrParam.ExtractFrom(readable)
-	if err != nil {
+	if err := ne.StrParam.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NotificationEvent.StrParam. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		err = ne.Param3.ExtractFrom(readable)
-		if err != nil {
+		if err := ne.Param3.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
 		}
 	} else if libraryVersion.GreaterOrEqual("3.4.0") {
@@ -133,8 +124,7 @@ func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") && ne.StructureVersion >= 1 {
-		err = ne.MapParam.ExtractFrom(readable)
-		if err != nil {
+		if err := ne.MapParam.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract NotificationEvent.MapParam. %s", err.Error())
 		}
 	}

@@ -40,40 +40,31 @@ func (nnep NintendoNotificationEventProfile) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NintendoNotificationEventProfile from the given readable
 func (nnep *NintendoNotificationEventProfile) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = nnep.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := nnep.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Data. %s", err.Error())
 	}
 
-	err = nnep.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := nnep.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile header. %s", err.Error())
 	}
 
-	err = nnep.Region.ExtractFrom(readable)
-	if err != nil {
+	if err := nnep.Region.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Region. %s", err.Error())
 	}
 
-	err = nnep.Country.ExtractFrom(readable)
-	if err != nil {
+	if err := nnep.Country.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Country. %s", err.Error())
 	}
 
-	err = nnep.Area.ExtractFrom(readable)
-	if err != nil {
+	if err := nnep.Area.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Area. %s", err.Error())
 	}
 
-	err = nnep.Language.ExtractFrom(readable)
-	if err != nil {
+	if err := nnep.Language.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Language. %s", err.Error())
 	}
 
-	err = nnep.Platform.ExtractFrom(readable)
-	if err != nil {
+	if err := nnep.Platform.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Platform. %s", err.Error())
 	}
 

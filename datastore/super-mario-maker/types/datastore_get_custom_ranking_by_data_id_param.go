@@ -33,25 +33,19 @@ func (dsgcrbdidp DataStoreGetCustomRankingByDataIDParam) WriteTo(writable types.
 
 // ExtractFrom extracts the DataStoreGetCustomRankingByDataIDParam from the given readable
 func (dsgcrbdidp *DataStoreGetCustomRankingByDataIDParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsgcrbdidp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsgcrbdidp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam header. %s", err.Error())
 	}
 
-	err = dsgcrbdidp.ApplicationID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrbdidp.ApplicationID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.ApplicationID. %s", err.Error())
 	}
 
-	err = dsgcrbdidp.DataIDList.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrbdidp.DataIDList.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.DataIDList. %s", err.Error())
 	}
 
-	err = dsgcrbdidp.ResultOption.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrbdidp.ResultOption.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.ResultOption. %s", err.Error())
 	}
 

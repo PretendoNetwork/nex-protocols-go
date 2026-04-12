@@ -35,30 +35,23 @@ func (dsrcp DataStoreReportCourseParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreReportCourseParam from the given readable
 func (dsrcp *DataStoreReportCourseParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsrcp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrcp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam header. %s", err.Error())
 	}
 
-	err = dsrcp.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrcp.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.DataID. %s", err.Error())
 	}
 
-	err = dsrcp.MiiName.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrcp.MiiName.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.MiiName. %s", err.Error())
 	}
 
-	err = dsrcp.ReportCategory.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrcp.ReportCategory.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportCategory. %s", err.Error())
 	}
 
-	err = dsrcp.ReportReason.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrcp.ReportReason.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportReason. %s", err.Error())
 	}
 

@@ -31,20 +31,15 @@ func (dsrop DataStoreRateObjectParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreRateObjectParam from the given readable
 func (dsrop *DataStoreRateObjectParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsrop.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrop.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRateObjectParam header. %s", err.Error())
 	}
 
-	err = dsrop.RatingValue.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrop.RatingValue.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRateObjectParam.RatingValue. %s", err.Error())
 	}
 
-	err = dsrop.AccessPassword.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrop.AccessPassword.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRateObjectParam.AccessPassword. %s", err.Error())
 	}
 

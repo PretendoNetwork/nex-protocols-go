@@ -43,50 +43,39 @@ func (crusp CompetitionRankingUploadScoreParam) WriteTo(writable types.Writable)
 
 // ExtractFrom extracts the CompetitionRankingUploadScoreParam from the given readable
 func (crusp *CompetitionRankingUploadScoreParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = crusp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := crusp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam header. %s", err.Error())
 	}
 
-	err = crusp.Unknown.ExtractFrom(readable)
-	if err != nil {
+	if err := crusp.Unknown.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown. %s", err.Error())
 	}
 
-	err = crusp.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := crusp.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown2. %s", err.Error())
 	}
 
-	err = crusp.Unknown3.ExtractFrom(readable)
-	if err != nil {
+	if err := crusp.Unknown3.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown3. %s", err.Error())
 	}
 
-	err = crusp.Unknown4.ExtractFrom(readable)
-	if err != nil {
+	if err := crusp.Unknown4.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown4. %s", err.Error())
 	}
 
-	err = crusp.Unknown5.ExtractFrom(readable)
-	if err != nil {
+	if err := crusp.Unknown5.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown5. %s", err.Error())
 	}
 
-	err = crusp.Unknown6.ExtractFrom(readable)
-	if err != nil {
+	if err := crusp.Unknown6.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown6. %s", err.Error())
 	}
 
-	err = crusp.Unknown7.ExtractFrom(readable)
-	if err != nil {
+	if err := crusp.Unknown7.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown7. %s", err.Error())
 	}
 
-	err = crusp.Metadata.ExtractFrom(readable)
-	if err != nil {
+	if err := crusp.Metadata.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Metadata. %s", err.Error())
 	}
 

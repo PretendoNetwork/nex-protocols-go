@@ -31,20 +31,15 @@ func (silm ServiceItemLawMessage) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemLawMessage from the given readable
 func (silm *ServiceItemLawMessage) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = silm.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := silm.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLawMessage header. %s", err.Error())
 	}
 
-	err = silm.IsMessageRequired.ExtractFrom(readable)
-	if err != nil {
+	if err := silm.IsMessageRequired.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLawMessage.IsMessageRequired. %s", err.Error())
 	}
 
-	err = silm.LawMessage.ExtractFrom(readable)
-	if err != nil {
+	if err := silm.LawMessage.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLawMessage.LawMessage. %s", err.Error())
 	}
 

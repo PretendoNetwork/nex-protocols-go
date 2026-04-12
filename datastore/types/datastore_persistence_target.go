@@ -31,20 +31,15 @@ func (dspt DataStorePersistenceTarget) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStorePersistenceTarget from the given readable
 func (dspt *DataStorePersistenceTarget) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dspt.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dspt.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceTarget header. %s", err.Error())
 	}
 
-	err = dspt.OwnerID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspt.OwnerID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.OwnerID. %s", err.Error())
 	}
 
-	err = dspt.PersistenceSlotID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspt.PersistenceSlotID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.PersistenceSlotID. %s", err.Error())
 	}
 

@@ -46,30 +46,23 @@ func (nnai NNAInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NNAInfo from the given readable
 func (nnai *NNAInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = nnai.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := nnai.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.Data. %s", err.Error())
 	}
 
-	err = nnai.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := nnai.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo header. %s", err.Error())
 	}
 
-	err = nnai.PrincipalBasicInfo.ExtractFrom(readable)
-	if err != nil {
+	if err := nnai.PrincipalBasicInfo.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	err = nnai.Unknown1.ExtractFrom(readable)
-	if err != nil {
+	if err := nnai.Unknown1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.Unknown1. %s", err.Error())
 	}
 
-	err = nnai.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := nnai.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.Unknown2. %s", err.Error())
 	}
 

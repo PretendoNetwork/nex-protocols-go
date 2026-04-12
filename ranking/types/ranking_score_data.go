@@ -40,40 +40,31 @@ func (rsd RankingScoreData) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingScoreData from the given readable
 func (rsd *RankingScoreData) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rsd.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rsd.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData header. %s", err.Error())
 	}
 
-	err = rsd.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Category. %s", err.Error())
 	}
 
-	err = rsd.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Score. %s", err.Error())
 	}
 
-	err = rsd.OrderBy.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.OrderBy.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.OrderBy. %s", err.Error())
 	}
 
-	err = rsd.UpdateMode.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.UpdateMode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.UpdateMode. %s", err.Error())
 	}
 
-	err = rsd.Groups.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Groups.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Groups. %s", err.Error())
 	}
 
-	err = rsd.Param.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Param.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Param. %s", err.Error())
 	}
 

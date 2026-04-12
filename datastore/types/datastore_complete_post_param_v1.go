@@ -31,20 +31,15 @@ func (dscppv DataStoreCompletePostParamV1) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreCompletePostParamV1 from the given readable
 func (dscppv *DataStoreCompletePostParamV1) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dscppv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dscppv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1 header. %s", err.Error())
 	}
 
-	err = dscppv.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dscppv.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.DataID. %s", err.Error())
 	}
 
-	err = dscppv.IsSuccess.ExtractFrom(readable)
-	if err != nil {
+	if err := dscppv.IsSuccess.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.IsSuccess. %s", err.Error())
 	}
 

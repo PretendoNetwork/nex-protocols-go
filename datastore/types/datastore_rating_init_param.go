@@ -44,50 +44,39 @@ func (dsrip DataStoreRatingInitParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreRatingInitParam from the given readable
 func (dsrip *DataStoreRatingInitParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsrip.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrip.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam header. %s", err.Error())
 	}
 
-	err = dsrip.Flag.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrip.Flag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.Flag. %s", err.Error())
 	}
 
-	err = dsrip.InternalFlag.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrip.InternalFlag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.InternalFlag. %s", err.Error())
 	}
 
-	err = dsrip.LockType.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrip.LockType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.LockType. %s", err.Error())
 	}
 
-	err = dsrip.InitialValue.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrip.InitialValue.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.InitialValue. %s", err.Error())
 	}
 
-	err = dsrip.RangeMin.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrip.RangeMin.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.RangeMin. %s", err.Error())
 	}
 
-	err = dsrip.RangeMax.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrip.RangeMax.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.RangeMax. %s", err.Error())
 	}
 
-	err = dsrip.PeriodHour.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrip.PeriodHour.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.PeriodHour. %s", err.Error())
 	}
 
-	err = dsrip.PeriodDuration.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrip.PeriodDuration.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.PeriodDuration. %s", err.Error())
 	}
 

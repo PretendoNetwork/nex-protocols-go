@@ -31,20 +31,15 @@ func (sil ServiceItemLimitation) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemLimitation from the given readable
 func (sil *ServiceItemLimitation) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sil.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sil.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLimitation header. %s", err.Error())
 	}
 
-	err = sil.LimitationType.ExtractFrom(readable)
-	if err != nil {
+	if err := sil.LimitationType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLimitation.LimitationType. %s", err.Error())
 	}
 
-	err = sil.LimitationValue.ExtractFrom(readable)
-	if err != nil {
+	if err := sil.LimitationValue.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLimitation.LimitationValue. %s", err.Error())
 	}
 

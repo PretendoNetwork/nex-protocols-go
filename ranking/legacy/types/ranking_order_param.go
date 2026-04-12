@@ -42,45 +42,35 @@ func (rop RankingOrderParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingOrderParam from the given readable
 func (rop *RankingOrderParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rop.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rop.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam header. %s", err.Error())
 	}
 
-	err = rop.ScoreIndex.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.ScoreIndex.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.ScoreIndex. %s", err.Error())
 	}
 
-	err = rop.ScoreOrder.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.ScoreOrder.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.ScoreOrder. %s", err.Error())
 	}
 
-	err = rop.RankCalculation.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.RankCalculation.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.RankCalculation. %s", err.Error())
 	}
 
-	err = rop.Unknown1.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.Unknown1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown1. %s", err.Error())
 	}
 
-	err = rop.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown2. %s", err.Error())
 	}
 
-	err = rop.Unknown3.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.Unknown3.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown3. %s", err.Error())
 	}
 
-	err = rop.Unknown4.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.Unknown4.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown4. %s", err.Error())
 	}
 

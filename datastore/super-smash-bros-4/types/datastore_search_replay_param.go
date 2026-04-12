@@ -35,30 +35,23 @@ func (dssrp DataStoreSearchReplayParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreSearchReplayParam from the given readable
 func (dssrp *DataStoreSearchReplayParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dssrp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dssrp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam header. %s", err.Error())
 	}
 
-	err = dssrp.Mode.ExtractFrom(readable)
-	if err != nil {
+	if err := dssrp.Mode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Mode. %s", err.Error())
 	}
 
-	err = dssrp.Style.ExtractFrom(readable)
-	if err != nil {
+	if err := dssrp.Style.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Style. %s", err.Error())
 	}
 
-	err = dssrp.Fighter.ExtractFrom(readable)
-	if err != nil {
+	if err := dssrp.Fighter.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Fighter. %s", err.Error())
 	}
 
-	err = dssrp.ResultRange.ExtractFrom(readable)
-	if err != nil {
+	if err := dssrp.ResultRange.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.ResultRange. %s", err.Error())
 	}
 

@@ -39,40 +39,31 @@ func (sc SubscriberContent) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the SubscriberContent from the given readable
 func (sc *SubscriberContent) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sc.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sc.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent header. %s", err.Error())
 	}
 
-	err = sc.ContentID.ExtractFrom(readable)
-	if err != nil {
+	if err := sc.ContentID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.ContentID. %s", err.Error())
 	}
 
-	err = sc.Message.ExtractFrom(readable)
-	if err != nil {
+	if err := sc.Message.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.Message. %s", err.Error())
 	}
 
-	err = sc.Binary.ExtractFrom(readable)
-	if err != nil {
+	if err := sc.Binary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.Binary. %s", err.Error())
 	}
 
-	err = sc.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := sc.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.PID. %s", err.Error())
 	}
 
-	err = sc.Topics.ExtractFrom(readable)
-	if err != nil {
+	if err := sc.Topics.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.Topics. %s", err.Error())
 	}
 
-	err = sc.PostTime.ExtractFrom(readable)
-	if err != nil {
+	if err := sc.PostTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.PostTime. %s", err.Error())
 	}
 

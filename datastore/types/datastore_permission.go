@@ -32,20 +32,15 @@ func (dsp DataStorePermission) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStorePermission from the given readable
 func (dsp *DataStorePermission) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePermission header. %s", err.Error())
 	}
 
-	err = dsp.Permission.ExtractFrom(readable)
-	if err != nil {
+	if err := dsp.Permission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePermission.Permission. %s", err.Error())
 	}
 
-	err = dsp.RecipientIDs.ExtractFrom(readable)
-	if err != nil {
+	if err := dsp.RecipientIDs.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePermission.RecipientIDs. %s", err.Error())
 	}
 

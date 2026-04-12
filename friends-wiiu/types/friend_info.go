@@ -52,45 +52,35 @@ func (fi FriendInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the FriendInfo from the given readable
 func (fi *FriendInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = fi.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := fi.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.Data. %s", err.Error())
 	}
 
-	err = fi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := fi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo header. %s", err.Error())
 	}
 
-	err = fi.NNAInfo.ExtractFrom(readable)
-	if err != nil {
+	if err := fi.NNAInfo.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.NNAInfo. %s", err.Error())
 	}
 
-	err = fi.Presence.ExtractFrom(readable)
-	if err != nil {
+	if err := fi.Presence.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.Presence. %s", err.Error())
 	}
 
-	err = fi.Status.ExtractFrom(readable)
-	if err != nil {
+	if err := fi.Status.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.Status. %s", err.Error())
 	}
 
-	err = fi.BecameFriend.ExtractFrom(readable)
-	if err != nil {
+	if err := fi.BecameFriend.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.BecameFriend. %s", err.Error())
 	}
 
-	err = fi.LastOnline.ExtractFrom(readable)
-	if err != nil {
+	if err := fi.LastOnline.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.LastOnline. %s", err.Error())
 	}
 
-	err = fi.Unknown.ExtractFrom(readable)
-	if err != nil {
+	if err := fi.Unknown.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.Unknown. %s", err.Error())
 	}
 

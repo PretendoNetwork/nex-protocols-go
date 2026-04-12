@@ -35,30 +35,23 @@ func (sps SimplePlayingSession) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the SimplePlayingSession from the given readable
 func (sps *SimplePlayingSession) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sps.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sps.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession header. %s", err.Error())
 	}
 
-	err = sps.PrincipalID.ExtractFrom(readable)
-	if err != nil {
+	if err := sps.PrincipalID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.PrincipalID. %s", err.Error())
 	}
 
-	err = sps.GatheringID.ExtractFrom(readable)
-	if err != nil {
+	if err := sps.GatheringID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.GatheringID. %s", err.Error())
 	}
 
-	err = sps.GameMode.ExtractFrom(readable)
-	if err != nil {
+	if err := sps.GameMode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.GameMode. %s", err.Error())
 	}
 
-	err = sps.Attribute0.ExtractFrom(readable)
-	if err != nil {
+	if err := sps.Attribute0.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.Attribute0. %s", err.Error())
 	}
 

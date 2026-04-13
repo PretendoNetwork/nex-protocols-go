@@ -316,7 +316,7 @@ func (dsmi DataStoreMetaInfo) FormatToString(indentationLevel int) string {
 }
 
 // FilterPropertiesByResultOption zeroes out certain struct properties based on the input flags
-func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption types.UInt8) {
+func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption constants.ResultFlag) {
 	// * This is kind of backwards
 	// *
 	// * This method assumes all struct data exists
@@ -326,18 +326,23 @@ func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption types
 	// * flags being used to conditionally ADD properties,
 	// * it's used to conditionally REMOVE them
 
-	if resultOption&0x1 == 0 {
+	if resultOption&constants.ResultFlagTags == 0 {
 		dsmi.Tags = types.NewList[types.String]()
 
 	}
 
-	if resultOption&0x2 == 0 {
+	if resultOption&constants.ResultFlagRatings == 0 {
 		dsmi.Ratings = types.NewList[DataStoreRatingInfoWithSlot]()
 
 	}
 
-	if resultOption&0x4 == 0 {
+	if resultOption&constants.ResultFlagMetaBinary == 0 {
 		dsmi.MetaBinary = types.NewQBuffer(nil)
+	}
+
+	if resultOption&constants.ResultFlagPermittedIDs == 0 {
+		dsmi.Permission = NewDataStorePermission()
+		dsmi.DelPermission = NewDataStorePermission()
 	}
 }
 

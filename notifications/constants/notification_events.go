@@ -5,7 +5,7 @@ import "github.com/PretendoNetwork/nex-go/v2/types"
 // NotificationEvents represents the fully built notification type with it's sub-type.
 //
 // Note: This is not accurate to the true NotificationEvents type. The true
-// NotificationEvents type represents the base category nams, also called the "main type".
+// NotificationEvents type represents the base category names, also called the "main type".
 // This was renamed to NotificationCategory, and now NotificationEvents represents the
 // fully built type. For categories, see NotificationCategory.
 type NotificationEvents uint32

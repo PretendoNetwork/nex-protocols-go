@@ -31,6 +31,30 @@ func (nc *NotificationCategory) ExtractFrom(readable types.Readable) error {
 	return nil
 }
 
+// Equals checks if the given NotificationCategory contains the same data as the current NotificationCategory
+func (nc NotificationCategory) Equals(o types.RVType) bool {
+	return nc == o
+}
+
+// Copy returns a copy of the NotificationCategory
+func (nc NotificationCategory) Copy() types.RVType {
+	return nc
+}
+
+// CopyRef copies the current value of the NotificationCategory
+// and returns a pointer to the new copy
+func (nc NotificationCategory) CopyRef() types.RVTypePtr {
+	copied := nc.Copy().(NotificationCategory)
+	return &copied
+}
+
+// Deref takes a pointer to the NotificationCategory
+// and dereferences it to the raw value.
+// Only useful when working with an instance of RVTypePtr
+func (nc *NotificationCategory) Deref() types.RVType {
+	return *nc
+}
+
 // Build creates the final notification type ID used in NotificationEvent.m_uiType.
 //
 // Takes an optional subtype. Only the first subtype defined is used.

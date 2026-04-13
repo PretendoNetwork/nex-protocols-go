@@ -31,20 +31,15 @@ func (dsgnanp DataStoreGetNewArrivedNotificationsParam) WriteTo(writable types.W
 
 // ExtractFrom extracts the DataStoreGetNewArrivedNotificationsParam from the given readable
 func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsgnanp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsgnanp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam header. %s", err.Error())
 	}
 
-	err = dsgnanp.LastNotificationID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgnanp.LastNotificationID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam.LastNotificationID. %s", err.Error())
 	}
 
-	err = dsgnanp.Limit.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgnanp.Limit.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam.Limit. %s", err.Error())
 	}
 

@@ -31,20 +31,15 @@ func (bai BasicAccountInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the BasicAccountInfo from the given readable
 func (bai *BasicAccountInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = bai.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := bai.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BasicAccountInfo header. %s", err.Error())
 	}
 
-	err = bai.PIDOwner.ExtractFrom(readable)
-	if err != nil {
+	if err := bai.PIDOwner.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BasicAccountInfo.PIDOwner. %s", err.Error())
 	}
 
-	err = bai.StrName.ExtractFrom(readable)
-	if err != nil {
+	if err := bai.StrName.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BasicAccountInfo.StrName. %s", err.Error())
 	}
 

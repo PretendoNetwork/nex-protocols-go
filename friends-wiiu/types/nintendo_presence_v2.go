@@ -71,90 +71,71 @@ func (npv NintendoPresenceV2) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NintendoPresenceV2 from the given readable
 func (npv *NintendoPresenceV2) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = npv.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Data. %s", err.Error())
 	}
 
-	err = npv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := npv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2 header. %s", err.Error())
 	}
 
-	err = npv.ChangedFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.ChangedFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.ChangedFlags. %s", err.Error())
 	}
 
-	err = npv.Online.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Online.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Online. %s", err.Error())
 	}
 
-	err = npv.GameKey.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.GameKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameKey. %s", err.Error())
 	}
 
-	err = npv.Unknown1.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown1. %s", err.Error())
 	}
 
-	err = npv.Message.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Message.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Message. %s", err.Error())
 	}
 
-	err = npv.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown2. %s", err.Error())
 	}
 
-	err = npv.Unknown3.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown3.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown3. %s", err.Error())
 	}
 
-	err = npv.GameServerID.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.GameServerID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameServerID. %s", err.Error())
 	}
 
-	err = npv.Unknown4.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown4.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown4. %s", err.Error())
 	}
 
-	err = npv.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.PID. %s", err.Error())
 	}
 
-	err = npv.GatheringID.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.GatheringID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GatheringID. %s", err.Error())
 	}
 
-	err = npv.ApplicationData.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.ApplicationData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.ApplicationData. %s", err.Error())
 	}
 
-	err = npv.Unknown5.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown5.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown5. %s", err.Error())
 	}
 
-	err = npv.Unknown6.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown6.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown6. %s", err.Error())
 	}
 
-	err = npv.Unknown7.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown7.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown7. %s", err.Error())
 	}
 

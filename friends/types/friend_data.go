@@ -37,35 +37,27 @@ func (fd FriendData) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the FriendData from the given readable
 func (fd *FriendData) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = fd.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := fd.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendData header. %s", err.Error())
 	}
 
-	err = fd.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := fd.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendData.PID. %s", err.Error())
 	}
 
-	err = fd.StrName.ExtractFrom(readable)
-	if err != nil {
+	if err := fd.StrName.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendData.StrName. %s", err.Error())
 	}
 
-	err = fd.ByRelationship.ExtractFrom(readable)
-	if err != nil {
+	if err := fd.ByRelationship.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendData.ByRelationship. %s", err.Error())
 	}
 
-	err = fd.UIDetails.ExtractFrom(readable)
-	if err != nil {
+	if err := fd.UIDetails.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendData.UIDetails. %s", err.Error())
 	}
 
-	err = fd.StrStatus.ExtractFrom(readable)
-	if err != nil {
+	if err := fd.StrStatus.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendData.StrStatus. %s", err.Error())
 	}
 

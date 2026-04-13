@@ -43,50 +43,39 @@ func (gtstpp GlobalTradeStationTradePokemonParam) WriteTo(writable types.Writabl
 
 // ExtractFrom extracts the GlobalTradeStationTradePokemonParam from the given readable
 func (gtstpp *GlobalTradeStationTradePokemonParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = gtstpp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := gtstpp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam header. %s", err.Error())
 	}
 
-	err = gtstpp.TradeKey.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpp.TradeKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.TradeKey. %s", err.Error())
 	}
 
-	err = gtstpp.PrepareTradeKey.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpp.PrepareTradeKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PrepareTradeKey. %s", err.Error())
 	}
 
-	err = gtstpp.PrepareUploadKey.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpp.PrepareUploadKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
-	err = gtstpp.Period.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpp.Period.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.Period. %s", err.Error())
 	}
 
-	err = gtstpp.IndexData.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpp.IndexData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.IndexData. %s", err.Error())
 	}
 
-	err = gtstpp.PokemonData.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpp.PokemonData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PokemonData. %s", err.Error())
 	}
 
-	err = gtstpp.Signature.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpp.Signature.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.Signature. %s", err.Error())
 	}
 
-	err = gtstpp.NeedData.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpp.NeedData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.NeedData. %s", err.Error())
 	}
 

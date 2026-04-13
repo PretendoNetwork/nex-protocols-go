@@ -34,25 +34,19 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) WriteTo(writable types.Writ
 
 // ExtractFrom extracts the FindMatchmakeSessionByParticipantParam from the given readable
 func (fmsbpp *FindMatchmakeSessionByParticipantParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = fmsbpp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := fmsbpp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam header. %s", err.Error())
 	}
 
-	err = fmsbpp.PrincipalIDList.ExtractFrom(readable)
-	if err != nil {
+	if err := fmsbpp.PrincipalIDList.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.PrincipalIDList. %s", err.Error())
 	}
 
-	err = fmsbpp.ResultOptions.ExtractFrom(readable)
-	if err != nil {
+	if err := fmsbpp.ResultOptions.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.ResultOptions. %s", err.Error())
 	}
 
-	err = fmsbpp.BlockListParam.ExtractFrom(readable)
-	if err != nil {
+	if err := fmsbpp.BlockListParam.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.BlockListParam. %s", err.Error())
 	}
 

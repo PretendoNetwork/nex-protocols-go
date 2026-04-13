@@ -31,20 +31,15 @@ func (sia ServiceItemAttribute) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemAttribute from the given readable
 func (sia *ServiceItemAttribute) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sia.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sia.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAttribute header. %s", err.Error())
 	}
 
-	err = sia.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := sia.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAttribute.Name. %s", err.Error())
 	}
 
-	err = sia.Value.ExtractFrom(readable)
-	if err != nil {
+	if err := sia.Value.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAttribute.Value. %s", err.Error())
 	}
 

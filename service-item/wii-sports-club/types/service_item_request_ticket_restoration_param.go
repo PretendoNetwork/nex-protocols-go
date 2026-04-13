@@ -31,20 +31,15 @@ func (sirtrp ServiceItemRequestTicketRestorationParam) WriteTo(writable types.Wr
 
 // ExtractFrom extracts the ServiceItemRequestTicketRestorationParam from the given readable
 func (sirtrp *ServiceItemRequestTicketRestorationParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sirtrp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sirtrp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam header. %s", err.Error())
 	}
 
-	err = sirtrp.TicketType.ExtractFrom(readable)
-	if err != nil {
+	if err := sirtrp.TicketType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.TicketType. %s", err.Error())
 	}
 
-	err = sirtrp.NumTicket.ExtractFrom(readable)
-	if err != nil {
+	if err := sirtrp.NumTicket.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.NumTicket. %s", err.Error())
 	}
 

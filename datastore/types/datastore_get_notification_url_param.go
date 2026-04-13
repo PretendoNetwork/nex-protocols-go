@@ -29,15 +29,11 @@ func (dsgnurlp DataStoreGetNotificationURLParam) WriteTo(writable types.Writable
 
 // ExtractFrom extracts the DataStoreGetNotificationURLParam from the given readable
 func (dsgnurlp *DataStoreGetNotificationURLParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsgnurlp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsgnurlp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetNotificationURLParam header. %s", err.Error())
 	}
 
-	err = dsgnurlp.PreviousURL.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgnurlp.PreviousURL.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetNotificationURLParam.PreviousURL. %s", err.Error())
 	}
 

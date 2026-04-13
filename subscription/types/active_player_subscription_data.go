@@ -42,20 +42,15 @@ func (apsd ActivePlayerSubscriptionData) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ActivePlayerSubscriptionData from the given readable
 func (apsd *ActivePlayerSubscriptionData) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = apsd.SubscriptionData.ExtractFrom(readable)
-	if err != nil {
+	if err := apsd.SubscriptionData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ActivePlayerSubscriptionData.SubscriptionData. %s", err.Error())
 	}
 
-	err = apsd.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := apsd.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ActivePlayerSubscriptionData header. %s", err.Error())
 	}
 
-	err = apsd.Unknown.ExtractFrom(readable)
-	if err != nil {
+	if err := apsd.Unknown.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ActivePlayerSubscriptionData.Unknown. %s", err.Error())
 	}
 

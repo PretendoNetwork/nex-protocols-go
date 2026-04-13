@@ -46,55 +46,43 @@ func (dscmpv DataStoreChangeMetaParamV1) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreChangeMetaParamV1 from the given readable
 func (dscmpv *DataStoreChangeMetaParamV1) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dscmpv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dscmpv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1 header. %s", err.Error())
 	}
 
-	err = dscmpv.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DataID. %s", err.Error())
 	}
 
-	err = dscmpv.ModifiesFlag.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.ModifiesFlag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.ModifiesFlag. %s", err.Error())
 	}
 
-	err = dscmpv.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Name. %s", err.Error())
 	}
 
-	err = dscmpv.Permission.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.Permission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Permission. %s", err.Error())
 	}
 
-	err = dscmpv.DelPermission.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.DelPermission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DelPermission. %s", err.Error())
 	}
 
-	err = dscmpv.Period.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.Period.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Period. %s", err.Error())
 	}
 
-	err = dscmpv.MetaBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.MetaBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.MetaBinary. %s", err.Error())
 	}
 
-	err = dscmpv.Tags.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.Tags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Tags. %s", err.Error())
 	}
 
-	err = dscmpv.UpdatePassword.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.UpdatePassword.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.UpdatePassword. %s", err.Error())
 	}
 

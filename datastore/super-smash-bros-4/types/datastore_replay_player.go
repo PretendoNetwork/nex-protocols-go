@@ -45,55 +45,43 @@ func (dsrp DataStoreReplayPlayer) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreReplayPlayer from the given readable
 func (dsrp *DataStoreReplayPlayer) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsrp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer header. %s", err.Error())
 	}
 
-	err = dsrp.Fighter.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.Fighter.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Fighter. %s", err.Error())
 	}
 
-	err = dsrp.Health.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.Health.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Health. %s", err.Error())
 	}
 
-	err = dsrp.WinningRate.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.WinningRate.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.WinningRate. %s", err.Error())
 	}
 
-	err = dsrp.Color.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.Color.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Color. %s", err.Error())
 	}
 
-	err = dsrp.Color2.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.Color2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Color2. %s", err.Error())
 	}
 
-	err = dsrp.PrincipalID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.PrincipalID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.PrincipalID. %s", err.Error())
 	}
 
-	err = dsrp.Country.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.Country.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Country. %s", err.Error())
 	}
 
-	err = dsrp.Region.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.Region.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Region. %s", err.Error())
 	}
 
-	err = dsrp.Number.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrp.Number.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Number. %s", err.Error())
 	}
 

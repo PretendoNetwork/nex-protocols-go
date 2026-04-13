@@ -31,20 +31,15 @@ func (gtstk GlobalTradeStationTradeKey) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the GlobalTradeStationTradeKey from the given readable
 func (gtstk *GlobalTradeStationTradeKey) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = gtstk.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := gtstk.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey header. %s", err.Error())
 	}
 
-	err = gtstk.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstk.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.DataID. %s", err.Error())
 	}
 
-	err = gtstk.Version.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstk.Version.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.Version. %s", err.Error())
 	}
 

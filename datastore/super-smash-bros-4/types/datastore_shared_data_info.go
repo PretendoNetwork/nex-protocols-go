@@ -45,55 +45,43 @@ func (dssdi DataStoreSharedDataInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreSharedDataInfo from the given readable
 func (dssdi *DataStoreSharedDataInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dssdi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dssdi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo header. %s", err.Error())
 	}
 
-	err = dssdi.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataID. %s", err.Error())
 	}
 
-	err = dssdi.OwnerID.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.OwnerID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.OwnerID. %s", err.Error())
 	}
 
-	err = dssdi.DataType.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.DataType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataType. %s", err.Error())
 	}
 
-	err = dssdi.Comment.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.Comment.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Comment. %s", err.Error())
 	}
 
-	err = dssdi.MetaBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.MetaBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.MetaBinary. %s", err.Error())
 	}
 
-	err = dssdi.Profile.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.Profile.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Profile. %s", err.Error())
 	}
 
-	err = dssdi.Rating.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.Rating.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Rating. %s", err.Error())
 	}
 
-	err = dssdi.CreatedTime.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.CreatedTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.CreatedTime. %s", err.Error())
 	}
 
-	err = dssdi.Info.ExtractFrom(readable)
-	if err != nil {
+	if err := dssdi.Info.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Info. %s", err.Error())
 	}
 

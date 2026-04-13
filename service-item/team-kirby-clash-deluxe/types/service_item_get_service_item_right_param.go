@@ -40,36 +40,28 @@ func (sigsirp ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writab
 
 // ExtractFrom extracts the ServiceItemGetServiceItemRightParam from the given readable
 func (sigsirp *ServiceItemGetServiceItemRightParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sigsirp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sigsirp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam header. %s", err.Error())
 	}
 
-	err = sigsirp.ReferenceID.ExtractFrom(readable)
-	if err != nil {
+	if err := sigsirp.ReferenceID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ReferenceID. %s", err.Error())
 	}
 
-	err = sigsirp.DeviceID.ExtractFrom(readable)
-	if err != nil {
+	if err := sigsirp.DeviceID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.DeviceID. %s", err.Error())
 	}
 
-	err = sigsirp.UniqueID.ExtractFrom(readable)
-	if err != nil {
+	if err := sigsirp.UniqueID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.UniqueID. %s", err.Error())
 	}
 
-	err = sigsirp.ItemGroup.ExtractFrom(readable)
-	if err != nil {
+	if err := sigsirp.ItemGroup.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ItemGroup. %s", err.Error())
 	}
 
 	if sigsirp.StructureVersion >= 1 {
-		err = sigsirp.Platform.ExtractFrom(readable)
-		if err != nil {
+		if err := sigsirp.Platform.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.Platform. %s", err.Error())
 		}
 	}

@@ -31,20 +31,15 @@ func (ssc SimpleSearchCondition) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the SimpleSearchCondition from the given readable
 func (ssc *SimpleSearchCondition) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = ssc.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := ssc.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchCondition header. %s", err.Error())
 	}
 
-	err = ssc.Value.ExtractFrom(readable)
-	if err != nil {
+	if err := ssc.Value.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchCondition.Value. %s", err.Error())
 	}
 
-	err = ssc.ComparisonOperator.ExtractFrom(readable)
-	if err != nil {
+	if err := ssc.ComparisonOperator.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchCondition.ComparisonOperator. %s", err.Error())
 	}
 

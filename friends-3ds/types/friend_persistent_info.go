@@ -52,70 +52,55 @@ func (fpi FriendPersistentInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the FriendPersistentInfo from the given readable
 func (fpi *FriendPersistentInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = fpi.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.Data. %s", err.Error())
 	}
 
-	err = fpi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := fpi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo header. %s", err.Error())
 	}
 
-	err = fpi.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.PID. %s", err.Error())
 	}
 
-	err = fpi.Region.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.Region.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.Region. %s", err.Error())
 	}
 
-	err = fpi.Country.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.Country.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.Country. %s", err.Error())
 	}
 
-	err = fpi.Area.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.Area.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.Area. %s", err.Error())
 	}
 
-	err = fpi.Language.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.Language.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.Language. %s", err.Error())
 	}
 
-	err = fpi.Platform.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.Platform.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.Platform. %s", err.Error())
 	}
 
-	err = fpi.GameKey.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.GameKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.GameKey. %s", err.Error())
 	}
 
-	err = fpi.Message.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.Message.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.Message. %s", err.Error())
 	}
 
-	err = fpi.MessageUpdatedAt.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.MessageUpdatedAt.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.MessageUpdatedAt. %s", err.Error())
 	}
 
-	err = fpi.MiiModifiedAt.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.MiiModifiedAt.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.MiiModifiedAt. %s", err.Error())
 	}
 
-	err = fpi.LastOnline.ExtractFrom(readable)
-	if err != nil {
+	if err := fpi.LastOnline.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendPersistentInfo.LastOnline. %s", err.Error())
 	}
 

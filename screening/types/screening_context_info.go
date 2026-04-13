@@ -31,20 +31,15 @@ func (sci ScreeningContextInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ScreeningContextInfo from the given readable
 func (sci *ScreeningContextInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sci.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sci.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningContextInfo header. %s", err.Error())
 	}
 
-	err = sci.Key.ExtractFrom(readable)
-	if err != nil {
+	if err := sci.Key.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningContextInfo.Key. %s", err.Error())
 	}
 
-	err = sci.Value.ExtractFrom(readable)
-	if err != nil {
+	if err := sci.Value.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningContextInfo.Value. %s", err.Error())
 	}
 

@@ -29,15 +29,11 @@ func (mp MatchmakeParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeParam from the given readable
 func (mp *MatchmakeParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = mp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := mp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeParam header. %s", err.Error())
 	}
 
-	err = mp.Params.ExtractFrom(readable)
-	if err != nil {
+	if err := mp.Params.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeParam.Params. %s", err.Error())
 	}
 

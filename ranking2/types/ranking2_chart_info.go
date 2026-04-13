@@ -63,100 +63,79 @@ func (rci Ranking2ChartInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2ChartInfo from the given readable
 func (rci *Ranking2ChartInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rci.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rci.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo header. %s", err.Error())
 	}
 
-	err = rci.CreateTime.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.CreateTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.CreateTime. %s", err.Error())
 	}
 
-	err = rci.Index.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.Index.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Index. %s", err.Error())
 	}
 
-	err = rci.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Category. %s", err.Error())
 	}
 
-	err = rci.Season.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.Season.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Season. %s", err.Error())
 	}
 
-	err = rci.BinsSize.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.BinsSize.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsSize. %s", err.Error())
 	}
 
-	err = rci.SamplingRate.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.SamplingRate.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.SamplingRate. %s", err.Error())
 	}
 
-	err = rci.ScoreOrder.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.ScoreOrder.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.ScoreOrder. %s", err.Error())
 	}
 
-	err = rci.EstimateLength.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.EstimateLength.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLength. %s", err.Error())
 	}
 
-	err = rci.EstimateHighestScore.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.EstimateHighestScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateHighestScore. %s", err.Error())
 	}
 
-	err = rci.EstimateLowestScore.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.EstimateLowestScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLowestScore. %s", err.Error())
 	}
 
-	err = rci.EstimateMedianScore.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.EstimateMedianScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateMedianScore. %s", err.Error())
 	}
 
-	err = rci.EstimateAverageScore.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.EstimateAverageScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateAverageScore. %s", err.Error())
 	}
 
-	err = rci.HighestBinsScore.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.HighestBinsScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.HighestBinsScore. %s", err.Error())
 	}
 
-	err = rci.LowestBinsScore.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.LowestBinsScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.LowestBinsScore. %s", err.Error())
 	}
 
-	err = rci.BinsWidth.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.BinsWidth.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsWidth. %s", err.Error())
 	}
 
-	err = rci.Attribute1.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.Attribute1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute1. %s", err.Error())
 	}
 
-	err = rci.Attribute2.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.Attribute2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute2. %s", err.Error())
 	}
 
-	err = rci.Quantities.ExtractFrom(readable)
-	if err != nil {
+	if err := rci.Quantities.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Quantities. %s", err.Error())
 	}
 

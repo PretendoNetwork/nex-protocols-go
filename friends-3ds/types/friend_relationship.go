@@ -37,30 +37,23 @@ func (fr FriendRelationship) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the FriendRelationship from the given readable
 func (fr *FriendRelationship) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = fr.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := fr.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship.Data. %s", err.Error())
 	}
 
-	err = fr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := fr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship header. %s", err.Error())
 	}
 
-	err = fr.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := fr.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship.PID. %s", err.Error())
 	}
 
-	err = fr.LFC.ExtractFrom(readable)
-	if err != nil {
+	if err := fr.LFC.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship.LFC. %s", err.Error())
 	}
 
-	err = fr.RelationshipType.ExtractFrom(readable)
-	if err != nil {
+	if err := fr.RelationshipType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship.RelationshipType. %s", err.Error())
 	}
 

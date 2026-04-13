@@ -31,20 +31,15 @@ func (rcii Ranking2ChartInfoInput) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2ChartInfoInput from the given readable
 func (rcii *Ranking2ChartInfoInput) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rcii.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rcii.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfoInput header. %s", err.Error())
 	}
 
-	err = rcii.ChartIndex.ExtractFrom(readable)
-	if err != nil {
+	if err := rcii.ChartIndex.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfoInput.ChartIndex. %s", err.Error())
 	}
 
-	err = rcii.NumSeasonsToGoBack.ExtractFrom(readable)
-	if err != nil {
+	if err := rcii.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfoInput.NumSeasonsToGoBack. %s", err.Error())
 	}
 

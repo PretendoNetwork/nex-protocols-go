@@ -46,55 +46,43 @@ func (rgp Ranking2GetParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2GetParam from the given readable
 func (rgp *Ranking2GetParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rgp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rgp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam header. %s", err.Error())
 	}
 
-	err = rgp.NexUniqueID.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.NexUniqueID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.NexUniqueID. %s", err.Error())
 	}
 
-	err = rgp.PrincipalID.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.PrincipalID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.PrincipalID. %s", err.Error())
 	}
 
-	err = rgp.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.Category. %s", err.Error())
 	}
 
-	err = rgp.Offset.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.Offset.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.Offset. %s", err.Error())
 	}
 
-	err = rgp.Length.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.Length.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.Length. %s", err.Error())
 	}
 
-	err = rgp.SortFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.SortFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.SortFlags. %s", err.Error())
 	}
 
-	err = rgp.OptionFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.OptionFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.OptionFlags. %s", err.Error())
 	}
 
-	err = rgp.Mode.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.Mode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.Mode. %s", err.Error())
 	}
 
-	err = rgp.NumSeasonsToGoBack.ExtractFrom(readable)
-	if err != nil {
+	if err := rgp.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.NumSeasonsToGoBack. %s", err.Error())
 	}
 

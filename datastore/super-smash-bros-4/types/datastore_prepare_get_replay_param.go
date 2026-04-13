@@ -31,20 +31,15 @@ func (dspgrp DataStorePrepareGetReplayParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStorePrepareGetReplayParam from the given readable
 func (dspgrp *DataStorePrepareGetReplayParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dspgrp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dspgrp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam header. %s", err.Error())
 	}
 
-	err = dspgrp.ReplayID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspgrp.ReplayID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam.ReplayID. %s", err.Error())
 	}
 
-	err = dspgrp.ExtraData.ExtractFrom(readable)
-	if err != nil {
+	if err := dspgrp.ExtraData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam.ExtraData. %s", err.Error())
 	}
 

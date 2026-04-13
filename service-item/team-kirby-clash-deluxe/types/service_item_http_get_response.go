@@ -29,15 +29,11 @@ func (sihttpgr ServiceItemHTTPGetResponse) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemHTTPGetResponse from the given readable
 func (sihttpgr *ServiceItemHTTPGetResponse) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sihttpgr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sihttpgr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemHTTPGetResponse header. %s", err.Error())
 	}
 
-	err = sihttpgr.Response.ExtractFrom(readable)
-	if err != nil {
+	if err := sihttpgr.Response.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemHTTPGetResponse.Response. %s", err.Error())
 	}
 

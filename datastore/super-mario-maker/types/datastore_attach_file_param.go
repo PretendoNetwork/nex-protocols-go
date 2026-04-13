@@ -34,25 +34,19 @@ func (dsafp DataStoreAttachFileParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreAttachFileParam from the given readable
 func (dsafp *DataStoreAttachFileParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsafp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsafp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreAttachFileParam header. %s", err.Error())
 	}
 
-	err = dsafp.PostParam.ExtractFrom(readable)
-	if err != nil {
+	if err := dsafp.PostParam.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.PostParam. %s", err.Error())
 	}
 
-	err = dsafp.ReferDataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsafp.ReferDataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.ReferDataID. %s", err.Error())
 	}
 
-	err = dsafp.ContentType.ExtractFrom(readable)
-	if err != nil {
+	if err := dsafp.ContentType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.ContentType. %s", err.Error())
 	}
 

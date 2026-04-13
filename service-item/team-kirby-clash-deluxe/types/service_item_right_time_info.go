@@ -32,20 +32,15 @@ func (sirti ServiceItemRightTimeInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemRightTimeInfo from the given readable
 func (sirti *ServiceItemRightTimeInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sirti.ServiceItemRightInfo.ExtractFrom(readable)
-	if err != nil {
+	if err := sirti.ServiceItemRightInfo.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightTimeInfo.ServiceItemRightInfo. %s", err.Error())
 	}
 
-	err = sirti.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sirti.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightTimeInfo header. %s", err.Error())
 	}
 
-	err = sirti.AccountRights.ExtractFrom(readable)
-	if err != nil {
+	if err := sirti.AccountRights.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightTimeInfo.AccountRights. %s", err.Error())
 	}
 

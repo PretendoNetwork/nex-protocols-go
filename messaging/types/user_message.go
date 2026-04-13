@@ -77,73 +77,58 @@ func (um *UserMessage) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.Messaging
 
-	var err error
-
-	err = um.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := um.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.Data. %s", err.Error())
 	}
 
-	err = um.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := um.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage header. %s", err.Error())
 	}
 
-	err = um.UIID.ExtractFrom(readable)
-	if err != nil {
+	if err := um.UIID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIID. %s", err.Error())
 	}
 
 	if !libraryVersion.GreaterOrEqual("4.0.0") {
-		err = um.IDRecipient.ExtractFrom(readable)
-		if err != nil {
+		if err := um.IDRecipient.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract UserMessage.IDRecipient. %s", err.Error())
 		}
 
-		err = um.UIRecipientType.ExtractFrom(readable)
-		if err != nil {
+		if err := um.UIRecipientType.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract UserMessage.UIRecipientType. %s", err.Error())
 		}
 	}
 
-	err = um.UIParentID.ExtractFrom(readable)
-	if err != nil {
+	if err := um.UIParentID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIParentID. %s", err.Error())
 	}
 
-	err = um.PIDSender.ExtractFrom(readable)
-	if err != nil {
+	if err := um.PIDSender.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.PIDSender. %s", err.Error())
 	}
 
-	err = um.Receptiontime.ExtractFrom(readable)
-	if err != nil {
+	if err := um.Receptiontime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.Receptiontime. %s", err.Error())
 	}
 
-	err = um.UILifeTime.ExtractFrom(readable)
-	if err != nil {
+	if err := um.UILifeTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UILifeTime. %s", err.Error())
 	}
 
-	err = um.UIFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := um.UIFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIFlags. %s", err.Error())
 	}
 
-	err = um.StrSubject.ExtractFrom(readable)
-	if err != nil {
+	if err := um.StrSubject.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.StrSubject. %s", err.Error())
 	}
 
-	err = um.StrSender.ExtractFrom(readable)
-	if err != nil {
+	if err := um.StrSender.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.StrSender. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		err = um.MessageRecipient.ExtractFrom(readable)
-		if err != nil {
+		if err := um.MessageRecipient.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract UserMessage.MessageRecipient. %s", err.Error())
 		}
 	}

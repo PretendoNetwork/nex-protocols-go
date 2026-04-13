@@ -32,20 +32,15 @@ func (silsir ServiceItemListServiceItemResponse) WriteTo(writable types.Writable
 
 // ExtractFrom extracts the ServiceItemListServiceItemResponse from the given readable
 func (silsir *ServiceItemListServiceItemResponse) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = silsir.ServiceItemEShopResponse.ExtractFrom(readable)
-	if err != nil {
+	if err := silsir.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
-	err = silsir.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := silsir.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemResponse header. %s", err.Error())
 	}
 
-	err = silsir.NullableCatalog.ExtractFrom(readable)
-	if err != nil {
+	if err := silsir.NullableCatalog.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemResponse.NullableCatalog. %s", err.Error())
 	}
 

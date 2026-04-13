@@ -31,20 +31,15 @@ func (siui ServiceItemUserInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemUserInfo from the given readable
 func (siui *ServiceItemUserInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siui.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siui.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUserInfo header. %s", err.Error())
 	}
 
-	err = siui.NumTotalEntryTicket.ExtractFrom(readable)
-	if err != nil {
+	if err := siui.NumTotalEntryTicket.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUserInfo.NumTotalEntryTicket. %s", err.Error())
 	}
 
-	err = siui.ApplicationBuffer.ExtractFrom(readable)
-	if err != nil {
+	if err := siui.ApplicationBuffer.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUserInfo.ApplicationBuffer. %s", err.Error())
 	}
 

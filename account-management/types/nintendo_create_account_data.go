@@ -46,30 +46,23 @@ func (ncad NintendoCreateAccountData) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NintendoCreateAccountData from the given readable
 func (ncad *NintendoCreateAccountData) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = ncad.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := ncad.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData header. %s", err.Error())
 	}
 
-	err = ncad.NNAInfo.ExtractFrom(readable)
-	if err != nil {
+	if err := ncad.NNAInfo.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.NNAInfo. %s", err.Error())
 	}
 
-	err = ncad.Token.ExtractFrom(readable)
-	if err != nil {
+	if err := ncad.Token.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Token. %s", err.Error())
 	}
 
-	err = ncad.Birthday.ExtractFrom(readable)
-	if err != nil {
+	if err := ncad.Birthday.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Birthday. %s", err.Error())
 	}
 
-	err = ncad.Unknown.ExtractFrom(readable)
-	if err != nil {
+	if err := ncad.Unknown.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Unknown. %s", err.Error())
 	}
 

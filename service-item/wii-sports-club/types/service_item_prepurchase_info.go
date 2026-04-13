@@ -43,50 +43,39 @@ func (sipi ServiceItemPrepurchaseInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemPrepurchaseInfo from the given readable
 func (sipi *ServiceItemPrepurchaseInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sipi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sipi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo header. %s", err.Error())
 	}
 
-	err = sipi.ItemCode.ExtractFrom(readable)
-	if err != nil {
+	if err := sipi.ItemCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.ItemCode. %s", err.Error())
 	}
 
-	err = sipi.PriceID.ExtractFrom(readable)
-	if err != nil {
+	if err := sipi.PriceID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PriceID. %s", err.Error())
 	}
 
-	err = sipi.RegularPrice.ExtractFrom(readable)
-	if err != nil {
+	if err := sipi.RegularPrice.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.RegularPrice. %s", err.Error())
 	}
 
-	err = sipi.IsTaxAvailable.ExtractFrom(readable)
-	if err != nil {
+	if err := sipi.IsTaxAvailable.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.IsTaxAvailable. %s", err.Error())
 	}
 
-	err = sipi.TaxAmount.ExtractFrom(readable)
-	if err != nil {
+	if err := sipi.TaxAmount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.TaxAmount. %s", err.Error())
 	}
 
-	err = sipi.TotalAmount.ExtractFrom(readable)
-	if err != nil {
+	if err := sipi.TotalAmount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.TotalAmount. %s", err.Error())
 	}
 
-	err = sipi.CurrentBalance.ExtractFrom(readable)
-	if err != nil {
+	if err := sipi.CurrentBalance.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.CurrentBalance. %s", err.Error())
 	}
 
-	err = sipi.PostBalance.ExtractFrom(readable)
-	if err != nil {
+	if err := sipi.PostBalance.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PostBalance. %s", err.Error())
 	}
 

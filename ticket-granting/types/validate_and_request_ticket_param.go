@@ -49,40 +49,31 @@ func (vartp ValidateAndRequestTicketParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ValidateAndRequestTicketParam from the given readable
 func (vartp *ValidateAndRequestTicketParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = vartp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := vartp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam header. %s", err.Error())
 	}
 
-	err = vartp.PlatformType.ExtractFrom(readable)
-	if err != nil {
+	if err := vartp.PlatformType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.PlatformType. %s", err.Error())
 	}
 
-	err = vartp.Username.ExtractFrom(readable)
-	if err != nil {
+	if err := vartp.Username.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.Username. %s", err.Error())
 	}
 
-	err = vartp.ExtraData.ExtractFrom(readable)
-	if err != nil {
+	if err := vartp.ExtraData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.ExtraData. %s", err.Error())
 	}
 
-	err = vartp.IgnoreAPIVersionCheck.ExtractFrom(readable)
-	if err != nil {
+	if err := vartp.IgnoreAPIVersionCheck.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.IgnoreAPIVersionCheck. %s", err.Error())
 	}
 
-	err = vartp.APIVersionGeneral.ExtractFrom(readable)
-	if err != nil {
+	if err := vartp.APIVersionGeneral.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.APIVersionGeneral. %s", err.Error())
 	}
 
-	err = vartp.APIVersionCustom.ExtractFrom(readable)
-	if err != nil {
+	if err := vartp.APIVersionCustom.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.APIVersionCustom. %s", err.Error())
 	}
 
@@ -93,8 +84,7 @@ func (vartp *ValidateAndRequestTicketParam) ExtractFrom(readable types.Readable)
 	// * or not a game has crossplay at this stage, this is
 	// * the best we can do
 	if readable.Remaining() != 0 {
-		err = vartp.PlatformTypeForPlatformPID.ExtractFrom(readable)
-		if err != nil {
+		if err := vartp.PlatformTypeForPlatformPID.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.PlatformTypeForPlatformPID. %s", err.Error())
 		}
 	}

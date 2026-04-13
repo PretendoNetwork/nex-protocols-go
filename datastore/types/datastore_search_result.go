@@ -34,25 +34,19 @@ func (dssr DataStoreSearchResult) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreSearchResult from the given readable
 func (dssr *DataStoreSearchResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dssr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dssr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult header. %s", err.Error())
 	}
 
-	err = dssr.TotalCount.ExtractFrom(readable)
-	if err != nil {
+	if err := dssr.TotalCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCount. %s", err.Error())
 	}
 
-	err = dssr.Result.ExtractFrom(readable)
-	if err != nil {
+	if err := dssr.Result.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.Result. %s", err.Error())
 	}
 
-	err = dssr.TotalCountType.ExtractFrom(readable)
-	if err != nil {
+	if err := dssr.TotalCountType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCountType. %s", err.Error())
 	}
 

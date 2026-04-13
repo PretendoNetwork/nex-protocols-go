@@ -37,35 +37,27 @@ func (sdscp ScreeningDataStoreContentParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ScreeningDataStoreContentParam from the given readable
 func (sdscp *ScreeningDataStoreContentParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sdscp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sdscp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningDataStoreContentParam header. %s", err.Error())
 	}
 
-	err = sdscp.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := sdscp.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningDataStoreContentParam.DataID. %s", err.Error())
 	}
 
-	err = sdscp.ContentDataID.ExtractFrom(readable)
-	if err != nil {
+	if err := sdscp.ContentDataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningDataStoreContentParam.ContentDataID. %s", err.Error())
 	}
 
-	err = sdscp.UGCType.ExtractFrom(readable)
-	if err != nil {
+	if err := sdscp.UGCType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningDataStoreContentParam.UGCType. %s", err.Error())
 	}
 
-	err = sdscp.Language.ExtractFrom(readable)
-	if err != nil {
+	if err := sdscp.Language.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningDataStoreContentParam.Language. %s", err.Error())
 	}
 
-	err = sdscp.SearchKey.ExtractFrom(readable)
-	if err != nil {
+	if err := sdscp.SearchKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ScreeningDataStoreContentParam.SearchKey. %s", err.Error())
 	}
 

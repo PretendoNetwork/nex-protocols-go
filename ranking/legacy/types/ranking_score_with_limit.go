@@ -37,35 +37,27 @@ func (rswl RankingScoreWithLimit) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingScoreWithLimit from the given readable
 func (rswl *RankingScoreWithLimit) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rswl.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rswl.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreWithLimit header. %s", err.Error())
 	}
 
-	err = rswl.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rswl.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Category. %s", err.Error())
 	}
 
-	err = rswl.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := rswl.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Score. %s", err.Error())
 	}
 
-	err = rswl.Unknown1.ExtractFrom(readable)
-	if err != nil {
+	if err := rswl.Unknown1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Unknown1. %s", err.Error())
 	}
 
-	err = rswl.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := rswl.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Unknown2. %s", err.Error())
 	}
 
-	err = rswl.Limit.ExtractFrom(readable)
-	if err != nil {
+	if err := rswl.Limit.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Limit. %s", err.Error())
 	}
 

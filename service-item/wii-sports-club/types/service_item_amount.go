@@ -33,25 +33,19 @@ func (sia ServiceItemAmount) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemAmount from the given readable
 func (sia *ServiceItemAmount) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sia.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sia.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAmount header. %s", err.Error())
 	}
 
-	err = sia.FormattedAmount.ExtractFrom(readable)
-	if err != nil {
+	if err := sia.FormattedAmount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAmount.FormattedAmount. %s", err.Error())
 	}
 
-	err = sia.Currency.ExtractFrom(readable)
-	if err != nil {
+	if err := sia.Currency.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAmount.Currency. %s", err.Error())
 	}
 
-	err = sia.RawValue.ExtractFrom(readable)
-	if err != nil {
+	if err := sia.RawValue.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAmount.RawValue. %s", err.Error())
 	}
 

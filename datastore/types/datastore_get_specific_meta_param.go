@@ -29,15 +29,11 @@ func (dsgsmp DataStoreGetSpecificMetaParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreGetSpecificMetaParam from the given readable
 func (dsgsmp *DataStoreGetSpecificMetaParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsgsmp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsgsmp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParam header. %s", err.Error())
 	}
 
-	err = dsgsmp.DataIDs.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgsmp.DataIDs.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParam.DataIDs. %s", err.Error())
 	}
 

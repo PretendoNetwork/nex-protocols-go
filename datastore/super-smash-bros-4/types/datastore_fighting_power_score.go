@@ -31,20 +31,15 @@ func (dsfps DataStoreFightingPowerScore) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreFightingPowerScore from the given readable
 func (dsfps *DataStoreFightingPowerScore) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsfps.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsfps.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore header. %s", err.Error())
 	}
 
-	err = dsfps.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := dsfps.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore.Score. %s", err.Error())
 	}
 
-	err = dsfps.Rank.ExtractFrom(readable)
-	if err != nil {
+	if err := dsfps.Rank.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore.Rank. %s", err.Error())
 	}
 

@@ -31,20 +31,15 @@ func (dspi DataStoreProfileInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreProfileInfo from the given readable
 func (dspi *DataStoreProfileInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dspi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dspi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreProfileInfo header. %s", err.Error())
 	}
 
-	err = dspi.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspi.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreProfileInfo.PID. %s", err.Error())
 	}
 
-	err = dspi.Profile.ExtractFrom(readable)
-	if err != nil {
+	if err := dspi.Profile.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreProfileInfo.Profile. %s", err.Error())
 	}
 

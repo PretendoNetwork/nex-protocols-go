@@ -31,20 +31,15 @@ func (sc SimpleCommunity) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the SimpleCommunity from the given readable
 func (sc *SimpleCommunity) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sc.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sc.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleCommunity header. %s", err.Error())
 	}
 
-	err = sc.GatheringID.ExtractFrom(readable)
-	if err != nil {
+	if err := sc.GatheringID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleCommunity.GatheringID. %s", err.Error())
 	}
 
-	err = sc.MatchmakeSessionCount.ExtractFrom(readable)
-	if err != nil {
+	if err := sc.MatchmakeSessionCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleCommunity.MatchmakeSessionCount. %s", err.Error())
 	}
 

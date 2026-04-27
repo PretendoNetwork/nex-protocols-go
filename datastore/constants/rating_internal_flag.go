@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // RatingInternalFlag indicates whether or not a minimum or
 // maximum rating value should be set
@@ -40,6 +44,32 @@ func (rif RatingInternalFlag) HasFlags(flags ...RatingInternalFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the RatingInternalFlag bitmask.
+// Multiple flags are joined with "|", e.g. "UseRangeMin|UseRangeMax".
+// Returns "None" if no flags are set.
+func (rif RatingInternalFlag) String() string {
+	if rif == 0 {
+		return "None"
+	}
+
+	flags := []struct {
+		flag RatingInternalFlag
+		name string
+	}{
+		{RatingInternalFlagUseRangeMin, "UseRangeMin"},
+		{RatingInternalFlagUseRangeMax, "UseRangeMax"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if rif&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // PresenceChangedFlag indicates what fields of a users NintendoPresenceV2 have been changed
 type PresenceChangedFlag uint32
@@ -39,6 +43,39 @@ func (pcf PresenceChangedFlag) HasFlags(flags ...PresenceChangedFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the PresenceChangedFlag bitmask.
+// Multiple flags are joined with "|", e.g. "GameKey|GatheringID".
+// Returns "None" if no flags are set.
+func (pcf PresenceChangedFlag) String() string {
+	if pcf == PresenceChangedFlagNone {
+		return "None"
+	}
+
+	flags := []struct {
+		flag PresenceChangedFlag
+		name string
+	}{
+		{PresenceChangedFlagGameKey, "GameKey"},
+		{PresenceChangedFlagGameModeDescription, "GameModeDescription"},
+		{PresenceChangedFlagJoinAvailabilityFlag, "JoinAvailabilityFlag"},
+		{PresenceChangedFlagMatchmakeSystemType, "MatchmakeSystemType"},
+		{PresenceChangedFlagGameServerID, "GameServerID"},
+		{PresenceChangedFlagJoinGameMode, "JoinGameMode"},
+		{PresenceChangedFlagOwnerPID, "OwnerPID"},
+		{PresenceChangedFlagGatheringID, "GatheringID"},
+		{PresenceChangedFlagApplicationData, "ApplicationData"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if pcf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

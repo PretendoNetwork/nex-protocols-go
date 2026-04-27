@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -21,6 +23,20 @@ func (amo *AutoMatchmakeOption) ExtractFrom(readable types.Readable) error {
 
 	*amo = AutoMatchmakeOption(value)
 	return nil
+}
+
+// String returns a human-readable representation of the AutoMatchmakeOption.
+func (amo AutoMatchmakeOption) String() string {
+	switch amo {
+	case AutoMatchmakeOptionNone:
+		return "None"
+	case AutoMatchmakeOptionRecordLastGIDForParticipationCheck:
+		return "RecordLastGIDForParticipationCheck"
+	case AutoMatchmakeOptionUniqueGatheringByCodeword:
+		return "UniqueGatheringByCodeword"
+	default:
+		return fmt.Sprintf("AutoMatchmakeOption(%d)", int(amo))
+	}
 }
 
 const (

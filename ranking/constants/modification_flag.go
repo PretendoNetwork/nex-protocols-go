@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // ModificationFlag is used by RankingChangeAttributesParam.ModificationFlag to set which fields should be
 // updated.
@@ -40,6 +44,35 @@ func (mf ModificationFlag) HasFlags(flags ...ModificationFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the ModificationFlag bitmask.
+// Multiple flags are joined with "|", e.g. "Group0|Group1|Param".
+// Returns "None" if no flags are set.
+func (mf ModificationFlag) String() string {
+	if mf == ModificationFlagNone {
+		return "None"
+	}
+
+	flags := []struct {
+		flag ModificationFlag
+		name string
+	}{
+		{ModificationFlagGroup0, "Group0"},
+		{ModificationFlagGroup1, "Group1"},
+		{ModificationFlagGroup2, "Group2"},
+		{ModificationFlagGroup3, "Group3"},
+		{ModificationFlagParam, "Param"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if mf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

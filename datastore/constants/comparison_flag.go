@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // ComparisonFlag indicates the flags set on comparisonFlag of DataStoreChangeMetaCompareParam.
 // These flags tell the server what values to use when comparing
@@ -41,6 +45,42 @@ func (cf ComparisonFlag) HasFlags(flags ...ComparisonFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the ComparisonFlag bitmask.
+// Multiple flags are joined with "|", e.g. "Name|Period|Tags".
+// Returns "None" if no flags are set, or "All" if all flags are set.
+func (cf ComparisonFlag) String() string {
+	if cf == ComparisonFlagNone {
+		return "None"
+	}
+	if cf == ComparisonFlagAll {
+		return "All"
+	}
+
+	flags := []struct {
+		flag ComparisonFlag
+		name string
+	}{
+		{ComparisonFlagName, "Name"},
+		{ComparisonFlagAccessPermission, "AccessPermission"},
+		{ComparisonFlagUpdatePermission, "UpdatePermission"},
+		{ComparisonFlagPeriod, "Period"},
+		{ComparisonFlagMetaBinary, "MetaBinary"},
+		{ComparisonFlagTags, "Tags"},
+		{ComparisonFlagDataType, "DataType"},
+		{ComparisonFlagReferredCount, "ReferredCount"},
+		{ComparisonFlagStatus, "Status"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if cf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

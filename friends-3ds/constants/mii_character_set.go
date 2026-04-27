@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // MiiCharacterSet defines the character set (font/language) used by a Mii
 type MiiCharacterSet uint8
@@ -19,6 +23,22 @@ func (mcs *MiiCharacterSet) ExtractFrom(readable types.Readable) error {
 
 	*mcs = MiiCharacterSet(value)
 	return nil
+}
+
+// String returns a human-readable representation of the MiiCharacterSet.
+func (mcs MiiCharacterSet) String() string {
+	switch mcs {
+	case MiiCharacterSetJUE:
+		return "JUE"
+	case MiiCharacterSetCHN:
+		return "CHN"
+	case MiiCharacterSetKOR:
+		return "KOR"
+	case MiiCharacterSetTWN:
+		return "TWN"
+	default:
+		return fmt.Sprintf("MiiCharacterSet(%d)", int(mcs))
+	}
 }
 
 const (

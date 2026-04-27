@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // DataStatus indicates the availablity status of an object.
 // If an object has a status other than DataStatusNone, it is
@@ -22,6 +26,20 @@ func (ds *DataStatus) ExtractFrom(readable types.Readable) error {
 
 	*ds = DataStatus(value)
 	return nil
+}
+
+// String returns a human-readable representation of the DataStatus.
+func (ds DataStatus) String() string {
+	switch ds {
+	case DataStatusNone:
+		return "None"
+	case DataStatusPending:
+		return "Pending"
+	case DataStatusRejected:
+		return "Rejected"
+	default:
+		return fmt.Sprintf("DataStatus(%d)", int(ds))
+	}
 }
 
 const (

@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // PolicyArgument is not an official type. It exists to be the
 // base type of other policy argument types and to be used as
@@ -21,4 +25,10 @@ func (pa *PolicyArgument) ExtractFrom(readable types.Readable) error {
 
 	*pa = PolicyArgument(value)
 	return nil
+}
+
+// String returns a human-readable representation of PolicyArgument.
+// This cannot differentiate between types of PolicyArguments
+func (pa PolicyArgument) String() string {
+	return fmt.Sprintf("PolicyArgument(%d)", int(pa))
 }

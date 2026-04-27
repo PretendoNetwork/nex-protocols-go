@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // RatingLockType indicates the type of lock applied to object ratings.
 // Locks are applied per-user, not per-object. If a user tries to rate
@@ -21,6 +25,22 @@ func (rlt *RatingLockType) ExtractFrom(readable types.Readable) error {
 
 	*rlt = RatingLockType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the RatingLockType.
+func (rlt RatingLockType) String() string {
+	switch rlt {
+	case RatingLockNone:
+		return "None"
+	case RatingLockInterval:
+		return "Interval"
+	case RatingLockPeriod:
+		return "Period"
+	case RatingLockPermanent:
+		return "Permanent"
+	default:
+		return fmt.Sprintf("RatingLockType(%d)", int(rlt))
+	}
 }
 
 const (

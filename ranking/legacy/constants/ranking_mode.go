@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // RankingMode represents the selection of who will be included on the leaderboard (global, friends, nearby etc.).
 type RankingMode uint8
@@ -19,6 +23,24 @@ func (rm *RankingMode) ExtractFrom(readable types.Readable) error {
 
 	*rm = RankingMode(value)
 	return nil
+}
+
+// String returns a human-readable representation of the RankingMode.
+func (rm RankingMode) String() string {
+	switch rm {
+	case RankingModeRange:
+		return "Range"
+	case RankingModeNear:
+		return "Near"
+	case RankingModeFriendRange:
+		return "FriendRange"
+	case RankingModeFriendNear:
+		return "FriendNear"
+	case RankingModeUser:
+		return "User"
+	default:
+		return fmt.Sprintf("RankingMode(%d)", int(rm))
+	}
 }
 
 const (

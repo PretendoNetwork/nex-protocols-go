@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // Ranking2Mode determines what rankings to return and how to order them.
 //
@@ -24,6 +28,22 @@ func (r2m *Ranking2Mode) ExtractFrom(readable types.Readable) error {
 
 	*r2m = Ranking2Mode(value)
 	return nil
+}
+
+// String returns a human-readable representation of the Ranking2Mode.
+func (r2m Ranking2Mode) String() string {
+	switch r2m {
+	case Ranking2ModeUserRanking:
+		return "UserRanking"
+	case Ranking2ModeNearRanking:
+		return "NearRanking"
+	case Ranking2ModeRangeRanking:
+		return "RangeRanking"
+	case Ranking2ModeFriendRanking:
+		return "FriendRanking"
+	default:
+		return fmt.Sprintf("Ranking2Mode(%d)", int(r2m))
+	}
 }
 
 const (

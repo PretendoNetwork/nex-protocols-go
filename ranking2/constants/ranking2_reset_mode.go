@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // Ranking2ResetMode determines when and how to reset ranking data. Ranking resets
 // begin a new "season" in Ranking2.
@@ -20,6 +24,24 @@ func (r2rm *Ranking2ResetMode) ExtractFrom(readable types.Readable) error {
 
 	*r2rm = Ranking2ResetMode(value)
 	return nil
+}
+
+// String returns a human-readable representation of the Ranking2ResetMode.
+func (r2rm Ranking2ResetMode) String() string {
+	switch r2rm {
+	case Ranking2ResetModeNothing:
+		return "Nothing"
+	case Ranking2ResetModeEveryDay:
+		return "EveryDay"
+	case Ranking2ResetModeEveryWeek:
+		return "EveryWeek"
+	case Ranking2ResetModeMultiMonth:
+		return "MultiMonth"
+	case Ranking2ResetModeMultiMonthWeekday:
+		return "MultiMonthWeekday"
+	default:
+		return fmt.Sprintf("Ranking2ResetMode(%d)", int(r2rm))
+	}
 }
 
 const (

@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // MatchmakeSessionOption0 has an unknown use.
 // Seems related to whether or not the delay the response for "Auto"
@@ -39,6 +43,20 @@ func (mso MatchmakeSessionOption0) HasFlags(flags ...MatchmakeSessionOption0) bo
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the MatchmakeSessionOption0.
+func (mso MatchmakeSessionOption0) String() string {
+	switch mso {
+	case MatchmakeSessionOption0None:
+		return "None"
+	case MatchmakeSessionOption0ForceAutomatchDelay:
+		return "ForceAutomatchDelay"
+	case MatchmakeSessionOption0ForceAutomatchNoDelay:
+		return "ForceAutomatchNoDelay"
+	default:
+		return fmt.Sprintf("MatchmakeSessionOption0(%d)", int(mso))
+	}
 }
 
 const (

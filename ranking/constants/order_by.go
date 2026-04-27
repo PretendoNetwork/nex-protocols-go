@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // OrderBy is used in RankingScoreData.OrderBy to set the "golf scoring" mode for a category.
 type OrderBy uint8
@@ -19,6 +23,18 @@ func (ob *OrderBy) ExtractFrom(readable types.Readable) error {
 
 	*ob = OrderBy(value)
 	return nil
+}
+
+// String returns a human-readable representation of the OrderBy.
+func (ob OrderBy) String() string {
+	switch ob {
+	case OrderByAscending:
+		return "Ascending"
+	case OrderByDescending:
+		return "Descending"
+	default:
+		return fmt.Sprintf("OrderBy(%d)", int(ob))
+	}
 }
 
 const (

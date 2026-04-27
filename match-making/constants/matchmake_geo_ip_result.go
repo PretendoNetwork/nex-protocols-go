@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -8,19 +10,35 @@ import (
 type MatchmakeGeoIPResult uint32
 
 // WriteTo writes the MatchmakeGeoIPResult to the given writable
-func (mgipr MatchmakeGeoIPResult) WriteTo(writable types.Writable) {
-	writable.WriteUInt32LE(uint32(mgipr))
+func (mgir MatchmakeGeoIPResult) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(mgir))
 }
 
 // ExtractFrom extracts the MatchmakeGeoIPResult value from the given readable
-func (mgipr *MatchmakeGeoIPResult) ExtractFrom(readable types.Readable) error {
+func (mgir *MatchmakeGeoIPResult) ExtractFrom(readable types.Readable) error {
 	value, err := readable.ReadUInt32LE()
 	if err != nil {
 		return err
 	}
 
-	*mgipr = MatchmakeGeoIPResult(value)
+	*mgir = MatchmakeGeoIPResult(value)
 	return nil
+}
+
+// String returns a human-readable representation of the MatchmakeGeoIPResult.
+func (mgir MatchmakeGeoIPResult) String() string {
+	switch mgir {
+	case MatchmakeGeoIPResultInvalid:
+		return "Invalid"
+	case MatchmakeGeoIPResultFound:
+		return "Found"
+	case MatchmakeGeoIPResultNotFound:
+		return "NotFound"
+	case MatchmakeGeoIPResultUnused:
+		return "Unused"
+	default:
+		return fmt.Sprintf("MatchmakeGeoIPResult(%d)", int(mgir))
+	}
 }
 
 const (

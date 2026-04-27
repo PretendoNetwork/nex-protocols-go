@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -24,6 +26,26 @@ func (pp *ParticipationPolicy) ExtractFrom(readable types.Readable) error {
 
 	*pp = ParticipationPolicy(value)
 	return nil
+}
+
+// String returns a human-readable representation of the ParticipationPolicy.
+func (pp ParticipationPolicy) String() string {
+	switch pp {
+	case ParticipationPolicyPasswordProtected:
+		return "PasswordProtected"
+	case ParticipationPolicyOpenParticipation:
+		return "OpenParticipation"
+	case ParticipationPolicyAnybody:
+		return "Anybody"
+	case ParticipationPolicyInviteOnly:
+		return "InviteOnly"
+	case ParticipationPolicyCommunity:
+		return "Community"
+	case ParticipationPolicyFriendsOnly:
+		return "FriendsOnly"
+	default:
+		return fmt.Sprintf("ParticipationPolicy(%d)", int(pp))
+	}
 }
 
 const (

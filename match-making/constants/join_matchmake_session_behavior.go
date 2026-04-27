@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -21,6 +23,18 @@ func (jmsb *JoinMatchmakeSessionBehavior) ExtractFrom(readable types.Readable) e
 
 	*jmsb = JoinMatchmakeSessionBehavior(value)
 	return nil
+}
+
+// String returns a human-readable representation of the JoinMatchmakeSessionBehavior.
+func (jmsb JoinMatchmakeSessionBehavior) String() string {
+	switch jmsb {
+	case JoinMatchmakeSessionBehaviorJoinMyself:
+		return "JoinMyself"
+	case JoinMatchmakeSessionBehaviorImAlreadyJoined:
+		return "ImAlreadyJoined"
+	default:
+		return fmt.Sprintf("JoinMatchmakeSessionBehavior(%d)", int(jmsb))
+	}
 }
 
 const (

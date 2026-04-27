@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // Ranking2SortFlags determines how ranking results should be ordered.
 type Ranking2SortFlags uint32
@@ -39,6 +43,33 @@ func (r2sf Ranking2SortFlags) HasFlags(flags ...Ranking2SortFlags) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the Ranking2SortFlags bitmask.
+// Multiple flags are joined with "|", e.g. "Ascending|MoveToTopInTie".
+// Returns "Nothing" if no flags are set.
+func (r2sf Ranking2SortFlags) String() string {
+	if r2sf == Ranking2SortFlagsNothing {
+		return "Nothing"
+	}
+
+	flags := []struct {
+		flag Ranking2SortFlags
+		name string
+	}{
+		{Ranking2SortFlagsAscending, "Ascending"},
+		{Ranking2SortFlagsDescending, "Descending"},
+		{Ranking2SortFlagsMoveToTopInTie, "MoveToTopInTie"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if r2sf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

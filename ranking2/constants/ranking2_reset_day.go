@@ -24,6 +24,8 @@ func (r2rd *Ranking2ResetDay) ExtractFrom(readable types.Readable) error {
 	return nil
 }
 
+// TODO - How can a String method be added here? The enum has 2 sets of overlapping values
+
 const (
 	// Ranking2ResetDayMonday means that season rankings should reset every Monday
 	// when the category reset mod is set to Ranking2ResetModeWeekday. This also means

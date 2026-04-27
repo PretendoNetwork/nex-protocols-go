@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // RatingFlag indicates how the server should handle
 // user ratings for object rating slots
@@ -40,6 +44,33 @@ func (rf RatingFlag) HasFlags(flags ...RatingFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the RatingFlag bitmask.
+// Multiple flags are joined with "|", e.g. "Modifiable|DisableSelfRating".
+// Returns "None" if no flags are set.
+func (rf RatingFlag) String() string {
+	if rf == 0 {
+		return "None"
+	}
+
+	flags := []struct {
+		flag RatingFlag
+		name string
+	}{
+		{RatingFlagModifiable, "Modifiable"},
+		{RatingFlagRoundMinus, "RoundMinus"},
+		{RatingFlagDisableSelfRating, "DisableSelfRating"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if rf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

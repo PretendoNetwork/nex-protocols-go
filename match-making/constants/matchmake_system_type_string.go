@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // MatchmakeSystemTypeString represents MatchmakeSystemType values but as strings.
 // Used for MatchmakeSessionSearchCriteria, where the value is encoded as a string
@@ -24,6 +28,28 @@ func (msts *MatchmakeSystemTypeString) ExtractFrom(readable types.Readable) erro
 	}
 	*msts = MatchmakeSystemTypeString(s)
 	return nil
+}
+
+// String returns a human-readable representation of the MatchmakeSystemTypeString.
+func (msts MatchmakeSystemTypeString) String() string {
+	switch msts {
+	case MatchmakeSystemTypeStringMissing:
+		return "Missing"
+	case MatchmakeSystemTypeStringInvalid:
+		return "Invalid"
+	case MatchmakeSystemTypeStringAnybody:
+		return "Anybody"
+	case MatchmakeSystemTypeStringFriends:
+		return "Friends"
+	case MatchmakeSystemTypeStringFriendsInvite:
+		return "FriendsInvite"
+	case MatchmakeSystemTypeStringInvite:
+		return "Invite"
+	case MatchmakeSystemTypeStringPersistentGathering:
+		return "PersistentGathering"
+	default:
+		return fmt.Sprintf("MatchmakeSystemTypeString(%s)", string(msts))
+	}
 }
 
 const (

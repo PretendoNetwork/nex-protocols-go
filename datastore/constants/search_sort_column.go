@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // SearchSortColumn tells the server which database column to use as the input
 // for the ordering of returned object searches
@@ -20,6 +24,92 @@ func (ssc *SearchSortColumn) ExtractFrom(readable types.Readable) error {
 
 	*ssc = SearchSortColumn(value)
 	return nil
+}
+
+// String returns a human-readable representation of the SearchSortColumn.
+func (ssc SearchSortColumn) String() string {
+	switch ssc {
+	case SearchSortColumnDataID:
+		return "DataID"
+	case SearchSortColumnSize:
+		return "Size"
+	case SearchSortColumnNameAlphabetical:
+		return "NameAlphabetical"
+	case SearchSortColumnDataType:
+		return "DataType"
+	case SearchSortColumnReferredCount:
+		return "ReferredCount"
+	case SearchSortColumnCreatedTime:
+		return "CreatedTime"
+	case SearchSortColumnUpdatedTime:
+		return "UpdatedTime"
+	case SearchSortColumnRating0:
+		return "Rating0"
+	case SearchSortColumnRating1:
+		return "Rating1"
+	case SearchSortColumnRating2:
+		return "Rating2"
+	case SearchSortColumnRating3:
+		return "Rating3"
+	case SearchSortColumnRating4:
+		return "Rating4"
+	case SearchSortColumnRating5:
+		return "Rating5"
+	case SearchSortColumnRating6:
+		return "Rating6"
+	case SearchSortColumnRating7:
+		return "Rating7"
+	case SearchSortColumnRating8:
+		return "Rating8"
+	case SearchSortColumnRating9:
+		return "Rating9"
+	case SearchSortColumnRating10:
+		return "Rating10"
+	case SearchSortColumnRating11:
+		return "Rating11"
+	case SearchSortColumnRating12:
+		return "Rating12"
+	case SearchSortColumnRating13:
+		return "Rating13"
+	case SearchSortColumnRating14:
+		return "Rating14"
+	case SearchSortColumnRating15:
+		return "Rating15"
+	case SearchSortColumnRatingAverage0:
+		return "RatingAverage0"
+	case SearchSortColumnRatingAverage1:
+		return "RatingAverage1"
+	case SearchSortColumnRatingAverage2:
+		return "RatingAverage2"
+	case SearchSortColumnRatingAverage3:
+		return "RatingAverage3"
+	case SearchSortColumnRatingAverage4:
+		return "RatingAverage4"
+	case SearchSortColumnRatingAverage5:
+		return "RatingAverage5"
+	case SearchSortColumnRatingAverage6:
+		return "RatingAverage6"
+	case SearchSortColumnRatingAverage7:
+		return "RatingAverage7"
+	case SearchSortColumnRatingAverage8:
+		return "RatingAverage8"
+	case SearchSortColumnRatingAverage9:
+		return "RatingAverage9"
+	case SearchSortColumnRatingAverage10:
+		return "RatingAverage10"
+	case SearchSortColumnRatingAverage11:
+		return "RatingAverage11"
+	case SearchSortColumnRatingAverage12:
+		return "RatingAverage12"
+	case SearchSortColumnRatingAverage13:
+		return "RatingAverage13"
+	case SearchSortColumnRatingAverage14:
+		return "RatingAverage14"
+	case SearchSortColumnRatingAverage15:
+		return "RatingAverage15"
+	default:
+		return fmt.Sprintf("SearchSortColumn(%d)", int(ssc))
+	}
 }
 
 const (

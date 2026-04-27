@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // FilterGroupIndex is used by RankingOrderParam.GroupIndex to select which group to filter by in a score request
 type FilterGroupIndex uint8
@@ -19,6 +23,24 @@ func (fgi *FilterGroupIndex) ExtractFrom(readable types.Readable) error {
 
 	*fgi = FilterGroupIndex(value)
 	return nil
+}
+
+// String returns a human-readable representation of the FilterGroupIndex.
+func (fgi FilterGroupIndex) String() string {
+	switch fgi {
+	case FilterGroupIndex0:
+		return "Index0"
+	case FilterGroupIndex1:
+		return "Index1"
+	case FilterGroupIndex2:
+		return "Index2"
+	case FilterGroupIndex3:
+		return "Index3"
+	case FilterGroupIndexNone:
+		return "None"
+	default:
+		return fmt.Sprintf("FilterGroupIndex(%d)", int(fgi))
+	}
 }
 
 const (

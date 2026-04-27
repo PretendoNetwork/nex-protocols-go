@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -21,6 +23,20 @@ func (mo *MatchmakeOption) ExtractFrom(readable types.Readable) error {
 
 	*mo = MatchmakeOption(value)
 	return nil
+}
+
+// String returns a human-readable representation of the MatchmakeOption.
+func (mo MatchmakeOption) String() string {
+	switch mo {
+	case MatchmakeOptionNone:
+		return "None"
+	case MatchmakeOptionRecordLastGIDForParticipationCheck:
+		return "RecordLastGIDForParticipationCheck"
+	case MatchmakeOptionReserved1:
+		return "Reserved1"
+	default:
+		return fmt.Sprintf("MatchmakeOption(%d)", int(mo))
+	}
 }
 
 const (

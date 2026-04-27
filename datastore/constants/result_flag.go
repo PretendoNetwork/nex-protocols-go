@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // ResultFlag tells the server what fields to populate in responses
 // to object searches
@@ -40,6 +44,34 @@ func (rf ResultFlag) HasFlags(flags ...ResultFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the ResultFlag bitmask.
+// Multiple flags are joined with "|", e.g. "Tags|Ratings|MetaBinary".
+// Returns "None" if no flags are set.
+func (rf ResultFlag) String() string {
+	if rf == 0 {
+		return "None"
+	}
+
+	flags := []struct {
+		flag ResultFlag
+		name string
+	}{
+		{ResultFlagTags, "Tags"},
+		{ResultFlagRatings, "Ratings"},
+		{ResultFlagMetaBinary, "MetaBinary"},
+		{ResultFlagPermittedIDs, "PermittedIDs"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if rf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

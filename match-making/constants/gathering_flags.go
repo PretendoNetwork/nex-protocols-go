@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // GatheringFlags indicates the flags set on a gathering
 type GatheringFlags uint16
@@ -37,6 +41,37 @@ func (gf GatheringFlags) HasFlags(flags ...GatheringFlags) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the GatheringFlags bitmask.
+// Multiple flags are joined with "|", e.g. "PersistentGathering|MigrateOwner".
+// Returns "None" if no flags are set.
+func (gf GatheringFlags) String() string {
+	if gf == GatheringFlagNone {
+		return "None"
+	}
+
+	flags := []struct {
+		flag GatheringFlags
+		name string
+	}{
+		{GatheringFlagPersistentGathering, "PersistentGathering"},
+		{GatheringFlagMigrateOwner, "MigrateOwner"},
+		{GatheringFlagNoPersistentParticipation, "NoPersistentParticipation"},
+		{GatheringFlagAllowNoParticipant, "AllowNoParticipant"},
+		{GatheringFlagChangeOwnerByOtherHost, "ChangeOwnerByOtherHost"},
+		{GatheringFlagNotifyParticipationEventsToAllParticipants, "NotifyParticipationEventsToAllParticipants"},
+		{GatheringFlagNotifyParticipationEventsToAllParticipantsReproducibly, "NotifyParticipationEventsToAllParticipantsReproducibly"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if gf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

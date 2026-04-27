@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // RelationshipType defines the status of a 3DS friend relationship
 type RelationshipType uint8
@@ -19,6 +23,20 @@ func (rt *RelationshipType) ExtractFrom(readable types.Readable) error {
 
 	*rt = RelationshipType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the RelationshipType.
+func (rt RelationshipType) String() string {
+	switch rt {
+	case RelationshipTypeIncomplete:
+		return "Incomplete"
+	case RelationshipTypeComplete:
+		return "Complete"
+	case RelationshipTypeInvalid:
+		return "Invalid"
+	default:
+		return fmt.Sprintf("RelationshipType(%d)", int(rt))
+	}
 }
 
 const (

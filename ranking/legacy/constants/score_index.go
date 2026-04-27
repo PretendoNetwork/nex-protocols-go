@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // ScoreIndex is used to select the index for the score list to use when sorting.
 //
@@ -21,6 +25,18 @@ func (si *ScoreIndex) ExtractFrom(readable types.Readable) error {
 
 	*si = ScoreIndex(value)
 	return nil
+}
+
+// String returns a human-readable representation of the ScoreIndex.
+func (si ScoreIndex) String() string {
+	switch si {
+	case ScoreIndex0:
+		return "Index0"
+	case ScoreIndex1:
+		return "Index1"
+	default:
+		return fmt.Sprintf("ScoreIndex(%d)", int(si))
+	}
 }
 
 const (

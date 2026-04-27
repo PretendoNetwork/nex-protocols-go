@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // SubType exists solely to restrict the kinds of values that can be passed
 // to SubType.Build()
@@ -20,4 +24,10 @@ func (st *SubType) ExtractFrom(readable types.Readable) error {
 
 	*st = SubType(value)
 	return nil
+}
+
+// String returns a human-readable representation of SubType.
+// This cannot differentiate between types of SubTypes
+func (st SubType) String() string {
+	return fmt.Sprintf("SubType(%d)", int(st))
 }

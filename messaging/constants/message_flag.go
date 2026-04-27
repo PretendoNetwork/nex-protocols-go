@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // MessageFlag determines how the message is delivered to the recipient.
 type MessageFlag uint32
@@ -39,6 +43,18 @@ func (mf MessageFlag) HasFlags(flags ...MessageFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the MessageFlag.
+func (mf MessageFlag) String() string {
+	switch mf {
+	case MessageFlagPersistentMessage:
+		return "PersistentMessage"
+	case MessageFlagInstantMessage:
+		return "InstantMessage"
+	default:
+		return fmt.Sprintf("MessageFlag(%d)", int(mf))
+	}
 }
 
 const (

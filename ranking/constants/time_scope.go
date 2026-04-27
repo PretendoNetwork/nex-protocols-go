@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // TimeScope is used by RankingOrderParam.TimeScope to request that scores only be shown from a certain timeframe.
 type TimeScope uint8
@@ -19,6 +23,20 @@ func (ts *TimeScope) ExtractFrom(readable types.Readable) error {
 
 	*ts = TimeScope(value)
 	return nil
+}
+
+// String returns a human-readable representation of the TimeScope.
+func (ts TimeScope) String() string {
+	switch ts {
+	case TimeScopeCustom0:
+		return "Custom0"
+	case TimeScopeCustom1:
+		return "Custom1"
+	case TimeScopeAll:
+		return "All"
+	default:
+		return fmt.Sprintf("TimeScope(%d)", int(ts))
+	}
 }
 
 const (

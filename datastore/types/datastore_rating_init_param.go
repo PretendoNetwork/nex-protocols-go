@@ -177,7 +177,11 @@ func (dsrip DataStoreRatingInitParam) FormatToString(indentationLevel int) strin
 	b.WriteString(fmt.Sprintf("%sRangeMin: %s,\n", indentationValues, dsrip.RangeMin))
 	b.WriteString(fmt.Sprintf("%sRangeMax: %s,\n", indentationValues, dsrip.RangeMax))
 	b.WriteString(fmt.Sprintf("%sPeriodHour: %s,\n", indentationValues, dsrip.PeriodHour))
-	b.WriteString(fmt.Sprintf("%sPeriodDuration: %s,\n", indentationValues, dsrip.PeriodDuration))
+	if dsrip.LockType == constants.RatingLockPeriod {
+		b.WriteString(fmt.Sprintf("%sPeriodDuration: %s\n", indentationValues, dsrip.PeriodDuration))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPeriodDuration: %s\n", indentationValues, types.Int16(dsrip.PeriodDuration)))
+	}
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

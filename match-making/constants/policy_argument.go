@@ -32,3 +32,25 @@ func (pa *PolicyArgument) ExtractFrom(readable types.Readable) error {
 func (pa PolicyArgument) String() string {
 	return fmt.Sprintf("PolicyArgument(%d)", int(pa))
 }
+
+// StringAnybodyParticipationPolicyArgument returns a human-readable representation of the AnybodyParticipationPolicyArgument.
+func (pa PolicyArgument) StringAnybodyParticipationPolicyArgument() string {
+	appa := AnybodyParticipationPolicyArgument(pa)
+	switch appa {
+	case AnybodyParticipationPolicyArgumentWithoutClose:
+		return "WithoutClose"
+	case AnybodyParticipationPolicyArgumentCloseOnOwnerMigration:
+		return "CloseOnOwnerMigration"
+	default:
+		return fmt.Sprintf("AnybodyParticipationPolicyArgument(%d)", int(appa))
+	}
+}
+
+// StringFriendsOnlyParticipationPolicyArgument returns a human-readable representation of the FriendsOnlyParticipationPolicyArgument.
+func (pa PolicyArgument) StringFriendsOnlyParticipationPolicyArgument() string {
+	foppa := FriendsOnlyParticipationPolicyArgument(pa)
+	switch foppa {
+	default:
+		return fmt.Sprintf("FriendsOnlyParticipationPolicyArgument(%d)", int(foppa))
+	}
+}

@@ -208,7 +208,14 @@ func (g Gathering) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sMinimumParticipants: %s,\n", indentationValues, g.MinimumParticipants))
 	b.WriteString(fmt.Sprintf("%sMaximumParticipants: %s,\n", indentationValues, g.MaximumParticipants))
 	b.WriteString(fmt.Sprintf("%sParticipationPolicy: %s,\n", indentationValues, g.ParticipationPolicy))
-	b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument))
+	switch g.ParticipationPolicy {
+	case constants.ParticipationPolicyAnybody:
+		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringAnybodyParticipationPolicyArgument()))
+	case constants.ParticipationPolicyFriendsOnly:
+		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringFriendsOnlyParticipationPolicyArgument()))
+	default:
+		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument))
+	}
 	b.WriteString(fmt.Sprintf("%sFlags: %s,\n", indentationValues, g.Flags))
 	b.WriteString(fmt.Sprintf("%sState: %s,\n", indentationValues, g.State))
 	b.WriteString(fmt.Sprintf("%sDescription: %s,\n", indentationValues, g.Description))

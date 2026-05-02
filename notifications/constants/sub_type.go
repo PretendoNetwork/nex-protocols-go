@@ -31,3 +31,35 @@ func (st *SubType) ExtractFrom(readable types.Readable) error {
 func (st SubType) String() string {
 	return fmt.Sprintf("SubType(%d)", int(st))
 }
+
+// StringParticipationEvents returns a human-readable representation of the ParticipationEvents.
+func (st SubType) StringParticipationEvents() string {
+	pe := ParticipationEvents(st)
+	switch pe {
+	case ParticipationEventsParticipate:
+		return "Participate"
+	case ParticipationEventsCancelParticipation:
+		return "CancelParticipation"
+	case ParticipationEventsDisconnect:
+		return "Disconnect"
+	case ParticipationEventsEndParticipation:
+		return "EndParticipation"
+	default:
+		return fmt.Sprintf("ParticipationEvents(%d)", int(pe))
+	}
+}
+
+// StringSubscriptionEvents returns a human-readable representation of the SubscriptionEvents.
+func (st SubType) StringSubscriptionEvents() string {
+	se := SubscriptionEvents(st)
+	switch se {
+	case SubscriptionEventsEvent0:
+		return "Event0"
+	case SubscriptionEventsEvent1:
+		return "Event1"
+	case SubscriptionEventsEvent2:
+		return "Event2"
+	default:
+		return fmt.Sprintf("SubscriptionEvents(%d)", int(se))
+	}
+}

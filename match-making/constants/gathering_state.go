@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -26,6 +28,20 @@ func (gs *GatheringState) ExtractFrom(readable types.Readable) error {
 
 	*gs = GatheringState(value)
 	return nil
+}
+
+// String returns a human-readable representation of the GatheringState.
+func (gs GatheringState) String() string {
+	switch gs {
+	case GatheringStateLocked:
+		return "Locked"
+	case GatheringStateStarted:
+		return "Started"
+	case GatheringStateFinished:
+		return "Finished"
+	default:
+		return fmt.Sprintf("GatheringState(%d)", int(gs))
+	}
 }
 
 const (

@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // ResultCode is a custom result value used by legacy Ranking representing the kind of operation performed by a method.
 //
@@ -21,6 +25,22 @@ func (rc *ResultCode) ExtractFrom(readable types.Readable) error {
 
 	*rc = ResultCode(value)
 	return nil
+}
+
+// String returns a human-readable representation of the ResultCode.
+func (rc ResultCode) String() string {
+	switch rc {
+	case ResultCodeGetOne:
+		return "GetOne"
+	case ResultCodeGetMany:
+		return "GetMany"
+	case ResultCodeUpdateOne:
+		return "UpdateOne"
+	case ResultCodeUpdateMany:
+		return "UpdateMany"
+	default:
+		return fmt.Sprintf("ResultCode(%d)", int(rc))
+	}
 }
 
 const (

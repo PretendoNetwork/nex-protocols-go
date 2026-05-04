@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -21,6 +23,26 @@ func (mst *MatchmakeSystemType) ExtractFrom(readable types.Readable) error {
 
 	*mst = MatchmakeSystemType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the MatchmakeSystemType.
+func (mst MatchmakeSystemType) String() string {
+	switch mst {
+	case MatchmakeSystemTypeInvalid:
+		return "Invalid"
+	case MatchmakeSystemTypeAnybody:
+		return "Anybody"
+	case MatchmakeSystemTypeFriends:
+		return "Friends"
+	case MatchmakeSystemTypeFriendsInvite:
+		return "FriendsInvite"
+	case MatchmakeSystemTypeInvite:
+		return "Invite"
+	case MatchmakeSystemTypePersistentGathering:
+		return "PersistentGathering"
+	default:
+		return fmt.Sprintf("MatchmakeSystemType(%d)", int(mst))
+	}
 }
 
 const (

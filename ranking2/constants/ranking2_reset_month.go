@@ -1,6 +1,7 @@
 package constants
 
 import (
+	"strings"
 	"time"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
@@ -71,6 +72,45 @@ func (r2rm Ranking2ResetMonth) EnabledMonths() []time.Month {
 // Count returns the number of enabled months
 func (r2rm Ranking2ResetMonth) Count() int {
 	return len(r2rm.EnabledMonths())
+}
+
+// String returns a human-readable representation of the Ranking2ResetMonth bitmask.
+// Multiple flags are joined with "|", e.g. "January|April|July|October".
+// Returns "None" if no flags are set.
+func (r2rm Ranking2ResetMonth) String() string {
+	if r2rm == Ranking2ResetMonthNone {
+		return "None"
+	}
+	if r2rm == Ranking2ResetMonthAll {
+		return "All"
+	}
+
+	flags := []struct {
+		flag Ranking2ResetMonth
+		name string
+	}{
+		{Ranking2ResetMonthJanuary, "January"},
+		{Ranking2ResetMonthFebruary, "February"},
+		{Ranking2ResetMonthMarch, "March"},
+		{Ranking2ResetMonthApril, "April"},
+		{Ranking2ResetMonthMay, "May"},
+		{Ranking2ResetMonthJune, "June"},
+		{Ranking2ResetMonthJuly, "July"},
+		{Ranking2ResetMonthAugust, "August"},
+		{Ranking2ResetMonthSeptember, "September"},
+		{Ranking2ResetMonthOctober, "October"},
+		{Ranking2ResetMonthNovember, "November"},
+		{Ranking2ResetMonthDecember, "December"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if r2rm&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

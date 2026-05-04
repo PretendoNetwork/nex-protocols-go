@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // Ranking2GetOptionFlags determines what data is returned when requesting common data.
 type Ranking2GetOptionFlags uint32
@@ -39,6 +43,30 @@ func (r2gof Ranking2GetOptionFlags) HasFlags(flags ...Ranking2GetOptionFlags) bo
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the Ranking2GetOptionFlags.
+// Returns "Nothing" if no flags are set.
+func (r2gof Ranking2GetOptionFlags) String() string {
+	if r2gof == Ranking2GetOptionFlagsNothing {
+		return "Nothing"
+	}
+
+	flags := []struct {
+		flag Ranking2GetOptionFlags
+		name string
+	}{
+		{Ranking2GetOptionFlagsMii, "Mii"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if r2gof&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

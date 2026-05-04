@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // OrderCalculation is used in OrderParam.OrderCalculation to control how ties are handled.
 type OrderCalculation uint8
@@ -19,6 +23,18 @@ func (oc *OrderCalculation) ExtractFrom(readable types.Readable) error {
 
 	*oc = OrderCalculation(value)
 	return nil
+}
+
+// String returns a human-readable representation of the OrderCalculation.
+func (oc OrderCalculation) String() string {
+	switch oc {
+	case OrderCalculation113:
+		return "113"
+	case OrderCalculation123:
+		return "123"
+	default:
+		return fmt.Sprintf("OrderCalculation(%d)", int(oc))
+	}
 }
 
 const (

@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // StatsFlag is a bitmask used by GetRanking to request the inclusion of different aggregate stats
 type StatsFlag uint32
@@ -39,6 +43,35 @@ func (sf StatsFlag) HasFlags(flags ...StatsFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the StatsFlag bitmask.
+// Multiple flags are joined with "|", e.g. "Total|Sum|Average".
+// Returns "None" if no flags are set.
+func (sf StatsFlag) String() string {
+	if sf == 0 {
+		return "None"
+	}
+
+	flags := []struct {
+		flag StatsFlag
+		name string
+	}{
+		{StatsFlagTotal, "Total"},
+		{StatsFlagSum, "Sum"},
+		{StatsFlagMin, "Min"},
+		{StatsFlagMax, "Max"},
+		{StatsFlagAverage, "Average"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if sf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -21,6 +23,26 @@ func (msm *MatchmakeSelectionMethod) ExtractFrom(readable types.Readable) error 
 
 	*msm = MatchmakeSelectionMethod(value)
 	return nil
+}
+
+// String returns a human-readable representation of the MatchmakeSelectionMethod.
+func (msm MatchmakeSelectionMethod) String() string {
+	switch msm {
+	case MatchmakeSelectionMethodRandom:
+		return "Random"
+	case MatchmakeSelectionMethodNearestNeighbor:
+		return "NearestNeighbor"
+	case MatchmakeSelectionMethodBroadenRange:
+		return "BroadenRange"
+	case MatchmakeSelectionMethodProgressScore:
+		return "ProgressScore"
+	case MatchmakeSelectionMethodBroadenRangeWithProgressScore:
+		return "BroadenRangeWithProgressScore"
+	case MatchmakeSelectionMethodScoreBased:
+		return "ScoreBased"
+	default:
+		return fmt.Sprintf("MatchmakeSelectionMethod(%d)", int(msm))
+	}
 }
 
 const (

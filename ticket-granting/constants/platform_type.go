@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // PlatformType denotes the type of console platform the client
 // is using.
@@ -23,6 +27,20 @@ func (pt *PlatformType) ExtractFrom(readable types.Readable) error {
 
 	*pt = PlatformType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the PlatformType.
+func (pt PlatformType) String() string {
+	switch pt {
+	case PlatformType3DS:
+		return "3DS"
+	case PlatformTypeWiiU:
+		return "WiiU"
+	case PlatformTypeSwitch:
+		return "Switch"
+	default:
+		return fmt.Sprintf("PlatformType(%d)", int(pt))
+	}
 }
 
 const (

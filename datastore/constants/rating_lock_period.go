@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // RatingLockPeriodDay tells the rating slot locks what day
 // the lock should expire.
@@ -25,6 +29,30 @@ func (rlpd *RatingLockPeriodDay) ExtractFrom(readable types.Readable) error {
 
 	*rlpd = RatingLockPeriodDay(value)
 	return nil
+}
+
+// String returns a human-readable representation of the RatingLockPeriodDay.
+func (rlpd RatingLockPeriodDay) String() string {
+	switch rlpd {
+	case RatingLockPeriodDay1:
+		return "Day1"
+	case RatingLockPeriodSun:
+		return "Sun"
+	case RatingLockPeriodSat:
+		return "Sat"
+	case RatingLockPeriodFri:
+		return "Fri"
+	case RatingLockPeriodThu:
+		return "Thu"
+	case RatingLockPeriodWed:
+		return "Wed"
+	case RatingLockPeriodTue:
+		return "Tue"
+	case RatingLockPeriodMon:
+		return "Mon"
+	default:
+		return fmt.Sprintf("RatingLockPeriodDay(%d)", int(rlpd))
+	}
 }
 
 const (

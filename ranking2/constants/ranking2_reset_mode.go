@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // Ranking2ResetMode determines when and how to reset ranking data. Ranking resets
 // begin a new "season" in Ranking2.
@@ -20,6 +24,24 @@ func (r2rm *Ranking2ResetMode) ExtractFrom(readable types.Readable) error {
 
 	*r2rm = Ranking2ResetMode(value)
 	return nil
+}
+
+// String returns a human-readable representation of the Ranking2ResetMode.
+func (r2rm Ranking2ResetMode) String() string {
+	switch r2rm {
+	case Ranking2ResetModeNothing:
+		return "Nothing"
+	case Ranking2ResetModeEveryDay:
+		return "EveryDay"
+	case Ranking2ResetModeEveryWeek:
+		return "EveryWeek"
+	case Ranking2ResetModeMultiMonth:
+		return "MultiMonth"
+	case Ranking2ResetModeMultiMonthWeekday:
+		return "MultiMonthWeekday"
+	default:
+		return fmt.Sprintf("Ranking2ResetMode(%d)", int(r2rm))
+	}
 }
 
 const (
@@ -50,7 +72,7 @@ const (
 	// safely be assumed to go in month order, however. Starting with January
 	// and ending with December where January is the LSB. The value range for
 	// `resetDay` is also not known, however as it represents a calendar date it
-	// can be safely assumed to begin at 1. since not all months have the same
+	// can be safely assumed to begin at 1. Since not all months have the same
 	// number of days, it can be safely assumed that the upper limit would be the
 	// most amount of days all months have, making the range 1-28. This does, however,
 	// mean that months with more than 28 days cannot have rankings reset on those days.

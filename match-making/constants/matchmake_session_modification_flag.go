@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // MatchmakeSessionModificationFlag indicates the flags set on a gathering
 type MatchmakeSessionModificationFlag uint32
@@ -37,6 +41,45 @@ func (msmf MatchmakeSessionModificationFlag) HasFlags(flags ...MatchmakeSessionM
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the MatchmakeSessionModificationFlag bitmask.
+// Multiple flags are joined with "|", e.g. "Attributes|ApplicationBuffer|GameMode".
+// Returns "None" if no flags are set.
+func (msmf MatchmakeSessionModificationFlag) String() string {
+	if msmf == MatchmakeSessionModificationFlagNone {
+		return "None"
+	}
+
+	flags := []struct {
+		flag MatchmakeSessionModificationFlag
+		name string
+	}{
+		{MatchmakeSessionModificationFlagAttributes, "Attributes"},
+		{MatchmakeSessionModificationFlagOpenParticipation, "OpenParticipation"},
+		{MatchmakeSessionModificationFlagApplicationBuffer, "ApplicationBuffer"},
+		{MatchmakeSessionModificationFlagProgressScore, "ProgressScore"},
+		{MatchmakeSessionModificationFlagOption0, "Option0"},
+		{MatchmakeSessionModificationFlagMatchmakeParam, "MatchmakeParam"},
+		{MatchmakeSessionModificationFlagMatchmakeParamOverride, "MatchmakeParamOverride"},
+		{MatchmakeSessionModificationFlagStartedTime, "StartedTime"},
+		{MatchmakeSessionModificationFlagUserPassword, "UserPassword"},
+		{MatchmakeSessionModificationFlagGameMode, "GameMode"},
+		{MatchmakeSessionModificationFlagDescription, "Description"},
+		{MatchmakeSessionModificationFlagMinParticipants, "MinParticipants"},
+		{MatchmakeSessionModificationFlagMaxParticipants, "MaxParticipants"},
+		{MatchmakeSessionModificationFlagMatchmakeSystemType, "MatchmakeSystemType"},
+		{MatchmakeSessionModificationFlagCodeword, "Codeword"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if msmf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

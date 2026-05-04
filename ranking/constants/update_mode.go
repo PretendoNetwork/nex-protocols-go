@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // UpdateMode is used by RankingScoreData.UpdateMode to control if worse scores should be discarded or not.
 type UpdateMode uint8
@@ -19,6 +23,18 @@ func (um *UpdateMode) ExtractFrom(readable types.Readable) error {
 
 	*um = UpdateMode(value)
 	return nil
+}
+
+// String returns a human-readable representation of the UpdateMode.
+func (um UpdateMode) String() string {
+	switch um {
+	case UpdateModeNormal:
+		return "Normal"
+	case UpdateModeDeleteOld:
+		return "DeleteOld"
+	default:
+		return fmt.Sprintf("UpdateMode(%d)", int(um))
+	}
 }
 
 const (

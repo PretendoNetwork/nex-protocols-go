@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // DataFlag sets different configuration flags for uploaded objects.
 // Stored in the objects DataStoreMetaInfo.flag field
@@ -40,6 +44,37 @@ func (df DataFlag) HasFlags(flags ...DataFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the DataFlag bitmask.
+// Multiple flags are joined with "|", e.g. "NeedReview|NeedCompletion".
+// Returns "None" if no flags are set.
+func (df DataFlag) String() string {
+	if df == DataFlagNone {
+		return "None"
+	}
+
+	flags := []struct {
+		flag DataFlag
+		name string
+	}{
+		{DataFlagNeedReview, "NeedReview"},
+		{DataFlagPeriodFromLastReferred, "PeriodFromLastReferred"},
+		{DataFlagUseReadLock, "UseReadLock"},
+		{DataFlagUseNotificationOnPost, "UseNotificationOnPost"},
+		{DataFlagUseNotificationOnUpdate, "UseNotificationOnUpdate"},
+		{DataFlagNotUseFileServer, "NotUseFileServer"},
+		{DataFlagNeedCompletion, "NeedCompletion"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if df&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

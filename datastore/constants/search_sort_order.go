@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // SearchSortOrder tells the server in what direction to order search results
 type SearchSortOrder uint8
@@ -19,6 +23,18 @@ func (sso *SearchSortOrder) ExtractFrom(readable types.Readable) error {
 
 	*sso = SearchSortOrder(value)
 	return nil
+}
+
+// String returns a human-readable representation of the SearchSortOrder.
+func (sso SearchSortOrder) String() string {
+	switch sso {
+	case SearchSortOrderAsc:
+		return "Asc"
+	case SearchSortOrderDesc:
+		return "Desc"
+	default:
+		return fmt.Sprintf("SearchSortOrder(%d)", int(sso))
+	}
 }
 
 const (

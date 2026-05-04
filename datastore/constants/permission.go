@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // Permission defines what users can perform access and update
 // operations for an object. Access and update operations are
@@ -21,6 +25,24 @@ func (p *Permission) ExtractFrom(readable types.Readable) error {
 
 	*p = Permission(value)
 	return nil
+}
+
+// String returns a human-readable representation of the Permission.
+func (p Permission) String() string {
+	switch p {
+	case PermissionPublic:
+		return "Public"
+	case PermissionFriend:
+		return "Friend"
+	case PermissionSpecified:
+		return "Specified"
+	case PermissionPrivate:
+		return "Private"
+	case PermissionSpecifiedFriend:
+		return "SpecifiedFriend"
+	default:
+		return fmt.Sprintf("Permission(%d)", int(p))
+	}
 }
 
 const (

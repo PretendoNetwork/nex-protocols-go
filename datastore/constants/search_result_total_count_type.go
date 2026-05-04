@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // SearchResultTotalCountType indicates how the client should interpret the
 // DataStoreSearchResult.totalCount value when counting search results
@@ -20,6 +24,22 @@ func (srtct *SearchResultTotalCountType) ExtractFrom(readable types.Readable) er
 
 	*srtct = SearchResultTotalCountType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the SearchResultTotalCountType.
+func (srct SearchResultTotalCountType) String() string {
+	switch srct {
+	case SearchResultTotalExact:
+		return "Exact"
+	case SearchResultTotalMinimum:
+		return "Minimum"
+	case SearchResultTotalEstimate:
+		return "Estimate"
+	case SearchResultTotalDisabled:
+		return "Disabled"
+	default:
+		return fmt.Sprintf("SearchResultTotalCountType(%d)", int(srct))
+	}
 }
 
 const (

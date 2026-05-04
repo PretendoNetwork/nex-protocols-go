@@ -1,6 +1,8 @@
 package constants
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -21,6 +23,20 @@ func (pgt *PersistentGatheringType) ExtractFrom(readable types.Readable) error {
 
 	*pgt = PersistentGatheringType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the PersistentGatheringType.
+func (pgt PersistentGatheringType) String() string {
+	switch pgt {
+	case PersistentGatheringTypeOpen:
+		return "Open"
+	case PersistentGatheringTypePasswordLocked:
+		return "PasswordLocked"
+	case PersistentGatheringTypeOfficial:
+		return "Official"
+	default:
+		return fmt.Sprintf("PersistentGatheringType(%d)", int(pgt))
+	}
 }
 
 const (

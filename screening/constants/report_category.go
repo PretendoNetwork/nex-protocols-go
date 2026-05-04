@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 type ReportCategory uint32
 
@@ -18,6 +22,30 @@ func (rc *ReportCategory) ExtractFrom(readable types.Readable) error {
 
 	*rc = ReportCategory(value)
 	return nil
+}
+
+// String returns a human-readable representation of the ReportCategory.
+func (rc ReportCategory) String() string {
+	switch rc {
+	case ReportCategoryInvalid:
+		return "Invalid"
+	case ReportCategoryPersonal:
+		return "Personal"
+	case ReportCategoryCriminal:
+		return "Criminal"
+	case ReportCategoryImmoral:
+		return "Immoral"
+	case ReportCategoryHarassment:
+		return "Harassment"
+	case ReportCategoryCommercial:
+		return "Commercial"
+	case ReportCategorySexuallyExplicit:
+		return "SexuallyExplicit"
+	case ReportCategoryOther:
+		return "Other"
+	default:
+		return fmt.Sprintf("ReportCategory(%d)", int(rc))
+	}
 }
 
 const (

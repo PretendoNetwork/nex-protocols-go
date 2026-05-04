@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // NotificationCategory represents the main category of a notification type.
 //
@@ -71,6 +75,68 @@ func (nc NotificationCategory) Build(subtype ...SubType) NotificationEvents {
 // ToSigned converts a NotificationCategory to a NotificationCategorySigned
 func (nc NotificationCategory) ToSigned() NotificationCategorySigned {
 	return NotificationCategorySigned(nc)
+}
+
+// String returns a human-readable representation of the NotificationCategory.
+func (nc NotificationCategory) String() string {
+	switch nc {
+	case NotificationCategorySessionLaunched:
+		return "SessionLaunched"
+	case NotificationCategoryParticipationEvent:
+		return "ParticipationEvent"
+	case NotificationCategoryOwnershipChangeEvent:
+		return "OwnershipChangeEvent"
+	case NotificationCategoryGameNotification1:
+		return "GameNotification1"
+	case NotificationCategoryGameNotification2:
+		return "GameNotification2"
+	case NotificationCategoryGameNotification3:
+		return "GameNotification3"
+	case NotificationCategoryGameNotification4:
+		return "GameNotification4"
+	case NotificationCategoryGameNotification5:
+		return "GameNotification5"
+	case NotificationCategoryGameNotification6:
+		return "GameNotification6"
+	case NotificationCategoryGameNotification7:
+		return "GameNotification7"
+	case NotificationCategoryGameNotification8:
+		return "GameNotification8"
+	case NotificationCategoryGatheringUnregistered:
+		return "GatheringUnregistered"
+	case NotificationCategoryHostChangeEvent:
+		return "HostChangeEvent"
+	case NotificationCategoryGameNotificationLogout:
+		return "GameNotificationLogout"
+	case NotificationCategorySubscriptionEvent:
+		return "SubscriptionEvent"
+	case NotificationCategoryGameServerMaintenance:
+		return "GameServerMaintenance"
+	case NotificationCategoryMaintenanceAnnouncement:
+		return "MaintenanceAnnouncement"
+	case NotificationCategoryServiceItemRequestCompleted:
+		return "ServiceItemRequestCompleted"
+	case NotificationCategoryRoundStarted:
+		return "RoundStarted"
+	case NotificationCategoryFirstRoundReportReceived:
+		return "FirstRoundReportReceived"
+	case NotificationCategoryRoundSummarized:
+		return "RoundSummarized"
+	case NotificationCategoryMatchmakeSystemConfigurationNotification:
+		return "MatchmakeSystemConfigurationNotification"
+	case NotificationCategoryMatchmakeSessionSystemPasswordSet:
+		return "MatchmakeSessionSystemPasswordSet"
+	case NotificationCategoryMatchmakeSessionSystemPasswordClear:
+		return "MatchmakeSessionSystemPasswordClear"
+	case NotificationCategoryAddedToGathering:
+		return "AddedToGathering"
+	case NotificationCategoryUserStatusUpdatedEvent:
+		return "UserStatusUpdatedEvent"
+	case NotificationCategoryEagleAddress:
+		return "EagleAddress"
+	default:
+		return fmt.Sprintf("NotificationCategory(%d)", int(nc))
+	}
 }
 
 const (

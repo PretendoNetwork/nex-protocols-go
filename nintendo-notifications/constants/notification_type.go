@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // NotificationType represents the type of notification being sent.
 //
@@ -21,6 +25,64 @@ func (nt *NotificationType) ExtractFrom(readable types.Readable) error {
 
 	*nt = NotificationType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the NotificationType.
+func (nt NotificationType) String() string {
+	switch nt {
+	case NotificationTypeFriendPresenceUpdated3DS:
+		return "FriendPresenceUpdated3DS"
+	case NotificationTypeFriendFavoriteGameUpdated3DS:
+		return "FriendFavoriteGameUpdated3DS"
+	case NotificationTypeFriendCommentUpdated3DS:
+		return "FriendCommentUpdated3DS"
+	case NotificationTypeFriendMiiChanged3DS:
+		return "FriendMiiChanged3DS"
+	case NotificationTypeFriendProfileUpdated3DS:
+		return "FriendProfileUpdated3DS"
+	case NotificationTypeFriendshipCompleted3DS:
+		return "FriendshipCompleted3DS"
+	case NotificationTypeFriendshipRemoved3DS:
+		return "FriendshipRemoved3DS"
+	case NotificationTypeFriendSentInvitation3DS:
+		return "FriendSentInvitation3DS"
+	case NotificationTypeFriendOffline:
+		return "FriendOffline"
+	case NotificationTypeFriendMiiChangedWiiU:
+		return "FriendMiiChangedWiiU"
+	case NotificationTypeUnknown1MiiRelatedWiiU:
+		return "Unknown1MiiRelatedWiiU"
+	case NotificationTypeFriendPreferencesChangedWiiU:
+		return "FriendPreferencesChangedWiiU"
+	case NotificationTypeFriendStartedTitleWiiU:
+		return "FriendStartedTitleWiiU"
+	case NotificationTypeUnknown2FriendRequestRelatedWiiU:
+		return "Unknown2FriendRequestRelatedWiiU"
+	case NotificationTypeFriendshipCanceledWiiU:
+		return "FriendshipCanceledWiiU"
+	case NotificationTypeFriendRequestReceivedWiiU:
+		return "FriendRequestReceivedWiiU"
+	case NotificationTypeUnknown3FriendRequestRelatedWiiU:
+		return "Unknown3FriendRequestRelatedWiiU"
+	case NotificationTypeUnknown4BlacklistRelatedWiiU:
+		return "Unknown4BlacklistRelatedWiiU"
+	case NotificationTypeFriendRequestAcceptedWiiU:
+		return "FriendRequestAcceptedWiiU"
+	case NotificationTypeUnknown5BlacklistRelatedWiiU:
+		return "Unknown5BlacklistRelatedWiiU"
+	case NotificationTypeUnknown6BlacklistRelatedWiiU:
+		return "Unknown6BlacklistRelatedWiiU"
+	case NotificationTypeFriendStatusMessageChangedWiiU:
+		return "FriendStatusMessageChangedWiiU"
+	case NotificationTypeUnknown7WiiU:
+		return "Unknown7WiiU"
+	case NotificationTypeUnknown8FriendshipRelatedWiiU:
+		return "Unknown8FriendshipRelatedWiiU"
+	case NotificationTypeUnknown9PersistentNotificationsRelatedWiiU:
+		return "Unknown9PersistentNotificationsRelatedWiiU"
+	default:
+		return fmt.Sprintf("NotificationType(%d)", int(nt))
+	}
 }
 
 // * 3DS notifications

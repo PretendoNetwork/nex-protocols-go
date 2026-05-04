@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // ModificationFlag indicates what fields of an object have been modified
 type ModificationFlag uint16
@@ -39,6 +43,40 @@ func (mf ModificationFlag) HasFlags(flags ...ModificationFlag) bool {
 	}
 
 	return true
+}
+
+// String returns a human-readable representation of the ModificationFlag bitmask.
+// Multiple flags are joined with "|", e.g. "Name|Period|Tags".
+// Returns "None" if no flags are set.
+func (mf ModificationFlag) String() string {
+	if mf == ModificationFlagNone {
+		return "None"
+	}
+
+	flags := []struct {
+		flag ModificationFlag
+		name string
+	}{
+		{ModificationFlagName, "Name"},
+		{ModificationFlagAccessPermission, "AccessPermission"},
+		{ModificationFlagUpdatePermission, "UpdatePermission"},
+		{ModificationFlagPeriod, "Period"},
+		{ModificationFlagMetaBinary, "MetaBinary"},
+		{ModificationFlagTags, "Tags"},
+		{ModificationFlagUpdatedTime, "UpdatedTime"},
+		{ModificationFlagDataType, "DataType"},
+		{ModificationFlagReferredCount, "ReferredCount"},
+		{ModificationFlagStatus, "Status"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if mf&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
 
 const (

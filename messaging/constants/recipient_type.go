@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // RecipientType determines what to target when sending messages.
 type RecipientType uint32
@@ -19,6 +23,18 @@ func (rt *RecipientType) ExtractFrom(readable types.Readable) error {
 
 	*rt = RecipientType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the RecipientType.
+func (rt RecipientType) String() string {
+	switch rt {
+	case RecipientTypePrincipalID:
+		return "PrincipalID"
+	case RecipientTypeGatheringID:
+		return "GatheringID"
+	default:
+		return fmt.Sprintf("RecipientType(%d)", int(rt))
+	}
 }
 
 const (

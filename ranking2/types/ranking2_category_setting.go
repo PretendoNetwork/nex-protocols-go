@@ -185,7 +185,16 @@ func (rcs Ranking2CategorySetting) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sMaxScore: %s,\n", indentationValues, rcs.MaxScore))
 	b.WriteString(fmt.Sprintf("%sLowestRank: %s,\n", indentationValues, rcs.LowestRank))
 	b.WriteString(fmt.Sprintf("%sResetMonth: %s,\n", indentationValues, rcs.ResetMonth))
-	b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay))
+	switch rcs.ResetMode {
+	case constants.Ranking2ResetModeEveryWeek:
+		fallthrough
+	case constants.Ranking2ResetModeMultiMonthWeekday:
+		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringWeekday()))
+	case constants.Ranking2ResetModeMultiMonth:
+		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringMonthly()))
+	default:
+		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay))
+	}
 	b.WriteString(fmt.Sprintf("%sResetHour: %s,\n", indentationValues, rcs.ResetHour))
 	b.WriteString(fmt.Sprintf("%sResetMode: %s,\n", indentationValues, rcs.ResetMode))
 	b.WriteString(fmt.Sprintf("%sMaxSeasonsToGoBack: %s,\n", indentationValues, rcs.MaxSeasonsToGoBack))

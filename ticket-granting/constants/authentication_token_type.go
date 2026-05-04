@@ -1,6 +1,10 @@
 package constants
 
-import "github.com/PretendoNetwork/nex-go/v2/types"
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
 
 // AuthenticationTokenType denotes the type of authentication token
 // the client is using.
@@ -23,6 +27,20 @@ func (att *AuthenticationTokenType) ExtractFrom(readable types.Readable) error {
 
 	*att = AuthenticationTokenType(value)
 	return nil
+}
+
+// String returns a human-readable representation of the AuthenticationTokenType.
+func (att AuthenticationTokenType) String() string {
+	switch att {
+	case AuthenticationTokenTypeNASC:
+		return "NASC"
+	case AuthenticationTokenTypeNNAS:
+		return "NNAS"
+	case AuthenticationTokenTypeSwitch:
+		return "Switch"
+	default:
+		return fmt.Sprintf("AuthenticationTokenType(%d)", int(att))
+	}
 }
 
 const (

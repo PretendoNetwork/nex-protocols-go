@@ -187,6 +187,7 @@ func (rcs Ranking2CategorySetting) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sResetMonth: %s,\n", indentationValues, rcs.ResetMonth))
 	switch rcs.ResetMode {
 	case constants.Ranking2ResetModeEveryWeek:
+		fallthrough
 	case constants.Ranking2ResetModeMultiMonthWeekday:
 		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringWeekday()))
 	case constants.Ranking2ResetModeMultiMonth:

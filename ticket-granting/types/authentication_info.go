@@ -7,6 +7,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ticket-granting/constants"
 )
 
 // AuthenticationInfo is a type within the TicketGranting protocol
@@ -15,7 +16,7 @@ type AuthenticationInfo struct {
 	types.Data
 	Token         types.String
 	NGSVersion    types.UInt32
-	TokenType     types.UInt8
+	TokenType     constants.AuthenticationTokenType
 	ServerVersion types.UInt32
 }
 
@@ -58,36 +59,28 @@ func (ai *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.Main
 
-	var err error
-
-	err = ai.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := ai.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AuthenticationInfo.Data. %s", err.Error())
 	}
 
-	err = ai.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := ai.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AuthenticationInfo header. %s", err.Error())
 	}
 
-	err = ai.Token.ExtractFrom(readable)
-	if err != nil {
+	if err := ai.Token.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AuthenticationInfo.Token. %s", err.Error())
 	}
 
-	err = ai.NGSVersion.ExtractFrom(readable)
-	if err != nil {
+	if err := ai.NGSVersion.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AuthenticationInfo.NGSVersion. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		err = ai.TokenType.ExtractFrom(readable)
-		if err != nil {
+		if err := ai.TokenType.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract AuthenticationInfo.TokenType. %s", err.Error())
 		}
 
-		err = ai.ServerVersion.ExtractFrom(readable)
-		if err != nil {
+		if err := ai.ServerVersion.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract AuthenticationInfo.ServerVersion. %s", err.Error())
 		}
 	}
@@ -103,7 +96,7 @@ func (ai AuthenticationInfo) Copy() types.RVType {
 	copied.Data = ai.Data.Copy().(types.Data)
 	copied.Token = ai.Token.Copy().(types.String)
 	copied.NGSVersion = ai.NGSVersion.Copy().(types.UInt32)
-	copied.TokenType = ai.TokenType.Copy().(types.UInt8)
+	copied.TokenType = ai.TokenType
 	copied.ServerVersion = ai.ServerVersion.Copy().(types.UInt32)
 
 	return copied
@@ -133,7 +126,7 @@ func (ai AuthenticationInfo) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !ai.TokenType.Equals(other.TokenType) {
+	if ai.TokenType != other.TokenType {
 		return false
 	}
 
@@ -183,7 +176,7 @@ func NewAuthenticationInfo() AuthenticationInfo {
 		Data:          types.NewData(),
 		Token:         types.NewString(""),
 		NGSVersion:    types.NewUInt32(0),
-		TokenType:     types.NewUInt8(0),
+		TokenType:     constants.AuthenticationTokenTypeNASC,
 		ServerVersion: types.NewUInt32(0),
 	}
 

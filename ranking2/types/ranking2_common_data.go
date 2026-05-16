@@ -33,25 +33,19 @@ func (rcd Ranking2CommonData) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2CommonData from the given readable
 func (rcd *Ranking2CommonData) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rcd.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rcd.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CommonData header. %s", err.Error())
 	}
 
-	err = rcd.UserName.ExtractFrom(readable)
-	if err != nil {
+	if err := rcd.UserName.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CommonData.UserName. %s", err.Error())
 	}
 
-	err = rcd.Mii.ExtractFrom(readable)
-	if err != nil {
+	if err := rcd.Mii.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CommonData.Mii. %s", err.Error())
 	}
 
-	err = rcd.BinaryData.ExtractFrom(readable)
-	if err != nil {
+	if err := rcd.BinaryData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CommonData.BinaryData. %s", err.Error())
 	}
 

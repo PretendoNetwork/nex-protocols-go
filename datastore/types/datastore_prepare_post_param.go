@@ -7,6 +7,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStorePreparePostParam is a type within the DataStore protocol
@@ -18,7 +19,7 @@ type DataStorePreparePostParam struct {
 	MetaBinary           types.QBuffer
 	Permission           DataStorePermission
 	DelPermission        DataStorePermission
-	Flag                 types.UInt32
+	Flag                 constants.DataFlag
 	Period               types.UInt16
 	ReferDataID          types.UInt32
 	Tags                 types.List[types.String]
@@ -63,76 +64,60 @@ func (dsppp *DataStorePreparePostParam) ExtractFrom(readable types.Readable) err
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.DataStore
 
-	var err error
-
-	err = dsppp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsppp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam header. %s", err.Error())
 	}
 
-	err = dsppp.Size.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Size. %s", err.Error())
 	}
 
-	err = dsppp.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Name. %s", err.Error())
 	}
 
-	err = dsppp.DataType.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.DataType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DataType. %s", err.Error())
 	}
 
-	err = dsppp.MetaBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.MetaBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
 	}
 
-	err = dsppp.Permission.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.Permission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
 	}
 
-	err = dsppp.DelPermission.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.DelPermission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
 	}
 
-	err = dsppp.Flag.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.Flag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
 	}
 
-	err = dsppp.Period.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.Period.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Period. %s", err.Error())
 	}
 
-	err = dsppp.ReferDataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.ReferDataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.ReferDataID. %s", err.Error())
 	}
 
-	err = dsppp.Tags.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.Tags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
 	}
 
-	err = dsppp.RatingInitParams.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.RatingInitParams.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
 	}
 
-	err = dsppp.PersistenceInitParam.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.PersistenceInitParam.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		err = dsppp.ExtraData.ExtractFrom(readable)
-		if err != nil {
+		if err := dsppp.ExtraData.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())
 		}
 	}
@@ -151,7 +136,7 @@ func (dsppp DataStorePreparePostParam) Copy() types.RVType {
 	copied.MetaBinary = dsppp.MetaBinary.Copy().(types.QBuffer)
 	copied.Permission = dsppp.Permission.Copy().(DataStorePermission)
 	copied.DelPermission = dsppp.DelPermission.Copy().(DataStorePermission)
-	copied.Flag = dsppp.Flag.Copy().(types.UInt32)
+	copied.Flag = dsppp.Flag
 	copied.Period = dsppp.Period.Copy().(types.UInt16)
 	copied.ReferDataID = dsppp.ReferDataID.Copy().(types.UInt32)
 	copied.Tags = dsppp.Tags.Copy().(types.List[types.String])
@@ -198,7 +183,7 @@ func (dsppp DataStorePreparePostParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsppp.Flag.Equals(other.Flag) {
+	if dsppp.Flag != other.Flag {
 		return false
 	}
 
@@ -279,7 +264,7 @@ func NewDataStorePreparePostParam() DataStorePreparePostParam {
 		MetaBinary:           types.NewQBuffer(nil),
 		Permission:           NewDataStorePermission(),
 		DelPermission:        NewDataStorePermission(),
-		Flag:                 types.NewUInt32(0),
+		Flag:                 constants.DataFlagNone,
 		Period:               types.NewUInt16(0),
 		ReferDataID:          types.NewUInt32(0),
 		Tags:                 types.NewList[types.String](),

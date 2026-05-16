@@ -6,12 +6,13 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/nintendo-notifications/constants"
 )
 
 // NintendoNotificationEvent is a type within the NintendoNotifications protocol
 type NintendoNotificationEvent struct {
 	types.Structure
-	Type       types.UInt32
+	Type       constants.NotificationType
 	SenderPID  types.PID
 	DataHolder types.DataHolder
 }
@@ -33,25 +34,19 @@ func (nne NintendoNotificationEvent) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NintendoNotificationEvent from the given readable
 func (nne *NintendoNotificationEvent) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = nne.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := nne.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEvent header. %s", err.Error())
 	}
 
-	err = nne.Type.ExtractFrom(readable)
-	if err != nil {
+	if err := nne.Type.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEvent.Type. %s", err.Error())
 	}
 
-	err = nne.SenderPID.ExtractFrom(readable)
-	if err != nil {
+	if err := nne.SenderPID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEvent.SenderPID. %s", err.Error())
 	}
 
-	err = nne.DataHolder.ExtractFrom(readable)
-	if err != nil {
+	if err := nne.DataHolder.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEvent.DataHolder. %s", err.Error())
 	}
 
@@ -63,7 +58,7 @@ func (nne NintendoNotificationEvent) Copy() types.RVType {
 	copied := NewNintendoNotificationEvent()
 
 	copied.StructureVersion = nne.StructureVersion
-	copied.Type = nne.Type.Copy().(types.UInt32)
+	copied.Type = nne.Type
 	copied.SenderPID = nne.SenderPID.Copy().(types.PID)
 	copied.DataHolder = nne.DataHolder.Copy().(types.DataHolder)
 
@@ -82,7 +77,7 @@ func (nne NintendoNotificationEvent) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !nne.Type.Equals(other.Type) {
+	if nne.Type != other.Type {
 		return false
 	}
 
@@ -131,7 +126,7 @@ func (nne NintendoNotificationEvent) FormatToString(indentationLevel int) string
 // NewNintendoNotificationEvent returns a new NintendoNotificationEvent
 func NewNintendoNotificationEvent() NintendoNotificationEvent {
 	return NintendoNotificationEvent{
-		Type:       types.NewUInt32(0),
+		Type:       constants.NotificationType(0),
 		SenderPID:  types.NewPID(0),
 		DataHolder: types.NewDataHolder(),
 	}

@@ -34,25 +34,19 @@ func (mrerp MatchmakeRefereeEndRoundParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeEndRoundParam from the given readable
 func (mrerp *MatchmakeRefereeEndRoundParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = mrerp.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := mrerp.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.Data. %s", err.Error())
 	}
 
-	err = mrerp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := mrerp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam header. %s", err.Error())
 	}
 
-	err = mrerp.RoundID.ExtractFrom(readable)
-	if err != nil {
+	if err := mrerp.RoundID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.RoundID. %s", err.Error())
 	}
 
-	err = mrerp.PersonalRoundResults.ExtractFrom(readable)
-	if err != nil {
+	if err := mrerp.PersonalRoundResults.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.PersonalRoundResults. %s", err.Error())
 	}
 

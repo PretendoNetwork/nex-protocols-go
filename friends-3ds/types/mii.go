@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/friends-3ds/constants"
 )
 
 // Mii is a type within the Friends3DS protocol
@@ -14,7 +15,7 @@ type Mii struct {
 	types.Data
 	Name          types.String
 	ProfanityFlag types.Bool
-	CharacterSet  types.UInt8
+	CharacterSet  constants.MiiCharacterSet
 	MiiData       types.Buffer
 }
 
@@ -38,35 +39,27 @@ func (m Mii) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Mii from the given readable
 func (m *Mii) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = m.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := m.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.Data. %s", err.Error())
 	}
 
-	err = m.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := m.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii header. %s", err.Error())
 	}
 
-	err = m.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := m.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.Name. %s", err.Error())
 	}
 
-	err = m.ProfanityFlag.ExtractFrom(readable)
-	if err != nil {
+	if err := m.ProfanityFlag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.ProfanityFlag. %s", err.Error())
 	}
 
-	err = m.CharacterSet.ExtractFrom(readable)
-	if err != nil {
+	if err := m.CharacterSet.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.CharacterSet. %s", err.Error())
 	}
 
-	err = m.MiiData.ExtractFrom(readable)
-	if err != nil {
+	if err := m.MiiData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Mii.MiiData. %s", err.Error())
 	}
 
@@ -81,7 +74,7 @@ func (m Mii) Copy() types.RVType {
 	copied.Data = m.Data.Copy().(types.Data)
 	copied.Name = m.Name.Copy().(types.String)
 	copied.ProfanityFlag = m.ProfanityFlag.Copy().(types.Bool)
-	copied.CharacterSet = m.CharacterSet.Copy().(types.UInt8)
+	copied.CharacterSet = m.CharacterSet
 	copied.MiiData = m.MiiData.Copy().(types.Buffer)
 
 	return copied
@@ -111,7 +104,7 @@ func (m Mii) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !m.CharacterSet.Equals(other.CharacterSet) {
+	if m.CharacterSet != other.CharacterSet {
 		return false
 	}
 
@@ -148,7 +141,7 @@ func (m Mii) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, m.Data.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, m.Name))
 	b.WriteString(fmt.Sprintf("%sProfanityFlag: %s,\n", indentationValues, m.ProfanityFlag))
-	b.WriteString(fmt.Sprintf("%sCharacterSet: %s,\n", indentationValues, m.CharacterSet))
+	b.WriteString(fmt.Sprintf("%sCharacterSet: %d,\n", indentationValues, m.CharacterSet))
 	b.WriteString(fmt.Sprintf("%sMiiData: %s,\n", indentationValues, m.MiiData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
@@ -161,7 +154,7 @@ func NewMii() Mii {
 		Data:          types.NewData(),
 		Name:          types.NewString(""),
 		ProfanityFlag: types.NewBool(false),
-		CharacterSet:  types.NewUInt8(0),
+		CharacterSet:  constants.MiiCharacterSetJUE,
 		MiiData:       types.NewBuffer(nil),
 	}
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/messaging/constants"
 )
 
 // UserMessage is a type within the MessageDelivery protocol
@@ -14,13 +15,13 @@ type UserMessage struct {
 	types.Structure
 	types.Data
 	UIID             types.UInt32
-	IDRecipient      types.UInt32     // * NEX <4.0.0
-	UIRecipientType  types.UInt32     // * NEX <4.0.0
+	IDRecipient      types.UInt32            // * NEX <4.0.0
+	UIRecipientType  constants.RecipientType // * NEX <4.0.0
 	UIParentID       types.UInt32
 	PIDSender        types.PID
 	Receptiontime    types.DateTime
 	UILifeTime       types.UInt32
-	UIFlags          types.UInt32
+	UIFlags          constants.MessageFlag
 	StrSubject       types.String
 	StrSender        types.String
 	MessageRecipient MessageRecipient // * NEX 4.0.0
@@ -76,77 +77,61 @@ func (um *UserMessage) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.Messaging
 
-	var err error
-
-	err = um.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := um.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.Data. %s", err.Error())
 	}
 
-	err = um.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := um.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage header. %s", err.Error())
 	}
 
-	err = um.UIID.ExtractFrom(readable)
-	if err != nil {
+	if err := um.UIID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIID. %s", err.Error())
 	}
 
 	if !libraryVersion.GreaterOrEqual("4.0.0") {
-		err = um.IDRecipient.ExtractFrom(readable)
-		if err != nil {
+		if err := um.IDRecipient.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract UserMessage.IDRecipient. %s", err.Error())
 		}
 
-		err = um.UIRecipientType.ExtractFrom(readable)
-		if err != nil {
+		if err := um.UIRecipientType.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract UserMessage.UIRecipientType. %s", err.Error())
 		}
 	}
 
-	err = um.UIParentID.ExtractFrom(readable)
-	if err != nil {
+	if err := um.UIParentID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIParentID. %s", err.Error())
 	}
 
-	err = um.PIDSender.ExtractFrom(readable)
-	if err != nil {
+	if err := um.PIDSender.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.PIDSender. %s", err.Error())
 	}
 
-	err = um.Receptiontime.ExtractFrom(readable)
-	if err != nil {
+	if err := um.Receptiontime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.Receptiontime. %s", err.Error())
 	}
 
-	err = um.UILifeTime.ExtractFrom(readable)
-	if err != nil {
+	if err := um.UILifeTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UILifeTime. %s", err.Error())
 	}
 
-	err = um.UIFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := um.UIFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIFlags. %s", err.Error())
 	}
 
-	err = um.StrSubject.ExtractFrom(readable)
-	if err != nil {
+	if err := um.StrSubject.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.StrSubject. %s", err.Error())
 	}
 
-	err = um.StrSender.ExtractFrom(readable)
-	if err != nil {
+	if err := um.StrSender.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.StrSender. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		err = um.MessageRecipient.ExtractFrom(readable)
-		if err != nil {
+		if err := um.MessageRecipient.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract UserMessage.MessageRecipient. %s", err.Error())
 		}
 	}
-
 
 	return nil
 }
@@ -159,12 +144,12 @@ func (um UserMessage) Copy() types.RVType {
 	copied.Data = um.Data.Copy().(types.Data)
 	copied.UIID = um.UIID.Copy().(types.UInt32)
 	copied.IDRecipient = um.IDRecipient.Copy().(types.UInt32)
-	copied.UIRecipientType = um.UIRecipientType.Copy().(types.UInt32)
+	copied.UIRecipientType = um.UIRecipientType
 	copied.UIParentID = um.UIParentID.Copy().(types.UInt32)
 	copied.PIDSender = um.PIDSender.Copy().(types.PID)
 	copied.Receptiontime = um.Receptiontime.Copy().(types.DateTime)
 	copied.UILifeTime = um.UILifeTime.Copy().(types.UInt32)
-	copied.UIFlags = um.UIFlags.Copy().(types.UInt32)
+	copied.UIFlags = um.UIFlags
 	copied.StrSubject = um.StrSubject.Copy().(types.String)
 	copied.StrSender = um.StrSender.Copy().(types.String)
 	copied.MessageRecipient = um.MessageRecipient.Copy().(MessageRecipient)
@@ -196,7 +181,7 @@ func (um UserMessage) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !um.UIRecipientType.Equals(other.UIRecipientType) {
+	if um.UIRecipientType != other.UIRecipientType {
 		return false
 	}
 
@@ -216,7 +201,7 @@ func (um UserMessage) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !um.UIFlags.Equals(other.UIFlags) {
+	if um.UIFlags != other.UIFlags {
 		return false
 	}
 
@@ -281,12 +266,12 @@ func NewUserMessage() UserMessage {
 		Data:             types.NewData(),
 		UIID:             types.NewUInt32(0),
 		IDRecipient:      types.NewUInt32(0),
-		UIRecipientType:  types.NewUInt32(0),
+		UIRecipientType:  constants.RecipientType(0), // TODO - What is the real default?,
 		UIParentID:       types.NewUInt32(0),
 		PIDSender:        types.NewPID(0),
 		Receptiontime:    types.NewDateTime(0),
 		UILifeTime:       types.NewUInt32(0),
-		UIFlags:          types.NewUInt32(0),
+		UIFlags:          constants.MessageFlagPersistentMessage,
 		StrSubject:       types.NewString(""),
 		StrSender:        types.NewString(""),
 		MessageRecipient: NewMessageRecipient(),

@@ -31,20 +31,15 @@ func (sirb ServiceItemRightBinary) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemRightBinary from the given readable
 func (sirb *ServiceItemRightBinary) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sirb.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sirb.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightBinary header. %s", err.Error())
 	}
 
-	err = sirb.UseType.ExtractFrom(readable)
-	if err != nil {
+	if err := sirb.UseType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightBinary.UseType. %s", err.Error())
 	}
 
-	err = sirb.RightBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := sirb.RightBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightBinary.RightBinary. %s", err.Error())
 	}
 

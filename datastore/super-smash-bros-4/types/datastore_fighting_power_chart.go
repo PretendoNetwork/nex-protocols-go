@@ -31,20 +31,15 @@ func (dsfpc DataStoreFightingPowerChart) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreFightingPowerChart from the given readable
 func (dsfpc *DataStoreFightingPowerChart) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsfpc.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsfpc.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart header. %s", err.Error())
 	}
 
-	err = dsfpc.UserNum.ExtractFrom(readable)
-	if err != nil {
+	if err := dsfpc.UserNum.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.UserNum. %s", err.Error())
 	}
 
-	err = dsfpc.Chart.ExtractFrom(readable)
-	if err != nil {
+	if err := dsfpc.Chart.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.Chart. %s", err.Error())
 	}
 

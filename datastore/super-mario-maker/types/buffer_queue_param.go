@@ -31,20 +31,15 @@ func (bqp BufferQueueParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the BufferQueueParam from the given readable
 func (bqp *BufferQueueParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = bqp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := bqp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BufferQueueParam header. %s", err.Error())
 	}
 
-	err = bqp.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := bqp.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BufferQueueParam.DataID. %s", err.Error())
 	}
 
-	err = bqp.Slot.ExtractFrom(readable)
-	if err != nil {
+	if err := bqp.Slot.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract BufferQueueParam.Slot. %s", err.Error())
 	}
 

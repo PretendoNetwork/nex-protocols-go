@@ -34,25 +34,19 @@ func (dscprp DataStoreCompletePostReplayParam) WriteTo(writable types.Writable) 
 
 // ExtractFrom extracts the DataStoreCompletePostReplayParam from the given readable
 func (dscprp *DataStoreCompletePostReplayParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dscprp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dscprp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam header. %s", err.Error())
 	}
 
-	err = dscprp.ReplayID.ExtractFrom(readable)
-	if err != nil {
+	if err := dscprp.ReplayID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.ReplayID. %s", err.Error())
 	}
 
-	err = dscprp.CompleteParam.ExtractFrom(readable)
-	if err != nil {
+	if err := dscprp.CompleteParam.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.CompleteParam. %s", err.Error())
 	}
 
-	err = dscprp.PrepareParam.ExtractFrom(readable)
-	if err != nil {
+	if err := dscprp.PrepareParam.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.PrepareParam. %s", err.Error())
 	}
 

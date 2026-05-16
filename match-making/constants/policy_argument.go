@@ -1,0 +1,56 @@
+package constants
+
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
+// PolicyArgument is not an official type. It exists to be the
+// base type of other policy argument types and to be used as
+// the Gathering.PolicyArgument field type.
+type PolicyArgument uint32
+
+// WriteTo writes the PolicyArgument to the given writable
+func (pa PolicyArgument) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(pa))
+}
+
+// ExtractFrom extracts the PolicyArgument value from the given readable
+func (pa *PolicyArgument) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*pa = PolicyArgument(value)
+	return nil
+}
+
+// String returns a human-readable representation of PolicyArgument.
+// This cannot differentiate between types of PolicyArguments
+func (pa PolicyArgument) String() string {
+	return fmt.Sprintf("PolicyArgument(%d)", int(pa))
+}
+
+// StringAnybodyParticipationPolicyArgument returns a human-readable representation of the AnybodyParticipationPolicyArgument.
+func (pa PolicyArgument) StringAnybodyParticipationPolicyArgument() string {
+	appa := AnybodyParticipationPolicyArgument(pa)
+	switch appa {
+	case AnybodyParticipationPolicyArgumentWithoutClose:
+		return "WithoutClose"
+	case AnybodyParticipationPolicyArgumentCloseOnOwnerMigration:
+		return "CloseOnOwnerMigration"
+	default:
+		return fmt.Sprintf("AnybodyParticipationPolicyArgument(%d)", int(appa))
+	}
+}
+
+// StringFriendsOnlyParticipationPolicyArgument returns a human-readable representation of the FriendsOnlyParticipationPolicyArgument.
+func (pa PolicyArgument) StringFriendsOnlyParticipationPolicyArgument() string {
+	foppa := FriendsOnlyParticipationPolicyArgument(pa)
+	switch foppa {
+	default:
+		return fmt.Sprintf("FriendsOnlyParticipationPolicyArgument(%d)", int(foppa))
+	}
+}

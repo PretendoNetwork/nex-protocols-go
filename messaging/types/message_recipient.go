@@ -7,13 +7,14 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/messaging/constants"
 )
 
 // MessageRecipient is a type within the MessageDelivery protocol
 type MessageRecipient struct {
 	types.Structure
 	IDRecipient     types.UInt32 // * NEX <4.0.0
-	UIRecipientType types.UInt32
+	UIRecipientType constants.RecipientType
 	PrincipalID     types.PID    // * NEX 4.0.0
 	GatheringID     types.UInt32 // * NEX 4.0.0
 }
@@ -48,33 +49,26 @@ func (mr *MessageRecipient) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.Messaging
 
-	var err error
-
-	err = mr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := mr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MessageRecipient header. %s", err.Error())
 	}
 
 	if !libraryVersion.GreaterOrEqual("4.0.0") {
-		err = mr.IDRecipient.ExtractFrom(readable)
-		if err != nil {
+		if err := mr.IDRecipient.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MessageRecipient.IDRecipient. %s", err.Error())
 		}
 	}
 
-	err = mr.UIRecipientType.ExtractFrom(readable)
-	if err != nil {
+	if err := mr.UIRecipientType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MessageRecipient.UIRecipientType. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		err = mr.PrincipalID.ExtractFrom(readable)
-		if err != nil {
+		if err := mr.PrincipalID.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MessageRecipient.PrincipalID. %s", err.Error())
 		}
 
-		err = mr.GatheringID.ExtractFrom(readable)
-		if err != nil {
+		if err := mr.GatheringID.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract MessageRecipient.GatheringID. %s", err.Error())
 		}
 	}
@@ -88,7 +82,7 @@ func (mr MessageRecipient) Copy() types.RVType {
 
 	copied.StructureVersion = mr.StructureVersion
 	copied.IDRecipient = mr.IDRecipient.Copy().(types.UInt32)
-	copied.UIRecipientType = mr.UIRecipientType.Copy().(types.UInt32)
+	copied.UIRecipientType = mr.UIRecipientType
 	copied.PrincipalID = mr.PrincipalID.Copy().(types.PID)
 	copied.GatheringID = mr.GatheringID.Copy().(types.UInt32)
 
@@ -111,7 +105,7 @@ func (mr MessageRecipient) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !mr.UIRecipientType.Equals(other.UIRecipientType) {
+	if mr.UIRecipientType != other.UIRecipientType {
 		return false
 	}
 
@@ -162,7 +156,7 @@ func (mr MessageRecipient) FormatToString(indentationLevel int) string {
 func NewMessageRecipient() MessageRecipient {
 	return MessageRecipient{
 		IDRecipient:     types.NewUInt32(0),
-		UIRecipientType: types.NewUInt32(0),
+		UIRecipientType: constants.RecipientType(0), // TODO - What is the real default?
 		PrincipalID:     types.NewPID(0),
 		GatheringID:     types.NewUInt32(0),
 	}

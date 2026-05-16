@@ -31,20 +31,15 @@ func (gurl GatheringURLs) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the GatheringURLs from the given readable
 func (gurl *GatheringURLs) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = gurl.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := gurl.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GatheringURLs header. %s", err.Error())
 	}
 
-	err = gurl.GID.ExtractFrom(readable)
-	if err != nil {
+	if err := gurl.GID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GatheringURLs.GID. %s", err.Error())
 	}
 
-	err = gurl.LstStationURLs.ExtractFrom(readable)
-	if err != nil {
+	if err := gurl.LstStationURLs.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GatheringURLs.LstStationURLs. %s", err.Error())
 	}
 

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 // Gathering is a type within the Matchmaking protocol
@@ -16,10 +17,10 @@ type Gathering struct {
 	HostPID             types.PID
 	MinimumParticipants types.UInt16
 	MaximumParticipants types.UInt16
-	ParticipationPolicy types.UInt32
-	PolicyArgument      types.UInt32
-	Flags               types.UInt32
-	State               types.UInt32
+	ParticipationPolicy constants.ParticipationPolicy
+	PolicyArgument      constants.PolicyArgument
+	Flags               constants.GatheringFlags
+	State               constants.GatheringState
 	Description         types.String
 }
 
@@ -57,60 +58,47 @@ func (g Gathering) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Gathering from the given readable
 func (g *Gathering) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = g.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := g.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering header. %s", err.Error())
 	}
 
-	err = g.ID.ExtractFrom(readable)
-	if err != nil {
+	if err := g.ID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.ID. %s", err.Error())
 	}
 
-	err = g.OwnerPID.ExtractFrom(readable)
-	if err != nil {
+	if err := g.OwnerPID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.OwnerPID. %s", err.Error())
 	}
 
-	err = g.HostPID.ExtractFrom(readable)
-	if err != nil {
+	if err := g.HostPID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.HostPID. %s", err.Error())
 	}
 
-	err = g.MinimumParticipants.ExtractFrom(readable)
-	if err != nil {
+	if err := g.MinimumParticipants.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.MinimumParticipants. %s", err.Error())
 	}
 
-	err = g.MaximumParticipants.ExtractFrom(readable)
-	if err != nil {
+	if err := g.MaximumParticipants.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.MaximumParticipants. %s", err.Error())
 	}
 
-	err = g.ParticipationPolicy.ExtractFrom(readable)
-	if err != nil {
+	if err := g.ParticipationPolicy.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.ParticipationPolicy. %s", err.Error())
 	}
 
-	err = g.PolicyArgument.ExtractFrom(readable)
-	if err != nil {
+	if err := g.PolicyArgument.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.PolicyArgument. %s", err.Error())
 	}
 
-	err = g.Flags.ExtractFrom(readable)
-	if err != nil {
+	if err := g.Flags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.Flags. %s", err.Error())
 	}
 
-	err = g.State.ExtractFrom(readable)
-	if err != nil {
+	if err := g.State.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.State. %s", err.Error())
 	}
 
-	err = g.Description.ExtractFrom(readable)
-	if err != nil {
+	if err := g.Description.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Gathering.Description. %s", err.Error())
 	}
 
@@ -127,10 +115,10 @@ func (g Gathering) Copy() types.RVType {
 	copied.HostPID = g.HostPID.Copy().(types.PID)
 	copied.MinimumParticipants = g.MinimumParticipants.Copy().(types.UInt16)
 	copied.MaximumParticipants = g.MaximumParticipants.Copy().(types.UInt16)
-	copied.ParticipationPolicy = g.ParticipationPolicy.Copy().(types.UInt32)
-	copied.PolicyArgument = g.PolicyArgument.Copy().(types.UInt32)
-	copied.Flags = g.Flags.Copy().(types.UInt32)
-	copied.State = g.State.Copy().(types.UInt32)
+	copied.ParticipationPolicy = g.ParticipationPolicy
+	copied.PolicyArgument = g.PolicyArgument
+	copied.Flags = g.Flags
+	copied.State = g.State
 	copied.Description = g.Description.Copy().(types.String)
 
 	return copied
@@ -168,19 +156,19 @@ func (g Gathering) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !g.ParticipationPolicy.Equals(other.ParticipationPolicy) {
+	if g.ParticipationPolicy != other.ParticipationPolicy {
 		return false
 	}
 
-	if !g.PolicyArgument.Equals(other.PolicyArgument) {
+	if g.PolicyArgument != other.PolicyArgument {
 		return false
 	}
 
-	if !g.Flags.Equals(other.Flags) {
+	if g.Flags != other.Flags {
 		return false
 	}
 
-	if !g.State.Equals(other.State) {
+	if g.State != other.State {
 		return false
 	}
 
@@ -220,7 +208,14 @@ func (g Gathering) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sMinimumParticipants: %s,\n", indentationValues, g.MinimumParticipants))
 	b.WriteString(fmt.Sprintf("%sMaximumParticipants: %s,\n", indentationValues, g.MaximumParticipants))
 	b.WriteString(fmt.Sprintf("%sParticipationPolicy: %s,\n", indentationValues, g.ParticipationPolicy))
-	b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument))
+	switch g.ParticipationPolicy {
+	case constants.ParticipationPolicyAnybody:
+		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringAnybodyParticipationPolicyArgument()))
+	case constants.ParticipationPolicyFriendsOnly:
+		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringFriendsOnlyParticipationPolicyArgument()))
+	default:
+		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument))
+	}
 	b.WriteString(fmt.Sprintf("%sFlags: %s,\n", indentationValues, g.Flags))
 	b.WriteString(fmt.Sprintf("%sState: %s,\n", indentationValues, g.State))
 	b.WriteString(fmt.Sprintf("%sDescription: %s,\n", indentationValues, g.Description))
@@ -237,10 +232,10 @@ func NewGathering() Gathering {
 		HostPID:             types.NewPID(0),
 		MinimumParticipants: types.NewUInt16(0),
 		MaximumParticipants: types.NewUInt16(0),
-		ParticipationPolicy: types.NewUInt32(0),
-		PolicyArgument:      types.NewUInt32(0),
-		Flags:               types.NewUInt32(0),
-		State:               types.NewUInt32(0),
+		ParticipationPolicy: constants.ParticipationPolicy(1), // TODO - This is what the nn::nex::Gathering::Reset() function sets this to in Xenoblade. I have no idea what this value actually means
+		PolicyArgument:      constants.PolicyArgument(0),      // TODO - This is what the nn::nex::Gathering::Reset() function sets this to in Xenoblade. I have no idea what this value actually means
+		Flags:               constants.GatheringFlagNone,
+		State:               constants.GatheringState(0), // TODO - This is what the nn::nex::Gathering::Reset() function sets this to in Xenoblade. I have no idea what this value actually means
 		Description:         types.NewString(""),
 	}
 

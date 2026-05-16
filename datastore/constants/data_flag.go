@@ -1,8 +1,81 @@
 package constants
 
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
 // DataFlag sets different configuration flags for uploaded objects.
 // Stored in the objects DataStoreMetaInfo.flag field
 type DataFlag uint8
+
+// WriteTo writes the DataFlag to the given writable
+func (df DataFlag) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(df))
+}
+
+// ExtractFrom extracts the DataFlag value from the given readable
+func (df *DataFlag) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*df = DataFlag(value)
+	return nil
+}
+
+// HasFlag checks if a given flag is set
+func (df DataFlag) HasFlag(flag DataFlag) bool {
+	return df&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (df DataFlag) HasFlags(flags ...DataFlag) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if df&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
+
+// String returns a human-readable representation of the DataFlag bitmask.
+// Multiple flags are joined with "|", e.g. "NeedReview|NeedCompletion".
+// Returns "None" if no flags are set.
+func (df DataFlag) String() string {
+	if df == DataFlagNone {
+		return "None"
+	}
+
+	flags := []struct {
+		flag DataFlag
+		name string
+	}{
+		{DataFlagNeedReview, "NeedReview"},
+		{DataFlagPeriodFromLastReferred, "PeriodFromLastReferred"},
+		{DataFlagUseReadLock, "UseReadLock"},
+		{DataFlagUseNotificationOnPost, "UseNotificationOnPost"},
+		{DataFlagUseNotificationOnUpdate, "UseNotificationOnUpdate"},
+		{DataFlagNotUseFileServer, "NotUseFileServer"},
+		{DataFlagNeedCompletion, "NeedCompletion"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if df&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
+}
 
 const (
 	// DataFlagNone means no extra configurations

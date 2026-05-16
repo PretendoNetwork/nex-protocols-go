@@ -9,6 +9,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
+	notifications_constants "github.com/PretendoNetwork/nex-protocols-go/v2/notifications/constants"
 )
 
 const (
@@ -189,11 +190,11 @@ type Protocol struct {
 	CreateMatchmakeSession                                  func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error)
 	JoinMatchmakeSession                                    func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	ModifyCurrentGameAttribute                              func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribIndex types.UInt32, newValue types.UInt32) (*nex.RMCMessage, *nex.Error)
-	UpdateNotificationData                                  func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error)
-	GetFriendNotificationData                               func(err error, packet nex.PacketInterface, callID uint32, uiType types.Int32) (*nex.RMCMessage, *nex.Error)
+	UpdateNotificationData                                  func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategory, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error)
+	GetFriendNotificationData                               func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategorySigned) (*nex.RMCMessage, *nex.Error)
 	UpdateApplicationBuffer                                 func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, applicationBuffer types.Buffer) (*nex.RMCMessage, *nex.Error)
 	UpdateMatchmakeSessionAttribute                         func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribs types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
-	GetlstFriendNotificationData                            func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
+	GetlstFriendNotificationData                            func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[notifications_constants.NotificationCategory]) (*nex.RMCMessage, *nex.Error)
 	UpdateMatchmakeSession                                  func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error)
 	AutoMatchmakeWithSearchCriteriaPostpone                 func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	GetPlayingSession                                       func(err error, packet nex.PacketInterface, callID uint32, lstPID types.List[types.PID]) (*nex.RMCMessage, *nex.Error)
@@ -215,7 +216,7 @@ type Protocol struct {
 	GetSimpleCommunity                                      func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)
 	AutoMatchmakeWithGatheringIDPostpone                    func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error)
 	UpdateProgressScore                                     func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, progressScore types.UInt8) (*nex.RMCMessage, *nex.Error)
-	DebugNotifyEvent                                        func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType types.UInt32, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)
+	DebugNotifyEvent                                        func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType notifications_constants.NotificationCategory, subType notifications_constants.SubType, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)
 	GenerateMatchmakeSessionSystemPassword                  func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error)
 	ClearMatchmakeSessionSystemPassword                     func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error)
 	CreateMatchmakeSessionWithParam                         func(err error, packet nex.PacketInterface, callID uint32, createMatchmakeSessionParam match_making_types.CreateMatchmakeSessionParam) (*nex.RMCMessage, *nex.Error)
@@ -251,11 +252,11 @@ type Interface interface {
 	SetHandlerCreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder, message types.String, participationCount types.UInt16) (*nex.RMCMessage, *nex.Error))
 	SetHandlerJoinMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerModifyCurrentGameAttribute(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribIndex types.UInt32, newValue types.UInt32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.Int32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategory, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategorySigned) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateApplicationBuffer(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, applicationBuffer types.Buffer) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateMatchmakeSessionAttribute(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, attribs types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetlstFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetlstFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[notifications_constants.NotificationCategory]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering match_making_types.GatheringHolder) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAutoMatchmakeWithSearchCriteriaPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria types.List[match_making_types.MatchmakeSessionSearchCriteria], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetPlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, lstPID types.List[types.PID]) (*nex.RMCMessage, *nex.Error))
@@ -277,7 +278,7 @@ type Interface interface {
 	SetHandlerGetSimpleCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAutoMatchmakeWithGatheringIDPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateProgressScore(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, progressScore types.UInt8) (*nex.RMCMessage, *nex.Error))
-	SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType types.UInt32, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType notifications_constants.NotificationCategory, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGenerateMatchmakeSessionSystemPassword(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerClearMatchmakeSessionSystemPassword(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerCreateMatchmakeSessionWithParam(handler func(err error, packet nex.PacketInterface, callID uint32, createMatchmakeSessionParam match_making_types.CreateMatchmakeSessionParam) (*nex.RMCMessage, *nex.Error))
@@ -350,12 +351,12 @@ func (protocol *Protocol) SetHandlerModifyCurrentGameAttribute(handler func(err 
 }
 
 // SetHandlerUpdateNotificationData sets the handler for the UpdateNotificationData method
-func (protocol *Protocol) SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.UInt32, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUpdateNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategory, uiParam1 types.UInt64, uiParam2 types.UInt64, strParam types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateNotificationData = handler
 }
 
 // SetHandlerGetFriendNotificationData sets the handler for the GetFriendNotificationData method
-func (protocol *Protocol) SetHandlerGetFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType types.Int32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, uiType notifications_constants.NotificationCategorySigned) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendNotificationData = handler
 }
 
@@ -370,7 +371,7 @@ func (protocol *Protocol) SetHandlerUpdateMatchmakeSessionAttribute(handler func
 }
 
 // SetHandlerGetlstFriendNotificationData sets the handler for the GetlstFriendNotificationData method
-func (protocol *Protocol) SetHandlerGetlstFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetlstFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, lstTypes types.List[notifications_constants.NotificationCategory]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetlstFriendNotificationData = handler
 }
 
@@ -480,7 +481,7 @@ func (protocol *Protocol) SetHandlerUpdateProgressScore(handler func(err error, 
 }
 
 // SetHandlerDebugNotifyEvent sets the handler for the DebugNotifyEvent method
-func (protocol *Protocol) SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType types.UInt32, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType notifications_constants.NotificationCategory, subType notifications_constants.SubType, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DebugNotifyEvent = handler
 }
 

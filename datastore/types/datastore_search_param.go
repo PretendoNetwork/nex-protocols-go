@@ -7,14 +7,15 @@ import (
 
 	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreSearchParam is a type within the DataStore protocol
 type DataStoreSearchParam struct {
 	types.Structure
-	SearchTarget           types.UInt8
+	SearchTarget           constants.SearchType // * Yes, this is correct. This is not meant to be constants.SearchTarget
 	OwnerIDs               types.List[types.PID]
-	OwnerType              types.UInt8
+	OwnerType              constants.SearchTarget // * Yes, this is correct. This is not meant to be constants.SearchType
 	DestinationIDs         types.List[types.PID]
 	DataType               types.UInt16
 	CreatedAfter           types.DateTime
@@ -23,10 +24,10 @@ type DataStoreSearchParam struct {
 	UpdatedBefore          types.DateTime
 	ReferDataID            types.UInt32
 	Tags                   types.List[types.String]
-	ResultOrderColumn      types.UInt8
-	ResultOrder            types.UInt8
+	ResultOrderColumn      constants.SearchSortColumn
+	ResultOrder            constants.SearchSortOrder
 	ResultRange            types.ResultRange
-	ResultOption           types.UInt8
+	ResultOption           constants.ResultFlag
 	MinimalRatingFrequency types.UInt32
 	UseCache               types.Bool               // * Revision 1 or NEX 4.0
 	TotalCountEnabled      types.Bool               // * Revision 3 or NEX 4.0
@@ -81,110 +82,88 @@ func (dssp *DataStoreSearchParam) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.DataStore
 
-	var err error
-
-	err = dssp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dssp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam header. %s", err.Error())
 	}
 
-	err = dssp.SearchTarget.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.SearchTarget.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.SearchTarget. %s", err.Error())
 	}
 
-	err = dssp.OwnerIDs.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.OwnerIDs.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerIDs. %s", err.Error())
 	}
 
-	err = dssp.OwnerType.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.OwnerType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerType. %s", err.Error())
 	}
 
-	err = dssp.DestinationIDs.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.DestinationIDs.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.DestinationIDs. %s", err.Error())
 	}
 
-	err = dssp.DataType.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.DataType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.DataType. %s", err.Error())
 	}
 
-	err = dssp.CreatedAfter.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.CreatedAfter.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedAfter. %s", err.Error())
 	}
 
-	err = dssp.CreatedBefore.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.CreatedBefore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedBefore. %s", err.Error())
 	}
 
-	err = dssp.UpdatedAfter.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.UpdatedAfter.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedAfter. %s", err.Error())
 	}
 
-	err = dssp.UpdatedBefore.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.UpdatedBefore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedBefore. %s", err.Error())
 	}
 
-	err = dssp.ReferDataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.ReferDataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ReferDataID. %s", err.Error())
 	}
 
-	err = dssp.Tags.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.Tags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.Tags. %s", err.Error())
 	}
 
-	err = dssp.ResultOrderColumn.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.ResultOrderColumn.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrderColumn. %s", err.Error())
 	}
 
-	err = dssp.ResultOrder.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.ResultOrder.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrder. %s", err.Error())
 	}
 
-	err = dssp.ResultRange.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.ResultRange.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultRange. %s", err.Error())
 	}
 
-	err = dssp.ResultOption.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.ResultOption.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOption. %s", err.Error())
 	}
 
-	err = dssp.MinimalRatingFrequency.ExtractFrom(readable)
-	if err != nil {
+	if err := dssp.MinimalRatingFrequency.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
 	}
 
 	if dssp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0.0") {
-		err = dssp.UseCache.ExtractFrom(readable)
-		if err != nil {
+		if err := dssp.UseCache.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
 		}
 	}
 
 	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
-		err = dssp.TotalCountEnabled.ExtractFrom(readable)
-		if err != nil {
+		if err := dssp.TotalCountEnabled.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
 		}
 	}
 
 	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
-		err = dssp.DataTypes.ExtractFrom(readable)
-		if err != nil {
+		if err := dssp.DataTypes.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
 		}
 	}
@@ -197,9 +176,9 @@ func (dssp DataStoreSearchParam) Copy() types.RVType {
 	copied := NewDataStoreSearchParam()
 
 	copied.StructureVersion = dssp.StructureVersion
-	copied.SearchTarget = dssp.SearchTarget.Copy().(types.UInt8)
+	copied.SearchTarget = dssp.SearchTarget
 	copied.OwnerIDs = dssp.OwnerIDs.Copy().(types.List[types.PID])
-	copied.OwnerType = dssp.OwnerType.Copy().(types.UInt8)
+	copied.OwnerType = dssp.OwnerType
 	copied.DestinationIDs = dssp.DestinationIDs.Copy().(types.List[types.PID])
 	copied.DataType = dssp.DataType.Copy().(types.UInt16)
 	copied.CreatedAfter = dssp.CreatedAfter.Copy().(types.DateTime)
@@ -208,10 +187,10 @@ func (dssp DataStoreSearchParam) Copy() types.RVType {
 	copied.UpdatedBefore = dssp.UpdatedBefore.Copy().(types.DateTime)
 	copied.ReferDataID = dssp.ReferDataID.Copy().(types.UInt32)
 	copied.Tags = dssp.Tags.Copy().(types.List[types.String])
-	copied.ResultOrderColumn = dssp.ResultOrderColumn.Copy().(types.UInt8)
-	copied.ResultOrder = dssp.ResultOrder.Copy().(types.UInt8)
+	copied.ResultOrderColumn = dssp.ResultOrderColumn
+	copied.ResultOrder = dssp.ResultOrder
 	copied.ResultRange = dssp.ResultRange.Copy().(types.ResultRange)
-	copied.ResultOption = dssp.ResultOption.Copy().(types.UInt8)
+	copied.ResultOption = dssp.ResultOption
 	copied.MinimalRatingFrequency = dssp.MinimalRatingFrequency.Copy().(types.UInt32)
 	copied.UseCache = dssp.UseCache.Copy().(types.Bool)
 	copied.TotalCountEnabled = dssp.TotalCountEnabled.Copy().(types.Bool)
@@ -232,7 +211,7 @@ func (dssp DataStoreSearchParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dssp.SearchTarget.Equals(other.SearchTarget) {
+	if dssp.SearchTarget != other.SearchTarget {
 		return false
 	}
 
@@ -240,7 +219,7 @@ func (dssp DataStoreSearchParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dssp.OwnerType.Equals(other.OwnerType) {
+	if dssp.OwnerType != other.OwnerType {
 		return false
 	}
 
@@ -276,11 +255,11 @@ func (dssp DataStoreSearchParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dssp.ResultOrderColumn.Equals(other.ResultOrderColumn) {
+	if dssp.ResultOrderColumn != other.ResultOrderColumn {
 		return false
 	}
 
-	if !dssp.ResultOrder.Equals(other.ResultOrder) {
+	if dssp.ResultOrder != other.ResultOrder {
 		return false
 	}
 
@@ -288,7 +267,7 @@ func (dssp DataStoreSearchParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dssp.ResultOption.Equals(other.ResultOption) {
+	if dssp.ResultOption != other.ResultOption {
 		return false
 	}
 
@@ -361,9 +340,9 @@ func (dssp DataStoreSearchParam) FormatToString(indentationLevel int) string {
 // NewDataStoreSearchParam returns a new DataStoreSearchParam
 func NewDataStoreSearchParam() DataStoreSearchParam {
 	return DataStoreSearchParam{
-		SearchTarget:           types.NewUInt8(0),
+		SearchTarget:           constants.SearchType(0), // TODO - What is the real default?
 		OwnerIDs:               types.NewList[types.PID](),
-		OwnerType:              types.NewUInt8(0),
+		OwnerType:              constants.SearchTargetAnybody,
 		DestinationIDs:         types.NewList[types.PID](),
 		DataType:               types.NewUInt16(0),
 		CreatedAfter:           types.NewDateTime(0),
@@ -372,10 +351,10 @@ func NewDataStoreSearchParam() DataStoreSearchParam {
 		UpdatedBefore:          types.NewDateTime(0),
 		ReferDataID:            types.NewUInt32(0),
 		Tags:                   types.NewList[types.String](),
-		ResultOrderColumn:      types.NewUInt8(0),
-		ResultOrder:            types.NewUInt8(0),
+		ResultOrderColumn:      constants.SearchSortColumnDataID,
+		ResultOrder:            constants.SearchSortOrderAsc,
 		ResultRange:            types.NewResultRange(),
-		ResultOption:           types.NewUInt8(0),
+		ResultOption:           constants.ResultFlag(0), // TODO - What is the real default?
 		MinimalRatingFrequency: types.NewUInt32(0),
 		UseCache:               types.NewBool(false),
 		TotalCountEnabled:      types.NewBool(false),

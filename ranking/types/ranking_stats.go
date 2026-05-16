@@ -29,15 +29,11 @@ func (rs RankingStats) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingStats from the given readable
 func (rs *RankingStats) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rs.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rs.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingStats header. %s", err.Error())
 	}
 
-	err = rs.StatsList.ExtractFrom(readable)
-	if err != nil {
+	if err := rs.StatsList.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingStats.StatsList. %s", err.Error())
 	}
 

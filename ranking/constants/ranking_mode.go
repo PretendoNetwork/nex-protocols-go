@@ -1,7 +1,47 @@
 package constants
 
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
 // RankingMode represents the selection of who will be included on the leaderboard (global, friends, nearby etc.).
-type RankingMode uint32
+type RankingMode uint8
+
+// WriteTo writes the RankingMode to the given writable
+func (rm RankingMode) WriteTo(writable types.Writable) {
+	writable.WriteUInt8(uint8(rm))
+}
+
+// ExtractFrom extracts the RankingMode value from the given readable
+func (rm *RankingMode) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt8()
+	if err != nil {
+		return err
+	}
+
+	*rm = RankingMode(value)
+	return nil
+}
+
+// String returns a human-readable representation of the RankingMode.
+func (rm RankingMode) String() string {
+	switch rm {
+	case RankingModeRange:
+		return "Range"
+	case RankingModeNear:
+		return "Near"
+	case RankingModeFriendRange:
+		return "FriendRange"
+	case RankingModeFriendNear:
+		return "FriendNear"
+	case RankingModeUser:
+		return "User"
+	default:
+		return fmt.Sprintf("RankingMode(%d)", int(rm))
+	}
+}
 
 const (
 	// RankingModeRange retrieves the entire global leaderboard up to 1000 entries.

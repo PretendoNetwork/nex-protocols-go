@@ -31,20 +31,15 @@ func (gtstpr GlobalTradeStationTradePokemonResult) WriteTo(writable types.Writab
 
 // ExtractFrom extracts the GlobalTradeStationTradePokemonResult from the given readable
 func (gtstpr *GlobalTradeStationTradePokemonResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = gtstpr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := gtstpr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonResult header. %s", err.Error())
 	}
 
-	err = gtstpr.Result.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpr.Result.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonResult.Result. %s", err.Error())
 	}
 
-	err = gtstpr.MyDataID.ExtractFrom(readable)
-	if err != nil {
+	if err := gtstpr.MyDataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonResult.MyDataID. %s", err.Error())
 	}
 

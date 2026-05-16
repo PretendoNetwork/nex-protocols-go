@@ -39,40 +39,31 @@ func (sipri ServiceItemPrepurchaseRightInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemPrepurchaseRightInfo from the given readable
 func (sipri *ServiceItemPrepurchaseRightInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sipri.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sipri.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo header. %s", err.Error())
 	}
 
-	err = sipri.LimitationType.ExtractFrom(readable)
-	if err != nil {
+	if err := sipri.LimitationType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.LimitationType. %s", err.Error())
 	}
 
-	err = sipri.AcquiredCount.ExtractFrom(readable)
-	if err != nil {
+	if err := sipri.AcquiredCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.AcquiredCount. %s", err.Error())
 	}
 
-	err = sipri.UsedCount.ExtractFrom(readable)
-	if err != nil {
+	if err := sipri.UsedCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.UsedCount. %s", err.Error())
 	}
 
-	err = sipri.ExpiryDate.ExtractFrom(readable)
-	if err != nil {
+	if err := sipri.ExpiryDate.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiryDate. %s", err.Error())
 	}
 
-	err = sipri.ExpiredCount.ExtractFrom(readable)
-	if err != nil {
+	if err := sipri.ExpiredCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiredCount. %s", err.Error())
 	}
 
-	err = sipri.ExpiryCounts.ExtractFrom(readable)
-	if err != nil {
+	if err := sipri.ExpiryCounts.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiryCounts. %s", err.Error())
 	}
 

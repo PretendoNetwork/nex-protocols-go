@@ -1,0 +1,86 @@
+package constants
+
+import (
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
+// Ranking2GetOptionFlags determines what data is returned when requesting common data.
+type Ranking2GetOptionFlags uint32
+
+// WriteTo writes the Ranking2GetOptionFlags to the given writable
+func (r2gof Ranking2GetOptionFlags) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(r2gof))
+}
+
+// ExtractFrom extracts the Ranking2GetOptionFlags value from the given readable
+func (r2gof *Ranking2GetOptionFlags) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*r2gof = Ranking2GetOptionFlags(value)
+	return nil
+}
+
+// HasFlag checks if a given flag is set
+func (r2gof Ranking2GetOptionFlags) HasFlag(flag Ranking2GetOptionFlags) bool {
+	return r2gof&flag == flag
+}
+
+// HasFlag checks if all given flags are set
+func (r2gof Ranking2GetOptionFlags) HasFlags(flags ...Ranking2GetOptionFlags) bool {
+	if len(flags) == 0 {
+		return false
+	}
+
+	for _, flag := range flags {
+		if r2gof&flag != flag {
+			return false
+		}
+	}
+
+	return true
+}
+
+// String returns a human-readable representation of the Ranking2GetOptionFlags.
+// Returns "Nothing" if no flags are set.
+func (r2gof Ranking2GetOptionFlags) String() string {
+	if r2gof == Ranking2GetOptionFlagsNothing {
+		return "Nothing"
+	}
+
+	flags := []struct {
+		flag Ranking2GetOptionFlags
+		name string
+	}{
+		{Ranking2GetOptionFlagsMii, "Mii"},
+	}
+
+	var parts []string
+	for _, f := range flags {
+		if r2gof&f.flag != 0 {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
+}
+
+const (
+	// Ranking2GetOptionFlagsNothing means that no extra data should be returned
+	// in the common data.
+	//
+	// Note: The `userName` and `binaryData` fields seem to always be populated, regardless
+	// of flags. These seem to exist solely to enable the `mii` field.
+	Ranking2GetOptionFlagsNothing Ranking2GetOptionFlags = 0
+
+	// Ranking2GetOptionFlagsMii means that Mii data should be returned
+	// in the common data.
+	//
+	// Note: This is a guess based on some light test behavior. The real
+	// name of this is unknown.
+	Ranking2GetOptionFlagsMii Ranking2GetOptionFlags = 1
+)

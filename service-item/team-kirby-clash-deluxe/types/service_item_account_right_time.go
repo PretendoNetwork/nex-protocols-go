@@ -29,15 +29,11 @@ func (siart ServiceItemAccountRightTime) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemAccountRightTime from the given readable
 func (siart *ServiceItemAccountRightTime) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siart.ServiceItemAccountRight.ExtractFrom(readable)
-	if err != nil {
+	if err := siart.ServiceItemAccountRight.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightTime.ServiceItemAccountRight. %s", err.Error())
 	}
 
-	err = siart.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siart.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightTime header. %s", err.Error())
 	}
 

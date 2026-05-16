@@ -33,25 +33,19 @@ func (gs GatheringStats) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the GatheringStats from the given readable
 func (gs *GatheringStats) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = gs.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := gs.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GatheringStats header. %s", err.Error())
 	}
 
-	err = gs.PIDParticipant.ExtractFrom(readable)
-	if err != nil {
+	if err := gs.PIDParticipant.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GatheringStats.PIDParticipant. %s", err.Error())
 	}
 
-	err = gs.UIFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := gs.UIFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GatheringStats.UIFlags. %s", err.Error())
 	}
 
-	err = gs.LstValues.ExtractFrom(readable)
-	if err != nil {
+	if err := gs.LstValues.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GatheringStats.LstValues. %s", err.Error())
 	}
 

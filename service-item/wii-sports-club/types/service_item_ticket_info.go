@@ -31,20 +31,15 @@ func (siti ServiceItemTicketInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemTicketInfo from the given readable
 func (siti *ServiceItemTicketInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siti.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siti.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTicketInfo header. %s", err.Error())
 	}
 
-	err = siti.TicketType.ExtractFrom(readable)
-	if err != nil {
+	if err := siti.TicketType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTicketInfo.TicketType. %s", err.Error())
 	}
 
-	err = siti.NumTotal.ExtractFrom(readable)
-	if err != nil {
+	if err := siti.NumTotal.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTicketInfo.NumTotal. %s", err.Error())
 	}
 

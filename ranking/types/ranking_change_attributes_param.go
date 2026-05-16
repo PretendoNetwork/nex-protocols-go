@@ -6,12 +6,13 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/constants"
 )
 
 // RankingChangeAttributesParam is a type within the Ranking protocol
 type RankingChangeAttributesParam struct {
 	types.Structure
-	ModificationFlag types.UInt8
+	ModificationFlag constants.ModificationFlag
 	Groups           types.List[types.UInt8]
 	Param            types.UInt64
 }
@@ -33,25 +34,19 @@ func (rcap RankingChangeAttributesParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingChangeAttributesParam from the given readable
 func (rcap *RankingChangeAttributesParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rcap.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rcap.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam header. %s", err.Error())
 	}
 
-	err = rcap.ModificationFlag.ExtractFrom(readable)
-	if err != nil {
+	if err := rcap.ModificationFlag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.ModificationFlag. %s", err.Error())
 	}
 
-	err = rcap.Groups.ExtractFrom(readable)
-	if err != nil {
+	if err := rcap.Groups.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Groups. %s", err.Error())
 	}
 
-	err = rcap.Param.ExtractFrom(readable)
-	if err != nil {
+	if err := rcap.Param.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Param. %s", err.Error())
 	}
 
@@ -63,7 +58,7 @@ func (rcap RankingChangeAttributesParam) Copy() types.RVType {
 	copied := NewRankingChangeAttributesParam()
 
 	copied.StructureVersion = rcap.StructureVersion
-	copied.ModificationFlag = rcap.ModificationFlag.Copy().(types.UInt8)
+	copied.ModificationFlag = rcap.ModificationFlag
 	copied.Groups = rcap.Groups.Copy().(types.List[types.UInt8])
 	copied.Param = rcap.Param.Copy().(types.UInt64)
 
@@ -82,7 +77,7 @@ func (rcap RankingChangeAttributesParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rcap.ModificationFlag.Equals(other.ModificationFlag) {
+	if rcap.ModificationFlag != other.ModificationFlag {
 		return false
 	}
 
@@ -131,7 +126,7 @@ func (rcap RankingChangeAttributesParam) FormatToString(indentationLevel int) st
 // NewRankingChangeAttributesParam returns a new RankingChangeAttributesParam
 func NewRankingChangeAttributesParam() RankingChangeAttributesParam {
 	return RankingChangeAttributesParam{
-		ModificationFlag: types.NewUInt8(0),
+		ModificationFlag: constants.ModificationFlagNone,
 		Groups:           types.NewList[types.UInt8](),
 		Param:            types.NewUInt64(0),
 	}

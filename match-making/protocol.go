@@ -8,6 +8,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
@@ -180,7 +181,7 @@ type Protocol struct {
 	UpdateSessionURL            func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, strURL types.String) (*nex.RMCMessage, *nex.Error)
 	GetSessionURL               func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32) (*nex.RMCMessage, *nex.Error)
 	GetState                    func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32) (*nex.RMCMessage, *nex.Error)
-	SetState                    func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, uiNewState types.UInt32) (*nex.RMCMessage, *nex.Error)
+	SetState                    func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, uiNewState constants.GatheringState) (*nex.RMCMessage, *nex.Error)
 	ReportStats                 func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, lstStats types.List[match_making_types.GatheringStats]) (*nex.RMCMessage, *nex.Error)
 	GetStats                    func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, lstParticipants types.List[types.PID], lstColumns types.Buffer) (*nex.RMCMessage, *nex.Error)
 	DeleteGathering             func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32) (*nex.RMCMessage, *nex.Error)
@@ -405,7 +406,7 @@ func (protocol *Protocol) SetHandlerGetState(handler func(err error, packet nex.
 }
 
 // SetHandlerSetState sets the handler for the SetState method
-func (protocol *Protocol) SetHandlerSetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, uiNewState types.UInt32) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerSetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, uiNewState constants.GatheringState) (*nex.RMCMessage, *nex.Error)) {
 	protocol.SetState = handler
 }
 

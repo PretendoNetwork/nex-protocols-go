@@ -33,25 +33,19 @@ func (siph ServiceItemPurchaseHistory) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemPurchaseHistory from the given readable
 func (siph *ServiceItemPurchaseHistory) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siph.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siph.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseHistory header. %s", err.Error())
 	}
 
-	err = siph.TotalSize.ExtractFrom(readable)
-	if err != nil {
+	if err := siph.TotalSize.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseHistory.TotalSize. %s", err.Error())
 	}
 
-	err = siph.Offset.ExtractFrom(readable)
-	if err != nil {
+	if err := siph.Offset.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseHistory.Offset. %s", err.Error())
 	}
 
-	err = siph.Transactions.ExtractFrom(readable)
-	if err != nil {
+	if err := siph.Transactions.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseHistory.Transactions. %s", err.Error())
 	}
 

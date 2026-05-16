@@ -43,25 +43,19 @@ func (aei AccountExtraInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the AccountExtraInfo from the given readable
 func (aei *AccountExtraInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = aei.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := aei.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo header. %s", err.Error())
 	}
 
-	err = aei.LocalFriendCode.ExtractFrom(readable)
-	if err != nil {
+	if err := aei.LocalFriendCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.LocalFriendCode. %s", err.Error())
 	}
 
-	err = aei.MoveCount.ExtractFrom(readable)
-	if err != nil {
+	if err := aei.MoveCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.MoveCount. %s", err.Error())
 	}
 
-	err = aei.NEXToken.ExtractFrom(readable)
-	if err != nil {
+	if err := aei.NEXToken.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.NEXToken. %s", err.Error())
 	}
 

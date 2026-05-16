@@ -35,30 +35,23 @@ func (ri Ranking2Info) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2Info from the given readable
 func (ri *Ranking2Info) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = ri.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := ri.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info header. %s", err.Error())
 	}
 
-	err = ri.RankDataList.ExtractFrom(readable)
-	if err != nil {
+	if err := ri.RankDataList.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info.RankDataList. %s", err.Error())
 	}
 
-	err = ri.LowestRank.ExtractFrom(readable)
-	if err != nil {
+	if err := ri.LowestRank.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info.LowestRank. %s", err.Error())
 	}
 
-	err = ri.NumRankedIn.ExtractFrom(readable)
-	if err != nil {
+	if err := ri.NumRankedIn.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info.NumRankedIn. %s", err.Error())
 	}
 
-	err = ri.Season.ExtractFrom(readable)
-	if err != nil {
+	if err := ri.Season.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info.Season. %s", err.Error())
 	}
 

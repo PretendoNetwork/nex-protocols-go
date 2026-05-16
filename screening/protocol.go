@@ -7,6 +7,7 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	screening_types "github.com/PretendoNetwork/nex-protocols-go/v2/screening/types"
 )
 
 const (
@@ -23,7 +24,7 @@ const (
 // Protocol handles the Screening protocol
 type Protocol struct {
 	endpoint               nex.EndpointInterface
-	ReportDataStoreContent func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error) // TODO - Unknown request/response format
+	ReportDataStoreContent func(err error, packet nex.PacketInterface, callID uint32, pContentParam screening_types.ScreeningDataStoreContentParam, pViolationParam screening_types.ScreeningUGCViolationParam) (*nex.RMCMessage, *nex.Error)
 	ReportUser             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error) // TODO - Unknown request/response format
 	Patches                nex.ServiceProtocol
 	PatchedMethods         []uint32
@@ -48,7 +49,7 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // SetHandlerReportDataStoreContent sets the handler for the ReportDataStoreContent method
-func (protocol *Protocol) SetHandlerReportDataStoreContent(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerReportDataStoreContent(handler func(err error, packet nex.PacketInterface, callID uint32, pContentParam screening_types.ScreeningDataStoreContentParam, pViolationParam screening_types.ScreeningUGCViolationParam) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ReportDataStoreContent = handler
 }
 

@@ -36,30 +36,23 @@ func (mtsr MiiTubeSearchResult) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MiiTubeSearchResult from the given readable
 func (mtsr *MiiTubeSearchResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = mtsr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := mtsr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MiiTubeSearchResult header. %s", err.Error())
 	}
 
-	err = mtsr.Result.ExtractFrom(readable)
-	if err != nil {
+	if err := mtsr.Result.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MiiTubeSearchResult.Result. %s", err.Error())
 	}
 
-	err = mtsr.Count.ExtractFrom(readable)
-	if err != nil {
+	if err := mtsr.Count.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MiiTubeSearchResult.Count. %s", err.Error())
 	}
 
-	err = mtsr.Page.ExtractFrom(readable)
-	if err != nil {
+	if err := mtsr.Page.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MiiTubeSearchResult.Page. %s", err.Error())
 	}
 
-	err = mtsr.HasNext.ExtractFrom(readable)
-	if err != nil {
+	if err := mtsr.HasNext.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MiiTubeSearchResult.ExtractNext. %s", err.Error())
 	}
 

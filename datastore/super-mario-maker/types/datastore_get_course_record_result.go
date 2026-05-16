@@ -41,45 +41,35 @@ func (dsgcrr DataStoreGetCourseRecordResult) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreGetCourseRecordResult from the given readable
 func (dsgcrr *DataStoreGetCourseRecordResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsgcrr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsgcrr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult header. %s", err.Error())
 	}
 
-	err = dsgcrr.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrr.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.DataID. %s", err.Error())
 	}
 
-	err = dsgcrr.Slot.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrr.Slot.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.Slot. %s", err.Error())
 	}
 
-	err = dsgcrr.FirstPID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrr.FirstPID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.FirstPID. %s", err.Error())
 	}
 
-	err = dsgcrr.BestPID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrr.BestPID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.BestPID. %s", err.Error())
 	}
 
-	err = dsgcrr.BestScore.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrr.BestScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.BestScore. %s", err.Error())
 	}
 
-	err = dsgcrr.CreatedTime.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrr.CreatedTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.CreatedTime. %s", err.Error())
 	}
 
-	err = dsgcrr.UpdatedTime.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrr.UpdatedTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.UpdatedTime. %s", err.Error())
 	}
 

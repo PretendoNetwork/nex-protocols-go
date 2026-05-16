@@ -31,20 +31,15 @@ func (fmsbpr FindMatchmakeSessionByParticipantResult) WriteTo(writable types.Wri
 
 // ExtractFrom extracts the FindMatchmakeSessionByParticipantResult from the given readable
 func (fmsbpr *FindMatchmakeSessionByParticipantResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = fmsbpr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := fmsbpr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult header. %s", err.Error())
 	}
 
-	err = fmsbpr.PrincipalID.ExtractFrom(readable)
-	if err != nil {
+	if err := fmsbpr.PrincipalID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult.PrincipalID. %s", err.Error())
 	}
 
-	err = fmsbpr.Session.ExtractFrom(readable)
-	if err != nil {
+	if err := fmsbpr.Session.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult.Session. %s", err.Error())
 	}
 

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/friends-3ds/constants"
 )
 
 // FriendRelationship is a type within the Friends3DS protocol
@@ -14,7 +15,7 @@ type FriendRelationship struct {
 	types.Data
 	PID              types.PID
 	LFC              types.UInt64
-	RelationshipType types.UInt8
+	RelationshipType constants.RelationshipType
 }
 
 // WriteTo writes the FriendRelationship to the given writable
@@ -36,30 +37,23 @@ func (fr FriendRelationship) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the FriendRelationship from the given readable
 func (fr *FriendRelationship) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = fr.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := fr.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship.Data. %s", err.Error())
 	}
 
-	err = fr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := fr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship header. %s", err.Error())
 	}
 
-	err = fr.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := fr.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship.PID. %s", err.Error())
 	}
 
-	err = fr.LFC.ExtractFrom(readable)
-	if err != nil {
+	if err := fr.LFC.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship.LFC. %s", err.Error())
 	}
 
-	err = fr.RelationshipType.ExtractFrom(readable)
-	if err != nil {
+	if err := fr.RelationshipType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract FriendRelationship.RelationshipType. %s", err.Error())
 	}
 
@@ -74,7 +68,7 @@ func (fr FriendRelationship) Copy() types.RVType {
 	copied.Data = fr.Data.Copy().(types.Data)
 	copied.PID = fr.PID.Copy().(types.PID)
 	copied.LFC = fr.LFC.Copy().(types.UInt64)
-	copied.RelationshipType = fr.RelationshipType.Copy().(types.UInt8)
+	copied.RelationshipType = fr.RelationshipType
 
 	return copied
 }
@@ -103,7 +97,7 @@ func (fr FriendRelationship) Equals(o types.RVType) bool {
 		return false
 	}
 
-	return fr.RelationshipType.Equals(other.RelationshipType)
+	return fr.RelationshipType == other.RelationshipType
 }
 
 // CopyRef copies the current value of the FriendRelationship
@@ -136,7 +130,7 @@ func (fr FriendRelationship) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fr.Data.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fr.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sLFC: %s,\n", indentationValues, fr.LFC))
-	b.WriteString(fmt.Sprintf("%sRelationshipType: %s,\n", indentationValues, fr.RelationshipType))
+	b.WriteString(fmt.Sprintf("%sRelationshipType: %d,\n", indentationValues, fr.RelationshipType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -148,7 +142,7 @@ func NewFriendRelationship() FriendRelationship {
 		Data:             types.NewData(),
 		PID:              types.NewPID(0),
 		LFC:              types.NewUInt64(0),
-		RelationshipType: types.NewUInt8(0),
+		RelationshipType: constants.RelationshipTypeInvalid,
 	}
 
 }

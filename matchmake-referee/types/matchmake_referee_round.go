@@ -40,40 +40,31 @@ func (mrr MatchmakeRefereeRound) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeRound from the given readable
 func (mrr *MatchmakeRefereeRound) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = mrr.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := mrr.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.Data. %s", err.Error())
 	}
 
-	err = mrr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := mrr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound header. %s", err.Error())
 	}
 
-	err = mrr.RoundID.ExtractFrom(readable)
-	if err != nil {
+	if err := mrr.RoundID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.RoundID. %s", err.Error())
 	}
 
-	err = mrr.GID.ExtractFrom(readable)
-	if err != nil {
+	if err := mrr.GID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.GID. %s", err.Error())
 	}
 
-	err = mrr.State.ExtractFrom(readable)
-	if err != nil {
+	if err := mrr.State.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.State. %s", err.Error())
 	}
 
-	err = mrr.PersonalDataCategory.ExtractFrom(readable)
-	if err != nil {
+	if err := mrr.PersonalDataCategory.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.PersonalDataCategory. %s", err.Error())
 	}
 
-	err = mrr.NormalizedPersonalRoundResults.ExtractFrom(readable)
-	if err != nil {
+	if err := mrr.NormalizedPersonalRoundResults.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.NormalizedPersonalRoundResults. %s", err.Error())
 	}
 

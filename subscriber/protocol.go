@@ -74,11 +74,11 @@ type Protocol struct {
 	GetFollower           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
 	GetNumFollowers       func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
 	GetTimeline           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
-	DeleteContent         func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.List[types.String], unknown2 types.UInt64) (*nex.RMCMessage, *nex.Error)
+	DeleteContent         func(err error, packet nex.PacketInterface, callID uint32, topics types.List[types.String], contentID types.UInt64) (*nex.RMCMessage, *nex.Error)
 	GetContentMulti       func(err error, packet nex.PacketInterface, callID uint32, params types.List[subscriber_types.SubscriberGetContentParam]) (*nex.RMCMessage, *nex.Error)
-	UpdateUserStatus      func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.List[subscriber_types.Unknown], unknown2 types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)
-	GetFriendUserStatuses func(err error, packet nex.PacketInterface, callID uint32, unknown types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)
-	GetUserStatuses       func(err error, packet nex.PacketInterface, callID uint32, pids types.List[types.PID], unknown types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)
+	UpdateUserStatus      func(err error, packet nex.PacketInterface, callID uint32, param types.List[subscriber_types.SubscriberUserStatusParam], isNotify types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)
+	GetFriendUserStatuses func(err error, packet nex.PacketInterface, callID uint32, keys types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)
+	GetUserStatuses       func(err error, packet nex.PacketInterface, callID uint32, pids types.List[types.PID], keys types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)
 	Patches               nex.ServiceProtocol
 	PatchedMethods        []uint32
 }
@@ -97,11 +97,11 @@ type Interface interface {
 	SetHandlerGetFollower(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetNumFollowers(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetTimeline(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error))
-	SetHandlerDeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.List[types.String], unknown2 types.UInt64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, topics types.List[types.String], contentID types.UInt64) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetContentMulti(handler func(err error, packet nex.PacketInterface, callID uint32, params types.List[subscriber_types.SubscriberGetContentParam]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerUpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.List[subscriber_types.Unknown], unknown2 types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, unknown types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids types.List[types.PID], unknown types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, param types.List[subscriber_types.SubscriberUserStatusParam], isNotify types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, keys types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids types.List[types.PID], keys types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -165,7 +165,7 @@ func (protocol *Protocol) SetHandlerGetTimeline(handler func(err error, packet n
 }
 
 // SetHandlerDeleteContent sets the handler for the DeleteContent method
-func (protocol *Protocol) SetHandlerDeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.List[types.String], unknown2 types.UInt64) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerDeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, topics types.List[types.String], contentID types.UInt64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.DeleteContent = handler
 }
 
@@ -175,17 +175,17 @@ func (protocol *Protocol) SetHandlerGetContentMulti(handler func(err error, pack
 }
 
 // SetHandlerUpdateUserStatus sets the handler for the UpdateUserStatus method
-func (protocol *Protocol) SetHandlerUpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 types.List[subscriber_types.Unknown], unknown2 types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerUpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, param types.List[subscriber_types.SubscriberUserStatusParam], isNotify types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateUserStatus = handler
 }
 
 // SetHandlerGetFriendUserStatuses sets the handler for the GetFriendUserStatuses method
-func (protocol *Protocol) SetHandlerGetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, unknown types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, keys types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendUserStatuses = handler
 }
 
 // SetHandlerGetUserStatuses sets the handler for the GetUserStatuses method
-func (protocol *Protocol) SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids types.List[types.PID], unknown types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids types.List[types.PID], keys types.List[types.UInt8]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetUserStatuses = handler
 }
 

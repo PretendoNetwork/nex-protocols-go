@@ -31,20 +31,15 @@ func (sigsidp ServiceItemGetSupportIDParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemGetSupportIDParam from the given readable
 func (sigsidp *ServiceItemGetSupportIDParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sigsidp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sigsidp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam header. %s", err.Error())
 	}
 
-	err = sigsidp.UniqueID.ExtractFrom(readable)
-	if err != nil {
+	if err := sigsidp.UniqueID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam.UniqueID. %s", err.Error())
 	}
 
-	err = sigsidp.Platform.ExtractFrom(readable)
-	if err != nil {
+	if err := sigsidp.Platform.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam.Platform. %s", err.Error())
 	}
 

@@ -41,45 +41,35 @@ func (sin ServiceItemNotice) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemNotice from the given readable
 func (sin *ServiceItemNotice) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sin.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sin.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice header. %s", err.Error())
 	}
 
-	err = sin.ScheduleID.ExtractFrom(readable)
-	if err != nil {
+	if err := sin.ScheduleID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleID. %s", err.Error())
 	}
 
-	err = sin.ScheduleType.ExtractFrom(readable)
-	if err != nil {
+	if err := sin.ScheduleType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleType. %s", err.Error())
 	}
 
-	err = sin.ParamInt.ExtractFrom(readable)
-	if err != nil {
+	if err := sin.ParamInt.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamInt. %s", err.Error())
 	}
 
-	err = sin.ParamString.ExtractFrom(readable)
-	if err != nil {
+	if err := sin.ParamString.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamString. %s", err.Error())
 	}
 
-	err = sin.ParamBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := sin.ParamBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamBinary. %s", err.Error())
 	}
 
-	err = sin.TimeBegin.ExtractFrom(readable)
-	if err != nil {
+	if err := sin.TimeBegin.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeBegin. %s", err.Error())
 	}
 
-	err = sin.TimeEnd.ExtractFrom(readable)
-	if err != nil {
+	if err := sin.TimeEnd.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeEnd. %s", err.Error())
 	}
 

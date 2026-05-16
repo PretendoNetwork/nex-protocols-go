@@ -32,20 +32,15 @@ func (siglmr ServiceItemGetLawMessageResponse) WriteTo(writable types.Writable) 
 
 // ExtractFrom extracts the ServiceItemGetLawMessageResponse from the given readable
 func (siglmr *ServiceItemGetLawMessageResponse) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siglmr.ServiceItemEShopResponse.ExtractFrom(readable)
-	if err != nil {
+	if err := siglmr.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
-	err = siglmr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siglmr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageResponse header. %s", err.Error())
 	}
 
-	err = siglmr.NullableLawMessage.ExtractFrom(readable)
-	if err != nil {
+	if err := siglmr.NullableLawMessage.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageResponse.NullableLawMessage. %s", err.Error())
 	}
 

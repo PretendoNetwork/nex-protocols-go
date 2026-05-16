@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreSearchResult is a type within the DataStore protocol
@@ -13,7 +14,7 @@ type DataStoreSearchResult struct {
 	types.Structure
 	TotalCount     types.UInt32
 	Result         types.List[DataStoreMetaInfo]
-	TotalCountType types.UInt8
+	TotalCountType constants.SearchResultTotalCountType
 }
 
 // WriteTo writes the DataStoreSearchResult to the given writable
@@ -33,25 +34,19 @@ func (dssr DataStoreSearchResult) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreSearchResult from the given readable
 func (dssr *DataStoreSearchResult) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dssr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dssr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult header. %s", err.Error())
 	}
 
-	err = dssr.TotalCount.ExtractFrom(readable)
-	if err != nil {
+	if err := dssr.TotalCount.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCount. %s", err.Error())
 	}
 
-	err = dssr.Result.ExtractFrom(readable)
-	if err != nil {
+	if err := dssr.Result.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.Result. %s", err.Error())
 	}
 
-	err = dssr.TotalCountType.ExtractFrom(readable)
-	if err != nil {
+	if err := dssr.TotalCountType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCountType. %s", err.Error())
 	}
 
@@ -65,7 +60,7 @@ func (dssr DataStoreSearchResult) Copy() types.RVType {
 	copied.StructureVersion = dssr.StructureVersion
 	copied.TotalCount = dssr.TotalCount.Copy().(types.UInt32)
 	copied.Result = dssr.Result.Copy().(types.List[DataStoreMetaInfo])
-	copied.TotalCountType = dssr.TotalCountType.Copy().(types.UInt8)
+	copied.TotalCountType = dssr.TotalCountType
 
 	return copied
 }
@@ -90,7 +85,7 @@ func (dssr DataStoreSearchResult) Equals(o types.RVType) bool {
 		return false
 	}
 
-	return dssr.TotalCountType.Equals(other.TotalCountType)
+	return dssr.TotalCountType == other.TotalCountType
 }
 
 // CopyRef copies the current value of the DataStoreSearchResult
@@ -133,7 +128,7 @@ func NewDataStoreSearchResult() DataStoreSearchResult {
 	return DataStoreSearchResult{
 		TotalCount:     types.NewUInt32(0),
 		Result:         types.NewList[DataStoreMetaInfo](),
-		TotalCountType: types.NewUInt8(0),
+		TotalCountType: constants.SearchResultTotalExact,
 	}
 
 }

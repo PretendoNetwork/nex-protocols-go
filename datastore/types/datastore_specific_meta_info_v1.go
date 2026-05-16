@@ -37,35 +37,27 @@ func (dssmiv DataStoreSpecificMetaInfoV1) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreSpecificMetaInfoV1 from the given readable
 func (dssmiv *DataStoreSpecificMetaInfoV1) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dssmiv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dssmiv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1 header. %s", err.Error())
 	}
 
-	err = dssmiv.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dssmiv.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.DataID. %s", err.Error())
 	}
 
-	err = dssmiv.OwnerID.ExtractFrom(readable)
-	if err != nil {
+	if err := dssmiv.OwnerID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.OwnerID. %s", err.Error())
 	}
 
-	err = dssmiv.Size.ExtractFrom(readable)
-	if err != nil {
+	if err := dssmiv.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.Size. %s", err.Error())
 	}
 
-	err = dssmiv.DataType.ExtractFrom(readable)
-	if err != nil {
+	if err := dssmiv.DataType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.DataType. %s", err.Error())
 	}
 
-	err = dssmiv.Version.ExtractFrom(readable)
-	if err != nil {
+	if err := dssmiv.Version.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.Version. %s", err.Error())
 	}
 

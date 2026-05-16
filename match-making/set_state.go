@@ -7,6 +7,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/match-making/constants"
 )
 
 func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
@@ -26,7 +27,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var idGathering types.UInt32
-	var uiNewState types.UInt32
+	var uiNewState constants.GatheringState
 
 	var err error
 

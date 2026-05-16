@@ -34,25 +34,19 @@ func (mrsip MatchmakeRefereeStatsInitParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeStatsInitParam from the given readable
 func (mrsip *MatchmakeRefereeStatsInitParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = mrsip.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := mrsip.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.Data. %s", err.Error())
 	}
 
-	err = mrsip.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := mrsip.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam header. %s", err.Error())
 	}
 
-	err = mrsip.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := mrsip.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.Category. %s", err.Error())
 	}
 
-	err = mrsip.InitialRatingValue.ExtractFrom(readable)
-	if err != nil {
+	if err := mrsip.InitialRatingValue.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.InitialRatingValue. %s", err.Error())
 	}
 

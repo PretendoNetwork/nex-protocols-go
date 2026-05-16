@@ -31,20 +31,15 @@ func (dsrt DataStoreRatingTarget) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreRatingTarget from the given readable
 func (dsrt *DataStoreRatingTarget) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsrt.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrt.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingTarget header. %s", err.Error())
 	}
 
-	err = dsrt.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrt.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingTarget.DataID. %s", err.Error())
 	}
 
-	err = dsrt.Slot.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrt.Slot.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingTarget.Slot. %s", err.Error())
 	}
 

@@ -33,25 +33,19 @@ func (siesr ServiceItemEShopResponse) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemEShopResponse from the given readable
 func (siesr *ServiceItemEShopResponse) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siesr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siesr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEShopResponse header. %s", err.Error())
 	}
 
-	err = siesr.HTTPStatus.ExtractFrom(readable)
-	if err != nil {
+	if err := siesr.HTTPStatus.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.HTTPStatus. %s", err.Error())
 	}
 
-	err = siesr.ErrorCode.ExtractFrom(readable)
-	if err != nil {
+	if err := siesr.ErrorCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.ErrorCode. %s", err.Error())
 	}
 
-	err = siesr.CorrelationID.ExtractFrom(readable)
-	if err != nil {
+	if err := siesr.CorrelationID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.CorrelationID. %s", err.Error())
 	}
 

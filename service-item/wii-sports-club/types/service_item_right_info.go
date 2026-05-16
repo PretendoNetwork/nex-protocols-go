@@ -31,20 +31,15 @@ func (siri ServiceItemRightInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemRightInfo from the given readable
 func (siri *ServiceItemRightInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siri.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siri.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfo header. %s", err.Error())
 	}
 
-	err = siri.ReferenceID.ExtractFrom(readable)
-	if err != nil {
+	if err := siri.ReferenceID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfo.ReferenceID. %s", err.Error())
 	}
 
-	err = siri.AccountRights.ExtractFrom(readable)
-	if err != nil {
+	if err := siri.AccountRights.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfo.AccountRights. %s", err.Error())
 	}
 

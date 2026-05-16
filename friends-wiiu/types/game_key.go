@@ -34,25 +34,19 @@ func (gk GameKey) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the GameKey from the given readable
 func (gk *GameKey) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = gk.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := gk.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GameKey.Data. %s", err.Error())
 	}
 
-	err = gk.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := gk.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GameKey header. %s", err.Error())
 	}
 
-	err = gk.TitleID.ExtractFrom(readable)
-	if err != nil {
+	if err := gk.TitleID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GameKey.TitleID. %s", err.Error())
 	}
 
-	err = gk.TitleVersion.ExtractFrom(readable)
-	if err != nil {
+	if err := gk.TitleVersion.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract GameKey.TitleVersion. %s", err.Error())
 	}
 

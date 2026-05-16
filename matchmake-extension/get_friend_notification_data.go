@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
-	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	notifications_constants "github.com/PretendoNetwork/nex-protocols-go/v2/notifications/constants"
 )
 
 func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInter
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var uiType types.Int32
+	var uiType notifications_constants.NotificationCategorySigned
 
 	err := uiType.ExtractFrom(parametersStream)
 	if err != nil {

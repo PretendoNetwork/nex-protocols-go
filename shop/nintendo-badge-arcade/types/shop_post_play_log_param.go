@@ -33,25 +33,19 @@ func (spplp ShopPostPlayLogParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ShopPostPlayLogParam from the given readable
 func (spplp *ShopPostPlayLogParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = spplp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := spplp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopPostPlayLogParam header. %s", err.Error())
 	}
 
-	err = spplp.Unknown1.ExtractFrom(readable)
-	if err != nil {
+	if err := spplp.Unknown1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Unknown1. %s", err.Error())
 	}
 
-	err = spplp.Timestamp.ExtractFrom(readable)
-	if err != nil {
+	if err := spplp.Timestamp.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Timestamp. %s", err.Error())
 	}
 
-	err = spplp.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := spplp.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Unknown2. %s", err.Error())
 	}
 

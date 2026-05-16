@@ -33,25 +33,19 @@ func (siscp ServiceItemStartChallengeParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemStartChallengeParam from the given readable
 func (siscp *ServiceItemStartChallengeParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siscp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siscp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam header. %s", err.Error())
 	}
 
-	err = siscp.ChallengeScheduleID.ExtractFrom(readable)
-	if err != nil {
+	if err := siscp.ChallengeScheduleID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.ChallengeScheduleID. %s", err.Error())
 	}
 
-	err = siscp.TicketType.ExtractFrom(readable)
-	if err != nil {
+	if err := siscp.TicketType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.TicketType. %s", err.Error())
 	}
 
-	err = siscp.NumTicket.ExtractFrom(readable)
-	if err != nil {
+	if err := siscp.NumTicket.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.NumTicket. %s", err.Error())
 	}
 

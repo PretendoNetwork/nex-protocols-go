@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreMetaInfo is a type within the DataStore protocol
@@ -22,10 +23,10 @@ type DataStoreMetaInfo struct {
 	CreatedTime   types.DateTime
 	UpdatedTime   types.DateTime
 	Period        types.UInt16
-	Status        types.UInt8
+	Status        constants.DataStatus
 	ReferredCnt   types.UInt32
 	ReferDataID   types.UInt32
-	Flag          types.UInt32
+	Flag          constants.DataFlag
 	ReferredTime  types.DateTime
 	ExpireTime    types.DateTime
 	Tags          types.List[types.String]
@@ -65,105 +66,83 @@ func (dsmi DataStoreMetaInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreMetaInfo from the given readable
 func (dsmi *DataStoreMetaInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsmi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsmi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo header. %s", err.Error())
 	}
 
-	err = dsmi.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataID. %s", err.Error())
 	}
 
-	err = dsmi.OwnerID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.OwnerID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.OwnerID. %s", err.Error())
 	}
 
-	err = dsmi.Size.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Size. %s", err.Error())
 	}
 
-	err = dsmi.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Name. %s", err.Error())
 	}
 
-	err = dsmi.DataType.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.DataType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
 	}
 
-	err = dsmi.MetaBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.MetaBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.MetaBinary. %s", err.Error())
 	}
 
-	err = dsmi.Permission.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.Permission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Permission. %s", err.Error())
 	}
 
-	err = dsmi.DelPermission.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.DelPermission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DelPermission. %s", err.Error())
 	}
 
-	err = dsmi.CreatedTime.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.CreatedTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.CreatedTime. %s", err.Error())
 	}
 
-	err = dsmi.UpdatedTime.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.UpdatedTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.UpdatedTime. %s", err.Error())
 	}
 
-	err = dsmi.Period.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.Period.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Period. %s", err.Error())
 	}
 
-	err = dsmi.Status.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.Status.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Status. %s", err.Error())
 	}
 
-	err = dsmi.ReferredCnt.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.ReferredCnt.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredCnt. %s", err.Error())
 	}
 
-	err = dsmi.ReferDataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.ReferDataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferDataID. %s", err.Error())
 	}
 
-	err = dsmi.Flag.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.Flag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Flag. %s", err.Error())
 	}
 
-	err = dsmi.ReferredTime.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.ReferredTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredTime. %s", err.Error())
 	}
 
-	err = dsmi.ExpireTime.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.ExpireTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ExpireTime. %s", err.Error())
 	}
 
-	err = dsmi.Tags.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.Tags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Tags. %s", err.Error())
 	}
 
-	err = dsmi.Ratings.ExtractFrom(readable)
-	if err != nil {
+	if err := dsmi.Ratings.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Ratings. %s", err.Error())
 	}
 
@@ -186,10 +165,10 @@ func (dsmi DataStoreMetaInfo) Copy() types.RVType {
 	copied.CreatedTime = dsmi.CreatedTime.Copy().(types.DateTime)
 	copied.UpdatedTime = dsmi.UpdatedTime.Copy().(types.DateTime)
 	copied.Period = dsmi.Period.Copy().(types.UInt16)
-	copied.Status = dsmi.Status.Copy().(types.UInt8)
+	copied.Status = dsmi.Status
 	copied.ReferredCnt = dsmi.ReferredCnt.Copy().(types.UInt32)
 	copied.ReferDataID = dsmi.ReferDataID.Copy().(types.UInt32)
-	copied.Flag = dsmi.Flag.Copy().(types.UInt32)
+	copied.Flag = dsmi.Flag
 	copied.ReferredTime = dsmi.ReferredTime.Copy().(types.DateTime)
 	copied.ExpireTime = dsmi.ExpireTime.Copy().(types.DateTime)
 	copied.Tags = dsmi.Tags.Copy().(types.List[types.String])
@@ -254,7 +233,7 @@ func (dsmi DataStoreMetaInfo) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsmi.Status.Equals(other.Status) {
+	if dsmi.Status != other.Status {
 		return false
 	}
 
@@ -266,7 +245,7 @@ func (dsmi DataStoreMetaInfo) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsmi.Flag.Equals(other.Flag) {
+	if dsmi.Flag != other.Flag {
 		return false
 	}
 
@@ -337,7 +316,7 @@ func (dsmi DataStoreMetaInfo) FormatToString(indentationLevel int) string {
 }
 
 // FilterPropertiesByResultOption zeroes out certain struct properties based on the input flags
-func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption types.UInt8) {
+func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption constants.ResultFlag) {
 	// * This is kind of backwards
 	// *
 	// * This method assumes all struct data exists
@@ -347,18 +326,23 @@ func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption types
 	// * flags being used to conditionally ADD properties,
 	// * it's used to conditionally REMOVE them
 
-	if resultOption&0x1 == 0 {
+	if resultOption&constants.ResultFlagTags == 0 {
 		dsmi.Tags = types.NewList[types.String]()
 
 	}
 
-	if resultOption&0x2 == 0 {
+	if resultOption&constants.ResultFlagRatings == 0 {
 		dsmi.Ratings = types.NewList[DataStoreRatingInfoWithSlot]()
 
 	}
 
-	if resultOption&0x4 == 0 {
+	if resultOption&constants.ResultFlagMetaBinary == 0 {
 		dsmi.MetaBinary = types.NewQBuffer(nil)
+	}
+
+	if resultOption&constants.ResultFlagPermittedIDs == 0 {
+		dsmi.Permission = NewDataStorePermission()
+		dsmi.DelPermission = NewDataStorePermission()
 	}
 }
 
@@ -376,10 +360,10 @@ func NewDataStoreMetaInfo() DataStoreMetaInfo {
 		CreatedTime:   types.NewDateTime(0),
 		UpdatedTime:   types.NewDateTime(0),
 		Period:        types.NewUInt16(0),
-		Status:        types.NewUInt8(0),
+		Status:        constants.DataStatusNone,
 		ReferredCnt:   types.NewUInt32(0),
 		ReferDataID:   types.NewUInt32(0),
-		Flag:          types.NewUInt32(0),
+		Flag:          constants.DataFlagNone,
 		ReferredTime:  types.NewDateTime(0),
 		ExpireTime:    types.NewDateTime(0),
 		Tags:          types.NewList[types.String](),

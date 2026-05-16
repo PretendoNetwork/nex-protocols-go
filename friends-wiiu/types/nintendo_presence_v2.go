@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/friends-wiiu/constants"
 )
 
 // NintendoPresenceV2 is a type within the FriendsWiiU protocol
 type NintendoPresenceV2 struct {
 	types.Structure
 	types.Data
-	ChangedFlags    types.UInt32
+	ChangedFlags    constants.PresenceChangedFlag
 	Online          types.Bool
 	GameKey         GameKey
 	Unknown1        types.UInt8
@@ -70,90 +71,71 @@ func (npv NintendoPresenceV2) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NintendoPresenceV2 from the given readable
 func (npv *NintendoPresenceV2) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = npv.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Data. %s", err.Error())
 	}
 
-	err = npv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := npv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2 header. %s", err.Error())
 	}
 
-	err = npv.ChangedFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.ChangedFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.ChangedFlags. %s", err.Error())
 	}
 
-	err = npv.Online.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Online.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Online. %s", err.Error())
 	}
 
-	err = npv.GameKey.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.GameKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameKey. %s", err.Error())
 	}
 
-	err = npv.Unknown1.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown1. %s", err.Error())
 	}
 
-	err = npv.Message.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Message.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Message. %s", err.Error())
 	}
 
-	err = npv.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown2. %s", err.Error())
 	}
 
-	err = npv.Unknown3.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown3.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown3. %s", err.Error())
 	}
 
-	err = npv.GameServerID.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.GameServerID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameServerID. %s", err.Error())
 	}
 
-	err = npv.Unknown4.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown4.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown4. %s", err.Error())
 	}
 
-	err = npv.PID.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.PID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.PID. %s", err.Error())
 	}
 
-	err = npv.GatheringID.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.GatheringID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GatheringID. %s", err.Error())
 	}
 
-	err = npv.ApplicationData.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.ApplicationData.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.ApplicationData. %s", err.Error())
 	}
 
-	err = npv.Unknown5.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown5.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown5. %s", err.Error())
 	}
 
-	err = npv.Unknown6.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown6.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown6. %s", err.Error())
 	}
 
-	err = npv.Unknown7.ExtractFrom(readable)
-	if err != nil {
+	if err := npv.Unknown7.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown7. %s", err.Error())
 	}
 
@@ -166,7 +148,7 @@ func (npv NintendoPresenceV2) Copy() types.RVType {
 
 	copied.StructureVersion = npv.StructureVersion
 	copied.Data = npv.Data.Copy().(types.Data)
-	copied.ChangedFlags = npv.ChangedFlags.Copy().(types.UInt32)
+	copied.ChangedFlags = npv.ChangedFlags
 	copied.Online = npv.Online.Copy().(types.Bool)
 	copied.GameKey = npv.GameKey.Copy().(GameKey)
 	copied.Unknown1 = npv.Unknown1.Copy().(types.UInt8)
@@ -201,7 +183,7 @@ func (npv NintendoPresenceV2) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !npv.ChangedFlags.Equals(other.ChangedFlags) {
+	if npv.ChangedFlags != other.ChangedFlags {
 		return false
 	}
 
@@ -288,7 +270,7 @@ func (npv NintendoPresenceV2) FormatToString(indentationLevel int) string {
 
 	b.WriteString("NintendoPresenceV2{\n")
 	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, npv.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sChangedFlags: %s,\n", indentationValues, npv.ChangedFlags))
+	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, npv.ChangedFlags))
 	b.WriteString(fmt.Sprintf("%sOnline: %s,\n", indentationValues, npv.Online))
 	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, npv.GameKey.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, npv.Unknown1))
@@ -312,7 +294,7 @@ func (npv NintendoPresenceV2) FormatToString(indentationLevel int) string {
 func NewNintendoPresenceV2() NintendoPresenceV2 {
 	return NintendoPresenceV2{
 		Data:            types.NewData(),
-		ChangedFlags:    types.NewUInt32(0),
+		ChangedFlags:    constants.PresenceChangedFlagNone,
 		Online:          types.NewBool(false),
 		GameKey:         NewGameKey(),
 		Unknown1:        types.NewUInt8(0),

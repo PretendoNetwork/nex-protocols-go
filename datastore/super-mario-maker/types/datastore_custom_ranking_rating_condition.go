@@ -43,38 +43,30 @@ func (dscrrc DataStoreCustomRankingRatingCondition) WriteTo(writable types.Writa
 
 // ExtractFrom extracts the DataStoreCustomRankingRatingCondition from the given readable
 func (dscrrc *DataStoreCustomRankingRatingCondition) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dscrrc.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dscrrc.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition header. %s", err.Error())
 	}
 
-	err = dscrrc.Slot.ExtractFrom(readable)
-	if err != nil {
+	if err := dscrrc.Slot.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.Slot. %s", err.Error())
 	}
 
-	err = dscrrc.MinValue.ExtractFrom(readable)
-	if err != nil {
+	if err := dscrrc.MinValue.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MinValue. %s", err.Error())
 	}
 
-	err = dscrrc.MaxValue.ExtractFrom(readable)
-	if err != nil {
+	if err := dscrrc.MaxValue.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxValue. %s", err.Error())
 	}
 
 	if dscrrc.StructureVersion >= 1 {
-		err = dscrrc.MinCount.ExtractFrom(readable)
-		if err != nil {
+		if err := dscrrc.MinCount.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MinCount. %s", err.Error())
 		}
 	}
 
 	if dscrrc.StructureVersion >= 1 {
-		err = dscrrc.MaxCount.ExtractFrom(readable)
-		if err != nil {
+		if err := dscrrc.MaxCount.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxCount. %s", err.Error())
 		}
 	}

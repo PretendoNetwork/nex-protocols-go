@@ -6,14 +6,15 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/constants"
 )
 
 // RankingOrderParam is a type within the Ranking protocol
 type RankingOrderParam struct {
 	types.Structure
-	ScoreIndex      types.UInt8
-	ScoreOrder      types.UInt8
-	RankCalculation types.UInt8
+	ScoreIndex      constants.ScoreIndex
+	ScoreOrder      constants.OrderBy
+	RankCalculation constants.OrderCalculation
 	Unknown1        types.UInt8
 	Unknown2        types.UInt8
 	Unknown3        types.UInt8
@@ -41,45 +42,35 @@ func (rop RankingOrderParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingOrderParam from the given readable
 func (rop *RankingOrderParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rop.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rop.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam header. %s", err.Error())
 	}
 
-	err = rop.ScoreIndex.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.ScoreIndex.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.ScoreIndex. %s", err.Error())
 	}
 
-	err = rop.ScoreOrder.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.ScoreOrder.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.ScoreOrder. %s", err.Error())
 	}
 
-	err = rop.RankCalculation.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.RankCalculation.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.RankCalculation. %s", err.Error())
 	}
 
-	err = rop.Unknown1.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.Unknown1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown1. %s", err.Error())
 	}
 
-	err = rop.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown2. %s", err.Error())
 	}
 
-	err = rop.Unknown3.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.Unknown3.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown3. %s", err.Error())
 	}
 
-	err = rop.Unknown4.ExtractFrom(readable)
-	if err != nil {
+	if err := rop.Unknown4.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown4. %s", err.Error())
 	}
 
@@ -91,9 +82,9 @@ func (rop RankingOrderParam) Copy() types.RVType {
 	copied := NewRankingOrderParam()
 
 	copied.StructureVersion = rop.StructureVersion
-	copied.ScoreIndex = rop.ScoreIndex.Copy().(types.UInt8)
-	copied.ScoreOrder = rop.ScoreOrder.Copy().(types.UInt8)
-	copied.RankCalculation = rop.RankCalculation.Copy().(types.UInt8)
+	copied.ScoreIndex = rop.ScoreIndex
+	copied.ScoreOrder = rop.ScoreOrder
+	copied.RankCalculation = rop.RankCalculation
 	copied.Unknown1 = rop.Unknown1.Copy().(types.UInt8)
 	copied.Unknown2 = rop.Unknown2.Copy().(types.UInt8)
 	copied.Unknown3 = rop.Unknown3.Copy().(types.UInt8)
@@ -114,15 +105,15 @@ func (rop RankingOrderParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rop.ScoreIndex.Equals(other.ScoreIndex) {
+	if rop.ScoreIndex != other.ScoreIndex {
 		return false
 	}
 
-	if !rop.ScoreOrder.Equals(other.ScoreOrder) {
+	if rop.ScoreOrder != other.ScoreOrder {
 		return false
 	}
 
-	if !rop.RankCalculation.Equals(other.RankCalculation) {
+	if rop.RankCalculation != other.RankCalculation {
 		return false
 	}
 
@@ -183,9 +174,9 @@ func (rop RankingOrderParam) FormatToString(indentationLevel int) string {
 // NewRankingOrderParam returns a new RankingOrderParam
 func NewRankingOrderParam() RankingOrderParam {
 	return RankingOrderParam{
-		ScoreIndex:      types.NewUInt8(0),
-		ScoreOrder:      types.NewUInt8(0),
-		RankCalculation: types.NewUInt8(0),
+		ScoreIndex:      constants.ScoreIndex0,
+		ScoreOrder:      constants.OrderByAscending,
+		RankCalculation: constants.OrderCalculation113,
 		Unknown1:        types.NewUInt8(0),
 		Unknown2:        types.NewUInt8(0),
 		Unknown3:        types.NewUInt8(0),

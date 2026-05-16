@@ -47,36 +47,28 @@ func (dsrgi *DataStoreReqGetInfo) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.DataStore
 
-	var err error
-
-	err = dsrgi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrgi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfo header. %s", err.Error())
 	}
 
-	err = dsrgi.URL.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrgi.URL.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.URL. %s", err.Error())
 	}
 
-	err = dsrgi.RequestHeaders.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrgi.RequestHeaders.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.RequestHeaders. %s", err.Error())
 	}
 
-	err = dsrgi.Size.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrgi.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.Size. %s", err.Error())
 	}
 
-	err = dsrgi.RootCACert.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrgi.RootCACert.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.RootCACert. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		err = dsrgi.DataID.ExtractFrom(readable)
-		if err != nil {
+		if err := dsrgi.DataID.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreReqGetInfo.DataID. %s", err.Error())
 		}
 	}

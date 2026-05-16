@@ -7,6 +7,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/constants"
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/types"
 )
 
@@ -28,7 +29,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	var category types.UInt32
 	orderParam := ranking_types.NewRankingOrderParam()
-	var flags types.UInt32
+	var flags constants.StatsFlag
 
 	var err error
 

@@ -42,20 +42,15 @@ func (pnl PersistentNotificationList) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the PersistentNotificationList from the given readable
 func (pnl *PersistentNotificationList) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = pnl.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := pnl.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotificationList.Data. %s", err.Error())
 	}
 
-	err = pnl.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := pnl.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotificationList header. %s", err.Error())
 	}
 
-	err = pnl.Notifications.ExtractFrom(readable)
-	if err != nil {
+	if err := pnl.Notifications.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotificationList.Notifications. %s", err.Error())
 	}
 

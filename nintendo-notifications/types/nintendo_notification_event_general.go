@@ -48,35 +48,27 @@ func (nneg NintendoNotificationEventGeneral) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the NintendoNotificationEventGeneral from the given readable
 func (nneg *NintendoNotificationEventGeneral) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = nneg.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := nneg.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventGeneral.Data. %s", err.Error())
 	}
 
-	err = nneg.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := nneg.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventGeneral header. %s", err.Error())
 	}
 
-	err = nneg.U32Param.ExtractFrom(readable)
-	if err != nil {
+	if err := nneg.U32Param.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventGeneral.U32Param. %s", err.Error())
 	}
 
-	err = nneg.U64Param1.ExtractFrom(readable)
-	if err != nil {
+	if err := nneg.U64Param1.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventGeneral.U64Param1. %s", err.Error())
 	}
 
-	err = nneg.U64Param2.ExtractFrom(readable)
-	if err != nil {
+	if err := nneg.U64Param2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventGeneral.U64Param2. %s", err.Error())
 	}
 
-	err = nneg.StrParam.ExtractFrom(readable)
-	if err != nil {
+	if err := nneg.StrParam.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract NintendoNotificationEventGeneral.StrParam. %s", err.Error())
 	}
 

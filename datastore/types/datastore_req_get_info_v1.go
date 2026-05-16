@@ -35,30 +35,23 @@ func (dsrgiv DataStoreReqGetInfoV1) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreReqGetInfoV1 from the given readable
 func (dsrgiv *DataStoreReqGetInfoV1) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsrgiv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrgiv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1 header. %s", err.Error())
 	}
 
-	err = dsrgiv.URL.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrgiv.URL.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.URL. %s", err.Error())
 	}
 
-	err = dsrgiv.RequestHeaders.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrgiv.RequestHeaders.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RequestHeaders. %s", err.Error())
 	}
 
-	err = dsrgiv.Size.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrgiv.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.Size. %s", err.Error())
 	}
 
-	err = dsrgiv.RootCACert.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrgiv.RootCACert.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RootCACert. %s", err.Error())
 	}
 

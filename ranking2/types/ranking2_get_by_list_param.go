@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/constants"
 )
 
 // Ranking2GetByListParam is a type within the Ranking2 protocol
@@ -14,8 +15,8 @@ type Ranking2GetByListParam struct {
 	Category           types.UInt32
 	Offset             types.UInt32
 	Length             types.UInt32
-	SortFlags          types.UInt32
-	OptionFlags        types.UInt32
+	SortFlags          constants.Ranking2SortFlags
+	OptionFlags        constants.Ranking2GetOptionFlags
 	NumSeasonsToGoBack types.UInt8
 }
 
@@ -39,40 +40,31 @@ func (rgblp Ranking2GetByListParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2GetByListParam from the given readable
 func (rgblp *Ranking2GetByListParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rgblp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rgblp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam header. %s", err.Error())
 	}
 
-	err = rgblp.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rgblp.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Category. %s", err.Error())
 	}
 
-	err = rgblp.Offset.ExtractFrom(readable)
-	if err != nil {
+	if err := rgblp.Offset.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Offset. %s", err.Error())
 	}
 
-	err = rgblp.Length.ExtractFrom(readable)
-	if err != nil {
+	if err := rgblp.Length.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Length. %s", err.Error())
 	}
 
-	err = rgblp.SortFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := rgblp.SortFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.SortFlags. %s", err.Error())
 	}
 
-	err = rgblp.OptionFlags.ExtractFrom(readable)
-	if err != nil {
+	if err := rgblp.OptionFlags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.OptionFlags. %s", err.Error())
 	}
 
-	err = rgblp.NumSeasonsToGoBack.ExtractFrom(readable)
-	if err != nil {
+	if err := rgblp.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.NumSeasonsToGoBack. %s", err.Error())
 	}
 
@@ -87,8 +79,8 @@ func (rgblp Ranking2GetByListParam) Copy() types.RVType {
 	copied.Category = rgblp.Category.Copy().(types.UInt32)
 	copied.Offset = rgblp.Offset.Copy().(types.UInt32)
 	copied.Length = rgblp.Length.Copy().(types.UInt32)
-	copied.SortFlags = rgblp.SortFlags.Copy().(types.UInt32)
-	copied.OptionFlags = rgblp.OptionFlags.Copy().(types.UInt32)
+	copied.SortFlags = rgblp.SortFlags
+	copied.OptionFlags = rgblp.OptionFlags
 	copied.NumSeasonsToGoBack = rgblp.NumSeasonsToGoBack.Copy().(types.UInt8)
 
 	return copied
@@ -118,11 +110,11 @@ func (rgblp Ranking2GetByListParam) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rgblp.SortFlags.Equals(other.SortFlags) {
+	if rgblp.SortFlags != other.SortFlags {
 		return false
 	}
 
-	if !rgblp.OptionFlags.Equals(other.OptionFlags) {
+	if rgblp.OptionFlags != other.OptionFlags {
 		return false
 	}
 
@@ -173,8 +165,8 @@ func NewRanking2GetByListParam() Ranking2GetByListParam {
 		Category:           types.NewUInt32(0),
 		Offset:             types.NewUInt32(0),
 		Length:             types.NewUInt32(0),
-		SortFlags:          types.NewUInt32(0),
-		OptionFlags:        types.NewUInt32(0),
+		SortFlags:          constants.Ranking2SortFlagsNothing,
+		OptionFlags:        constants.Ranking2GetOptionFlagsNothing,
 		NumSeasonsToGoBack: types.NewUInt8(0),
 	}
 

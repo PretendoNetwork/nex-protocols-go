@@ -31,20 +31,15 @@ func (dskv DataStoreKeyValue) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreKeyValue from the given readable
 func (dskv *DataStoreKeyValue) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dskv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dskv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreKeyValue header. %s", err.Error())
 	}
 
-	err = dskv.Key.ExtractFrom(readable)
-	if err != nil {
+	if err := dskv.Key.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreKeyValue.Key. %s", err.Error())
 	}
 
-	err = dskv.Value.ExtractFrom(readable)
-	if err != nil {
+	if err := dskv.Value.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreKeyValue.Value. %s", err.Error())
 	}
 

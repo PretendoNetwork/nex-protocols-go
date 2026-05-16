@@ -33,25 +33,19 @@ func (dspi DataStorePasswordInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStorePasswordInfo from the given readable
 func (dspi *DataStorePasswordInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dspi.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dspi.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo header. %s", err.Error())
 	}
 
-	err = dspi.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspi.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.DataID. %s", err.Error())
 	}
 
-	err = dspi.AccessPassword.ExtractFrom(readable)
-	if err != nil {
+	if err := dspi.AccessPassword.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.AccessPassword. %s", err.Error())
 	}
 
-	err = dspi.UpdatePassword.ExtractFrom(readable)
-	if err != nil {
+	if err := dspi.UpdatePassword.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.UpdatePassword. %s", err.Error())
 	}
 

@@ -36,30 +36,23 @@ func (mrsrp MatchmakeRefereeStartRoundParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeStartRoundParam from the given readable
 func (mrsrp *MatchmakeRefereeStartRoundParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = mrsrp.Data.ExtractFrom(readable)
-	if err != nil {
+	if err := mrsrp.Data.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.Data. %s", err.Error())
 	}
 
-	err = mrsrp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := mrsrp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam header. %s", err.Error())
 	}
 
-	err = mrsrp.PersonalDataCategory.ExtractFrom(readable)
-	if err != nil {
+	if err := mrsrp.PersonalDataCategory.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.PersonalDataCategory. %s", err.Error())
 	}
 
-	err = mrsrp.GID.ExtractFrom(readable)
-	if err != nil {
+	if err := mrsrp.GID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.GID. %s", err.Error())
 	}
 
-	err = mrsrp.PIDs.ExtractFrom(readable)
-	if err != nil {
+	if err := mrsrp.PIDs.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.PIDs. %s", err.Error())
 	}
 

@@ -26,14 +26,14 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var unknown1 types.List[subscriber_types.Unknown]
-	var unknown2 types.List[types.UInt8]
+	var param types.List[subscriber_types.SubscriberUserStatusParam]
+	var isNotify types.List[types.UInt8]
 
 	var err error
 
-	err = unknown1.ExtractFrom(parametersStream)
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2)
+		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, param, isNotify)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -41,9 +41,9 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 		return
 	}
 
-	err = unknown2.ExtractFrom(parametersStream)
+	err = isNotify.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2)
+		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read isNotify from parameters. %s", err.Error()), packet, callID, param, isNotify)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.UpdateUserStatus(nil, packet, callID, unknown1, unknown2)
+	rmcMessage, rmcError := protocol.UpdateUserStatus(nil, packet, callID, param, isNotify)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

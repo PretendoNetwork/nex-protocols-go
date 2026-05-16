@@ -33,25 +33,19 @@ func (resri Ranking2EstimateScoreRankInput) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2EstimateScoreRankInput from the given readable
 func (resri *Ranking2EstimateScoreRankInput) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = resri.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := resri.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput header. %s", err.Error())
 	}
 
-	err = resri.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := resri.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.Category. %s", err.Error())
 	}
 
-	err = resri.NumSeasonsToGoBack.ExtractFrom(readable)
-	if err != nil {
+	if err := resri.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.NumSeasonsToGoBack. %s", err.Error())
 	}
 
-	err = resri.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := resri.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.Score. %s", err.Error())
 	}
 

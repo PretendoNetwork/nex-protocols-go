@@ -31,20 +31,15 @@ func (crigp CompetitionRankingInfoGetParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the CompetitionRankingInfoGetParam from the given readable
 func (crigp *CompetitionRankingInfoGetParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = crigp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := crigp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam header. %s", err.Error())
 	}
 
-	err = crigp.Unknown.ExtractFrom(readable)
-	if err != nil {
+	if err := crigp.Unknown.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam.Unknown. %s", err.Error())
 	}
 
-	err = crigp.Result.ExtractFrom(readable)
-	if err != nil {
+	if err := crigp.Result.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam.Result. %s", err.Error())
 	}
 

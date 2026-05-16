@@ -33,25 +33,19 @@ func (cri CompetitionRankingInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the CompetitionRankingInfo from the given readable
 func (cri *CompetitionRankingInfo) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = cri.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := cri.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfo header. %s", err.Error())
 	}
 
-	err = cri.Unknown.ExtractFrom(readable)
-	if err != nil {
+	if err := cri.Unknown.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown. %s", err.Error())
 	}
 
-	err = cri.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := cri.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown2. %s", err.Error())
 	}
 
-	err = cri.Unknown3.ExtractFrom(readable)
-	if err != nil {
+	if err := cri.Unknown3.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown3. %s", err.Error())
 	}
 

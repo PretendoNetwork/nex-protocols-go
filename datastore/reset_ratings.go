@@ -25,8 +25,8 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var transactional types.Bool
 	var dataIDs types.List[types.UInt64]
+	var transactional types.Bool
 
 	var err error
 

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStorePreparePostParamV1 is a type within the DataStore protocol
@@ -17,7 +18,7 @@ type DataStorePreparePostParamV1 struct {
 	MetaBinary       types.QBuffer
 	Permission       DataStorePermission
 	DelPermission    DataStorePermission
-	Flag             types.UInt32
+	Flag             constants.DataFlag
 	Period           types.UInt16
 	ReferDataID      types.UInt32
 	Tags             types.List[types.String]
@@ -49,65 +50,51 @@ func (dspppv DataStorePreparePostParamV1) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStorePreparePostParamV1 from the given readable
 func (dspppv *DataStorePreparePostParamV1) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dspppv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dspppv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1 header. %s", err.Error())
 	}
 
-	err = dspppv.Size.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Size. %s", err.Error())
 	}
 
-	err = dspppv.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Name. %s", err.Error())
 	}
 
-	err = dspppv.DataType.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.DataType.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DataType. %s", err.Error())
 	}
 
-	err = dspppv.MetaBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.MetaBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.MetaBinary. %s", err.Error())
 	}
 
-	err = dspppv.Permission.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.Permission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Permission. %s", err.Error())
 	}
 
-	err = dspppv.DelPermission.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.DelPermission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DelPermission. %s", err.Error())
 	}
 
-	err = dspppv.Flag.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.Flag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Flag. %s", err.Error())
 	}
 
-	err = dspppv.Period.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.Period.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Period. %s", err.Error())
 	}
 
-	err = dspppv.ReferDataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.ReferDataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.ReferDataID. %s", err.Error())
 	}
 
-	err = dspppv.Tags.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.Tags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Tags. %s", err.Error())
 	}
 
-	err = dspppv.RatingInitParams.ExtractFrom(readable)
-	if err != nil {
+	if err := dspppv.RatingInitParams.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.RatingInitParams. %s", err.Error())
 	}
 
@@ -125,7 +112,7 @@ func (dspppv DataStorePreparePostParamV1) Copy() types.RVType {
 	copied.MetaBinary = dspppv.MetaBinary.Copy().(types.QBuffer)
 	copied.Permission = dspppv.Permission.Copy().(DataStorePermission)
 	copied.DelPermission = dspppv.DelPermission.Copy().(DataStorePermission)
-	copied.Flag = dspppv.Flag.Copy().(types.UInt32)
+	copied.Flag = dspppv.Flag
 	copied.Period = dspppv.Period.Copy().(types.UInt16)
 	copied.ReferDataID = dspppv.ReferDataID.Copy().(types.UInt32)
 	copied.Tags = dspppv.Tags.Copy().(types.List[types.String])
@@ -170,7 +157,7 @@ func (dspppv DataStorePreparePostParamV1) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dspppv.Flag.Equals(other.Flag) {
+	if dspppv.Flag != other.Flag {
 		return false
 	}
 
@@ -241,7 +228,7 @@ func NewDataStorePreparePostParamV1() DataStorePreparePostParamV1 {
 		MetaBinary:       types.NewQBuffer(nil),
 		Permission:       NewDataStorePermission(),
 		DelPermission:    NewDataStorePermission(),
-		Flag:             types.NewUInt32(0),
+		Flag:             constants.DataFlagNone,
 		Period:           types.NewUInt16(0),
 		ReferDataID:      types.NewUInt32(0),
 		Tags:             types.NewList[types.String](),

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/constants"
 )
 
 // RankingScoreData is a type within the Ranking protocol
@@ -13,8 +14,8 @@ type RankingScoreData struct {
 	types.Structure
 	Category   types.UInt32
 	Score      types.UInt32
-	OrderBy    types.UInt8
-	UpdateMode types.UInt8
+	OrderBy    constants.OrderBy
+	UpdateMode constants.UpdateMode
 	Groups     types.Buffer
 	Param      types.UInt64
 }
@@ -39,40 +40,31 @@ func (rsd RankingScoreData) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the RankingScoreData from the given readable
 func (rsd *RankingScoreData) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rsd.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rsd.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData header. %s", err.Error())
 	}
 
-	err = rsd.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Category. %s", err.Error())
 	}
 
-	err = rsd.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Score. %s", err.Error())
 	}
 
-	err = rsd.OrderBy.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.OrderBy.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.OrderBy. %s", err.Error())
 	}
 
-	err = rsd.UpdateMode.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.UpdateMode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.UpdateMode. %s", err.Error())
 	}
 
-	err = rsd.Groups.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Groups.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Groups. %s", err.Error())
 	}
 
-	err = rsd.Param.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Param.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Param. %s", err.Error())
 	}
 
@@ -86,8 +78,8 @@ func (rsd RankingScoreData) Copy() types.RVType {
 	copied.StructureVersion = rsd.StructureVersion
 	copied.Category = rsd.Category.Copy().(types.UInt32)
 	copied.Score = rsd.Score.Copy().(types.UInt32)
-	copied.OrderBy = rsd.OrderBy.Copy().(types.UInt8)
-	copied.UpdateMode = rsd.UpdateMode.Copy().(types.UInt8)
+	copied.OrderBy = rsd.OrderBy
+	copied.UpdateMode = rsd.UpdateMode
 	copied.Groups = rsd.Groups.Copy().(types.Buffer)
 	copied.Param = rsd.Param.Copy().(types.UInt64)
 
@@ -114,11 +106,11 @@ func (rsd RankingScoreData) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rsd.OrderBy.Equals(other.OrderBy) {
+	if rsd.OrderBy != other.OrderBy {
 		return false
 	}
 
-	if !rsd.UpdateMode.Equals(other.UpdateMode) {
+	if rsd.UpdateMode != other.UpdateMode {
 		return false
 	}
 
@@ -172,8 +164,8 @@ func NewRankingScoreData() RankingScoreData {
 	return RankingScoreData{
 		Category:   types.NewUInt32(0),
 		Score:      types.NewUInt32(0),
-		OrderBy:    types.NewUInt8(0),
-		UpdateMode: types.NewUInt8(0),
+		OrderBy:    constants.OrderByAscending,
+		UpdateMode: constants.UpdateModeNormal,
 		Groups:     types.NewBuffer(nil),
 		Param:      types.NewUInt64(0),
 	}

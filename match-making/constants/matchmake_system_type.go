@@ -1,7 +1,49 @@
 package constants
 
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
 // MatchmakeSystemType represents the method of matchmaking being used
 type MatchmakeSystemType uint32
+
+// WriteTo writes the MatchmakeSystemType to the given writable
+func (mst MatchmakeSystemType) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(mst))
+}
+
+// ExtractFrom extracts the MatchmakeSystemType value from the given readable
+func (mst *MatchmakeSystemType) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*mst = MatchmakeSystemType(value)
+	return nil
+}
+
+// String returns a human-readable representation of the MatchmakeSystemType.
+func (mst MatchmakeSystemType) String() string {
+	switch mst {
+	case MatchmakeSystemTypeInvalid:
+		return "Invalid"
+	case MatchmakeSystemTypeAnybody:
+		return "Anybody"
+	case MatchmakeSystemTypeFriends:
+		return "Friends"
+	case MatchmakeSystemTypeFriendsInvite:
+		return "FriendsInvite"
+	case MatchmakeSystemTypeInvite:
+		return "Invite"
+	case MatchmakeSystemTypePersistentGathering:
+		return "PersistentGathering"
+	default:
+		return fmt.Sprintf("MatchmakeSystemType(%d)", int(mst))
+	}
+}
 
 const (
 	// MatchmakeSystemTypeInvalid indicates an invalid value

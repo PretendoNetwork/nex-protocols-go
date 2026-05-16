@@ -33,25 +33,19 @@ func (rsd Ranking2ScoreData) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2ScoreData from the given readable
 func (rsd *Ranking2ScoreData) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rsd.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rsd.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ScoreData header. %s", err.Error())
 	}
 
-	err = rsd.Misc.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Misc.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ScoreData.Misc. %s", err.Error())
 	}
 
-	err = rsd.Category.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Category.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ScoreData.Category. %s", err.Error())
 	}
 
-	err = rsd.Score.ExtractFrom(readable)
-	if err != nil {
+	if err := rsd.Score.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ScoreData.Score. %s", err.Error())
 	}
 

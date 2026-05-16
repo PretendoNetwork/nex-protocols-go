@@ -1,7 +1,43 @@
 package constants
 
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go/v2/types"
+)
+
 // PersistentGatheringType indicates the type of PersistentGathering
 type PersistentGatheringType uint32
+
+// WriteTo writes the PersistentGatheringType to the given writable
+func (pgt PersistentGatheringType) WriteTo(writable types.Writable) {
+	writable.WriteUInt32LE(uint32(pgt))
+}
+
+// ExtractFrom extracts the PersistentGatheringType value from the given readable
+func (pgt *PersistentGatheringType) ExtractFrom(readable types.Readable) error {
+	value, err := readable.ReadUInt32LE()
+	if err != nil {
+		return err
+	}
+
+	*pgt = PersistentGatheringType(value)
+	return nil
+}
+
+// String returns a human-readable representation of the PersistentGatheringType.
+func (pgt PersistentGatheringType) String() string {
+	switch pgt {
+	case PersistentGatheringTypeOpen:
+		return "Open"
+	case PersistentGatheringTypePasswordLocked:
+		return "PasswordLocked"
+	case PersistentGatheringTypeOfficial:
+		return "Official"
+	default:
+		return fmt.Sprintf("PersistentGatheringType(%d)", int(pgt))
+	}
+}
 
 const (
 	// PersistentGatheringTypeOpen indicates that the PersistentGathering is open to everyone

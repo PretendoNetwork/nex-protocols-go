@@ -37,35 +37,27 @@ func (siri ServiceItemRightInfos) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemRightInfos from the given readable
 func (siri *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = siri.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := siri.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos header. %s", err.Error())
 	}
 
-	err = siri.SupportID.ExtractFrom(readable)
-	if err != nil {
+	if err := siri.SupportID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.SupportID. %s", err.Error())
 	}
 
-	err = siri.ConsumptionRightInfos.ExtractFrom(readable)
-	if err != nil {
+	if err := siri.ConsumptionRightInfos.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.ConsumptionRightInfos. %s", err.Error())
 	}
 
-	err = siri.AdditionalTimeRightInfos.ExtractFrom(readable)
-	if err != nil {
+	if err := siri.AdditionalTimeRightInfos.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AdditionalTimeRightInfos. %s", err.Error())
 	}
 
-	err = siri.PermanentRightInfos.ExtractFrom(readable)
-	if err != nil {
+	if err := siri.PermanentRightInfos.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.PermanentRightInfos. %s", err.Error())
 	}
 
-	err = siri.AlreadyPurchasedInitialOnlyItem.ExtractFrom(readable)
-	if err != nil {
+	if err := siri.AlreadyPurchasedInitialOnlyItem.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AlreadyPurchasedInitialOnlyItem. %s", err.Error())
 	}
 

@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/datastore/constants"
 )
 
 // DataStoreChangeMetaParamV1 is a type within the DataStore protocol
 type DataStoreChangeMetaParamV1 struct {
 	types.Structure
 	DataID         types.UInt64
-	ModifiesFlag   types.UInt32
+	ModifiesFlag   constants.ModificationFlag
 	Name           types.String
 	Permission     DataStorePermission
 	DelPermission  DataStorePermission
@@ -45,55 +46,43 @@ func (dscmpv DataStoreChangeMetaParamV1) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreChangeMetaParamV1 from the given readable
 func (dscmpv *DataStoreChangeMetaParamV1) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dscmpv.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dscmpv.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1 header. %s", err.Error())
 	}
 
-	err = dscmpv.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DataID. %s", err.Error())
 	}
 
-	err = dscmpv.ModifiesFlag.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.ModifiesFlag.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.ModifiesFlag. %s", err.Error())
 	}
 
-	err = dscmpv.Name.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Name. %s", err.Error())
 	}
 
-	err = dscmpv.Permission.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.Permission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Permission. %s", err.Error())
 	}
 
-	err = dscmpv.DelPermission.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.DelPermission.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DelPermission. %s", err.Error())
 	}
 
-	err = dscmpv.Period.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.Period.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Period. %s", err.Error())
 	}
 
-	err = dscmpv.MetaBinary.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.MetaBinary.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.MetaBinary. %s", err.Error())
 	}
 
-	err = dscmpv.Tags.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.Tags.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Tags. %s", err.Error())
 	}
 
-	err = dscmpv.UpdatePassword.ExtractFrom(readable)
-	if err != nil {
+	if err := dscmpv.UpdatePassword.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.UpdatePassword. %s", err.Error())
 	}
 
@@ -106,7 +95,7 @@ func (dscmpv DataStoreChangeMetaParamV1) Copy() types.RVType {
 
 	copied.StructureVersion = dscmpv.StructureVersion
 	copied.DataID = dscmpv.DataID.Copy().(types.UInt64)
-	copied.ModifiesFlag = dscmpv.ModifiesFlag.Copy().(types.UInt32)
+	copied.ModifiesFlag = dscmpv.ModifiesFlag
 	copied.Name = dscmpv.Name.Copy().(types.String)
 	copied.Permission = dscmpv.Permission.Copy().(DataStorePermission)
 	copied.DelPermission = dscmpv.DelPermission.Copy().(DataStorePermission)
@@ -134,7 +123,7 @@ func (dscmpv DataStoreChangeMetaParamV1) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dscmpv.ModifiesFlag.Equals(other.ModifiesFlag) {
+	if dscmpv.ModifiesFlag != other.ModifiesFlag {
 		return false
 	}
 
@@ -210,7 +199,7 @@ func (dscmpv DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) st
 func NewDataStoreChangeMetaParamV1() DataStoreChangeMetaParamV1 {
 	return DataStoreChangeMetaParamV1{
 		DataID:         types.NewUInt64(0),
-		ModifiesFlag:   types.NewUInt32(0),
+		ModifiesFlag:   constants.ModificationFlagNone,
 		Name:           types.NewString(""),
 		Permission:     NewDataStorePermission(),
 		DelPermission:  NewDataStorePermission(),

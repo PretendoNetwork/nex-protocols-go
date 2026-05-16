@@ -32,20 +32,15 @@ func (sigsirr ServiceItemGetServiceItemRightResponse) WriteTo(writable types.Wri
 
 // ExtractFrom extracts the ServiceItemGetServiceItemRightResponse from the given readable
 func (sigsirr *ServiceItemGetServiceItemRightResponse) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sigsirr.ServiceItemEShopResponse.ExtractFrom(readable)
-	if err != nil {
+	if err := sigsirr.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
-	err = sigsirr.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sigsirr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightResponse header. %s", err.Error())
 	}
 
-	err = sigsirr.NullableRightInfos.ExtractFrom(readable)
-	if err != nil {
+	if err := sigsirr.NullableRightInfos.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightResponse.NullableRightInfos. %s", err.Error())
 	}
 

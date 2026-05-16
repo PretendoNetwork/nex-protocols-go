@@ -29,15 +29,11 @@ func (sihttpgp ServiceItemHTTPGetParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemHTTPGetParam from the given readable
 func (sihttpgp *ServiceItemHTTPGetParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sihttpgp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sihttpgp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemHTTPGetParam header. %s", err.Error())
 	}
 
-	err = sihttpgp.URL.ExtractFrom(readable)
-	if err != nil {
+	if err := sihttpgp.URL.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemHTTPGetParam.URL. %s", err.Error())
 	}
 

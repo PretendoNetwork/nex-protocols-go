@@ -29,15 +29,11 @@ func (dsppp DataStorePostProfileParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStorePostProfileParam from the given readable
 func (dsppp *DataStorePostProfileParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsppp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsppp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePostProfileParam header. %s", err.Error())
 	}
 
-	err = dsppp.Profile.ExtractFrom(readable)
-	if err != nil {
+	if err := dsppp.Profile.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStorePostProfileParam.Profile. %s", err.Error())
 	}
 

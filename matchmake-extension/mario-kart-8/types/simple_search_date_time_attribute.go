@@ -39,40 +39,31 @@ func (ssdta SimpleSearchDateTimeAttribute) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the SimpleSearchDateTimeAttribute from the given readable
 func (ssdta *SimpleSearchDateTimeAttribute) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = ssdta.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := ssdta.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute header. %s", err.Error())
 	}
 
-	err = ssdta.Unknown.ExtractFrom(readable)
-	if err != nil {
+	if err := ssdta.Unknown.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown. %s", err.Error())
 	}
 
-	err = ssdta.Unknown2.ExtractFrom(readable)
-	if err != nil {
+	if err := ssdta.Unknown2.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown2. %s", err.Error())
 	}
 
-	err = ssdta.Unknown3.ExtractFrom(readable)
-	if err != nil {
+	if err := ssdta.Unknown3.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown3. %s", err.Error())
 	}
 
-	err = ssdta.Unknown4.ExtractFrom(readable)
-	if err != nil {
+	if err := ssdta.Unknown4.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown4. %s", err.Error())
 	}
 
-	err = ssdta.StartTime.ExtractFrom(readable)
-	if err != nil {
+	if err := ssdta.StartTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.StartTime. %s", err.Error())
 	}
 
-	err = ssdta.EndTime.ExtractFrom(readable)
-	if err != nil {
+	if err := ssdta.EndTime.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.EndTime. %s", err.Error())
 	}
 

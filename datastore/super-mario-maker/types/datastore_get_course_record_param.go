@@ -31,20 +31,15 @@ func (dsgcrp DataStoreGetCourseRecordParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreGetCourseRecordParam from the given readable
 func (dsgcrp *DataStoreGetCourseRecordParam) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = dsgcrp.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsgcrp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam header. %s", err.Error())
 	}
 
-	err = dsgcrp.DataID.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrp.DataID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.DataID. %s", err.Error())
 	}
 
-	err = dsgcrp.Slot.ExtractFrom(readable)
-	if err != nil {
+	if err := dsgcrp.Slot.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.Slot. %s", err.Error())
 	}
 

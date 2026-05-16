@@ -26,13 +26,13 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var pids types.List[types.PID]
-	var unknown types.List[types.UInt8]
+	var keys types.List[types.UInt8]
 
 	var err error
 
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetUserStatuses(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids, unknown)
+		_, rmcError := protocol.GetUserStatuses(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids, keys)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -40,9 +40,9 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 		return
 	}
 
-	err = unknown.ExtractFrom(parametersStream)
+	err = keys.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetUserStatuses(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, pids, unknown)
+		_, rmcError := protocol.GetUserStatuses(fmt.Errorf("Failed to read keys from parameters. %s", err.Error()), packet, callID, pids, keys)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -50,7 +50,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.GetUserStatuses(nil, packet, callID, pids, unknown)
+	rmcMessage, rmcError := protocol.GetUserStatuses(nil, packet, callID, pids, keys)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

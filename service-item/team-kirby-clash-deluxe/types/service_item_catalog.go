@@ -37,35 +37,27 @@ func (sic ServiceItemCatalog) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the ServiceItemCatalog from the given readable
 func (sic *ServiceItemCatalog) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = sic.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := sic.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog header. %s", err.Error())
 	}
 
-	err = sic.TotalSize.ExtractFrom(readable)
-	if err != nil {
+	if err := sic.TotalSize.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.TotalSize. %s", err.Error())
 	}
 
-	err = sic.Offset.ExtractFrom(readable)
-	if err != nil {
+	if err := sic.Offset.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.Offset. %s", err.Error())
 	}
 
-	err = sic.ListItems.ExtractFrom(readable)
-	if err != nil {
+	if err := sic.ListItems.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.ListItems. %s", err.Error())
 	}
 
-	err = sic.IsBalanceAvailable.ExtractFrom(readable)
-	if err != nil {
+	if err := sic.IsBalanceAvailable.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.IsBalanceAvailable. %s", err.Error())
 	}
 
-	err = sic.Balance.ExtractFrom(readable)
-	if err != nil {
+	if err := sic.Balance.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.Balance. %s", err.Error())
 	}
 

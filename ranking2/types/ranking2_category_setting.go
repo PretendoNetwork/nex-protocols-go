@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/constants"
 )
 
 // Ranking2CategorySetting is a type within the Ranking2 protocol
@@ -14,10 +15,10 @@ type Ranking2CategorySetting struct {
 	MinScore           types.UInt32
 	MaxScore           types.UInt32
 	LowestRank         types.UInt32
-	ResetMonth         types.UInt16
-	ResetDay           types.UInt8
+	ResetMonth         constants.Ranking2ResetMonth
+	ResetDay           constants.Ranking2ResetDay
 	ResetHour          types.UInt8
-	ResetMode          types.UInt8
+	ResetMode          constants.Ranking2ResetMode
 	MaxSeasonsToGoBack types.UInt8
 	ScoreOrder         types.Bool
 }
@@ -45,55 +46,43 @@ func (rcs Ranking2CategorySetting) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the Ranking2CategorySetting from the given readable
 func (rcs *Ranking2CategorySetting) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	err = rcs.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := rcs.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting header. %s", err.Error())
 	}
 
-	err = rcs.MinScore.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.MinScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MinScore. %s", err.Error())
 	}
 
-	err = rcs.MaxScore.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.MaxScore.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxScore. %s", err.Error())
 	}
 
-	err = rcs.LowestRank.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.LowestRank.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.LowestRank. %s", err.Error())
 	}
 
-	err = rcs.ResetMonth.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.ResetMonth.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMonth. %s", err.Error())
 	}
 
-	err = rcs.ResetDay.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.ResetDay.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetDay. %s", err.Error())
 	}
 
-	err = rcs.ResetHour.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.ResetHour.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetHour. %s", err.Error())
 	}
 
-	err = rcs.ResetMode.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.ResetMode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMode. %s", err.Error())
 	}
 
-	err = rcs.MaxSeasonsToGoBack.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.MaxSeasonsToGoBack.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxSeasonsToGoBack. %s", err.Error())
 	}
 
-	err = rcs.ScoreOrder.ExtractFrom(readable)
-	if err != nil {
+	if err := rcs.ScoreOrder.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ScoreOrder. %s", err.Error())
 	}
 
@@ -108,10 +97,10 @@ func (rcs Ranking2CategorySetting) Copy() types.RVType {
 	copied.MinScore = rcs.MinScore.Copy().(types.UInt32)
 	copied.MaxScore = rcs.MaxScore.Copy().(types.UInt32)
 	copied.LowestRank = rcs.LowestRank.Copy().(types.UInt32)
-	copied.ResetMonth = rcs.ResetMonth.Copy().(types.UInt16)
-	copied.ResetDay = rcs.ResetDay.Copy().(types.UInt8)
+	copied.ResetMonth = rcs.ResetMonth
+	copied.ResetDay = rcs.ResetDay
 	copied.ResetHour = rcs.ResetHour.Copy().(types.UInt8)
-	copied.ResetMode = rcs.ResetMode.Copy().(types.UInt8)
+	copied.ResetMode = rcs.ResetMode
 	copied.MaxSeasonsToGoBack = rcs.MaxSeasonsToGoBack.Copy().(types.UInt8)
 	copied.ScoreOrder = rcs.ScoreOrder.Copy().(types.Bool)
 
@@ -142,11 +131,11 @@ func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rcs.ResetMonth.Equals(other.ResetMonth) {
+	if rcs.ResetMonth != other.ResetMonth {
 		return false
 	}
 
-	if !rcs.ResetDay.Equals(other.ResetDay) {
+	if rcs.ResetDay != other.ResetDay {
 		return false
 	}
 
@@ -154,7 +143,7 @@ func (rcs Ranking2CategorySetting) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !rcs.ResetMode.Equals(other.ResetMode) {
+	if rcs.ResetMode != other.ResetMode {
 		return false
 	}
 
@@ -196,7 +185,16 @@ func (rcs Ranking2CategorySetting) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sMaxScore: %s,\n", indentationValues, rcs.MaxScore))
 	b.WriteString(fmt.Sprintf("%sLowestRank: %s,\n", indentationValues, rcs.LowestRank))
 	b.WriteString(fmt.Sprintf("%sResetMonth: %s,\n", indentationValues, rcs.ResetMonth))
-	b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay))
+	switch rcs.ResetMode {
+	case constants.Ranking2ResetModeEveryWeek:
+		fallthrough
+	case constants.Ranking2ResetModeMultiMonthWeekday:
+		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringWeekday()))
+	case constants.Ranking2ResetModeMultiMonth:
+		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringMonthly()))
+	default:
+		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay))
+	}
 	b.WriteString(fmt.Sprintf("%sResetHour: %s,\n", indentationValues, rcs.ResetHour))
 	b.WriteString(fmt.Sprintf("%sResetMode: %s,\n", indentationValues, rcs.ResetMode))
 	b.WriteString(fmt.Sprintf("%sMaxSeasonsToGoBack: %s,\n", indentationValues, rcs.MaxSeasonsToGoBack))
@@ -212,10 +210,10 @@ func NewRanking2CategorySetting() Ranking2CategorySetting {
 		MinScore:           types.NewUInt32(0),
 		MaxScore:           types.NewUInt32(0),
 		LowestRank:         types.NewUInt32(0),
-		ResetMonth:         types.NewUInt16(0),
-		ResetDay:           types.NewUInt8(0),
+		ResetMonth:         constants.Ranking2ResetMonthNone,
+		ResetDay:           constants.Ranking2ResetDayMonday,
 		ResetHour:          types.NewUInt8(0),
-		ResetMode:          types.NewUInt8(0),
+		ResetMode:          constants.Ranking2ResetModeNothing,
 		MaxSeasonsToGoBack: types.NewUInt8(0),
 		ScoreOrder:         types.NewBool(false),
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/types"
+	constants "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/constants"
 )
 
 func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
@@ -28,7 +29,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 	parameters := request.Parameters
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var rankingMode types.UInt8
+	var rankingMode constants.RankingMode
 	var category types.UInt32
 	var orderParam ranking_types.RankingOrderParam
 	var offset types.UInt32
@@ -69,7 +70,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 			return
 		}
 
-		if len(categories) != 1 {
+		if len(categories) != constants.NumRankingDataCategories {
 			_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, rankingMode, category, orderParam, offset, length)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)

@@ -49,16 +49,12 @@ func (dsrui *DataStoreReqUpdateInfo) ExtractFrom(readable types.Readable) error 
 	stream := readable.(*nex.ByteStreamIn)
 	libraryVersion := stream.LibraryVersions.DataStore
 
-	var err error
-
-	err = dsrui.ExtractHeaderFrom(readable)
-	if err != nil {
+	if err := dsrui.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo header. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		err = dsrui.Version.ExtractFrom(readable)
-		if err != nil {
+		if err := dsrui.Version.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 	} else {
@@ -70,23 +66,19 @@ func (dsrui *DataStoreReqUpdateInfo) ExtractFrom(readable types.Readable) error 
 		dsrui.Version = types.UInt32(version)
 	}
 
-	err = dsrui.URL.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrui.URL.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.URL. %s", err.Error())
 	}
 
-	err = dsrui.RequestHeaders.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrui.RequestHeaders.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RequestHeaders. %s", err.Error())
 	}
 
-	err = dsrui.FormFields.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrui.FormFields.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.FormFields. %s", err.Error())
 	}
 
-	err = dsrui.RootCACert.ExtractFrom(readable)
-	if err != nil {
+	if err := dsrui.RootCACert.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RootCACert. %s", err.Error())
 	}
 

@@ -31,8 +31,8 @@ func (rd RankingData) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	rd.PrincipalID.WriteTo(contentWritable)
 	rd.UniqueID.WriteTo(contentWritable)
+	rd.PrincipalID.WriteTo(contentWritable)
 	rd.Order.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("2.0.0") {

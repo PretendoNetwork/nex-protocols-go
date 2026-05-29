@@ -215,7 +215,7 @@ func (ne NotificationEvent) FormatToString(indentationLevel int) string {
 
 	b.WriteString("NotificationEvent{\n")
 	b.WriteString(fmt.Sprintf("%sPIDSource: %s,\n", indentationValues, ne.PIDSource.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sType: %s,\n", indentationValues, ne.Type))
+	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, ne.Type))
 	b.WriteString(fmt.Sprintf("%sParam1: %s,\n", indentationValues, ne.Param1))
 	b.WriteString(fmt.Sprintf("%sParam2: %s,\n", indentationValues, ne.Param2))
 	b.WriteString(fmt.Sprintf("%sStrParam: %s,\n", indentationValues, ne.StrParam))

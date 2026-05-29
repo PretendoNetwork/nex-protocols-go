@@ -214,14 +214,14 @@ func (ne NotificationEvent) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("NotificationEvent{\n")
-	b.WriteString(fmt.Sprintf("%sPIDSource: %s,\n", indentationValues, ne.PIDSource.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, ne.Type))
-	b.WriteString(fmt.Sprintf("%sParam1: %s,\n", indentationValues, ne.Param1))
-	b.WriteString(fmt.Sprintf("%sParam2: %s,\n", indentationValues, ne.Param2))
-	b.WriteString(fmt.Sprintf("%sStrParam: %s,\n", indentationValues, ne.StrParam))
-	b.WriteString(fmt.Sprintf("%sParam3: %s,\n", indentationValues, ne.Param3))
-	b.WriteString(fmt.Sprintf("%sMapParam: %s,\n", indentationValues, ne.MapParam))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPIDSource: %s,\n", indentationValues, ne.PIDSource.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sType: %d,\n", indentationValues, ne.Type)
+	fmt.Fprintf(&b, "%sParam1: %s,\n", indentationValues, ne.Param1)
+	fmt.Fprintf(&b, "%sParam2: %s,\n", indentationValues, ne.Param2)
+	fmt.Fprintf(&b, "%sStrParam: %s,\n", indentationValues, ne.StrParam)
+	fmt.Fprintf(&b, "%sParam3: %s,\n", indentationValues, ne.Param3)
+	fmt.Fprintf(&b, "%sMapParam: %s,\n", indentationValues, ne.MapParam)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

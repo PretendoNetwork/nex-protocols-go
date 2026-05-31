@@ -233,7 +233,7 @@ type Interface interface {
 	SetHandlerUpdateSessionURL(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, strURL types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetSessionURL(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerSetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, uiNewState types.UInt32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerSetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, uiNewState constants.GatheringState) (*nex.RMCMessage, *nex.Error))
 	SetHandlerReportStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, lstStats types.List[match_making_types.GatheringStats]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32, lstParticipants types.List[types.PID], lstColumns types.Buffer) (*nex.RMCMessage, *nex.Error))
 	SetHandlerDeleteGathering(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering types.UInt32) (*nex.RMCMessage, *nex.Error))

@@ -278,7 +278,7 @@ type Interface interface {
 	SetHandlerGetSimpleCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList types.List[types.UInt32]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAutoMatchmakeWithGatheringIDPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, lstGID types.List[types.UInt32], anyGathering match_making_types.GatheringHolder, strMessage types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateProgressScore(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32, progressScore types.UInt8) (*nex.RMCMessage, *nex.Error))
-	SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType notifications_constants.NotificationCategory, subType types.UInt32, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid types.PID, mainType notifications_constants.NotificationCategory, subType notifications_constants.SubType, param1 types.UInt64, param2 types.UInt64, stringParam types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGenerateMatchmakeSessionSystemPassword(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerClearMatchmakeSessionSystemPassword(handler func(err error, packet nex.PacketInterface, callID uint32, gid types.UInt32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerCreateMatchmakeSessionWithParam(handler func(err error, packet nex.PacketInterface, callID uint32, createMatchmakeSessionParam match_making_types.CreateMatchmakeSessionParam) (*nex.RMCMessage, *nex.Error))

@@ -63,12 +63,6 @@ func (rd *RankingData) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract RankingData header. %s", err.Error())
 	}
 
-	if err := rd.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingData.PrincipalID. %s", err.Error())
-	}
-
-	if err := rd.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingData.UniqueID. %s", err.Error())
 	if err := rd.UniqueID.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("Failed to extract RankingData.UniqueID. %s", err.Error())
 	}

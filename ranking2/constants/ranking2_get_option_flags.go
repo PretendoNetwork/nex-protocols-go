@@ -30,7 +30,7 @@ func (r2gof Ranking2GetOptionFlags) HasFlag(flag Ranking2GetOptionFlags) bool {
 	return r2gof&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (r2gof Ranking2GetOptionFlags) HasFlags(flags ...Ranking2GetOptionFlags) bool {
 	if len(flags) == 0 {
 		return false

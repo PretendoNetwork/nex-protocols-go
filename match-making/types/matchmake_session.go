@@ -37,7 +37,7 @@ func (ms MatchmakeSession) ObjectID() types.RVType {
 	return ms.GatheringObjectID()
 }
 
-// DataObjectID returns the object identifier of the type embedding Gathering
+// GatheringObjectID returns the object identifier of the type embedding Gathering
 func (ms MatchmakeSession) GatheringObjectID() types.RVType {
 	return types.NewString("MatchmakeSession")
 }

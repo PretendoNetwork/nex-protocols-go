@@ -25,10 +25,12 @@ func (msmf *MatchmakeSessionModificationFlag) ExtractFrom(readable types.Readabl
 	return nil
 }
 
+// HasFlag checks if a given flag is set
 func (msmf MatchmakeSessionModificationFlag) HasFlag(flag MatchmakeSessionModificationFlag) bool {
 	return msmf&flag == flag
 }
 
+// HasFlags checks if all given flags are set
 func (msmf MatchmakeSessionModificationFlag) HasFlags(flags ...MatchmakeSessionModificationFlag) bool {
 	if len(flags) == 0 {
 		return false

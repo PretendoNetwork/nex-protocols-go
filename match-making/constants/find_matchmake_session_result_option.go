@@ -26,10 +26,12 @@ func (fmsro *FindMatchmakeSessionResultOption) ExtractFrom(readable types.Readab
 	return nil
 }
 
+// HasFlag checks if a given flag is set
 func (fmsro FindMatchmakeSessionResultOption) HasFlag(flag FindMatchmakeSessionResultOption) bool {
 	return fmsro&flag == flag
 }
 
+// HasFlags checks if all given flags are set
 func (fmsro FindMatchmakeSessionResultOption) HasFlags(flags ...FindMatchmakeSessionResultOption) bool {
 	if len(flags) == 0 {
 		return false

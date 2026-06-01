@@ -32,7 +32,7 @@ func (cf ComparisonFlag) HasFlag(flag ComparisonFlag) bool {
 	return cf&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (cf ComparisonFlag) HasFlags(flags ...ComparisonFlag) bool {
 	if len(flags) == 0 {
 		return false

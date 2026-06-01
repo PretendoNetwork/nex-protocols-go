@@ -27,10 +27,12 @@ func (mso *MatchmakeSessionOption0) ExtractFrom(readable types.Readable) error {
 	return nil
 }
 
+// HasFlag checks if a given flag is set
 func (mso MatchmakeSessionOption0) HasFlag(flag MatchmakeSessionOption0) bool {
 	return mso&flag == flag
 }
 
+// HasFlags checks if all given flags are set
 func (mso MatchmakeSessionOption0) HasFlags(flags ...MatchmakeSessionOption0) bool {
 	if len(flags) == 0 {
 		return false
@@ -63,7 +65,7 @@ const (
 	// MatchmakeSessionOption0None has an unknown use.
 	MatchmakeSessionOption0None MatchmakeSessionOption0 = 0
 
-	// MatchmakeSessionOption0ForceAutoMatchDelay has an unknown use.
+	// MatchmakeSessionOption0ForceAutomatchDelay has an unknown use.
 	MatchmakeSessionOption0ForceAutomatchDelay MatchmakeSessionOption0 = 1
 
 	// MatchmakeSessionOption0ForceAutomatchNoDelay has an unknown use.

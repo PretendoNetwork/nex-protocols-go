@@ -29,7 +29,7 @@ func (g Gathering) ObjectID() types.RVType {
 	return g.GatheringObjectID()
 }
 
-// DataObjectID returns the object identifier of the type embedding Gathering
+// GatheringObjectID returns the object identifier of the type embedding Gathering
 func (g Gathering) GatheringObjectID() types.RVType {
 	return types.NewString("Gathering")
 }

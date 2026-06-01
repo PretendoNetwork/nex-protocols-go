@@ -30,7 +30,7 @@ const (
 	// Note: The name is a guess from "NumMatchmakeSessionAttributes"
 	NumRankingDataScores int = 2
 
-	// NumRankingDataScores is the number of categories that a ranking data can have on NEX 1.
+	// NumRankingDataCategories is the number of categories that a ranking data can have on NEX 1.
 	//
 	// Note: The name is a guess from "NumMatchmakeSessionAttributes"
 	NumRankingDataCategories int = 1

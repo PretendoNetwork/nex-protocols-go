@@ -16,7 +16,7 @@ const (
 	// name is based on the DataStore constant `MaxMetaBinSize`
 	MaxBinarySize int = 512
 
-	// MaxStrSubjectSize is the max size of a message StrSubject
+	// MaxStrSubjectLength is the max size of a message StrSubject
 	//
 	// NOTE: We don't know the real name of this constant, if there is one. This
 	// name is based on the DataStore constant `MaxNameLength`

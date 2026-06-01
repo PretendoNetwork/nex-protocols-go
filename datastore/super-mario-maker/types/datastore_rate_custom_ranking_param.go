@@ -125,11 +125,11 @@ func (dsrcrp DataStoreRateCustomRankingParam) FormatToString(indentationLevel in
 	var b strings.Builder
 
 	b.WriteString("DataStoreRateCustomRankingParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrcrp.DataID))
-	b.WriteString(fmt.Sprintf("%sApplicationID: %s,\n", indentationValues, dsrcrp.ApplicationID))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dsrcrp.Score))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dsrcrp.Period))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsrcrp.DataID)
+	fmt.Fprintf(&b, "%sApplicationID: %s,\n", indentationValues, dsrcrp.ApplicationID)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dsrcrp.Score)
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, dsrcrp.Period)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

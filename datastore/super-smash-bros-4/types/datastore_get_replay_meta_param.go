@@ -103,9 +103,9 @@ func (dsgrmp DataStoreGetReplayMetaParam) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetReplayMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dsgrmp.ReplayID))
-	b.WriteString(fmt.Sprintf("%sMetaType: %s,\n", indentationValues, dsgrmp.MetaType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReplayID: %s,\n", indentationValues, dsgrmp.ReplayID)
+	fmt.Fprintf(&b, "%sMetaType: %s,\n", indentationValues, dsgrmp.MetaType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

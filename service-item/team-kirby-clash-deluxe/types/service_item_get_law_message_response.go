@@ -104,9 +104,9 @@ func (siglmr ServiceItemGetLawMessageResponse) FormatToString(indentationLevel i
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetLawMessageResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, siglmr.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullableLawMessage: %s,\n", indentationValues, siglmr.NullableLawMessage))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, siglmr.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullableLawMessage: %s,\n", indentationValues, siglmr.NullableLawMessage)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

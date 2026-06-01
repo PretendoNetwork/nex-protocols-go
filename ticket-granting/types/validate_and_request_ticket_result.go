@@ -172,11 +172,11 @@ func (vartr ValidateAndRequestTicketResult) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ValidateAndRequestTicketResult{\n")
-	b.WriteString(fmt.Sprintf("%sSourcePID: %s,\n", indentationValues, vartr.SourcePID))
-	b.WriteString(fmt.Sprintf("%sBufResponse: %s,\n", indentationValues, vartr.BufResponse))
-	b.WriteString(fmt.Sprintf("%sServiceNodeURL: %s,\n", indentationValues, vartr.ServiceNodeURL.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCurrentUTCTime: %s,\n", indentationValues, vartr.CurrentUTCTime))
-	b.WriteString(fmt.Sprintf("%sReturnMsg: %s,\n", indentationValues, vartr.ReturnMsg))
+	fmt.Fprintf(&b, "%sSourcePID: %s,\n", indentationValues, vartr.SourcePID)
+	fmt.Fprintf(&b, "%sBufResponse: %s,\n", indentationValues, vartr.BufResponse)
+	fmt.Fprintf(&b, "%sServiceNodeURL: %s,\n", indentationValues, vartr.ServiceNodeURL.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCurrentUTCTime: %s,\n", indentationValues, vartr.CurrentUTCTime)
+	fmt.Fprintf(&b, "%sReturnMsg: %s,\n", indentationValues, vartr.ReturnMsg)
 
 	// * This is a hack. This field is not based on a NEX
 	// * version difference or a structure version update.
@@ -185,13 +185,13 @@ func (vartr ValidateAndRequestTicketResult) FormatToString(indentationLevel int)
 	// * or not a game has crossplay at this stage, this is
 	// * the best we can do
 	if vartr.PlatformPID != 0 {
-		b.WriteString(fmt.Sprintf("%sSourceKey: %s,\n", indentationValues, vartr.SourceKey))
-		b.WriteString(fmt.Sprintf("%sPlatformPID: %s\n", indentationValues, vartr.PlatformPID))
+		fmt.Fprintf(&b, "%sSourceKey: %s,\n", indentationValues, vartr.SourceKey)
+		fmt.Fprintf(&b, "%sPlatformPID: %s\n", indentationValues, vartr.PlatformPID)
 	} else {
-		b.WriteString(fmt.Sprintf("%sSourceKey: %s\n", indentationValues, vartr.SourceKey))
+		fmt.Fprintf(&b, "%sSourceKey: %s\n", indentationValues, vartr.SourceKey)
 	}
 
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

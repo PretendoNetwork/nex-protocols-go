@@ -114,10 +114,10 @@ func (siscp ServiceItemStartChallengeParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ServiceItemStartChallengeParam{\n")
-	b.WriteString(fmt.Sprintf("%sChallengeScheduleID: %s,\n", indentationValues, siscp.ChallengeScheduleID))
-	b.WriteString(fmt.Sprintf("%sTicketType: %s,\n", indentationValues, siscp.TicketType))
-	b.WriteString(fmt.Sprintf("%sNumTicket: %s,\n", indentationValues, siscp.NumTicket))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sChallengeScheduleID: %s,\n", indentationValues, siscp.ChallengeScheduleID)
+	fmt.Fprintf(&b, "%sTicketType: %s,\n", indentationValues, siscp.TicketType)
+	fmt.Fprintf(&b, "%sNumTicket: %s,\n", indentationValues, siscp.NumTicket)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

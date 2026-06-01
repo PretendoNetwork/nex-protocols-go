@@ -158,14 +158,14 @@ func (dsssdp DataStoreSearchSharedDataParam) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsssdp.DataType))
-	b.WriteString(fmt.Sprintf("%sOwner: %s,\n", indentationValues, dsssdp.Owner))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, dsssdp.Region))
-	b.WriteString(fmt.Sprintf("%sAttribute1: %s,\n", indentationValues, dsssdp.Attribute1))
-	b.WriteString(fmt.Sprintf("%sAttribute2: %s,\n", indentationValues, dsssdp.Attribute2))
-	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dsssdp.Fighter))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dsssdp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dsssdp.DataType)
+	fmt.Fprintf(&b, "%sOwner: %s,\n", indentationValues, dsssdp.Owner)
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, dsssdp.Region)
+	fmt.Fprintf(&b, "%sAttribute1: %s,\n", indentationValues, dsssdp.Attribute1)
+	fmt.Fprintf(&b, "%sAttribute2: %s,\n", indentationValues, dsssdp.Attribute2)
+	fmt.Fprintf(&b, "%sFighter: %s,\n", indentationValues, dsssdp.Fighter)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, dsssdp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

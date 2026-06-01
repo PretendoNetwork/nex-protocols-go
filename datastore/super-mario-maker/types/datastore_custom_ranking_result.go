@@ -115,10 +115,10 @@ func (dscrr DataStoreCustomRankingResult) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("DataStoreCustomRankingResult{\n")
-	b.WriteString(fmt.Sprintf("%sOrder: %s,\n", indentationValues, dscrr.Order))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dscrr.Score))
-	b.WriteString(fmt.Sprintf("%sMetaInfo: %s,\n", indentationValues, dscrr.MetaInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOrder: %s,\n", indentationValues, dscrr.Order)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dscrr.Score)
+	fmt.Fprintf(&b, "%sMetaInfo: %s,\n", indentationValues, dscrr.MetaInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -185,16 +185,16 @@ func (sipsip ServiceItemPurchaseServiceItemParam) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseServiceItemParam{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sipsip.ItemCode))
-	b.WriteString(fmt.Sprintf("%sPriceID: %s,\n", indentationValues, sipsip.PriceID))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sipsip.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sBalance: %s,\n", indentationValues, sipsip.Balance))
-	b.WriteString(fmt.Sprintf("%sItemName: %s,\n", indentationValues, sipsip.ItemName))
-	b.WriteString(fmt.Sprintf("%sEcServiceToken: %s,\n", indentationValues, sipsip.EcServiceToken))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sipsip.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sipsip.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sipsip.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sipsip.ItemCode)
+	fmt.Fprintf(&b, "%sPriceID: %s,\n", indentationValues, sipsip.PriceID)
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sipsip.ReferenceID)
+	fmt.Fprintf(&b, "%sBalance: %s,\n", indentationValues, sipsip.Balance)
+	fmt.Fprintf(&b, "%sItemName: %s,\n", indentationValues, sipsip.ItemName)
+	fmt.Fprintf(&b, "%sEcServiceToken: %s,\n", indentationValues, sipsip.EcServiceToken)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, sipsip.Language)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, sipsip.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, sipsip.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

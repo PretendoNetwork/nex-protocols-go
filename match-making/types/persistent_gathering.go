@@ -181,16 +181,16 @@ func (pg PersistentGathering) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PersistentGathering{\n")
-	b.WriteString(fmt.Sprintf("%sGathering (parent): %s,\n", indentationValues, pg.Gathering.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCommunityType: %s,\n", indentationValues, pg.CommunityType))
-	b.WriteString(fmt.Sprintf("%sPassword: %s,\n", indentationValues, pg.Password))
-	b.WriteString(fmt.Sprintf("%sAttribs: %s,\n", indentationValues, pg.Attribs))
-	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %s,\n", indentationValues, pg.ApplicationBuffer))
-	b.WriteString(fmt.Sprintf("%sParticipationStartDate: %s,\n", indentationValues, pg.ParticipationStartDate.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sParticipationEndDate: %s,\n", indentationValues, pg.ParticipationEndDate.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMatchmakeSessionCount: %s,\n", indentationValues, pg.MatchmakeSessionCount))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, pg.ParticipationCount))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGathering (parent): %s,\n", indentationValues, pg.Gathering.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCommunityType: %s,\n", indentationValues, pg.CommunityType)
+	fmt.Fprintf(&b, "%sPassword: %s,\n", indentationValues, pg.Password)
+	fmt.Fprintf(&b, "%sAttribs: %s,\n", indentationValues, pg.Attribs)
+	fmt.Fprintf(&b, "%sApplicationBuffer: %s,\n", indentationValues, pg.ApplicationBuffer)
+	fmt.Fprintf(&b, "%sParticipationStartDate: %s,\n", indentationValues, pg.ParticipationStartDate.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sParticipationEndDate: %s,\n", indentationValues, pg.ParticipationEndDate.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMatchmakeSessionCount: %s,\n", indentationValues, pg.MatchmakeSessionCount)
+	fmt.Fprintf(&b, "%sParticipationCount: %s,\n", indentationValues, pg.ParticipationCount)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

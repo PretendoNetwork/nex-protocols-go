@@ -147,13 +147,13 @@ func (ssdta SimpleSearchDateTimeAttribute) FormatToString(indentationLevel int) 
 	var b strings.Builder
 
 	b.WriteString("SimpleSearchDateTimeAttribute{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, ssdta.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, ssdta.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, ssdta.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, ssdta.Unknown4))
-	b.WriteString(fmt.Sprintf("%sStartTime: %s,\n", indentationValues, ssdta.StartTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sEndTime: %s,\n", indentationValues, ssdta.EndTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, ssdta.Unknown)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, ssdta.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, ssdta.Unknown3)
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, ssdta.Unknown4)
+	fmt.Fprintf(&b, "%sStartTime: %s,\n", indentationValues, ssdta.StartTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sEndTime: %s,\n", indentationValues, ssdta.EndTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

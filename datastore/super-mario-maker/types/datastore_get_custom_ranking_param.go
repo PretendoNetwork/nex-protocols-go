@@ -125,11 +125,11 @@ func (dsgcrp DataStoreGetCustomRankingParam) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCustomRankingParam{\n")
-	b.WriteString(fmt.Sprintf("%sApplicationID: %s,\n", indentationValues, dsgcrp.ApplicationID))
-	b.WriteString(fmt.Sprintf("%sCondition: %s,\n", indentationValues, dsgcrp.Condition.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dsgcrp.ResultOption))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dsgcrp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sApplicationID: %s,\n", indentationValues, dsgcrp.ApplicationID)
+	fmt.Fprintf(&b, "%sCondition: %s,\n", indentationValues, dsgcrp.Condition.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sResultOption: %s,\n", indentationValues, dsgcrp.ResultOption)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, dsgcrp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

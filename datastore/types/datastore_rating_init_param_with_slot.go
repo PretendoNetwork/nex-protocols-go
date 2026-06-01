@@ -103,9 +103,9 @@ func (dsripws DataStoreRatingInitParamWithSlot) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInitParamWithSlot{\n")
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsripws.Slot))
-	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, dsripws.Param.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsripws.Slot)
+	fmt.Fprintf(&b, "%sParam: %s,\n", indentationValues, dsripws.Param.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

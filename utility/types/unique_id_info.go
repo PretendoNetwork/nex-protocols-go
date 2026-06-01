@@ -103,9 +103,9 @@ func (uidi UniqueIDInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UniqueIDInfo{\n")
-	b.WriteString(fmt.Sprintf("%sNEXUniqueID: %s,\n", indentationValues, uidi.NEXUniqueID))
-	b.WriteString(fmt.Sprintf("%sNEXUniqueIDPassword: %s,\n", indentationValues, uidi.NEXUniqueIDPassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNEXUniqueID: %s,\n", indentationValues, uidi.NEXUniqueID)
+	fmt.Fprintf(&b, "%sNEXUniqueIDPassword: %s,\n", indentationValues, uidi.NEXUniqueIDPassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

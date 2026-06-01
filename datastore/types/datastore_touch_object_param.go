@@ -114,10 +114,10 @@ func (dstop DataStoreTouchObjectParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("DataStoreTouchObjectParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dstop.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %s,\n", indentationValues, dstop.LockID))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dstop.AccessPassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dstop.DataID)
+	fmt.Fprintf(&b, "%sLockID: %s,\n", indentationValues, dstop.LockID)
+	fmt.Fprintf(&b, "%sAccessPassword: %s,\n", indentationValues, dstop.AccessPassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

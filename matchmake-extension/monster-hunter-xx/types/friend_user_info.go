@@ -114,10 +114,10 @@ func (fui FriendUserInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendUserInfo{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fui.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, fui.Name))
-	b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, fui.Presence))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fui.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, fui.Name)
+	fmt.Fprintf(&b, "%sPresence: %s,\n", indentationValues, fui.Presence)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -114,10 +114,10 @@ func (rsd Ranking2ScoreData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2ScoreData{\n")
-	b.WriteString(fmt.Sprintf("%sMisc: %s,\n", indentationValues, rsd.Misc))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rsd.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rsd.Score))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMisc: %s,\n", indentationValues, rsd.Misc)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rsd.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rsd.Score)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

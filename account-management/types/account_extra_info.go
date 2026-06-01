@@ -124,10 +124,10 @@ func (aei AccountExtraInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("AccountExtraInfo{\n")
-	b.WriteString(fmt.Sprintf("%sLocalFriendCode: %s,\n", indentationValues, aei.LocalFriendCode))
-	b.WriteString(fmt.Sprintf("%sMoveCount: %s,\n", indentationValues, aei.MoveCount))
-	b.WriteString(fmt.Sprintf("%sNEXToken: %s,\n", indentationValues, aei.NEXToken))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLocalFriendCode: %s,\n", indentationValues, aei.LocalFriendCode)
+	fmt.Fprintf(&b, "%sMoveCount: %s,\n", indentationValues, aei.MoveCount)
+	fmt.Fprintf(&b, "%sNEXToken: %s,\n", indentationValues, aei.NEXToken)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

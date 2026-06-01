@@ -92,8 +92,8 @@ func (siri ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightInfos{\n")
-	b.WriteString(fmt.Sprintf("%sRightInfos: %s,\n", indentationValues, siri.RightInfos))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRightInfos: %s,\n", indentationValues, siri.RightInfos)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

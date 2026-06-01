@@ -148,13 +148,13 @@ func (rop RankingOrderParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingOrderParam{\n")
-	b.WriteString(fmt.Sprintf("%sOrderCalculation: %s,\n", indentationValues, rop.OrderCalculation))
-	b.WriteString(fmt.Sprintf("%sGroupIndex: %s,\n", indentationValues, rop.GroupIndex))
-	b.WriteString(fmt.Sprintf("%sGroupNum: %s,\n", indentationValues, rop.GroupNum))
-	b.WriteString(fmt.Sprintf("%sTimeScope: %s,\n", indentationValues, rop.TimeScope))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, rop.Offset))
-	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, rop.Length))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOrderCalculation: %s,\n", indentationValues, rop.OrderCalculation)
+	fmt.Fprintf(&b, "%sGroupIndex: %s,\n", indentationValues, rop.GroupIndex)
+	fmt.Fprintf(&b, "%sGroupNum: %s,\n", indentationValues, rop.GroupNum)
+	fmt.Fprintf(&b, "%sTimeScope: %s,\n", indentationValues, rop.TimeScope)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, rop.Offset)
+	fmt.Fprintf(&b, "%sLength: %s,\n", indentationValues, rop.Length)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

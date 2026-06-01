@@ -126,11 +126,11 @@ func (fml FriendMiiList) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendMiiList{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fml.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, fml.Unknown1))
-	b.WriteString(fmt.Sprintf("%sMiiList: %s,\n", indentationValues, fml.MiiList.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, fml.Unknown2.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fml.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, fml.Unknown1)
+	fmt.Fprintf(&b, "%sMiiList: %s,\n", indentationValues, fml.MiiList.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, fml.Unknown2.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

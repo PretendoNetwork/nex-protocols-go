@@ -114,10 +114,10 @@ func (sia ServiceItemAmount) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAmount{\n")
-	b.WriteString(fmt.Sprintf("%sFormattedAmount: %s,\n", indentationValues, sia.FormattedAmount))
-	b.WriteString(fmt.Sprintf("%sCurrency: %s,\n", indentationValues, sia.Currency))
-	b.WriteString(fmt.Sprintf("%sRawValue: %s,\n", indentationValues, sia.RawValue))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sFormattedAmount: %s,\n", indentationValues, sia.FormattedAmount)
+	fmt.Fprintf(&b, "%sCurrency: %s,\n", indentationValues, sia.Currency)
+	fmt.Fprintf(&b, "%sRawValue: %s,\n", indentationValues, sia.RawValue)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

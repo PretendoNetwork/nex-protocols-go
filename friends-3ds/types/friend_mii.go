@@ -126,11 +126,11 @@ func (fm FriendMii) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendMii{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fm.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fm.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, fm.Mii.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sModifiedAt: %s,\n", indentationValues, fm.ModifiedAt.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fm.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fm.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMii: %s,\n", indentationValues, fm.Mii.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sModifiedAt: %s,\n", indentationValues, fm.ModifiedAt.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

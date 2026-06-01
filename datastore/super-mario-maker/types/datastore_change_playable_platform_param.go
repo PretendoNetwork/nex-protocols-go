@@ -103,9 +103,9 @@ func (dscppp DataStoreChangePlayablePlatformParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangePlayablePlatformParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscppp.DataID))
-	b.WriteString(fmt.Sprintf("%sPlayablePlatform: %s,\n", indentationValues, dscppp.PlayablePlatform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscppp.DataID)
+	fmt.Fprintf(&b, "%sPlayablePlatform: %s,\n", indentationValues, dscppp.PlayablePlatform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

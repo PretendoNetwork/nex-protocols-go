@@ -114,10 +114,10 @@ func (dspi DataStorePasswordInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStorePasswordInfo{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspi.DataID))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dspi.AccessPassword))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dspi.UpdatePassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dspi.DataID)
+	fmt.Fprintf(&b, "%sAccessPassword: %s,\n", indentationValues, dspi.AccessPassword)
+	fmt.Fprintf(&b, "%sUpdatePassword: %s,\n", indentationValues, dspi.UpdatePassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

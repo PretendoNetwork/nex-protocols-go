@@ -103,9 +103,9 @@ func (fmsbpr FindMatchmakeSessionByParticipantResult) FormatToString(indentation
 	var b strings.Builder
 
 	b.WriteString("FindMatchmakeSessionByParticipantResult{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, fmsbpr.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sSession: %s,\n", indentationValues, fmsbpr.Session.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, fmsbpr.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sSession: %s,\n", indentationValues, fmsbpr.Session.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

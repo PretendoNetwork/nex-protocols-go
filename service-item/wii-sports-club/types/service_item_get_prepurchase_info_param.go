@@ -114,10 +114,10 @@ func (sigpip ServiceItemGetPrepurchaseInfoParam) FormatToString(indentationLevel
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetPrepurchaseInfoParam{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sigpip.ItemCode))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sigpip.Language))
-	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, sigpip.TitleID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sigpip.ItemCode)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, sigpip.Language)
+	fmt.Fprintf(&b, "%sTitleID: %s,\n", indentationValues, sigpip.TitleID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

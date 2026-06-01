@@ -103,9 +103,9 @@ func (dskv DataStoreKeyValue) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreKeyValue{\n")
-	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, dskv.Key))
-	b.WriteString(fmt.Sprintf("%sValue: %s,\n", indentationValues, dskv.Value))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sKey: %s,\n", indentationValues, dskv.Key)
+	fmt.Fprintf(&b, "%sValue: %s,\n", indentationValues, dskv.Value)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

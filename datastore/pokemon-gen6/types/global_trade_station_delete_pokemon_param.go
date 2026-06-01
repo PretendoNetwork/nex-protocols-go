@@ -103,9 +103,9 @@ func (gtsdpp GlobalTradeStationDeletePokemonParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDeletePokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtsdpp.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDeleteFlag: %s,\n", indentationValues, gtsdpp.DeleteFlag))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrepareUploadKey: %s,\n", indentationValues, gtsdpp.PrepareUploadKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDeleteFlag: %s,\n", indentationValues, gtsdpp.DeleteFlag)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -103,9 +103,9 @@ func (dsrop DataStoreRateObjectParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("DataStoreRateObjectParam{\n")
-	b.WriteString(fmt.Sprintf("%sRatingValue: %s,\n", indentationValues, dsrop.RatingValue))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dsrop.AccessPassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRatingValue: %s,\n", indentationValues, dsrop.RatingValue)
+	fmt.Fprintf(&b, "%sAccessPassword: %s,\n", indentationValues, dsrop.AccessPassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -126,11 +126,11 @@ func (mrsrp MatchmakeRefereeStartRoundParam) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStartRoundParam{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrsrp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPersonalDataCategory: %s,\n", indentationValues, mrsrp.PersonalDataCategory))
-	b.WriteString(fmt.Sprintf("%sGID: %s,\n", indentationValues, mrsrp.GID))
-	b.WriteString(fmt.Sprintf("%sPIDs: %s,\n", indentationValues, mrsrp.PIDs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrsrp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPersonalDataCategory: %s,\n", indentationValues, mrsrp.PersonalDataCategory)
+	fmt.Fprintf(&b, "%sGID: %s,\n", indentationValues, mrsrp.GID)
+	fmt.Fprintf(&b, "%sPIDs: %s,\n", indentationValues, mrsrp.PIDs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

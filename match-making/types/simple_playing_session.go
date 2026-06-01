@@ -125,11 +125,11 @@ func (sps SimplePlayingSession) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SimplePlayingSession{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, sps.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, sps.GatheringID))
-	b.WriteString(fmt.Sprintf("%sGameMode: %s,\n", indentationValues, sps.GameMode))
-	b.WriteString(fmt.Sprintf("%sAttribute0: %s,\n", indentationValues, sps.Attribute0))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, sps.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGatheringID: %s,\n", indentationValues, sps.GatheringID)
+	fmt.Fprintf(&b, "%sGameMode: %s,\n", indentationValues, sps.GameMode)
+	fmt.Fprintf(&b, "%sAttribute0: %s,\n", indentationValues, sps.Attribute0)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

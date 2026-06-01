@@ -126,11 +126,11 @@ func (rcr RankingCachedResult) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingCachedResult{\n")
-	b.WriteString(fmt.Sprintf("%sRankingResult (parent): %s,\n", indentationValues, rcr.RankingResult.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, rcr.CreatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sExpiredTime: %s,\n", indentationValues, rcr.ExpiredTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMaxLength: %s,\n", indentationValues, rcr.MaxLength))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRankingResult (parent): %s,\n", indentationValues, rcr.RankingResult.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCreatedTime: %s,\n", indentationValues, rcr.CreatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sExpiredTime: %s,\n", indentationValues, rcr.ExpiredTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMaxLength: %s,\n", indentationValues, rcr.MaxLength)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

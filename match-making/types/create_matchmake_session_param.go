@@ -147,13 +147,13 @@ func (cmsp CreateMatchmakeSessionParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("CreateMatchmakeSessionParam{\n")
-	b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, cmsp.SourceMatchmakeSession.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %s,\n", indentationValues, cmsp.AdditionalParticipants))
-	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %s,\n", indentationValues, cmsp.GIDForParticipationCheck))
-	b.WriteString(fmt.Sprintf("%sCreateMatchmakeSessionOption: %s,\n", indentationValues, cmsp.CreateMatchmakeSessionOption))
-	b.WriteString(fmt.Sprintf("%sJoinMessage: %s,\n", indentationValues, cmsp.JoinMessage))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, cmsp.ParticipationCount))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSourceMatchmakeSession: %s,\n", indentationValues, cmsp.SourceMatchmakeSession.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAdditionalParticipants: %s,\n", indentationValues, cmsp.AdditionalParticipants)
+	fmt.Fprintf(&b, "%sGIDForParticipationCheck: %s,\n", indentationValues, cmsp.GIDForParticipationCheck)
+	fmt.Fprintf(&b, "%sCreateMatchmakeSessionOption: %s,\n", indentationValues, cmsp.CreateMatchmakeSessionOption)
+	fmt.Fprintf(&b, "%sJoinMessage: %s,\n", indentationValues, cmsp.JoinMessage)
+	fmt.Fprintf(&b, "%sParticipationCount: %s,\n", indentationValues, cmsp.ParticipationCount)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

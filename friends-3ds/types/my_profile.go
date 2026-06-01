@@ -181,16 +181,16 @@ func (mp MyProfile) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MyProfile{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, mp.Region))
-	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, mp.Country))
-	b.WriteString(fmt.Sprintf("%sArea: %s,\n", indentationValues, mp.Area))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, mp.Language))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, mp.Platform))
-	b.WriteString(fmt.Sprintf("%sLocalFriendCodeSeed: %s,\n", indentationValues, mp.LocalFriendCodeSeed))
-	b.WriteString(fmt.Sprintf("%sMACAddress: %s,\n", indentationValues, mp.MACAddress))
-	b.WriteString(fmt.Sprintf("%sSerialNumber: %s,\n", indentationValues, mp.SerialNumber))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, mp.Region)
+	fmt.Fprintf(&b, "%sCountry: %s,\n", indentationValues, mp.Country)
+	fmt.Fprintf(&b, "%sArea: %s,\n", indentationValues, mp.Area)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, mp.Language)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, mp.Platform)
+	fmt.Fprintf(&b, "%sLocalFriendCodeSeed: %s,\n", indentationValues, mp.LocalFriendCodeSeed)
+	fmt.Fprintf(&b, "%sMACAddress: %s,\n", indentationValues, mp.MACAddress)
+	fmt.Fprintf(&b, "%sSerialNumber: %s,\n", indentationValues, mp.SerialNumber)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

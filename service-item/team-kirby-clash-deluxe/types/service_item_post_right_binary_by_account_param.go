@@ -147,13 +147,13 @@ func (siprbbap ServiceItemPostRightBinaryByAccountParam) FormatToString(indentat
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPostRightBinaryByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, siprbbap.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, siprbbap.UseType))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, siprbbap.RightBinary))
-	b.WriteString(fmt.Sprintf("%sLogMessage: %s,\n", indentationValues, siprbbap.LogMessage))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siprbbap.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siprbbap.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, siprbbap.ReferenceID)
+	fmt.Fprintf(&b, "%sUseType: %s,\n", indentationValues, siprbbap.UseType)
+	fmt.Fprintf(&b, "%sRightBinary: %s,\n", indentationValues, siprbbap.RightBinary)
+	fmt.Fprintf(&b, "%sLogMessage: %s,\n", indentationValues, siprbbap.LogMessage)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, siprbbap.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, siprbbap.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

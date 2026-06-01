@@ -103,9 +103,9 @@ func (bmi BankMigrationInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BankMigrationInfo{\n")
-	b.WriteString(fmt.Sprintf("%sMigrationStatus: %s,\n", indentationValues, bmi.MigrationStatus))
-	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, bmi.UpdatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMigrationStatus: %s,\n", indentationValues, bmi.MigrationStatus)
+	fmt.Fprintf(&b, "%sUpdatedTime: %s,\n", indentationValues, bmi.UpdatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

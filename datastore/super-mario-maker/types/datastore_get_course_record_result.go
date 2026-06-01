@@ -158,14 +158,14 @@ func (dsgcrr DataStoreGetCourseRecordResult) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCourseRecordResult{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsgcrr.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsgcrr.Slot))
-	b.WriteString(fmt.Sprintf("%sFirstPID: %s,\n", indentationValues, dsgcrr.FirstPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBestPID: %s,\n", indentationValues, dsgcrr.BestPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBestScore: %s,\n", indentationValues, dsgcrr.BestScore))
-	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dsgcrr.CreatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, dsgcrr.UpdatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsgcrr.DataID)
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsgcrr.Slot)
+	fmt.Fprintf(&b, "%sFirstPID: %s,\n", indentationValues, dsgcrr.FirstPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBestPID: %s,\n", indentationValues, dsgcrr.BestPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBestScore: %s,\n", indentationValues, dsgcrr.BestScore)
+	fmt.Fprintf(&b, "%sCreatedTime: %s,\n", indentationValues, dsgcrr.CreatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUpdatedTime: %s,\n", indentationValues, dsgcrr.UpdatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -147,13 +147,13 @@ func (sipri ServiceItemPrepurchaseRightInfo) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPrepurchaseRightInfo{\n")
-	b.WriteString(fmt.Sprintf("%sLimitationType: %s,\n", indentationValues, sipri.LimitationType))
-	b.WriteString(fmt.Sprintf("%sAcquiredCount: %s,\n", indentationValues, sipri.AcquiredCount))
-	b.WriteString(fmt.Sprintf("%sUsedCount: %s,\n", indentationValues, sipri.UsedCount))
-	b.WriteString(fmt.Sprintf("%sExpiryDate: %s,\n", indentationValues, sipri.ExpiryDate))
-	b.WriteString(fmt.Sprintf("%sExpiredCount: %s,\n", indentationValues, sipri.ExpiredCount))
-	b.WriteString(fmt.Sprintf("%sExpiryCounts: %s,\n", indentationValues, sipri.ExpiryCounts))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLimitationType: %s,\n", indentationValues, sipri.LimitationType)
+	fmt.Fprintf(&b, "%sAcquiredCount: %s,\n", indentationValues, sipri.AcquiredCount)
+	fmt.Fprintf(&b, "%sUsedCount: %s,\n", indentationValues, sipri.UsedCount)
+	fmt.Fprintf(&b, "%sExpiryDate: %s,\n", indentationValues, sipri.ExpiryDate)
+	fmt.Fprintf(&b, "%sExpiredCount: %s,\n", indentationValues, sipri.ExpiredCount)
+	fmt.Fprintf(&b, "%sExpiryCounts: %s,\n", indentationValues, sipri.ExpiryCounts)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

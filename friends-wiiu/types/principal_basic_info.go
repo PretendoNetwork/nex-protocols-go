@@ -137,12 +137,12 @@ func (pbi PrincipalBasicInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PrincipalBasicInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pbi.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, pbi.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNNID: %s,\n", indentationValues, pbi.NNID))
-	b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, pbi.Mii.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, pbi.Unknown))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, pbi.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, pbi.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNNID: %s,\n", indentationValues, pbi.NNID)
+	fmt.Fprintf(&b, "%sMii: %s,\n", indentationValues, pbi.Mii.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, pbi.Unknown)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

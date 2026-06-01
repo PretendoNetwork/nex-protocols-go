@@ -103,9 +103,9 @@ func (gtsrk GlobalTradeStationRecordKey) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationRecordKey{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtsrk.DataID))
-	b.WriteString(fmt.Sprintf("%sPassword: %s,\n", indentationValues, gtsrk.Password))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, gtsrk.DataID)
+	fmt.Fprintf(&b, "%sPassword: %s,\n", indentationValues, gtsrk.Password)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

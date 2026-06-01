@@ -125,11 +125,11 @@ func (si ShopItem) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ShopItem{\n")
-	b.WriteString(fmt.Sprintf("%sItemID: %s,\n", indentationValues, si.ItemID))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, si.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sServiceName: %s,\n", indentationValues, si.ServiceName))
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, si.ItemCode))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemID: %s,\n", indentationValues, si.ItemID)
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, si.ReferenceID)
+	fmt.Fprintf(&b, "%sServiceName: %s,\n", indentationValues, si.ServiceName)
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, si.ItemCode)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

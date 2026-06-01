@@ -148,12 +148,12 @@ func (dspgp DataStorePrepareGetParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspgp.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %s,\n", indentationValues, dspgp.LockID))
-	b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dspgp.PersistenceTarget.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dspgp.AccessPassword))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspgp.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dspgp.DataID)
+	fmt.Fprintf(&b, "%sLockID: %s,\n", indentationValues, dspgp.LockID)
+	fmt.Fprintf(&b, "%sPersistenceTarget: %s,\n", indentationValues, dspgp.PersistenceTarget.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAccessPassword: %s,\n", indentationValues, dspgp.AccessPassword)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dspgp.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

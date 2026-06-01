@@ -103,9 +103,9 @@ func (dspgpv DataStorePrepareGetParamV1) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspgpv.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %s,\n", indentationValues, dspgpv.LockID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dspgpv.DataID)
+	fmt.Fprintf(&b, "%sLockID: %s,\n", indentationValues, dspgpv.LockID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

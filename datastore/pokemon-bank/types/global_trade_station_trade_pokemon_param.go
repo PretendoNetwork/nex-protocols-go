@@ -169,15 +169,15 @@ func (gtstpp GlobalTradeStationTradePokemonParam) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationTradePokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sTradeKey: %s,\n", indentationValues, gtstpp.TradeKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareTradeKey: %s,\n", indentationValues, gtstpp.PrepareTradeKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtstpp.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, gtstpp.Period))
-	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtstpp.IndexData))
-	b.WriteString(fmt.Sprintf("%sPokemonData: %s,\n", indentationValues, gtstpp.PokemonData))
-	b.WriteString(fmt.Sprintf("%sSignature: %s,\n", indentationValues, gtstpp.Signature))
-	b.WriteString(fmt.Sprintf("%sNeedData: %s,\n", indentationValues, gtstpp.NeedData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTradeKey: %s,\n", indentationValues, gtstpp.TradeKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrepareTradeKey: %s,\n", indentationValues, gtstpp.PrepareTradeKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrepareUploadKey: %s,\n", indentationValues, gtstpp.PrepareUploadKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, gtstpp.Period)
+	fmt.Fprintf(&b, "%sIndexData: %s,\n", indentationValues, gtstpp.IndexData)
+	fmt.Fprintf(&b, "%sPokemonData: %s,\n", indentationValues, gtstpp.PokemonData)
+	fmt.Fprintf(&b, "%sSignature: %s,\n", indentationValues, gtstpp.Signature)
+	fmt.Fprintf(&b, "%sNeedData: %s,\n", indentationValues, gtstpp.NeedData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

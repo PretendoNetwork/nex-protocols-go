@@ -180,16 +180,16 @@ func (dssdi DataStoreSharedDataInfo) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("DataStoreSharedDataInfo{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dssdi.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dssdi.OwnerID))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dssdi.DataType))
-	b.WriteString(fmt.Sprintf("%sComment: %s,\n", indentationValues, dssdi.Comment))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dssdi.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sProfile: %s,\n", indentationValues, dssdi.Profile))
-	b.WriteString(fmt.Sprintf("%sRating: %s,\n", indentationValues, dssdi.Rating))
-	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dssdi.CreatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sInfo: %s,\n", indentationValues, dssdi.Info.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dssdi.DataID)
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dssdi.OwnerID)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dssdi.DataType)
+	fmt.Fprintf(&b, "%sComment: %s,\n", indentationValues, dssdi.Comment)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dssdi.MetaBinary)
+	fmt.Fprintf(&b, "%sProfile: %s,\n", indentationValues, dssdi.Profile)
+	fmt.Fprintf(&b, "%sRating: %s,\n", indentationValues, dssdi.Rating)
+	fmt.Fprintf(&b, "%sCreatedTime: %s,\n", indentationValues, dssdi.CreatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sInfo: %s,\n", indentationValues, dssdi.Info.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

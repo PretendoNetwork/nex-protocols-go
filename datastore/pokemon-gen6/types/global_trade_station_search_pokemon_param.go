@@ -158,14 +158,14 @@ func (gtsspp GlobalTradeStationSearchPokemonParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationSearchPokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtsspp.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sConditions: %s,\n", indentationValues, gtsspp.Conditions))
-	b.WriteString(fmt.Sprintf("%sResultOrderColumn: %s,\n", indentationValues, gtsspp.ResultOrderColumn))
-	b.WriteString(fmt.Sprintf("%sResultOrder: %s,\n", indentationValues, gtsspp.ResultOrder))
-	b.WriteString(fmt.Sprintf("%sUploadedAfter: %s,\n", indentationValues, gtsspp.UploadedAfter.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUploadedBefore: %s,\n", indentationValues, gtsspp.UploadedBefore.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, gtsspp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrepareUploadKey: %s,\n", indentationValues, gtsspp.PrepareUploadKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sConditions: %s,\n", indentationValues, gtsspp.Conditions)
+	fmt.Fprintf(&b, "%sResultOrderColumn: %s,\n", indentationValues, gtsspp.ResultOrderColumn)
+	fmt.Fprintf(&b, "%sResultOrder: %s,\n", indentationValues, gtsspp.ResultOrder)
+	fmt.Fprintf(&b, "%sUploadedAfter: %s,\n", indentationValues, gtsspp.UploadedAfter.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUploadedBefore: %s,\n", indentationValues, gtsspp.UploadedBefore.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, gtsspp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

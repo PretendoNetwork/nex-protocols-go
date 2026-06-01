@@ -103,9 +103,9 @@ func (dsrt DataStoreRatingTarget) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingTarget{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrt.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsrt.Slot))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsrt.DataID)
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsrt.Slot)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

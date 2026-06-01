@@ -115,10 +115,10 @@ func (dscpsdp DataStoreCompletePostSharedDataParam) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscpsdp.DataID))
-	b.WriteString(fmt.Sprintf("%sCompleteParam: %s,\n", indentationValues, dscpsdp.CompleteParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareParam: %s,\n", indentationValues, dscpsdp.PrepareParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscpsdp.DataID)
+	fmt.Fprintf(&b, "%sCompleteParam: %s,\n", indentationValues, dscpsdp.CompleteParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrepareParam: %s,\n", indentationValues, dscpsdp.PrepareParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

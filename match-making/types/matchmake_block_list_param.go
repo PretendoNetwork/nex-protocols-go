@@ -92,8 +92,8 @@ func (mblp MatchmakeBlockListParam) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeBlockListParam{\n")
-	b.WriteString(fmt.Sprintf("%sOptionFlag: %s,\n", indentationValues, mblp.OptionFlag))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOptionFlag: %s,\n", indentationValues, mblp.OptionFlag)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

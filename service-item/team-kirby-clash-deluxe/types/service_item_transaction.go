@@ -180,16 +180,16 @@ func (sit ServiceItemTransaction) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemTransaction{\n")
-	b.WriteString(fmt.Sprintf("%sTransactionID: %s,\n", indentationValues, sit.TransactionID))
-	b.WriteString(fmt.Sprintf("%sExtTransactionID: %s,\n", indentationValues, sit.ExtTransactionID))
-	b.WriteString(fmt.Sprintf("%sTime: %s,\n", indentationValues, sit.Time.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTransactionType: %s,\n", indentationValues, sit.TransactionType))
-	b.WriteString(fmt.Sprintf("%sTransactionDescription: %s,\n", indentationValues, sit.TransactionDescription))
-	b.WriteString(fmt.Sprintf("%sTransactionAmount: %s,\n", indentationValues, sit.TransactionAmount.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sit.ItemCode))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sit.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, sit.Limitation.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTransactionID: %s,\n", indentationValues, sit.TransactionID)
+	fmt.Fprintf(&b, "%sExtTransactionID: %s,\n", indentationValues, sit.ExtTransactionID)
+	fmt.Fprintf(&b, "%sTime: %s,\n", indentationValues, sit.Time.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTransactionType: %s,\n", indentationValues, sit.TransactionType)
+	fmt.Fprintf(&b, "%sTransactionDescription: %s,\n", indentationValues, sit.TransactionDescription)
+	fmt.Fprintf(&b, "%sTransactionAmount: %s,\n", indentationValues, sit.TransactionAmount.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sit.ItemCode)
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sit.ReferenceID)
+	fmt.Fprintf(&b, "%sLimitation: %s,\n", indentationValues, sit.Limitation.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

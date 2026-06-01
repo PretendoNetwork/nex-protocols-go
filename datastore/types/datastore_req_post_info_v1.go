@@ -136,12 +136,12 @@ func (dsrpiv DataStoreReqPostInfoV1) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqPostInfoV1{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrpiv.DataID))
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrpiv.URL))
-	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrpiv.RequestHeaders))
-	b.WriteString(fmt.Sprintf("%sFormFields: %s,\n", indentationValues, dsrpiv.FormFields))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrpiv.RootCACert))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsrpiv.DataID)
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrpiv.URL)
+	fmt.Fprintf(&b, "%sRequestHeaders: %s,\n", indentationValues, dsrpiv.RequestHeaders)
+	fmt.Fprintf(&b, "%sFormFields: %s,\n", indentationValues, dsrpiv.FormFields)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrpiv.RootCACert)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

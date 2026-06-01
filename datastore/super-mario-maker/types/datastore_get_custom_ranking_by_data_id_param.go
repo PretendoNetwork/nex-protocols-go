@@ -114,10 +114,10 @@ func (dsgcrbdidp DataStoreGetCustomRankingByDataIDParam) FormatToString(indentat
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCustomRankingByDataIDParam{\n")
-	b.WriteString(fmt.Sprintf("%sApplicationID: %s,\n", indentationValues, dsgcrbdidp.ApplicationID))
-	b.WriteString(fmt.Sprintf("%sDataIDList: %s,\n", indentationValues, dsgcrbdidp.DataIDList))
-	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dsgcrbdidp.ResultOption))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sApplicationID: %s,\n", indentationValues, dsgcrbdidp.ApplicationID)
+	fmt.Fprintf(&b, "%sDataIDList: %s,\n", indentationValues, dsgcrbdidp.DataIDList)
+	fmt.Fprintf(&b, "%sResultOption: %s,\n", indentationValues, dsgcrbdidp.ResultOption)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

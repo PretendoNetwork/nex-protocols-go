@@ -104,9 +104,9 @@ func (silsir ServiceItemListServiceItemResponse) FormatToString(indentationLevel
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, silsir.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullableCatalog: %s,\n", indentationValues, silsir.NullableCatalog))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, silsir.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullableCatalog: %s,\n", indentationValues, silsir.NullableCatalog)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

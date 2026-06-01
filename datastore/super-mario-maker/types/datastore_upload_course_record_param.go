@@ -114,10 +114,10 @@ func (dsucrp DataStoreUploadCourseRecordParam) FormatToString(indentationLevel i
 	var b strings.Builder
 
 	b.WriteString("DataStoreUploadCourseRecordParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsucrp.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsucrp.Slot))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dsucrp.Score))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsucrp.DataID)
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsucrp.Slot)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dsucrp.Score)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

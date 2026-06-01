@@ -158,14 +158,14 @@ func (sso SimpleSearchObject) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SimpleSearchObject{\n")
-	b.WriteString(fmt.Sprintf("%sObjectID: %s,\n", indentationValues, sso.ObjectID))
-	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, sso.OwnerPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAttributes: %s,\n", indentationValues, sso.Attributes))
-	b.WriteString(fmt.Sprintf("%sMetadata: %s,\n", indentationValues, sso.Metadata))
-	b.WriteString(fmt.Sprintf("%sCommunityIDMiiverse: %s,\n", indentationValues, sso.CommunityIDMiiverse))
-	b.WriteString(fmt.Sprintf("%sCommunityCode: %s,\n", indentationValues, sso.CommunityCode))
-	b.WriteString(fmt.Sprintf("%sDatetimeAttribute: %s,\n", indentationValues, sso.DatetimeAttribute.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sObjectID: %s,\n", indentationValues, sso.ObjectID)
+	fmt.Fprintf(&b, "%sOwnerPID: %s,\n", indentationValues, sso.OwnerPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAttributes: %s,\n", indentationValues, sso.Attributes)
+	fmt.Fprintf(&b, "%sMetadata: %s,\n", indentationValues, sso.Metadata)
+	fmt.Fprintf(&b, "%sCommunityIDMiiverse: %s,\n", indentationValues, sso.CommunityIDMiiverse)
+	fmt.Fprintf(&b, "%sCommunityCode: %s,\n", indentationValues, sso.CommunityCode)
+	fmt.Fprintf(&b, "%sDatetimeAttribute: %s,\n", indentationValues, sso.DatetimeAttribute.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

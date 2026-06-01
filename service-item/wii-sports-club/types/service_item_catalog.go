@@ -114,10 +114,10 @@ func (sic ServiceItemCatalog) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemCatalog{\n")
-	b.WriteString(fmt.Sprintf("%sTotalSize: %s,\n", indentationValues, sic.TotalSize))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, sic.Offset))
-	b.WriteString(fmt.Sprintf("%sListItems: %s,\n", indentationValues, sic.ListItems))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTotalSize: %s,\n", indentationValues, sic.TotalSize)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, sic.Offset)
+	fmt.Fprintf(&b, "%sListItems: %s,\n", indentationValues, sic.ListItems)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

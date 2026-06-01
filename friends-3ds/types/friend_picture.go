@@ -126,11 +126,11 @@ func (fp FriendPicture) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendPicture{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, fp.Unknown1))
-	b.WriteString(fmt.Sprintf("%sPictureData: %s,\n", indentationValues, fp.PictureData))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, fp.Unknown2.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, fp.Unknown1)
+	fmt.Fprintf(&b, "%sPictureData: %s,\n", indentationValues, fp.PictureData)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, fp.Unknown2.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

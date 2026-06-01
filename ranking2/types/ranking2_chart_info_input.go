@@ -103,9 +103,9 @@ func (rcii Ranking2ChartInfoInput) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2ChartInfoInput{\n")
-	b.WriteString(fmt.Sprintf("%sChartIndex: %s,\n", indentationValues, rcii.ChartIndex))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, rcii.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sChartIndex: %s,\n", indentationValues, rcii.ChartIndex)
+	fmt.Fprintf(&b, "%sNumSeasonsToGoBack: %s,\n", indentationValues, rcii.NumSeasonsToGoBack)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

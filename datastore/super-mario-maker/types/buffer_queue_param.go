@@ -103,9 +103,9 @@ func (bqp BufferQueueParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BufferQueueParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, bqp.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, bqp.Slot))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, bqp.DataID)
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, bqp.Slot)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -3,7 +3,7 @@ package types
 
 import "github.com/PretendoNetwork/nex-go/v2/types"
 
-// DataInterface defines an interface to track types which have Gathering anywhere
+// GatheringInterface defines an interface to track types which have Gathering anywhere
 // in their parent tree.
 type GatheringInterface interface {
 	types.HoldableObject

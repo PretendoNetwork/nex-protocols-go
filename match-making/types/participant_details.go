@@ -125,11 +125,11 @@ func (pd ParticipantDetails) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ParticipantDetails{\n")
-	b.WriteString(fmt.Sprintf("%sIDParticipant: %s,\n", indentationValues, pd.IDParticipant.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, pd.StrName))
-	b.WriteString(fmt.Sprintf("%sStrMessage: %s,\n", indentationValues, pd.StrMessage))
-	b.WriteString(fmt.Sprintf("%sUIParticipants: %s,\n", indentationValues, pd.UIParticipants))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIDParticipant: %s,\n", indentationValues, pd.IDParticipant.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrName: %s,\n", indentationValues, pd.StrName)
+	fmt.Fprintf(&b, "%sStrMessage: %s,\n", indentationValues, pd.StrMessage)
+	fmt.Fprintf(&b, "%sUIParticipants: %s,\n", indentationValues, pd.UIParticipants)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

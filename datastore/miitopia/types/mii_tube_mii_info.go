@@ -110,10 +110,10 @@ func (mtmi MiiTubeMiiInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MiiTubeMiiInfo{\n")
-	b.WriteString(fmt.Sprintf("%sMetaInfo: %s,\n", indentationValues, mtmi.MetaInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mtmi.Category))
-	b.WriteString(fmt.Sprintf("%sRankingType: %s,\n", indentationValues, mtmi.RankingType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMetaInfo: %s,\n", indentationValues, mtmi.MetaInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mtmi.Category)
+	fmt.Fprintf(&b, "%sRankingType: %s,\n", indentationValues, mtmi.RankingType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

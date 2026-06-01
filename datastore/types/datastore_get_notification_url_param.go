@@ -92,8 +92,8 @@ func (dsgnurlp DataStoreGetNotificationURLParam) FormatToString(indentationLevel
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetNotificationURLParam{\n")
-	b.WriteString(fmt.Sprintf("%sPreviousURL: %s,\n", indentationValues, dsgnurlp.PreviousURL))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPreviousURL: %s,\n", indentationValues, dsgnurlp.PreviousURL)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

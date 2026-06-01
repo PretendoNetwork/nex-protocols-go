@@ -136,12 +136,12 @@ func (sdscp ScreeningDataStoreContentParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ScreeningDataStoreContentParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, sdscp.DataID))
-	b.WriteString(fmt.Sprintf("%sContentDataID: %s,\n", indentationValues, sdscp.ContentDataID))
-	b.WriteString(fmt.Sprintf("%sUGCType: %s,\n", indentationValues, sdscp.UGCType))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sdscp.Language))
-	b.WriteString(fmt.Sprintf("%sSearchKey: %s\n", indentationValues, sdscp.SearchKey))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, sdscp.DataID)
+	fmt.Fprintf(&b, "%sContentDataID: %s,\n", indentationValues, sdscp.ContentDataID)
+	fmt.Fprintf(&b, "%sUGCType: %s,\n", indentationValues, sdscp.UGCType)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, sdscp.Language)
+	fmt.Fprintf(&b, "%sSearchKey: %s\n", indentationValues, sdscp.SearchKey)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

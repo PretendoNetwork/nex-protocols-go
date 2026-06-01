@@ -114,10 +114,10 @@ func (spplp ShopPostPlayLogParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ShopPostPlayLogParam{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, spplp.Unknown1))
-	b.WriteString(fmt.Sprintf("%sTimestamp: %s,\n", indentationValues, spplp.Timestamp.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, spplp.Unknown2))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, spplp.Unknown1)
+	fmt.Fprintf(&b, "%sTimestamp: %s,\n", indentationValues, spplp.Timestamp.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, spplp.Unknown2)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

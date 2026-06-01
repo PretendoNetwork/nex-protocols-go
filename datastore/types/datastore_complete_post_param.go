@@ -103,9 +103,9 @@ func (dscpp DataStoreCompletePostParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscpp.DataID))
-	b.WriteString(fmt.Sprintf("%sIsSuccess: %s,\n", indentationValues, dscpp.IsSuccess))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscpp.DataID)
+	fmt.Fprintf(&b, "%sIsSuccess: %s,\n", indentationValues, dscpp.IsSuccess)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

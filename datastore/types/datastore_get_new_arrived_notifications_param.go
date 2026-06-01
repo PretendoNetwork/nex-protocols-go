@@ -103,9 +103,9 @@ func (dsgnanp DataStoreGetNewArrivedNotificationsParam) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetNewArrivedNotificationsParam{\n")
-	b.WriteString(fmt.Sprintf("%sLastNotificationID: %s,\n", indentationValues, dsgnanp.LastNotificationID))
-	b.WriteString(fmt.Sprintf("%sLimit: %s,\n", indentationValues, dsgnanp.Limit))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLastNotificationID: %s,\n", indentationValues, dsgnanp.LastNotificationID)
+	fmt.Fprintf(&b, "%sLimit: %s,\n", indentationValues, dsgnanp.Limit)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -114,10 +114,10 @@ func (de DeletionEntry) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DeletionEntry{\n")
-	b.WriteString(fmt.Sprintf("%sIDGathering: %s,\n", indentationValues, de.IDGathering))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, de.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUIReason: %s,\n", indentationValues, de.UIReason))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIDGathering: %s,\n", indentationValues, de.IDGathering)
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, de.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUIReason: %s,\n", indentationValues, de.UIReason)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

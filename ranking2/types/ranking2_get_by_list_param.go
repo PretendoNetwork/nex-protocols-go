@@ -148,13 +148,13 @@ func (rgblp Ranking2GetByListParam) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("Ranking2GetByListParam{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rgblp.Category))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, rgblp.Offset))
-	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, rgblp.Length))
-	b.WriteString(fmt.Sprintf("%sSortFlags: %s,\n", indentationValues, rgblp.SortFlags))
-	b.WriteString(fmt.Sprintf("%sOptionFlags: %s,\n", indentationValues, rgblp.OptionFlags))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, rgblp.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rgblp.Category)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, rgblp.Offset)
+	fmt.Fprintf(&b, "%sLength: %s,\n", indentationValues, rgblp.Length)
+	fmt.Fprintf(&b, "%sSortFlags: %s,\n", indentationValues, rgblp.SortFlags)
+	fmt.Fprintf(&b, "%sOptionFlags: %s,\n", indentationValues, rgblp.OptionFlags)
+	fmt.Fprintf(&b, "%sNumSeasonsToGoBack: %s,\n", indentationValues, rgblp.NumSeasonsToGoBack)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -115,10 +115,10 @@ func (dsafp DataStoreAttachFileParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("DataStoreAttachFileParam{\n")
-	b.WriteString(fmt.Sprintf("%sPostParam: %s,\n", indentationValues, dsafp.PostParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dsafp.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sContentType: %s,\n", indentationValues, dsafp.ContentType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPostParam: %s,\n", indentationValues, dsafp.PostParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sReferDataID: %s,\n", indentationValues, dsafp.ReferDataID)
+	fmt.Fprintf(&b, "%sContentType: %s,\n", indentationValues, dsafp.ContentType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -136,11 +136,11 @@ func (ncad NintendoCreateAccountData) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("NintendoCreateAccountData{\n")
-	b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, ncad.NNAInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, ncad.Token))
-	b.WriteString(fmt.Sprintf("%sBirthday: %s,\n", indentationValues, ncad.Birthday.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, ncad.Unknown))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNNAInfo: %s,\n", indentationValues, ncad.NNAInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sToken: %s,\n", indentationValues, ncad.Token)
+	fmt.Fprintf(&b, "%sBirthday: %s,\n", indentationValues, ncad.Birthday.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, ncad.Unknown)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

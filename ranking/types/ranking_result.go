@@ -114,10 +114,10 @@ func (rr RankingResult) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingResult{\n")
-	b.WriteString(fmt.Sprintf("%sRankDataList: %s,\n", indentationValues, rr.RankDataList))
-	b.WriteString(fmt.Sprintf("%sTotalCount: %s,\n", indentationValues, rr.TotalCount))
-	b.WriteString(fmt.Sprintf("%sSinceTime: %s,\n", indentationValues, rr.SinceTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRankDataList: %s,\n", indentationValues, rr.RankDataList)
+	fmt.Fprintf(&b, "%sTotalCount: %s,\n", indentationValues, rr.TotalCount)
+	fmt.Fprintf(&b, "%sSinceTime: %s,\n", indentationValues, rr.SinceTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -115,10 +115,10 @@ func (mrsip MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStatsInitParam{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrsip.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mrsip.Category))
-	b.WriteString(fmt.Sprintf("%sInitialRatingValue: %s,\n", indentationValues, mrsip.InitialRatingValue))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrsip.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mrsip.Category)
+	fmt.Fprintf(&b, "%sInitialRatingValue: %s,\n", indentationValues, mrsip.InitialRatingValue)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

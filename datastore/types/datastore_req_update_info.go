@@ -157,12 +157,12 @@ func (dsrui DataStoreReqUpdateInfo) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqUpdateInfo{\n")
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dsrui.Version))
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrui.URL))
-	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrui.RequestHeaders))
-	b.WriteString(fmt.Sprintf("%sFormFields: %s,\n", indentationValues, dsrui.FormFields))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrui.RootCACert))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, dsrui.Version)
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrui.URL)
+	fmt.Fprintf(&b, "%sRequestHeaders: %s,\n", indentationValues, dsrui.RequestHeaders)
+	fmt.Fprintf(&b, "%sFormFields: %s,\n", indentationValues, dsrui.FormFields)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrui.RootCACert)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

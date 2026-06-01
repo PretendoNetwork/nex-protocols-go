@@ -125,11 +125,11 @@ func (dsrgam DataStoreReqGetAdditionalMeta) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetAdditionalMeta{\n")
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dsrgam.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsrgam.DataType))
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dsrgam.Version))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dsrgam.MetaBinary))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dsrgam.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dsrgam.DataType)
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, dsrgam.Version)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dsrgam.MetaBinary)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

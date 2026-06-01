@@ -180,16 +180,16 @@ func (dsrmi DataStoreReplayMetaInfo) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("DataStoreReplayMetaInfo{\n")
-	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dsrmi.ReplayID))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsrmi.Size))
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dsrmi.Mode))
-	b.WriteString(fmt.Sprintf("%sStyle: %s,\n", indentationValues, dsrmi.Style))
-	b.WriteString(fmt.Sprintf("%sRule: %s,\n", indentationValues, dsrmi.Rule))
-	b.WriteString(fmt.Sprintf("%sStage: %s,\n", indentationValues, dsrmi.Stage))
-	b.WriteString(fmt.Sprintf("%sReplayType: %s,\n", indentationValues, dsrmi.ReplayType))
-	b.WriteString(fmt.Sprintf("%sPlayers: %s,\n", indentationValues, dsrmi.Players))
-	b.WriteString(fmt.Sprintf("%sWinners: %s,\n", indentationValues, dsrmi.Winners))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReplayID: %s,\n", indentationValues, dsrmi.ReplayID)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dsrmi.Size)
+	fmt.Fprintf(&b, "%sMode: %s,\n", indentationValues, dsrmi.Mode)
+	fmt.Fprintf(&b, "%sStyle: %s,\n", indentationValues, dsrmi.Style)
+	fmt.Fprintf(&b, "%sRule: %s,\n", indentationValues, dsrmi.Rule)
+	fmt.Fprintf(&b, "%sStage: %s,\n", indentationValues, dsrmi.Stage)
+	fmt.Fprintf(&b, "%sReplayType: %s,\n", indentationValues, dsrmi.ReplayType)
+	fmt.Fprintf(&b, "%sPlayers: %s,\n", indentationValues, dsrmi.Players)
+	fmt.Fprintf(&b, "%sWinners: %s,\n", indentationValues, dsrmi.Winners)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

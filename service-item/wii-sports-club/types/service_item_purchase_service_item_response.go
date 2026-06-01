@@ -104,9 +104,9 @@ func (sipsir ServiceItemPurchaseServiceItemResponse) FormatToString(indentationL
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sipsir.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullablePurchaceInfo: %s,\n", indentationValues, sipsir.NullablePurchaceInfo))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sipsir.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullablePurchaceInfo: %s,\n", indentationValues, sipsir.NullablePurchaceInfo)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

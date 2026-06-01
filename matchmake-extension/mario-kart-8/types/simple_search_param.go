@@ -147,13 +147,13 @@ func (ssp SimpleSearchParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SimpleSearchParam{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, ssp.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, ssp.Unknown2.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sConditions: %s,\n", indentationValues, ssp.Conditions))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, ssp.Unknown3))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, ssp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, ssp.Unknown4.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, ssp.Unknown)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, ssp.Unknown2.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sConditions: %s,\n", indentationValues, ssp.Conditions)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, ssp.Unknown3)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, ssp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, ssp.Unknown4.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

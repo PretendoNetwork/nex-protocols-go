@@ -125,11 +125,11 @@ func (ri Ranking2Info) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2Info{\n")
-	b.WriteString(fmt.Sprintf("%sRankDataList: %s,\n", indentationValues, ri.RankDataList))
-	b.WriteString(fmt.Sprintf("%sLowestRank: %s,\n", indentationValues, ri.LowestRank))
-	b.WriteString(fmt.Sprintf("%sNumRankedIn: %s,\n", indentationValues, ri.NumRankedIn))
-	b.WriteString(fmt.Sprintf("%sSeason: %s,\n", indentationValues, ri.Season))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRankDataList: %s,\n", indentationValues, ri.RankDataList)
+	fmt.Fprintf(&b, "%sLowestRank: %s,\n", indentationValues, ri.LowestRank)
+	fmt.Fprintf(&b, "%sNumRankedIn: %s,\n", indentationValues, ri.NumRankedIn)
+	fmt.Fprintf(&b, "%sSeason: %s,\n", indentationValues, ri.Season)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

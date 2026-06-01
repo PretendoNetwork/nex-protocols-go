@@ -103,9 +103,9 @@ func (gurl GatheringURLs) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("GatheringURLs{\n")
-	b.WriteString(fmt.Sprintf("%sGID: %s,\n", indentationValues, gurl.GID))
-	b.WriteString(fmt.Sprintf("%sLstStationURLs: %s,\n", indentationValues, gurl.LstStationURLs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGID: %s,\n", indentationValues, gurl.GID)
+	fmt.Fprintf(&b, "%sLstStationURLs: %s,\n", indentationValues, gurl.LstStationURLs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

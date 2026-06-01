@@ -92,8 +92,8 @@ func (dsgsmpv DataStoreGetSpecificMetaParamV1) FormatToString(indentationLevel i
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetSpecificMetaParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sDataIDs: %s,\n", indentationValues, dsgsmpv.DataIDs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataIDs: %s,\n", indentationValues, dsgsmpv.DataIDs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

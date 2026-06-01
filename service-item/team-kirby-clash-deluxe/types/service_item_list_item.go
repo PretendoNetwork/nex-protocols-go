@@ -147,13 +147,13 @@ func (sili ServiceItemListItem) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListItem{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sili.ItemCode))
-	b.WriteString(fmt.Sprintf("%sRegularPrice: %s,\n", indentationValues, sili.RegularPrice.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTaxExcluded: %s,\n", indentationValues, sili.TaxExcluded))
-	b.WriteString(fmt.Sprintf("%sInitialPurchaseOnly: %s,\n", indentationValues, sili.InitialPurchaseOnly))
-	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, sili.Limitation.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAttributes: %s,\n", indentationValues, sili.Attributes))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sili.ItemCode)
+	fmt.Fprintf(&b, "%sRegularPrice: %s,\n", indentationValues, sili.RegularPrice.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTaxExcluded: %s,\n", indentationValues, sili.TaxExcluded)
+	fmt.Fprintf(&b, "%sInitialPurchaseOnly: %s,\n", indentationValues, sili.InitialPurchaseOnly)
+	fmt.Fprintf(&b, "%sLimitation: %s,\n", indentationValues, sili.Limitation.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAttributes: %s,\n", indentationValues, sili.Attributes)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

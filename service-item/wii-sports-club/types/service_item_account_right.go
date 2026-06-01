@@ -103,9 +103,9 @@ func (siar ServiceItemAccountRight) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAccountRight{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, siar.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, siar.Limitation.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, siar.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLimitation: %s,\n", indentationValues, siar.Limitation.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

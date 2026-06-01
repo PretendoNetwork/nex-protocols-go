@@ -114,10 +114,10 @@ func (i Invitation) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Invitation{\n")
-	b.WriteString(fmt.Sprintf("%sIDGathering: %s,\n", indentationValues, i.IDGathering))
-	b.WriteString(fmt.Sprintf("%sIDGuest: %s,\n", indentationValues, i.IDGuest))
-	b.WriteString(fmt.Sprintf("%sStrMessage: %s,\n", indentationValues, i.StrMessage))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIDGathering: %s,\n", indentationValues, i.IDGathering)
+	fmt.Fprintf(&b, "%sIDGuest: %s,\n", indentationValues, i.IDGuest)
+	fmt.Fprintf(&b, "%sStrMessage: %s,\n", indentationValues, i.StrMessage)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

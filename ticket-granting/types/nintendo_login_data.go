@@ -102,8 +102,8 @@ func (nld NintendoLoginData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("NintendoLoginData{\n")
-	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, nld.Token))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sToken: %s,\n", indentationValues, nld.Token)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

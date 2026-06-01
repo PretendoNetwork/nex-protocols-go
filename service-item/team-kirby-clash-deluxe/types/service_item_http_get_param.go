@@ -92,8 +92,8 @@ func (sihttpgp ServiceItemHTTPGetParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("ServiceItemHTTPGetParam{\n")
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, sihttpgp.URL))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, sihttpgp.URL)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

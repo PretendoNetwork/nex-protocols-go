@@ -103,9 +103,9 @@ func (sci ScreeningContextInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ScreeningContextInfo{\n")
-	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, sci.Key))
-	b.WriteString(fmt.Sprintf("%sValue: %s\n", indentationValues, sci.Value))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sKey: %s,\n", indentationValues, sci.Key)
+	fmt.Fprintf(&b, "%sValue: %s\n", indentationValues, sci.Value)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -114,10 +114,10 @@ func (siph ServiceItemPurchaseHistory) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseHistory{\n")
-	b.WriteString(fmt.Sprintf("%sTotalSize: %s,\n", indentationValues, siph.TotalSize))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, siph.Offset))
-	b.WriteString(fmt.Sprintf("%sTransactions: %s,\n", indentationValues, siph.Transactions))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTotalSize: %s,\n", indentationValues, siph.TotalSize)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, siph.Offset)
+	fmt.Fprintf(&b, "%sTransactions: %s,\n", indentationValues, siph.Transactions)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

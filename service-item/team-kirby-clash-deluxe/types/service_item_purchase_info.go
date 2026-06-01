@@ -125,11 +125,11 @@ func (sipi ServiceItemPurchaseInfo) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseInfo{\n")
-	b.WriteString(fmt.Sprintf("%sTransactionID: %s,\n", indentationValues, sipi.TransactionID))
-	b.WriteString(fmt.Sprintf("%sExtTransactionID: %s,\n", indentationValues, sipi.ExtTransactionID))
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sipi.ItemCode))
-	b.WriteString(fmt.Sprintf("%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTransactionID: %s,\n", indentationValues, sipi.TransactionID)
+	fmt.Fprintf(&b, "%sExtTransactionID: %s,\n", indentationValues, sipi.ExtTransactionID)
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sipi.ItemCode)
+	fmt.Fprintf(&b, "%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -42,7 +42,7 @@ func (mcs MiiCharacterSet) String() string {
 }
 
 const (
-	// MiiCharacterSetJPN means that the Mii uses the JPN + USA + EUR character set
+	// MiiCharacterSetJUE means that the Mii uses the JPN + USA + EUR character set
 	MiiCharacterSetJUE MiiCharacterSet = iota
 
 	// MiiCharacterSetCHN means that the Mii uses the Chinese character set

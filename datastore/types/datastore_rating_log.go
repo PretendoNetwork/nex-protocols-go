@@ -125,11 +125,11 @@ func (dsrl DataStoreRatingLog) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingLog{\n")
-	b.WriteString(fmt.Sprintf("%sIsRated: %s,\n", indentationValues, dsrl.IsRated))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, dsrl.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRatingValue: %s,\n", indentationValues, dsrl.RatingValue))
-	b.WriteString(fmt.Sprintf("%sLockExpirationTime: %s,\n", indentationValues, dsrl.LockExpirationTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIsRated: %s,\n", indentationValues, dsrl.IsRated)
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, dsrl.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRatingValue: %s,\n", indentationValues, dsrl.RatingValue)
+	fmt.Fprintf(&b, "%sLockExpirationTime: %s,\n", indentationValues, dsrl.LockExpirationTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

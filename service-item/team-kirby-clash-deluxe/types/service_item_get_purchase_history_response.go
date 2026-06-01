@@ -104,9 +104,9 @@ func (sigphr ServiceItemGetPurchaseHistoryResponse) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetPurchaseHistoryResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sigphr.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullablePurchaseHistory: %s,\n", indentationValues, sigphr.NullablePurchaseHistory))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sigphr.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullablePurchaseHistory: %s,\n", indentationValues, sigphr.NullablePurchaseHistory)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

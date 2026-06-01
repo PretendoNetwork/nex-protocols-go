@@ -104,9 +104,9 @@ func (dsp DataStorePermission) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStorePermission{\n")
-	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dsp.Permission))
-	b.WriteString(fmt.Sprintf("%sRecipientIDs: %s,\n", indentationValues, dsp.RecipientIDs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPermission: %s,\n", indentationValues, dsp.Permission)
+	fmt.Fprintf(&b, "%sRecipientIDs: %s,\n", indentationValues, dsp.RecipientIDs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

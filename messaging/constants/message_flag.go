@@ -30,7 +30,7 @@ func (mf MessageFlag) HasFlag(flag MessageFlag) bool {
 	return mf&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (mf MessageFlag) HasFlags(flags ...MessageFlag) bool {
 	if len(flags) == 0 {
 		return false

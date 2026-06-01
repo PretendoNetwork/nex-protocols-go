@@ -125,11 +125,11 @@ func (dssrp DataStoreSearchReplayParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dssrp.Mode))
-	b.WriteString(fmt.Sprintf("%sStyle: %s,\n", indentationValues, dssrp.Style))
-	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dssrp.Fighter))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dssrp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMode: %s,\n", indentationValues, dssrp.Mode)
+	fmt.Fprintf(&b, "%sStyle: %s,\n", indentationValues, dssrp.Style)
+	fmt.Fprintf(&b, "%sFighter: %s,\n", indentationValues, dssrp.Fighter)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, dssrp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

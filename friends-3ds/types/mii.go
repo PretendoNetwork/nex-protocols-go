@@ -138,12 +138,12 @@ func (m Mii) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Mii{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, m.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, m.Name))
-	b.WriteString(fmt.Sprintf("%sProfanityFlag: %s,\n", indentationValues, m.ProfanityFlag))
-	b.WriteString(fmt.Sprintf("%sCharacterSet: %d,\n", indentationValues, m.CharacterSet))
-	b.WriteString(fmt.Sprintf("%sMiiData: %s,\n", indentationValues, m.MiiData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, m.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, m.Name)
+	fmt.Fprintf(&b, "%sProfanityFlag: %s,\n", indentationValues, m.ProfanityFlag)
+	fmt.Fprintf(&b, "%sCharacterSet: %d,\n", indentationValues, m.CharacterSet)
+	fmt.Fprintf(&b, "%sMiiData: %s,\n", indentationValues, m.MiiData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

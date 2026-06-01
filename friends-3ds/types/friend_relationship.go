@@ -127,11 +127,11 @@ func (fr FriendRelationship) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendRelationship{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fr.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fr.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLFC: %s,\n", indentationValues, fr.LFC))
-	b.WriteString(fmt.Sprintf("%sRelationshipType: %d,\n", indentationValues, fr.RelationshipType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fr.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fr.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLFC: %s,\n", indentationValues, fr.LFC)
+	fmt.Fprintf(&b, "%sRelationshipType: %d,\n", indentationValues, fr.RelationshipType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

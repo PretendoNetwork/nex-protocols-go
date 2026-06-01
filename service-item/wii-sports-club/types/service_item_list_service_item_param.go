@@ -125,11 +125,11 @@ func (silsip ServiceItemListServiceItemParam) FormatToString(indentationLevel in
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListServiceItemParam{\n")
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, silsip.Language))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, silsip.Offset))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, silsip.Size))
-	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, silsip.TitleID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, silsip.Language)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, silsip.Offset)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, silsip.Size)
+	fmt.Fprintf(&b, "%sTitleID: %s,\n", indentationValues, silsip.TitleID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -148,13 +148,13 @@ func (nnep NintendoNotificationEventProfile) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("NintendoNotificationEventProfile{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, nnep.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, nnep.Region))
-	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, nnep.Country))
-	b.WriteString(fmt.Sprintf("%sArea: %s,\n", indentationValues, nnep.Area))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, nnep.Language))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s\n", indentationValues, nnep.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, nnep.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, nnep.Region)
+	fmt.Fprintf(&b, "%sCountry: %s,\n", indentationValues, nnep.Country)
+	fmt.Fprintf(&b, "%sArea: %s,\n", indentationValues, nnep.Area)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, nnep.Language)
+	fmt.Fprintf(&b, "%sPlatform: %s\n", indentationValues, nnep.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

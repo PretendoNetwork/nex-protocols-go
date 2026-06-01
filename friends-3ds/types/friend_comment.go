@@ -126,11 +126,11 @@ func (fc FriendComment) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendComment{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fc.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fc.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sComment: %s,\n", indentationValues, fc.Comment))
-	b.WriteString(fmt.Sprintf("%sModifiedAt: %s,\n", indentationValues, fc.ModifiedAt.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fc.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fc.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sComment: %s,\n", indentationValues, fc.Comment)
+	fmt.Fprintf(&b, "%sModifiedAt: %s,\n", indentationValues, fc.ModifiedAt.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

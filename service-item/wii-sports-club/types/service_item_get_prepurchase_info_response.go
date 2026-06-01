@@ -104,9 +104,9 @@ func (sigpir ServiceItemGetPrepurchaseInfoResponse) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetPrepurchaseInfoResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sigpir.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullablePrepurchaseInfo: %s,\n", indentationValues, sigpir.NullablePrepurchaseInfo))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sigpir.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullablePrepurchaseInfo: %s,\n", indentationValues, sigpir.NullablePrepurchaseInfo)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

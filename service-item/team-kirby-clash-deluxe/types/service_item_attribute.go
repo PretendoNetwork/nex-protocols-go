@@ -103,9 +103,9 @@ func (sia ServiceItemAttribute) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAttribute{\n")
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, sia.Name))
-	b.WriteString(fmt.Sprintf("%sValue: %s,\n", indentationValues, sia.Value))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, sia.Name)
+	fmt.Fprintf(&b, "%sValue: %s,\n", indentationValues, sia.Value)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

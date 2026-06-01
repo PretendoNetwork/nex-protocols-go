@@ -180,16 +180,16 @@ func (dsrp DataStoreReplayPlayer) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreReplayPlayer{\n")
-	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dsrp.Fighter))
-	b.WriteString(fmt.Sprintf("%sHealth: %s,\n", indentationValues, dsrp.Health))
-	b.WriteString(fmt.Sprintf("%sWinningRate: %s,\n", indentationValues, dsrp.WinningRate))
-	b.WriteString(fmt.Sprintf("%sColor: %s,\n", indentationValues, dsrp.Color))
-	b.WriteString(fmt.Sprintf("%sColor2: %s,\n", indentationValues, dsrp.Color2))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, dsrp.PrincipalID))
-	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, dsrp.Country))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, dsrp.Region))
-	b.WriteString(fmt.Sprintf("%sNumber: %s,\n", indentationValues, dsrp.Number))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sFighter: %s,\n", indentationValues, dsrp.Fighter)
+	fmt.Fprintf(&b, "%sHealth: %s,\n", indentationValues, dsrp.Health)
+	fmt.Fprintf(&b, "%sWinningRate: %s,\n", indentationValues, dsrp.WinningRate)
+	fmt.Fprintf(&b, "%sColor: %s,\n", indentationValues, dsrp.Color)
+	fmt.Fprintf(&b, "%sColor2: %s,\n", indentationValues, dsrp.Color2)
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, dsrp.PrincipalID)
+	fmt.Fprintf(&b, "%sCountry: %s,\n", indentationValues, dsrp.Country)
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, dsrp.Region)
+	fmt.Fprintf(&b, "%sNumber: %s,\n", indentationValues, dsrp.Number)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

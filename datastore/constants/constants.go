@@ -1,3 +1,4 @@
+// Package constants provides all the constants, enums, etc. for the DataStore protocol
 package constants
 
 // * Miscellaneous constants

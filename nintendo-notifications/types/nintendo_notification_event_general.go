@@ -147,12 +147,12 @@ func (nneg NintendoNotificationEventGeneral) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("NintendoNotificationEventGeneral{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, nneg.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sU32Param: %s,\n", indentationValues, nneg.U32Param))
-	b.WriteString(fmt.Sprintf("%sU64Param1: %s,\n", indentationValues, nneg.U64Param1))
-	b.WriteString(fmt.Sprintf("%sU64Param2: %s,\n", indentationValues, nneg.U64Param2))
-	b.WriteString(fmt.Sprintf("%sStrParam: %s,\n", indentationValues, nneg.StrParam))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, nneg.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sU32Param: %s,\n", indentationValues, nneg.U32Param)
+	fmt.Fprintf(&b, "%sU64Param1: %s,\n", indentationValues, nneg.U64Param1)
+	fmt.Fprintf(&b, "%sU64Param2: %s,\n", indentationValues, nneg.U64Param2)
+	fmt.Fprintf(&b, "%sStrParam: %s,\n", indentationValues, nneg.StrParam)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

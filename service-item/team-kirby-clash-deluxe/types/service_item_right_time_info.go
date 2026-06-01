@@ -104,9 +104,9 @@ func (sirti ServiceItemRightTimeInfo) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightTimeInfo{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemRightInfo (parent): %s,\n", indentationValues, sirti.ServiceItemRightInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAccountRights: %s,\n", indentationValues, sirti.AccountRights))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemRightInfo (parent): %s,\n", indentationValues, sirti.ServiceItemRightInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAccountRights: %s,\n", indentationValues, sirti.AccountRights)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

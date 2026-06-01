@@ -104,9 +104,9 @@ func (siusir ServiceItemUseServiceItemResponse) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUseServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, siusir.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullableUsedInfo: %s,\n", indentationValues, siusir.NullableUsedInfo))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, siusir.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullableUsedInfo: %s,\n", indentationValues, siusir.NullableUsedInfo)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

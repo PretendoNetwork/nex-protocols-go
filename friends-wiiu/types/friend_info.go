@@ -169,14 +169,14 @@ func (fi FriendInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fi.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, fi.NNAInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, fi.Presence.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, fi.Status.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBecameFriend: %s,\n", indentationValues, fi.BecameFriend.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLastOnline: %s,\n", indentationValues, fi.LastOnline.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, fi.Unknown))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fi.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNNAInfo: %s,\n", indentationValues, fi.NNAInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPresence: %s,\n", indentationValues, fi.Presence.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStatus: %s,\n", indentationValues, fi.Status.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBecameFriend: %s,\n", indentationValues, fi.BecameFriend.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLastOnline: %s,\n", indentationValues, fi.LastOnline.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, fi.Unknown)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

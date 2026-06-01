@@ -30,7 +30,7 @@ func (protocol *Protocol) handleReplaceTargetAndGetSubscriptionData(packet nex.P
 
 	err := newTargets.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReplaceTargetAndGetSubscriptionData(fmt.Errorf("Failed to read newTargets from parameters. %s", err.Error()), packet, callID, newTargets)
+		_, rmcError := protocol.ReplaceTargetAndGetSubscriptionData(fmt.Errorf("failed to read newTargets from parameters. %s", err.Error()), packet, callID, newTargets)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

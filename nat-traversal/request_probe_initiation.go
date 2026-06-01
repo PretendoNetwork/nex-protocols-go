@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 
 	err := urlTargetList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, urlTargetList)
+		_, rmcError := protocol.RequestProbeInitiation(fmt.Errorf("failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, urlTargetList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

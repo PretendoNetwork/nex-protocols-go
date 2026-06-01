@@ -34,7 +34,7 @@ func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.Packe
 
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetActivePlayerSubscriptionData(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3)
+		_, rmcError := protocol.GetActivePlayerSubscriptionData(fmt.Errorf("failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.Packe
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetActivePlayerSubscriptionData(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3)
+		_, rmcError := protocol.GetActivePlayerSubscriptionData(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.Packe
 
 	err = unknown3.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetActivePlayerSubscriptionData(fmt.Errorf("Failed to read unknown3 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3)
+		_, rmcError := protocol.GetActivePlayerSubscriptionData(fmt.Errorf("failed to read unknown3 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -32,7 +32,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 
 	err = vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, vecMyURLs, hCustomData)
+		_, rmcError := protocol.RegisterEx(fmt.Errorf("failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, vecMyURLs, hCustomData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 
 	err = hCustomData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, vecMyURLs, hCustomData)
+		_, rmcError := protocol.RegisterEx(fmt.Errorf("failed to read hCustomData from parameters. %s", err.Error()), packet, callID, vecMyURLs, hCustomData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

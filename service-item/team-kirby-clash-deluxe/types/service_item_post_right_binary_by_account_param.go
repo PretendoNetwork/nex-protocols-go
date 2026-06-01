@@ -40,31 +40,31 @@ func (siprbbap ServiceItemPostRightBinaryByAccountParam) WriteTo(writable types.
 // ExtractFrom extracts the ServiceItemPostRightBinaryByAccountParam from the given readable
 func (siprbbap *ServiceItemPostRightBinaryByAccountParam) ExtractFrom(readable types.Readable) error {
 	if err := siprbbap.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPostRightBinaryByAccountParam header. %s", err.Error())
 	}
 
 	if err := siprbbap.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPostRightBinaryByAccountParam.ReferenceID. %s", err.Error())
 	}
 
 	if err := siprbbap.UseType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UseType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPostRightBinaryByAccountParam.UseType. %s", err.Error())
 	}
 
 	if err := siprbbap.RightBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.RightBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPostRightBinaryByAccountParam.RightBinary. %s", err.Error())
 	}
 
 	if err := siprbbap.LogMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.LogMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPostRightBinaryByAccountParam.LogMessage. %s", err.Error())
 	}
 
 	if err := siprbbap.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPostRightBinaryByAccountParam.UniqueID. %s", err.Error())
 	}
 
 	if err := siprbbap.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPostRightBinaryByAccountParam.Platform. %s", err.Error())
 	}
 
 	return nil

@@ -30,11 +30,11 @@ func (fup FriendUserParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendUserParam from the given readable
 func (fup *FriendUserParam) ExtractFrom(readable types.Readable) error {
 	if err := fup.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendUserParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendUserParam header. %s", err.Error())
 	}
 
 	if err := fup.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendUserParam.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendUserParam.Name. %s", err.Error())
 	}
 
 	return nil

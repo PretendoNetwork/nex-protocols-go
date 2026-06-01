@@ -32,15 +32,15 @@ func (dspgpv DataStorePrepareGetParamV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePrepareGetParamV1 from the given readable
 func (dspgpv *DataStorePrepareGetParamV1) ExtractFrom(readable types.Readable) error {
 	if err := dspgpv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParamV1 header. %s", err.Error())
 	}
 
 	if err := dspgpv.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParamV1.DataID. %s", err.Error())
 	}
 
 	if err := dspgpv.LockID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1.LockID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParamV1.LockID. %s", err.Error())
 	}
 
 	return nil

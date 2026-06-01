@@ -32,7 +32,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 
 	err = id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindCommunityByOwner(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, id, resultRange)
+		_, rmcError := protocol.FindCommunityByOwner(fmt.Errorf("failed to read id from parameters. %s", err.Error()), packet, callID, id, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindCommunityByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, id, resultRange)
+		_, rmcError := protocol.FindCommunityByOwner(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, id, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -7,8 +7,8 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
-	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/types"
 	constants "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/constants"
+	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/types"
 )
 
 func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 
 	err = rankingMode.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read rankingMode from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
+		_, rmcError := protocol.GetScore(fmt.Errorf("failed to read rankingMode from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -50,7 +50,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 	if rankingVersion.GreaterOrEqual("2.0.0") {
 		err = category.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
+			_, rmcError := protocol.GetScore(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -62,7 +62,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 
 		err = categories.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
+			_, rmcError := protocol.GetScore(fmt.Errorf("failed to read categories from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -71,7 +71,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 		}
 
 		if len(categories) != constants.NumRankingDataCategories {
-			_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, rankingMode, category, orderParam, offset, length)
+			_, rmcError := protocol.GetScore(fmt.Errorf("failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, rankingMode, category, orderParam, offset, length)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -84,7 +84,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 
 	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
+		_, rmcError := protocol.GetScore(fmt.Errorf("failed to read orderParam from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -94,7 +94,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 
 	err = offset.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read offset from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
+		_, rmcError := protocol.GetScore(fmt.Errorf("failed to read offset from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -104,7 +104,7 @@ func (protocol *Protocol) handleGetScore(packet nex.PacketInterface) {
 
 	err = length.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetScore(fmt.Errorf("Failed to read length from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
+		_, rmcError := protocol.GetScore(fmt.Errorf("failed to read length from parameters. %s", err.Error()), packet, callID, rankingMode, category, orderParam, offset, length)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

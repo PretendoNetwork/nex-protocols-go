@@ -48,47 +48,47 @@ func (rrd RatingRankData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RatingRankData from the given readable
 func (rrd *RatingRankData) ExtractFrom(readable types.Readable) error {
 	if err := rrd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData header. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData header. %s", err.Error())
 	}
 
 	if err := rrd.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.PrincipalID. %s", err.Error())
 	}
 
 	if err := rrd.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.UniqueID. %s", err.Error())
 	}
 
 	if err := rrd.Order.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Order. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Order. %s", err.Error())
 	}
 
 	if err := rrd.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Category. %s", err.Error())
 	}
 
 	if err := rrd.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Score. %s", err.Error())
 	}
 
 	if err := rrd.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Unknown1. %s", err.Error())
 	}
 
 	if err := rrd.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Unknown2. %s", err.Error())
 	}
 
 	if err := rrd.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Unknown3. %s", err.Error())
 	}
 
 	if err := rrd.CommonData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.CommonData. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.CommonData. %s", err.Error())
 	}
 
 	if err := rrd.UpdateTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.UpdateTime. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.UpdateTime. %s", err.Error())
 	}
 
 	return nil

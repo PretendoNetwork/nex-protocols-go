@@ -38,27 +38,27 @@ func (btp BankTransactionParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the BankTransactionParam from the given readable
 func (btp *BankTransactionParam) ExtractFrom(readable types.Readable) error {
 	if err := btp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam header. %s", err.Error())
 	}
 
 	if err := btp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.DataID. %s", err.Error())
 	}
 
 	if err := btp.CurVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.CurVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.CurVersion. %s", err.Error())
 	}
 
 	if err := btp.UpdateVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.UpdateVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.UpdateVersion. %s", err.Error())
 	}
 
 	if err := btp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.Size. %s", err.Error())
 	}
 
 	if err := btp.TransactionPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.TransactionPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.TransactionPassword. %s", err.Error())
 	}
 
 	return nil

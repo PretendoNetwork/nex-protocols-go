@@ -36,7 +36,7 @@ func (protocol *Protocol) handleGetTotal(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetTotal(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.GetTotal(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleGetTotal(packet nex.PacketInterface) {
 
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetTotal(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.GetTotal(fmt.Errorf("failed to read unknown1 from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -56,7 +56,7 @@ func (protocol *Protocol) handleGetTotal(packet nex.PacketInterface) {
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetTotal(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.GetTotal(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -66,7 +66,7 @@ func (protocol *Protocol) handleGetTotal(packet nex.PacketInterface) {
 
 	err = unknown3.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetTotal(fmt.Errorf("Failed to read unknown3 from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.GetTotal(fmt.Errorf("failed to read unknown3 from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -76,7 +76,7 @@ func (protocol *Protocol) handleGetTotal(packet nex.PacketInterface) {
 
 	err = unknown4.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetTotal(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.GetTotal(fmt.Errorf("failed to read unknown4 from parameters. %s", err.Error()), packet, callID, uniqueID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

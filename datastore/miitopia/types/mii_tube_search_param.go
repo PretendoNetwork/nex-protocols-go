@@ -42,35 +42,35 @@ func (mtsp MiiTubeSearchParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MiiTubeSearchParam from the given readable
 func (mtsp *MiiTubeSearchParam) ExtractFrom(readable types.Readable) error {
 	if err := mtsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchParam header. %s", err.Error())
 	}
 
 	if err := mtsp.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchParam.Name. %s", err.Error())
 	}
 
 	if err := mtsp.Page.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Page. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchParam.Page. %s", err.Error())
 	}
 
 	if err := mtsp.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchParam.Category. %s", err.Error())
 	}
 
 	if err := mtsp.Gender.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Gender. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchParam.Gender. %s", err.Error())
 	}
 
 	if err := mtsp.Country.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Country. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchParam.Country. %s", err.Error())
 	}
 
 	if err := mtsp.SearchType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchParam.SearchType. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchParam.SearchType. %s", err.Error())
 	}
 
 	if err := mtsp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchParam.ResultOption. %s", err.Error())
 	}
 
 	return nil

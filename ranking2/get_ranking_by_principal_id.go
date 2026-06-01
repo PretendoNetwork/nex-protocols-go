@@ -33,7 +33,7 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 
 	err = getParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRankingByPrincipalID(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), packet, callID, getParam, principalIDList)
+		_, rmcError := protocol.GetRankingByPrincipalID(fmt.Errorf("failed to read getParam from parameters. %s", err.Error()), packet, callID, getParam, principalIDList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 
 	err = principalIDList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRankingByPrincipalID(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), packet, callID, getParam, principalIDList)
+		_, rmcError := protocol.GetRankingByPrincipalID(fmt.Errorf("failed to read principalIDList from parameters. %s", err.Error()), packet, callID, getParam, principalIDList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

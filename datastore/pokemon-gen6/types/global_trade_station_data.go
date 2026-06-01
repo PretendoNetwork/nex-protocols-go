@@ -38,27 +38,27 @@ func (gtsd GlobalTradeStationData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the GlobalTradeStationData from the given readable
 func (gtsd *GlobalTradeStationData) ExtractFrom(readable types.Readable) error {
 	if err := gtsd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData header. %s", err.Error())
 	}
 
 	if err := gtsd.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.DataID. %s", err.Error())
 	}
 
 	if err := gtsd.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.OwnerID. %s", err.Error())
 	}
 
 	if err := gtsd.UpdatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.UpdatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.UpdatedTime. %s", err.Error())
 	}
 
 	if err := gtsd.IndexData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.IndexData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.IndexData. %s", err.Error())
 	}
 
 	if err := gtsd.Version.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.Version. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.Version. %s", err.Error())
 	}
 
 	return nil

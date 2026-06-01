@@ -67,83 +67,83 @@ func (dsmi DataStoreMetaInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreMetaInfo from the given readable
 func (dsmi *DataStoreMetaInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsmi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo header. %s", err.Error())
 	}
 
 	if err := dsmi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.DataID. %s", err.Error())
 	}
 
 	if err := dsmi.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.OwnerID. %s", err.Error())
 	}
 
 	if err := dsmi.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Size. %s", err.Error())
 	}
 
 	if err := dsmi.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Name. %s", err.Error())
 	}
 
 	if err := dsmi.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
 	}
 
 	if err := dsmi.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.MetaBinary. %s", err.Error())
 	}
 
 	if err := dsmi.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Permission. %s", err.Error())
 	}
 
 	if err := dsmi.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.DelPermission. %s", err.Error())
 	}
 
 	if err := dsmi.CreatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.CreatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.CreatedTime. %s", err.Error())
 	}
 
 	if err := dsmi.UpdatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.UpdatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.UpdatedTime. %s", err.Error())
 	}
 
 	if err := dsmi.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Period. %s", err.Error())
 	}
 
 	if err := dsmi.Status.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Status. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Status. %s", err.Error())
 	}
 
 	if err := dsmi.ReferredCnt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredCnt. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.ReferredCnt. %s", err.Error())
 	}
 
 	if err := dsmi.ReferDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.ReferDataID. %s", err.Error())
 	}
 
 	if err := dsmi.Flag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Flag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Flag. %s", err.Error())
 	}
 
 	if err := dsmi.ReferredTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.ReferredTime. %s", err.Error())
 	}
 
 	if err := dsmi.ExpireTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ExpireTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.ExpireTime. %s", err.Error())
 	}
 
 	if err := dsmi.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Tags. %s", err.Error())
 	}
 
 	if err := dsmi.Ratings.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Ratings. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Ratings. %s", err.Error())
 	}
 
 	return nil

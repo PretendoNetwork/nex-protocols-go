@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetStartRoundParam(packet nex.PacketInterface) {
 
 	err := roundID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStartRoundParam(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, roundID)
+		_, rmcError := protocol.GetStartRoundParam(fmt.Errorf("failed to read roundID from parameters. %s", err.Error()), packet, callID, roundID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

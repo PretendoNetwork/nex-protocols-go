@@ -34,19 +34,19 @@ func (de DeletionEntry) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DeletionEntry from the given readable
 func (de *DeletionEntry) ExtractFrom(readable types.Readable) error {
 	if err := de.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DeletionEntry header. %s", err.Error())
+		return fmt.Errorf("failed to extract DeletionEntry header. %s", err.Error())
 	}
 
 	if err := de.IDGathering.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DeletionEntry.IDGathering. %s", err.Error())
+		return fmt.Errorf("failed to extract DeletionEntry.IDGathering. %s", err.Error())
 	}
 
 	if err := de.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DeletionEntry.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract DeletionEntry.PID. %s", err.Error())
 	}
 
 	if err := de.UIReason.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DeletionEntry.UIReason. %s", err.Error())
+		return fmt.Errorf("failed to extract DeletionEntry.UIReason. %s", err.Error())
 	}
 
 	return nil

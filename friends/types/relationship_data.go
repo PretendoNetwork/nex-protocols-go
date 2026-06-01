@@ -38,27 +38,27 @@ func (rd RelationshipData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RelationshipData from the given readable
 func (rd *RelationshipData) ExtractFrom(readable types.Readable) error {
 	if err := rd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RelationshipData header. %s", err.Error())
+		return fmt.Errorf("failed to extract RelationshipData header. %s", err.Error())
 	}
 
 	if err := rd.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RelationshipData.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract RelationshipData.PID. %s", err.Error())
 	}
 
 	if err := rd.StrName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RelationshipData.StrName. %s", err.Error())
+		return fmt.Errorf("failed to extract RelationshipData.StrName. %s", err.Error())
 	}
 
 	if err := rd.ByRelationship.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RelationshipData.ByRelationship. %s", err.Error())
+		return fmt.Errorf("failed to extract RelationshipData.ByRelationship. %s", err.Error())
 	}
 
 	if err := rd.UIDetails.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RelationshipData.UIDetails. %s", err.Error())
+		return fmt.Errorf("failed to extract RelationshipData.UIDetails. %s", err.Error())
 	}
 
 	if err := rd.ByStatus.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RelationshipData.ByStatus. %s", err.Error())
+		return fmt.Errorf("failed to extract RelationshipData.ByStatus. %s", err.Error())
 	}
 
 	return nil

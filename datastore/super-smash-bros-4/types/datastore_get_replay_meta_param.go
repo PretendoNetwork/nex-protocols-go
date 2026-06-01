@@ -32,15 +32,15 @@ func (dsgrmp DataStoreGetReplayMetaParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreGetReplayMetaParam from the given readable
 func (dsgrmp *DataStoreGetReplayMetaParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgrmp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetReplayMetaParam header. %s", err.Error())
 	}
 
 	if err := dsgrmp.ReplayID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam.ReplayID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetReplayMetaParam.ReplayID. %s", err.Error())
 	}
 
 	if err := dsgrmp.MetaType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam.MetaType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetReplayMetaParam.MetaType. %s", err.Error())
 	}
 
 	return nil

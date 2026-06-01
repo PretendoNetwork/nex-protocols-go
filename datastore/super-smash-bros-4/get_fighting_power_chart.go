@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface
 
 	err := mode.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetFightingPowerChart(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), packet, callID, mode)
+		_, rmcError := protocol.GetFightingPowerChart(fmt.Errorf("failed to read mode from parameters. %s", err.Error()), packet, callID, mode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

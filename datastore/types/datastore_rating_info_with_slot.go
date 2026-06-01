@@ -32,15 +32,15 @@ func (dsriws DataStoreRatingInfoWithSlot) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreRatingInfoWithSlot from the given readable
 func (dsriws *DataStoreRatingInfoWithSlot) ExtractFrom(readable types.Readable) error {
 	if err := dsriws.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfoWithSlot header. %s", err.Error())
 	}
 
 	if err := dsriws.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfoWithSlot.Slot. %s", err.Error())
 	}
 
 	if err := dsriws.Rating.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Rating. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfoWithSlot.Rating. %s", err.Error())
 	}
 
 	return nil

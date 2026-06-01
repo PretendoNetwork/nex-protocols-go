@@ -63,75 +63,75 @@ func (mrs MatchmakeRefereeStats) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeRefereeStats from the given readable
 func (mrs *MatchmakeRefereeStats) ExtractFrom(readable types.Readable) error {
 	if err := mrs.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.Data. %s", err.Error())
 	}
 
 	if err := mrs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats header. %s", err.Error())
 	}
 
 	if err := mrs.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.UniqueID. %s", err.Error())
 	}
 
 	if err := mrs.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.Category. %s", err.Error())
 	}
 
 	if err := mrs.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.PID. %s", err.Error())
 	}
 
 	if err := mrs.RecentDisconnection.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentDisconnection. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentDisconnection. %s", err.Error())
 	}
 
 	if err := mrs.RecentViolation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentViolation. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentViolation. %s", err.Error())
 	}
 
 	if err := mrs.RecentMismatch.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentMismatch. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentMismatch. %s", err.Error())
 	}
 
 	if err := mrs.RecentWin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentWin. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentWin. %s", err.Error())
 	}
 
 	if err := mrs.RecentLoss.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentLoss. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentLoss. %s", err.Error())
 	}
 
 	if err := mrs.RecentDraw.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentDraw. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentDraw. %s", err.Error())
 	}
 
 	if err := mrs.TotalDisconnect.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalDisconnect. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalDisconnect. %s", err.Error())
 	}
 
 	if err := mrs.TotalViolation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalViolation. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalViolation. %s", err.Error())
 	}
 
 	if err := mrs.TotalMismatch.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalMismatch. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalMismatch. %s", err.Error())
 	}
 
 	if err := mrs.TotalWin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalWin. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalWin. %s", err.Error())
 	}
 
 	if err := mrs.TotalLoss.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalLoss. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalLoss. %s", err.Error())
 	}
 
 	if err := mrs.TotalDraw.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalDraw. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalDraw. %s", err.Error())
 	}
 
 	if err := mrs.RatingValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RatingValue. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RatingValue. %s", err.Error())
 	}
 
 	return nil

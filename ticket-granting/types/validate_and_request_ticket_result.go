@@ -48,31 +48,31 @@ func (vartr ValidateAndRequestTicketResult) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ValidateAndRequestTicketResult from the given readable
 func (vartr *ValidateAndRequestTicketResult) ExtractFrom(readable types.Readable) error {
 	if err := vartr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketResult header. %s", err.Error())
 	}
 
 	if err := vartr.SourcePID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.PlatformType. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketResult.PlatformType. %s", err.Error())
 	}
 
 	if err := vartr.BufResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.Username. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketResult.Username. %s", err.Error())
 	}
 
 	if err := vartr.ServiceNodeURL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.ExtraData. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketResult.ExtraData. %s", err.Error())
 	}
 
 	if err := vartr.CurrentUTCTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.IgnoreAPIVersionCheck. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketResult.IgnoreAPIVersionCheck. %s", err.Error())
 	}
 
 	if err := vartr.ReturnMsg.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.APIVersionGeneral. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketResult.APIVersionGeneral. %s", err.Error())
 	}
 
 	if err := vartr.SourceKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.APIVersionCustom. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketResult.APIVersionCustom. %s", err.Error())
 	}
 
 	// * This is a hack. This field is not based on a NEX
@@ -83,7 +83,7 @@ func (vartr *ValidateAndRequestTicketResult) ExtractFrom(readable types.Readable
 	// * the best we can do
 	if readable.Remaining() != 0 {
 		if err := vartr.PlatformPID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract ValidateAndRequestTicketResult.PlatformTypeForPlatformPID. %s", err.Error())
+			return fmt.Errorf("failed to extract ValidateAndRequestTicketResult.PlatformTypeForPlatformPID. %s", err.Error())
 		}
 	}
 

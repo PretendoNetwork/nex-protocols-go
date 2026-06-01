@@ -37,23 +37,23 @@ func (dsgmp DataStoreGetMetaParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreGetMetaParam from the given readable
 func (dsgmp *DataStoreGetMetaParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgmp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam header. %s", err.Error())
 	}
 
 	if err := dsgmp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam.DataID. %s", err.Error())
 	}
 
 	if err := dsgmp.PersistenceTarget.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.PersistenceTarget. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam.PersistenceTarget. %s", err.Error())
 	}
 
 	if err := dsgmp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam.ResultOption. %s", err.Error())
 	}
 
 	if err := dsgmp.AccessPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.AccessPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam.AccessPassword. %s", err.Error())
 	}
 
 	return nil

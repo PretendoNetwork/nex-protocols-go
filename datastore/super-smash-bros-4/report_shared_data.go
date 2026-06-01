@@ -29,7 +29,7 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 
 	err := dataID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportSharedData(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, dataID)
+		_, rmcError := protocol.ReportSharedData(fmt.Errorf("failed to read dataID from parameters. %s", err.Error()), packet, callID, dataID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

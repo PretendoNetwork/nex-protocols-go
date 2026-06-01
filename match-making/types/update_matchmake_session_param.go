@@ -63,75 +63,75 @@ func (umsp UpdateMatchmakeSessionParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the UpdateMatchmakeSessionParam from the given readable
 func (umsp *UpdateMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	if err := umsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam header. %s", err.Error())
 	}
 
 	if err := umsp.GID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.GID. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.GID. %s", err.Error())
 	}
 
 	if err := umsp.ModificationFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ModificationFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.ModificationFlag. %s", err.Error())
 	}
 
 	if err := umsp.Attributes.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Attributes. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.Attributes. %s", err.Error())
 	}
 
 	if err := umsp.OpenParticipation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.OpenParticipation. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.OpenParticipation. %s", err.Error())
 	}
 
 	if err := umsp.ApplicationBuffer.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ApplicationBuffer. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.ApplicationBuffer. %s", err.Error())
 	}
 
 	if err := umsp.ProgressScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ProgressScore. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.ProgressScore. %s", err.Error())
 	}
 
 	if err := umsp.MatchmakeParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MatchmakeParam. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.MatchmakeParam. %s", err.Error())
 	}
 
 	if err := umsp.StartedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.StartedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.StartedTime. %s", err.Error())
 	}
 
 	if err := umsp.UserPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.UserPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.UserPassword. %s", err.Error())
 	}
 
 	if err := umsp.GameMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.GameMode. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.GameMode. %s", err.Error())
 	}
 
 	if err := umsp.Description.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Description. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.Description. %s", err.Error())
 	}
 
 	if err := umsp.MinParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MinParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.MinParticipants. %s", err.Error())
 	}
 
 	if err := umsp.MaxParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MaxParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.MaxParticipants. %s", err.Error())
 	}
 
 	if err := umsp.MatchmakeSystemType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MatchmakeSystemType. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.MatchmakeSystemType. %s", err.Error())
 	}
 
 	if err := umsp.ParticipationPolicy.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ParticipationPolicy. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.ParticipationPolicy. %s", err.Error())
 	}
 
 	if err := umsp.PolicyArgument.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.PolicyArgument. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.PolicyArgument. %s", err.Error())
 	}
 
 	if err := umsp.Codeword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Codeword. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.Codeword. %s", err.Error())
 	}
 
 	return nil

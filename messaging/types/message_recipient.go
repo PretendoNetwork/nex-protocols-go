@@ -50,26 +50,26 @@ func (mr *MessageRecipient) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.Messaging
 
 	if err := mr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient header. %s", err.Error())
+		return fmt.Errorf("failed to extract MessageRecipient header. %s", err.Error())
 	}
 
 	if !libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := mr.IDRecipient.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MessageRecipient.IDRecipient. %s", err.Error())
+			return fmt.Errorf("failed to extract MessageRecipient.IDRecipient. %s", err.Error())
 		}
 	}
 
 	if err := mr.UIRecipientType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient.UIRecipientType. %s", err.Error())
+		return fmt.Errorf("failed to extract MessageRecipient.UIRecipientType. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := mr.PrincipalID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MessageRecipient.PrincipalID. %s", err.Error())
+			return fmt.Errorf("failed to extract MessageRecipient.PrincipalID. %s", err.Error())
 		}
 
 		if err := mr.GatheringID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MessageRecipient.GatheringID. %s", err.Error())
+			return fmt.Errorf("failed to extract MessageRecipient.GatheringID. %s", err.Error())
 		}
 	}
 

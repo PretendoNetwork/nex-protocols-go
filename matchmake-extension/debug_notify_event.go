@@ -37,7 +37,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
+		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -47,7 +47,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	err = mainType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("Failed to read mainType from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
+		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("failed to read mainType from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -57,7 +57,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	err = subType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("Failed to read subType from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
+		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("failed to read subType from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -67,7 +67,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	err = param1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("Failed to read param1 from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
+		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("failed to read param1 from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -77,7 +77,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	err = param2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("Failed to read param2 from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
+		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("failed to read param2 from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -87,7 +87,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	err = stringParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("Failed to read stringParam from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
+		_, rmcError := protocol.DebugNotifyEvent(fmt.Errorf("failed to read stringParam from parameters. %s", err.Error()), packet, callID, pid, mainType, subType, param1, param2, stringParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

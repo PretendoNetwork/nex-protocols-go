@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 
 	err := gatheringIDList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetSimpleCommunity(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, gatheringIDList)
+		_, rmcError := protocol.GetSimpleCommunity(fmt.Errorf("failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, gatheringIDList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

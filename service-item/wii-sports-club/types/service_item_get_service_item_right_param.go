@@ -32,15 +32,15 @@ func (sigsirp ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the ServiceItemGetServiceItemRightParam from the given readable
 func (sigsirp *ServiceItemGetServiceItemRightParam) ExtractFrom(readable types.Readable) error {
 	if err := sigsirp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam header. %s", err.Error())
 	}
 
 	if err := sigsirp.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.ReferenceID. %s", err.Error())
 	}
 
 	if err := sigsirp.TitleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.TitleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.TitleID. %s", err.Error())
 	}
 
 	return nil

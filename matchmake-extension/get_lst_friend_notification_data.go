@@ -30,7 +30,7 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 
 	err := lstTypes.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetlstFriendNotificationData(fmt.Errorf("Failed to read lstTypes from parameters. %s", err.Error()), packet, callID, lstTypes)
+		_, rmcError := protocol.GetlstFriendNotificationData(fmt.Errorf("failed to read lstTypes from parameters. %s", err.Error()), packet, callID, lstTypes)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

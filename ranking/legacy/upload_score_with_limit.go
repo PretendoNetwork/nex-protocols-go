@@ -37,7 +37,7 @@ func (protocol *Protocol) handleUploadScoreWithLimit(packet nex.PacketInterface)
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
+		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -47,7 +47,7 @@ func (protocol *Protocol) handleUploadScoreWithLimit(packet nex.PacketInterface)
 
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
+		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -57,7 +57,7 @@ func (protocol *Protocol) handleUploadScoreWithLimit(packet nex.PacketInterface)
 
 	err = scores.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("Failed to read scores from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
+		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("failed to read scores from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -67,7 +67,7 @@ func (protocol *Protocol) handleUploadScoreWithLimit(packet nex.PacketInterface)
 
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
+		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("failed to read unknown1 from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -77,7 +77,7 @@ func (protocol *Protocol) handleUploadScoreWithLimit(packet nex.PacketInterface)
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
+		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -87,7 +87,7 @@ func (protocol *Protocol) handleUploadScoreWithLimit(packet nex.PacketInterface)
 
 	err = limit.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("Failed to read limit from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
+		_, rmcError := protocol.UploadScoreWithLimit(fmt.Errorf("failed to read limit from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2, limit)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

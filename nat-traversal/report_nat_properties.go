@@ -33,7 +33,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	err = natmapping.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("failed to read natmapping from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	err = natfiltering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("failed to read natfiltering from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	err = rtt.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("failed to read rtt from parameters. %s", err.Error()), packet, callID, natmapping, natfiltering, rtt)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

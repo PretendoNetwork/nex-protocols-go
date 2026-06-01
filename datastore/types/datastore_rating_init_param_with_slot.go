@@ -32,15 +32,15 @@ func (dsripws DataStoreRatingInitParamWithSlot) WriteTo(writable types.Writable)
 // ExtractFrom extracts the DataStoreRatingInitParamWithSlot from the given readable
 func (dsripws *DataStoreRatingInitParamWithSlot) ExtractFrom(readable types.Readable) error {
 	if err := dsripws.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParamWithSlot header. %s", err.Error())
 	}
 
 	if err := dsripws.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParamWithSlot.Slot. %s", err.Error())
 	}
 
 	if err := dsripws.Param.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Param. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParamWithSlot.Param. %s", err.Error())
 	}
 
 	return nil

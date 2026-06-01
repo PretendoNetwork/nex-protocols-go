@@ -33,7 +33,7 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, lstStats)
+		_, rmcError := protocol.ReportStats(fmt.Errorf("failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, lstStats)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 
 	err = lstStats.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, idGathering, lstStats)
+		_, rmcError := protocol.ReportStats(fmt.Errorf("failed to read lstStats from parameters. %s", err.Error()), packet, callID, idGathering, lstStats)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

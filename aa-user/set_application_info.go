@@ -30,7 +30,7 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 
 	err := applicationInfo.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetApplicationInfo(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, applicationInfo)
+		_, rmcError := protocol.SetApplicationInfo(fmt.Errorf("failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, applicationInfo)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

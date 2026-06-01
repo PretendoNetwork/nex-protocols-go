@@ -33,7 +33,7 @@ func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface)
 
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, category, orderParam)
+		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, category, orderParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface)
 
 	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, category, orderParam)
+		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("failed to read orderParam from parameters. %s", err.Error()), packet, callID, category, orderParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

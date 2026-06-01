@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 
 	err := lstPID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, lstPID)
+		_, rmcError := protocol.GetPlayingSession(fmt.Errorf("failed to read lstPID from parameters. %s", err.Error()), packet, callID, lstPID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

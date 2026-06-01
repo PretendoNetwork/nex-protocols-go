@@ -33,15 +33,15 @@ func (sigbr ServiceItemGetBalanceResponse) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemGetBalanceResponse from the given readable
 func (sigbr *ServiceItemGetBalanceResponse) ExtractFrom(readable types.Readable) error {
 	if err := sigbr.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse.ServiceItemEShopResponse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetBalanceResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
 	if err := sigbr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetBalanceResponse header. %s", err.Error())
 	}
 
 	if err := sigbr.NullableBalance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse.NullableBalance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetBalanceResponse.NullableBalance. %s", err.Error())
 	}
 
 	return nil

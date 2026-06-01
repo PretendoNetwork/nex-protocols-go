@@ -36,23 +36,23 @@ func (sigphp ServiceItemGetPurchaseHistoryParam) WriteTo(writable types.Writable
 // ExtractFrom extracts the ServiceItemGetPurchaseHistoryParam from the given readable
 func (sigphp *ServiceItemGetPurchaseHistoryParam) ExtractFrom(readable types.Readable) error {
 	if err := sigphp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam header. %s", err.Error())
 	}
 
 	if err := sigphp.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.Language. %s", err.Error())
 	}
 
 	if err := sigphp.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.Offset. %s", err.Error())
 	}
 
 	if err := sigphp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.Size. %s", err.Error())
 	}
 
 	if err := sigphp.TitleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.TitleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.TitleID. %s", err.Error())
 	}
 
 	return nil

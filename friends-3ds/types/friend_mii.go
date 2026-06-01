@@ -37,23 +37,23 @@ func (fm FriendMii) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendMii from the given readable
 func (fm *FriendMii) ExtractFrom(readable types.Readable) error {
 	if err := fm.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii.Data. %s", err.Error())
 	}
 
 	if err := fm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii header. %s", err.Error())
 	}
 
 	if err := fm.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii.PID. %s", err.Error())
 	}
 
 	if err := fm.Mii.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii.Mii. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii.Mii. %s", err.Error())
 	}
 
 	if err := fm.ModifiedAt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii.ModifiedAt. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii.ModifiedAt. %s", err.Error())
 	}
 
 	return nil

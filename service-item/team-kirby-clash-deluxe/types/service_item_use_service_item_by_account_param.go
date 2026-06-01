@@ -44,39 +44,39 @@ func (siusibap ServiceItemUseServiceItemByAccountParam) WriteTo(writable types.W
 // ExtractFrom extracts the ServiceItemUseServiceItemByAccountParam from the given readable
 func (siusibap *ServiceItemUseServiceItemByAccountParam) ExtractFrom(readable types.Readable) error {
 	if err := siusibap.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam header. %s", err.Error())
 	}
 
 	if err := siusibap.ReferenceIDForUse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForUse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForUse. %s", err.Error())
 	}
 
 	if err := siusibap.ReferenceIDForRightBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary. %s", err.Error())
 	}
 
 	if err := siusibap.UseType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UseType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.UseType. %s", err.Error())
 	}
 
 	if err := siusibap.UseNumber.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UseNumber. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.UseNumber. %s", err.Error())
 	}
 
 	if err := siusibap.RightBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.RightBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.RightBinary. %s", err.Error())
 	}
 
 	if err := siusibap.LogMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.LogMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.LogMessage. %s", err.Error())
 	}
 
 	if err := siusibap.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.UniqueID. %s", err.Error())
 	}
 
 	if err := siusibap.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.Platform. %s", err.Error())
 	}
 
 	return nil

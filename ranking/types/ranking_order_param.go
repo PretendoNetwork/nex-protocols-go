@@ -41,31 +41,31 @@ func (rop RankingOrderParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingOrderParam from the given readable
 func (rop *RankingOrderParam) ExtractFrom(readable types.Readable) error {
 	if err := rop.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam header. %s", err.Error())
 	}
 
 	if err := rop.OrderCalculation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.OrderCalculation. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.OrderCalculation. %s", err.Error())
 	}
 
 	if err := rop.GroupIndex.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.GroupIndex. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.GroupIndex. %s", err.Error())
 	}
 
 	if err := rop.GroupNum.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.GroupNum. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.GroupNum. %s", err.Error())
 	}
 
 	if err := rop.TimeScope.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.TimeScope. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.TimeScope. %s", err.Error())
 	}
 
 	if err := rop.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Offset. %s", err.Error())
 	}
 
 	if err := rop.Length.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Length. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Length. %s", err.Error())
 	}
 
 	return nil

@@ -39,27 +39,27 @@ func (pbi PrincipalBasicInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PrincipalBasicInfo from the given readable
 func (pbi *PrincipalBasicInfo) ExtractFrom(readable types.Readable) error {
 	if err := pbi.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.Data. %s", err.Error())
 	}
 
 	if err := pbi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo header. %s", err.Error())
 	}
 
 	if err := pbi.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.PID. %s", err.Error())
 	}
 
 	if err := pbi.NNID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.NNID. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.NNID. %s", err.Error())
 	}
 
 	if err := pbi.Mii.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Mii. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.Mii. %s", err.Error())
 	}
 
 	if err := pbi.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.Unknown. %s", err.Error())
 	}
 
 	return nil

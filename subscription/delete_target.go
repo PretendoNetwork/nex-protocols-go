@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeleteTarget(packet nex.PacketInterface) {
 
 	err := targets.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteTarget(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), packet, callID, targets)
+		_, rmcError := protocol.DeleteTarget(fmt.Errorf("failed to read targets from parameters. %s", err.Error()), packet, callID, targets)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

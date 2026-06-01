@@ -32,7 +32,7 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 
 	err = lstTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeliverMessageMultiTarget(fmt.Errorf("Failed to read lstTarget from parameters. %s", err.Error()), packet, callID, lstTarget, oUserMessage)
+		_, rmcError := protocol.DeliverMessageMultiTarget(fmt.Errorf("failed to read lstTarget from parameters. %s", err.Error()), packet, callID, lstTarget, oUserMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 
 	err = oUserMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeliverMessageMultiTarget(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, lstTarget, oUserMessage)
+		_, rmcError := protocol.DeliverMessageMultiTarget(fmt.Errorf("failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, lstTarget, oUserMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

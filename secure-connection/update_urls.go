@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 
 	err := vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateURLs(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, vecMyURLs)
+		_, rmcError := protocol.UpdateURLs(fmt.Errorf("failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, vecMyURLs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

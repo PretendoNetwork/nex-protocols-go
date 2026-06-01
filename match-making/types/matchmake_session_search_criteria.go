@@ -99,90 +99,90 @@ func (mssc *MatchmakeSessionSearchCriteria) ExtractFrom(readable types.Readable)
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	if err := mssc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria header. %s", err.Error())
 	}
 
 	if err := mssc.Attribs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.Attribs. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.Attribs. %s", err.Error())
 	}
 
 	if err := mssc.GameMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.GameMode. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.GameMode. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("2.0.0") {
 		if err := mssc.MinParticipants.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MinParticipants. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.MinParticipants. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("2.0.0") {
 		if err := mssc.MaxParticipants.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MaxParticipants. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.MaxParticipants. %s", err.Error())
 		}
 	}
 
 	if err := mssc.MatchmakeSystemType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeSystemType. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.MatchmakeSystemType. %s", err.Error())
 	}
 
 	if err := mssc.VacantOnly.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantOnly. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.VacantOnly. %s", err.Error())
 	}
 
 	if err := mssc.ExcludeLocked.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeLocked. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ExcludeLocked. %s", err.Error())
 	}
 
 	if err := mssc.ExcludeNonHostPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPID. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := mssc.SelectionMethod.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.4.0") {
 		if err := mssc.VacantParticipants.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantParticipants. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.VacantParticipants. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
 		if err := mssc.MatchmakeParam.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeParam. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.MatchmakeParam. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
 		if err := mssc.ExcludeUserPasswordSet.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeUserPasswordSet. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ExcludeUserPasswordSet. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
 		if err := mssc.ExcludeSystemPasswordSet.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeSystemPasswordSet. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ExcludeSystemPasswordSet. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
 		if err := mssc.ReferGID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ReferGID. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ReferGID. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := mssc.CodeWord.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.CodeWord. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.CodeWord. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := mssc.ResultRange.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ResultRange. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ResultRange. %s", err.Error())
 		}
 	}
 

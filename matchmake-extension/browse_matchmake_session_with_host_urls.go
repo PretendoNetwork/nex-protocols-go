@@ -33,7 +33,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.Pa
 
 	err = searchCriteria.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLs(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, searchCriteria, resultRange)
+		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLs(fmt.Errorf("failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, searchCriteria, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.Pa
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLs(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, searchCriteria, resultRange)
+		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLs(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, searchCriteria, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

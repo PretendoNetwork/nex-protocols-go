@@ -36,23 +36,23 @@ func (sgcp SubscriberGetContentParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SubscriberGetContentParam from the given readable
 func (sgcp *SubscriberGetContentParam) ExtractFrom(readable types.Readable) error {
 	if err := sgcp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberGetContentParam header. %s", err.Error())
 	}
 
 	if err := sgcp.Topic.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Topic. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberGetContentParam.Topic. %s", err.Error())
 	}
 
 	if err := sgcp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberGetContentParam.Size. %s", err.Error())
 	}
 
 	if err := sgcp.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberGetContentParam.Offset. %s", err.Error())
 	}
 
 	if err := sgcp.MinimumContentID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.MinimumContentID. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberGetContentParam.MinimumContentID. %s", err.Error())
 	}
 
 	return nil

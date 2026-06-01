@@ -60,28 +60,28 @@ func (ai *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.Main
 
 	if err := ai.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract AuthenticationInfo.Data. %s", err.Error())
 	}
 
 	if err := ai.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract AuthenticationInfo header. %s", err.Error())
 	}
 
 	if err := ai.Token.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo.Token. %s", err.Error())
+		return fmt.Errorf("failed to extract AuthenticationInfo.Token. %s", err.Error())
 	}
 
 	if err := ai.NGSVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo.NGSVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract AuthenticationInfo.NGSVersion. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := ai.TokenType.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract AuthenticationInfo.TokenType. %s", err.Error())
+			return fmt.Errorf("failed to extract AuthenticationInfo.TokenType. %s", err.Error())
 		}
 
 		if err := ai.ServerVersion.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract AuthenticationInfo.ServerVersion. %s", err.Error())
+			return fmt.Errorf("failed to extract AuthenticationInfo.ServerVersion. %s", err.Error())
 		}
 	}
 

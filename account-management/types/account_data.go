@@ -46,43 +46,43 @@ func (ad AccountData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the AccountData from the given readable
 func (ad *AccountData) ExtractFrom(readable types.Readable) error {
 	if err := ad.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData header. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData header. %s", err.Error())
 	}
 
 	if err := ad.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.PID. %s", err.Error())
 	}
 
 	if err := ad.StrName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.StrName. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.StrName. %s", err.Error())
 	}
 
 	if err := ad.UIGroups.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.UIGroups. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.UIGroups. %s", err.Error())
 	}
 
 	if err := ad.StrEmail.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.StrEmail. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.StrEmail. %s", err.Error())
 	}
 
 	if err := ad.DTCreationDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.DTCreationDate. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.DTCreationDate. %s", err.Error())
 	}
 
 	if err := ad.DTEffectiveDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.DTEffectiveDate. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.DTEffectiveDate. %s", err.Error())
 	}
 
 	if err := ad.StrNotEffectiveMsg.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.StrNotEffectiveMsg. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.StrNotEffectiveMsg. %s", err.Error())
 	}
 
 	if err := ad.DTExpiryDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.DTExpiryDate. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.DTExpiryDate. %s", err.Error())
 	}
 
 	if err := ad.StrExpiredMsg.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.StrExpiredMsg. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.StrExpiredMsg. %s", err.Error())
 	}
 
 	return nil

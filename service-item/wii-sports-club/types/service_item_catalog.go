@@ -34,19 +34,19 @@ func (sic ServiceItemCatalog) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemCatalog from the given readable
 func (sic *ServiceItemCatalog) ExtractFrom(readable types.Readable) error {
 	if err := sic.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog header. %s", err.Error())
 	}
 
 	if err := sic.TotalSize.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.TotalSize. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog.TotalSize. %s", err.Error())
 	}
 
 	if err := sic.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog.Offset. %s", err.Error())
 	}
 
 	if err := sic.ListItems.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.ListItems. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog.ListItems. %s", err.Error())
 	}
 
 	return nil

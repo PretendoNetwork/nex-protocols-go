@@ -42,35 +42,35 @@ func (sso SimpleSearchObject) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SimpleSearchObject from the given readable
 func (sso *SimpleSearchObject) ExtractFrom(readable types.Readable) error {
 	if err := sso.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject header. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchObject header. %s", err.Error())
 	}
 
 	if err := sso.ObjectID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.ObjectID. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchObject.ObjectID. %s", err.Error())
 	}
 
 	if err := sso.OwnerPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.OwnerPID. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchObject.OwnerPID. %s", err.Error())
 	}
 
 	if err := sso.Attributes.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.Attributes. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchObject.Attributes. %s", err.Error())
 	}
 
 	if err := sso.Metadata.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.Metadata. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchObject.Metadata. %s", err.Error())
 	}
 
 	if err := sso.CommunityIDMiiverse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.CommunityIDMiiverse. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchObject.CommunityIDMiiverse. %s", err.Error())
 	}
 
 	if err := sso.CommunityCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.CommunityCode. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchObject.CommunityCode. %s", err.Error())
 	}
 
 	if err := sso.DatetimeAttribute.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.DatetimeAttribute. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchObject.DatetimeAttribute. %s", err.Error())
 	}
 
 	return nil

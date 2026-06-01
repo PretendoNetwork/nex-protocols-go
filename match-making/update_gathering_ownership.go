@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, participantsOnly)
+		_, rmcError := protocol.UpdateGatheringOwnership(fmt.Errorf("failed to read gid from parameters. %s", err.Error()), packet, callID, gid, participantsOnly)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 
 	err = participantsOnly.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, gid, participantsOnly)
+		_, rmcError := protocol.UpdateGatheringOwnership(fmt.Errorf("failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, gid, participantsOnly)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -40,31 +40,31 @@ func (resro Ranking2EstimateScoreRankOutput) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2EstimateScoreRankOutput from the given readable
 func (resro *Ranking2EstimateScoreRankOutput) ExtractFrom(readable types.Readable) error {
 	if err := resro.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput header. %s", err.Error())
 	}
 
 	if err := resro.Rank.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Rank. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Rank. %s", err.Error())
 	}
 
 	if err := resro.Length.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Length. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Length. %s", err.Error())
 	}
 
 	if err := resro.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Score. %s", err.Error())
 	}
 
 	if err := resro.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Category. %s", err.Error())
 	}
 
 	if err := resro.Season.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Season. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Season. %s", err.Error())
 	}
 
 	if err := resro.SamplingRate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.SamplingRate. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.SamplingRate. %s", err.Error())
 	}
 
 	return nil

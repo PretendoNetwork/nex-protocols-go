@@ -36,23 +36,23 @@ func (dsrgam DataStoreReqGetAdditionalMeta) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqGetAdditionalMeta from the given readable
 func (dsrgam *DataStoreReqGetAdditionalMeta) ExtractFrom(readable types.Readable) error {
 	if err := dsrgam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta header. %s", err.Error())
 	}
 
 	if err := dsrgam.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta.OwnerID. %s", err.Error())
 	}
 
 	if err := dsrgam.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta.DataType. %s", err.Error())
 	}
 
 	if err := dsrgam.Version.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.Version. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta.Version. %s", err.Error())
 	}
 
 	if err := dsrgam.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta.MetaBinary. %s", err.Error())
 	}
 
 	return nil

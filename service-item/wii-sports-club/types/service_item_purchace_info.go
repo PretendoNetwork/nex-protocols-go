@@ -36,23 +36,23 @@ func (sipi ServiceItemPurchaceInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemPurchaceInfo from the given readable
 func (sipi *ServiceItemPurchaceInfo) ExtractFrom(readable types.Readable) error {
 	if err := sipi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo header. %s", err.Error())
 	}
 
 	if err := sipi.TransactionID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo.TransactionID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo.TransactionID. %s", err.Error())
 	}
 
 	if err := sipi.ExtTransactionID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo.ExtTransactionID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo.ExtTransactionID. %s", err.Error())
 	}
 
 	if err := sipi.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo.ItemCode. %s", err.Error())
 	}
 
 	if err := sipi.PostBalance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo.PostBalance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo.PostBalance. %s", err.Error())
 	}
 
 	return nil

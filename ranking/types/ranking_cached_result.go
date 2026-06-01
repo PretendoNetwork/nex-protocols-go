@@ -37,23 +37,23 @@ func (rcr RankingCachedResult) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingCachedResult from the given readable
 func (rcr *RankingCachedResult) ExtractFrom(readable types.Readable) error {
 	if err := rcr.RankingResult.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.RankingResult. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult.RankingResult. %s", err.Error())
 	}
 
 	if err := rcr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult header. %s", err.Error())
 	}
 
 	if err := rcr.CreatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.CreatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult.CreatedTime. %s", err.Error())
 	}
 
 	if err := rcr.ExpiredTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.ExpiredTime. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult.ExpiredTime. %s", err.Error())
 	}
 
 	if err := rcr.MaxLength.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.MaxLength. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult.MaxLength. %s", err.Error())
 	}
 
 	return nil

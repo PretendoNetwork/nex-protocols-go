@@ -37,20 +37,20 @@ func (siglmp ServiceItemGetLawMessageParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemGetLawMessageParam from the given readable
 func (siglmp *ServiceItemGetLawMessageParam) ExtractFrom(readable types.Readable) error {
 	if err := siglmp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageParam header. %s", err.Error())
 	}
 
 	if err := siglmp.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageParam.Language. %s", err.Error())
 	}
 
 	if err := siglmp.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageParam.UniqueID. %s", err.Error())
 	}
 
 	if siglmp.StructureVersion >= 1 {
 		if err := siglmp.Platform.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Platform. %s", err.Error())
+			return fmt.Errorf("failed to extract ServiceItemGetLawMessageParam.Platform. %s", err.Error())
 		}
 	}
 

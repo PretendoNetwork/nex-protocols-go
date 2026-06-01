@@ -32,7 +32,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	err = rankingType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs)
+		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("failed to read rankingType from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	err = rankingArgs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs)
+		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

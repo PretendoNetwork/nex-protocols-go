@@ -41,31 +41,31 @@ func (mrprr MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writable
 // ExtractFrom extracts the MatchmakeRefereePersonalRoundResult from the given readable
 func (mrprr *MatchmakeRefereePersonalRoundResult) ExtractFrom(readable types.Readable) error {
 	if err := mrprr.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult.Data. %s", err.Error())
 	}
 
 	if err := mrprr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult header. %s", err.Error())
 	}
 
 	if err := mrprr.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult.PID. %s", err.Error())
 	}
 
 	if err := mrprr.PersonalRoundResultFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PersonalRoundResultFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult.PersonalRoundResultFlag. %s", err.Error())
 	}
 
 	if err := mrprr.RoundWinLoss.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.RoundWinLoss. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult.RoundWinLoss. %s", err.Error())
 	}
 
 	if err := mrprr.RatingValueChange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.RatingValueChange. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult.RatingValueChange. %s", err.Error())
 	}
 
 	if err := mrprr.Buffer.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.Buffer. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult.Buffer. %s", err.Error())
 	}
 
 	return nil

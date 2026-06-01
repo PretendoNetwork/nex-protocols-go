@@ -42,35 +42,35 @@ func (gtsspp GlobalTradeStationSearchPokemonParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the GlobalTradeStationSearchPokemonParam from the given readable
 func (gtsspp *GlobalTradeStationSearchPokemonParam) ExtractFrom(readable types.Readable) error {
 	if err := gtsspp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam header. %s", err.Error())
 	}
 
 	if err := gtsspp.PrepareUploadKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.PrepareUploadKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	if err := gtsspp.Conditions.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.Conditions. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.Conditions. %s", err.Error())
 	}
 
 	if err := gtsspp.ResultOrderColumn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.ResultOrderColumn. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.ResultOrderColumn. %s", err.Error())
 	}
 
 	if err := gtsspp.ResultOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.ResultOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.ResultOrder. %s", err.Error())
 	}
 
 	if err := gtsspp.UploadedAfter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.UploadedAfter. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.UploadedAfter. %s", err.Error())
 	}
 
 	if err := gtsspp.UploadedBefore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.UploadedBefore. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.UploadedBefore. %s", err.Error())
 	}
 
 	if err := gtsspp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.ResultRange. %s", err.Error())
 	}
 
 	return nil

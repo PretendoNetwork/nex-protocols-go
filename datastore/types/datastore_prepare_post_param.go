@@ -65,60 +65,60 @@ func (dsppp *DataStorePreparePostParam) ExtractFrom(readable types.Readable) err
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dsppp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam header. %s", err.Error())
 	}
 
 	if err := dsppp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Size. %s", err.Error())
 	}
 
 	if err := dsppp.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Name. %s", err.Error())
 	}
 
 	if err := dsppp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.DataType. %s", err.Error())
 	}
 
 	if err := dsppp.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
 	}
 
 	if err := dsppp.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
 	}
 
 	if err := dsppp.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
 	}
 
 	if err := dsppp.Flag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
 	}
 
 	if err := dsppp.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Period. %s", err.Error())
 	}
 
 	if err := dsppp.ReferDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.ReferDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.ReferDataID. %s", err.Error())
 	}
 
 	if err := dsppp.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
 	}
 
 	if err := dsppp.RatingInitParams.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
 	}
 
 	if err := dsppp.PersistenceInitParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
 		if err := dsppp.ExtraData.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())
 		}
 	}
 

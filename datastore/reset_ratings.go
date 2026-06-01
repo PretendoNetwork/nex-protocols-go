@@ -32,7 +32,7 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, transactional)
+		_, rmcError := protocol.ResetRatings(fmt.Errorf("failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, dataIDs, transactional)
+		_, rmcError := protocol.ResetRatings(fmt.Errorf("failed to read transactional from parameters. %s", err.Error()), packet, callID, dataIDs, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

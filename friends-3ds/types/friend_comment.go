@@ -37,23 +37,23 @@ func (fc FriendComment) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendComment from the given readable
 func (fc *FriendComment) ExtractFrom(readable types.Readable) error {
 	if err := fc.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment.Data. %s", err.Error())
 	}
 
 	if err := fc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment header. %s", err.Error())
 	}
 
 	if err := fc.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment.PID. %s", err.Error())
 	}
 
 	if err := fc.Comment.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment.Comment. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment.Comment. %s", err.Error())
 	}
 
 	if err := fc.ModifiedAt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment.ModifiedAt. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment.ModifiedAt. %s", err.Error())
 	}
 
 	return nil

@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	err = id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, id, descr)
+		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("failed to read id from parameters. %s", err.Error()), packet, callID, id, descr)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	err = descr.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, id, descr)
+		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("failed to read descr from parameters. %s", err.Error()), packet, callID, id, descr)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

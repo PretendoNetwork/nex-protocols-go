@@ -30,11 +30,11 @@ func (mblp MatchmakeBlockListParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeBlockListParam from the given readable
 func (mblp *MatchmakeBlockListParam) ExtractFrom(readable types.Readable) error {
 	if err := mblp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeBlockListParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeBlockListParam header. %s", err.Error())
 	}
 
 	if err := mblp.OptionFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeBlockListParam.OptionFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeBlockListParam.OptionFlag. %s", err.Error())
 	}
 
 	return nil

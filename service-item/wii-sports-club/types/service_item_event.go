@@ -44,39 +44,39 @@ func (sie ServiceItemEvent) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemEvent from the given readable
 func (sie *ServiceItemEvent) ExtractFrom(readable types.Readable) error {
 	if err := sie.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent header. %s", err.Error())
 	}
 
 	if err := sie.EventID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.EventID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.EventID. %s", err.Error())
 	}
 
 	if err := sie.ParamInt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamInt. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.ParamInt. %s", err.Error())
 	}
 
 	if err := sie.ParamString.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamString. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.ParamString. %s", err.Error())
 	}
 
 	if err := sie.ParamBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.ParamBinary. %s", err.Error())
 	}
 
 	if err := sie.PresentTicketType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.PresentTicketType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.PresentTicketType. %s", err.Error())
 	}
 
 	if err := sie.PresentTicketNum.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.PresentTicketNum. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.PresentTicketNum. %s", err.Error())
 	}
 
 	if err := sie.TimeBegin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.TimeBegin. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.TimeBegin. %s", err.Error())
 	}
 
 	if err := sie.TimeEnd.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.TimeEnd. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.TimeEnd. %s", err.Error())
 	}
 
 	return nil

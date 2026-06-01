@@ -34,19 +34,19 @@ func (rr RankingResult) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingResult from the given readable
 func (rr *RankingResult) ExtractFrom(readable types.Readable) error {
 	if err := rr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingResult header. %s", err.Error())
 	}
 
 	if err := rr.RankDataList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.RankDataList. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingResult.RankDataList. %s", err.Error())
 	}
 
 	if err := rr.TotalCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.TotalCount. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingResult.TotalCount. %s", err.Error())
 	}
 
 	if err := rr.SinceTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.SinceTime. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingResult.SinceTime. %s", err.Error())
 	}
 
 	return nil

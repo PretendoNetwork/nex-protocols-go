@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 
 	err := unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateBlackList(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, unknown)
+		_, rmcError := protocol.UpdateBlackList(fmt.Errorf("failed to read unknown from parameters. %s", err.Error()), packet, callID, unknown)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -38,27 +38,27 @@ func (dsrpi DataStoreReqPostInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqPostInfo from the given readable
 func (dsrpi *DataStoreReqPostInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsrpi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo header. %s", err.Error())
 	}
 
 	if err := dsrpi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.DataID. %s", err.Error())
 	}
 
 	if err := dsrpi.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.URL. %s", err.Error())
 	}
 
 	if err := dsrpi.RequestHeaders.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.RequestHeaders. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.RequestHeaders. %s", err.Error())
 	}
 
 	if err := dsrpi.FormFields.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.FormFields. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.FormFields. %s", err.Error())
 	}
 
 	if err := dsrpi.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.RootCACert. %s", err.Error())
 	}
 
 	return nil

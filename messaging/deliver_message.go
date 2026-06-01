@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 
 	err := oUserMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeliverMessage(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, oUserMessage)
+		_, rmcError := protocol.DeliverMessage(fmt.Errorf("failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, oUserMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

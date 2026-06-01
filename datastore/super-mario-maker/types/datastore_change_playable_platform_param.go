@@ -32,15 +32,15 @@ func (dscppp DataStoreChangePlayablePlatformParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the DataStoreChangePlayablePlatformParam from the given readable
 func (dscppp *DataStoreChangePlayablePlatformParam) ExtractFrom(readable types.Readable) error {
 	if err := dscppp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangePlayablePlatformParam header. %s", err.Error())
 	}
 
 	if err := dscppp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangePlayablePlatformParam.DataID. %s", err.Error())
 	}
 
 	if err := dscppp.PlayablePlatform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.PlayablePlatform. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangePlayablePlatformParam.PlayablePlatform. %s", err.Error())
 	}
 
 	return nil

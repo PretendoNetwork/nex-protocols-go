@@ -43,15 +43,15 @@ func (bm BinaryMessage) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the BinaryMessage from the given readable
 func (bm *BinaryMessage) ExtractFrom(readable types.Readable) error {
 	if err := bm.UserMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BinaryMessage.UserMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract BinaryMessage.UserMessage. %s", err.Error())
 	}
 
 	if err := bm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BinaryMessage header. %s", err.Error())
+		return fmt.Errorf("failed to extract BinaryMessage header. %s", err.Error())
 	}
 
 	if err := bm.BinaryBody.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BinaryMessage.BinaryBody. %s", err.Error())
+		return fmt.Errorf("failed to extract BinaryMessage.BinaryBody. %s", err.Error())
 	}
 
 	return nil

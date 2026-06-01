@@ -46,43 +46,43 @@ func (dsppsdp DataStorePreparePostSharedDataParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the DataStorePreparePostSharedDataParam from the given readable
 func (dsppsdp *DataStorePreparePostSharedDataParam) ExtractFrom(readable types.Readable) error {
 	if err := dsppsdp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam header. %s", err.Error())
 	}
 
 	if err := dsppsdp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.DataType. %s", err.Error())
 	}
 
 	if err := dsppsdp.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Region. %s", err.Error())
 	}
 
 	if err := dsppsdp.Attribute1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Attribute1. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Attribute1. %s", err.Error())
 	}
 
 	if err := dsppsdp.Attribute2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Attribute2. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Attribute2. %s", err.Error())
 	}
 
 	if err := dsppsdp.Fighter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Fighter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Fighter. %s", err.Error())
 	}
 
 	if err := dsppsdp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Size. %s", err.Error())
 	}
 
 	if err := dsppsdp.Comment.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Comment. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Comment. %s", err.Error())
 	}
 
 	if err := dsppsdp.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.MetaBinary. %s", err.Error())
 	}
 
 	if err := dsppsdp.ExtraData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.ExtraData. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.ExtraData. %s", err.Error())
 	}
 
 	return nil

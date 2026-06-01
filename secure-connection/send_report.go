@@ -32,7 +32,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 
 	err = reportID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, reportID, reportData)
+		_, rmcError := protocol.SendReport(fmt.Errorf("failed to read reportID from parameters. %s", err.Error()), packet, callID, reportID, reportData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 
 	err = reportData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, reportID, reportData)
+		_, rmcError := protocol.SendReport(fmt.Errorf("failed to read reportData from parameters. %s", err.Error()), packet, callID, reportID, reportData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

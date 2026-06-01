@@ -32,15 +32,15 @@ func (ps PlayingSession) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PlayingSession from the given readable
 func (ps *PlayingSession) ExtractFrom(readable types.Readable) error {
 	if err := ps.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayingSession header. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayingSession header. %s", err.Error())
 	}
 
 	if err := ps.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayingSession.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayingSession.PrincipalID. %s", err.Error())
 	}
 
 	if err := ps.Gathering.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayingSession.Gathering. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayingSession.Gathering. %s", err.Error())
 	}
 
 	return nil

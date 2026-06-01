@@ -30,11 +30,11 @@ func (dsgsmpv DataStoreGetSpecificMetaParamV1) WriteTo(writable types.Writable) 
 // ExtractFrom extracts the DataStoreGetSpecificMetaParamV1 from the given readable
 func (dsgsmpv *DataStoreGetSpecificMetaParamV1) ExtractFrom(readable types.Readable) error {
 	if err := dsgsmpv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParamV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetSpecificMetaParamV1 header. %s", err.Error())
 	}
 
 	if err := dsgsmpv.DataIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParamV1.DataIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetSpecificMetaParamV1.DataIDs. %s", err.Error())
 	}
 
 	return nil

@@ -40,31 +40,31 @@ func (rrd Ranking2RankData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2RankData from the given readable
 func (rrd *Ranking2RankData) ExtractFrom(readable types.Readable) error {
 	if err := rrd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData header. %s", err.Error())
 	}
 
 	if err := rrd.Misc.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Misc. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.Misc. %s", err.Error())
 	}
 
 	if err := rrd.NexUniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.NexUniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.NexUniqueID. %s", err.Error())
 	}
 
 	if err := rrd.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.PrincipalID. %s", err.Error())
 	}
 
 	if err := rrd.Rank.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Rank. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.Rank. %s", err.Error())
 	}
 
 	if err := rrd.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.Score. %s", err.Error())
 	}
 
 	if err := rrd.CommonData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.CommonData. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.CommonData. %s", err.Error())
 	}
 
 	return nil

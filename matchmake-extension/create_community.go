@@ -33,7 +33,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 
 	err = community.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, community, strMessage)
+		_, rmcError := protocol.CreateCommunity(fmt.Errorf("failed to read community from parameters. %s", err.Error()), packet, callID, community, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, community, strMessage)
+		_, rmcError := protocol.CreateCommunity(fmt.Errorf("failed to read strMessage from parameters. %s", err.Error()), packet, callID, community, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

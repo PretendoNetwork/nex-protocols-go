@@ -43,15 +43,15 @@ func (tm TextMessage) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the TextMessage from the given readable
 func (tm *TextMessage) ExtractFrom(readable types.Readable) error {
 	if err := tm.UserMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract TextMessage.UserMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract TextMessage.UserMessage. %s", err.Error())
 	}
 
 	if err := tm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract TextMessage header. %s", err.Error())
+		return fmt.Errorf("failed to extract TextMessage header. %s", err.Error())
 	}
 
 	if err := tm.StrTextBody.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract TextMessage.StrTextBody. %s", err.Error())
+		return fmt.Errorf("failed to extract TextMessage.StrTextBody. %s", err.Error())
 	}
 
 	return nil

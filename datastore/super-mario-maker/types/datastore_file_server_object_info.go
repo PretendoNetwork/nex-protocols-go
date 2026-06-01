@@ -33,15 +33,15 @@ func (dsfsoi DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreFileServerObjectInfo from the given readable
 func (dsfsoi *DataStoreFileServerObjectInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsfsoi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFileServerObjectInfo header. %s", err.Error())
 	}
 
 	if err := dsfsoi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFileServerObjectInfo.DataID. %s", err.Error())
 	}
 
 	if err := dsfsoi.GetInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.GetInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFileServerObjectInfo.GetInfo. %s", err.Error())
 	}
 
 	return nil

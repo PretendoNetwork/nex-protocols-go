@@ -33,7 +33,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetState(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, uiNewState)
+		_, rmcError := protocol.SetState(fmt.Errorf("failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, uiNewState)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 
 	err = uiNewState.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetState(fmt.Errorf("Failed to read uiNewState from parameters. %s", err.Error()), packet, callID, idGathering, uiNewState)
+		_, rmcError := protocol.SetState(fmt.Errorf("failed to read uiNewState from parameters. %s", err.Error()), packet, callID, idGathering, uiNewState)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

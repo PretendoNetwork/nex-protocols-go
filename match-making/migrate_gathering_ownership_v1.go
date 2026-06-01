@@ -32,7 +32,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.MigrateGatheringOwnershipV1(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, lstPotentialNewOwnersID)
+		_, rmcError := protocol.MigrateGatheringOwnershipV1(fmt.Errorf("failed to read gid from parameters. %s", err.Error()), packet, callID, gid, lstPotentialNewOwnersID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 
 	err = lstPotentialNewOwnersID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.MigrateGatheringOwnershipV1(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, gid, lstPotentialNewOwnersID)
+		_, rmcError := protocol.MigrateGatheringOwnershipV1(fmt.Errorf("failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, gid, lstPotentialNewOwnersID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

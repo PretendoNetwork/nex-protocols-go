@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 
 	err := pidList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetFriendPresence(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, pidList)
+		_, rmcError := protocol.GetFriendPresence(fmt.Errorf("failed to read pidList from parameters. %s", err.Error()), packet, callID, pidList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

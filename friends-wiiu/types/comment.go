@@ -37,23 +37,23 @@ func (c Comment) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Comment from the given readable
 func (c *Comment) ExtractFrom(readable types.Readable) error {
 	if err := c.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment.Data. %s", err.Error())
 	}
 
 	if err := c.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment header. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment header. %s", err.Error())
 	}
 
 	if err := c.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment.Unknown. %s", err.Error())
 	}
 
 	if err := c.Contents.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment.Contents. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment.Contents. %s", err.Error())
 	}
 
 	if err := c.LastChanged.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment.LastChanged. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment.LastChanged. %s", err.Error())
 	}
 
 	return nil

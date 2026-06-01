@@ -49,47 +49,47 @@ func (dscmcp DataStoreChangeMetaCompareParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreChangeMetaCompareParam from the given readable
 func (dscmcp *DataStoreChangeMetaCompareParam) ExtractFrom(readable types.Readable) error {
 	if err := dscmcp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam header. %s", err.Error())
 	}
 
 	if err := dscmcp.ComparisonFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.ComparisonFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.ComparisonFlag. %s", err.Error())
 	}
 
 	if err := dscmcp.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.Name. %s", err.Error())
 	}
 
 	if err := dscmcp.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.Permission. %s", err.Error())
 	}
 
 	if err := dscmcp.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.DelPermission. %s", err.Error())
 	}
 
 	if err := dscmcp.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.Period. %s", err.Error())
 	}
 
 	if err := dscmcp.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.MetaBinary. %s", err.Error())
 	}
 
 	if err := dscmcp.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.Tags. %s", err.Error())
 	}
 
 	if err := dscmcp.ReferredCnt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.ReferredCnt. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.ReferredCnt. %s", err.Error())
 	}
 
 	if err := dscmcp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.DataType. %s", err.Error())
 	}
 
 	if err := dscmcp.Status.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Status. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaCompareParam.Status. %s", err.Error())
 	}
 
 	return nil

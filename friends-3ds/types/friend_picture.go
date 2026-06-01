@@ -37,23 +37,23 @@ func (fp FriendPicture) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendPicture from the given readable
 func (fp *FriendPicture) ExtractFrom(readable types.Readable) error {
 	if err := fp.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPicture.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPicture.Data. %s", err.Error())
 	}
 
 	if err := fp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPicture header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPicture header. %s", err.Error())
 	}
 
 	if err := fp.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPicture.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPicture.Unknown1. %s", err.Error())
 	}
 
 	if err := fp.PictureData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPicture.PictureData. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPicture.PictureData. %s", err.Error())
 	}
 
 	if err := fp.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPicture.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPicture.Unknown2. %s", err.Error())
 	}
 
 	return nil

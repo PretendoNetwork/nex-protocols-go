@@ -29,7 +29,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 
 	err := searchCriteria.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, searchCriteria)
+		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(fmt.Errorf("failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, searchCriteria)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

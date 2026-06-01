@@ -32,15 +32,15 @@ func (gtsdmpr GlobalTradeStationDownloadMyPokemonResult) WriteTo(writable types.
 // ExtractFrom extracts the GlobalTradeStationDownloadMyPokemonResult from the given readable
 func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) ExtractFrom(readable types.Readable) error {
 	if err := gtsdmpr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadMyPokemonResult header. %s", err.Error())
 	}
 
 	if err := gtsdmpr.Result.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonResult.Result. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadMyPokemonResult.Result. %s", err.Error())
 	}
 
 	if err := gtsdmpr.IsTraded.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonResult.IsTraded. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadMyPokemonResult.IsTraded. %s", err.Error())
 	}
 
 	return nil

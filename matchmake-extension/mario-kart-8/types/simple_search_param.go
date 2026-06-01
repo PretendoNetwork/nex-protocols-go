@@ -40,31 +40,31 @@ func (ssp SimpleSearchParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SimpleSearchParam from the given readable
 func (ssp *SimpleSearchParam) ExtractFrom(readable types.Readable) error {
 	if err := ssp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam header. %s", err.Error())
 	}
 
 	if err := ssp.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Unknown. %s", err.Error())
 	}
 
 	if err := ssp.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Unknown2. %s", err.Error())
 	}
 
 	if err := ssp.Conditions.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Conditions. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Conditions. %s", err.Error())
 	}
 
 	if err := ssp.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Unknown3. %s", err.Error())
 	}
 
 	if err := ssp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.ResultRange. %s", err.Error())
 	}
 
 	if err := ssp.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Unknown4. %s", err.Error())
 	}
 
 	return nil

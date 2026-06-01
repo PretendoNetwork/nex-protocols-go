@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface)
 
 	err := lstGatherings.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, lstGatherings)
+		_, rmcError := protocol.UnregisterGatherings(fmt.Errorf("failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, lstGatherings)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

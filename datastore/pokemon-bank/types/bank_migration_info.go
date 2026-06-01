@@ -32,15 +32,15 @@ func (bmi BankMigrationInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the BankMigrationInfo from the given readable
 func (bmi *BankMigrationInfo) ExtractFrom(readable types.Readable) error {
 	if err := bmi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankMigrationInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract BankMigrationInfo header. %s", err.Error())
 	}
 
 	if err := bmi.MigrationStatus.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankMigrationInfo.MigrationStatus. %s", err.Error())
+		return fmt.Errorf("failed to extract BankMigrationInfo.MigrationStatus. %s", err.Error())
 	}
 
 	if err := bmi.UpdatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankMigrationInfo.UpdatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract BankMigrationInfo.UpdatedTime. %s", err.Error())
 	}
 
 	return nil

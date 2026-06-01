@@ -45,19 +45,19 @@ func (sd SubscriptionData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SubscriptionData from the given readable
 func (sd *SubscriptionData) ExtractFrom(readable types.Readable) error {
 	if err := sd.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriptionData.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriptionData.Data. %s", err.Error())
 	}
 
 	if err := sd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriptionData header. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriptionData header. %s", err.Error())
 	}
 
 	if err := sd.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriptionData.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriptionData.PrincipalID. %s", err.Error())
 	}
 
 	if err := sd.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriptionData.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriptionData.Unknown. %s", err.Error())
 	}
 
 	return nil

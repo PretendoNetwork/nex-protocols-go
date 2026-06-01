@@ -32,15 +32,15 @@ func (dsdp DataStoreDeleteParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreDeleteParam from the given readable
 func (dsdp *DataStoreDeleteParam) ExtractFrom(readable types.Readable) error {
 	if err := dsdp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreDeleteParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreDeleteParam header. %s", err.Error())
 	}
 
 	if err := dsdp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreDeleteParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreDeleteParam.DataID. %s", err.Error())
 	}
 
 	if err := dsdp.UpdatePassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreDeleteParam.UpdatePassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreDeleteParam.UpdatePassword. %s", err.Error())
 	}
 
 	return nil

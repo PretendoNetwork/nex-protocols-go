@@ -51,51 +51,51 @@ func (dspppv DataStorePreparePostParamV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePreparePostParamV1 from the given readable
 func (dspppv *DataStorePreparePostParamV1) ExtractFrom(readable types.Readable) error {
 	if err := dspppv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1 header. %s", err.Error())
 	}
 
 	if err := dspppv.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Size. %s", err.Error())
 	}
 
 	if err := dspppv.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Name. %s", err.Error())
 	}
 
 	if err := dspppv.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.DataType. %s", err.Error())
 	}
 
 	if err := dspppv.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.MetaBinary. %s", err.Error())
 	}
 
 	if err := dspppv.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Permission. %s", err.Error())
 	}
 
 	if err := dspppv.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.DelPermission. %s", err.Error())
 	}
 
 	if err := dspppv.Flag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Flag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Flag. %s", err.Error())
 	}
 
 	if err := dspppv.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Period. %s", err.Error())
 	}
 
 	if err := dspppv.ReferDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.ReferDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.ReferDataID. %s", err.Error())
 	}
 
 	if err := dspppv.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Tags. %s", err.Error())
 	}
 
 	if err := dspppv.RatingInitParams.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.RatingInitParams. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.RatingInitParams. %s", err.Error())
 	}
 
 	return nil

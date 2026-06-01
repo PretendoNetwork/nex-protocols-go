@@ -38,27 +38,27 @@ func (sigpip ServiceItemGetPrepurchaseInfoParam) WriteTo(writable types.Writable
 // ExtractFrom extracts the ServiceItemGetPrepurchaseInfoParam from the given readable
 func (sigpip *ServiceItemGetPrepurchaseInfoParam) ExtractFrom(readable types.Readable) error {
 	if err := sigpip.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam header. %s", err.Error())
 	}
 
 	if err := sigpip.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.ItemCode. %s", err.Error())
 	}
 
 	if err := sigpip.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.ReferenceID. %s", err.Error())
 	}
 
 	if err := sigpip.Limitation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Limitation. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.Limitation. %s", err.Error())
 	}
 
 	if err := sigpip.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.Language. %s", err.Error())
 	}
 
 	if err := sigpip.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.UniqueID. %s", err.Error())
 	}
 
 	return nil

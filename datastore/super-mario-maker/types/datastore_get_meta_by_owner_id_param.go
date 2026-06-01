@@ -36,23 +36,23 @@ func (dsgmboidp DataStoreGetMetaByOwnerIDParam) WriteTo(writable types.Writable)
 // ExtractFrom extracts the DataStoreGetMetaByOwnerIDParam from the given readable
 func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgmboidp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaByOwnerIDParam header. %s", err.Error())
 	}
 
 	if err := dsgmboidp.OwnerIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.OwnerIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaByOwnerIDParam.OwnerIDs. %s", err.Error())
 	}
 
 	if err := dsgmboidp.DataTypes.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.DataTypes. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaByOwnerIDParam.DataTypes. %s", err.Error())
 	}
 
 	if err := dsgmboidp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaByOwnerIDParam.ResultOption. %s", err.Error())
 	}
 
 	if err := dsgmboidp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaByOwnerIDParam.ResultRange. %s", err.Error())
 	}
 
 	return nil

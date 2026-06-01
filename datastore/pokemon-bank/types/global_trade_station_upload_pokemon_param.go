@@ -38,27 +38,27 @@ func (gtsupp GlobalTradeStationUploadPokemonParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the GlobalTradeStationUploadPokemonParam from the given readable
 func (gtsupp *GlobalTradeStationUploadPokemonParam) ExtractFrom(readable types.Readable) error {
 	if err := gtsupp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationUploadPokemonParam header. %s", err.Error())
 	}
 
 	if err := gtsupp.PrepareUploadKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.PrepareUploadKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationUploadPokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	if err := gtsupp.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationUploadPokemonParam.Period. %s", err.Error())
 	}
 
 	if err := gtsupp.IndexData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.IndexData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationUploadPokemonParam.IndexData. %s", err.Error())
 	}
 
 	if err := gtsupp.PokemonData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.PokemonData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationUploadPokemonParam.PokemonData. %s", err.Error())
 	}
 
 	if err := gtsupp.Signature.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.Signature. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationUploadPokemonParam.Signature. %s", err.Error())
 	}
 
 	return nil

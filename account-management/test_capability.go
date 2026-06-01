@@ -29,7 +29,7 @@ func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 
 	err := uiCapability.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, uiCapability)
+		_, rmcError := protocol.TestCapability(fmt.Errorf("failed to read uiCapability from parameters. %s", err.Error()), packet, callID, uiCapability)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

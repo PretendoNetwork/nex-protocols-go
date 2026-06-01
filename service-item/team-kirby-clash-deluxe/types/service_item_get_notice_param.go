@@ -30,11 +30,11 @@ func (signp ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemGetNoticeParam from the given readable
 func (signp *ServiceItemGetNoticeParam) ExtractFrom(readable types.Readable) error {
 	if err := signp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetNoticeParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetNoticeParam header. %s", err.Error())
 	}
 
 	if err := signp.ScheduleType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetNoticeParam.ScheduleType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetNoticeParam.ScheduleType. %s", err.Error())
 	}
 
 	return nil

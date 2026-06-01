@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	err = itemCode.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, itemCode, referenceID)
+		_, rmcError := protocol.GetRivToken(fmt.Errorf("failed to read itemCode from parameters. %s", err.Error()), packet, callID, itemCode, referenceID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	err = referenceID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, itemCode, referenceID)
+		_, rmcError := protocol.GetRivToken(fmt.Errorf("failed to read referenceID from parameters. %s", err.Error()), packet, callID, itemCode, referenceID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

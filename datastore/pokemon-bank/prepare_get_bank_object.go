@@ -32,7 +32,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, slotID, applicationID)
+		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("failed to read slotID from parameters. %s", err.Error()), packet, callID, slotID, applicationID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, slotID, applicationID)
+		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("failed to read applicationID from parameters. %s", err.Error()), packet, callID, slotID, applicationID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

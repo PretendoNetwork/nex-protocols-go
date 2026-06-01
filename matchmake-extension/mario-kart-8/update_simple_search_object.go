@@ -33,7 +33,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 
 	err = objectID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, objectID, newObject)
+		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("failed to read objectID from parameters. %s", err.Error()), packet, callID, objectID, newObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 
 	err = newObject.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), packet, callID, objectID, newObject)
+		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("failed to read newObject from parameters. %s", err.Error()), packet, callID, objectID, newObject)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

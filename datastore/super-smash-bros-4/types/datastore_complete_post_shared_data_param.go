@@ -35,19 +35,19 @@ func (dscpsdp DataStoreCompletePostSharedDataParam) WriteTo(writable types.Writa
 // ExtractFrom extracts the DataStoreCompletePostSharedDataParam from the given readable
 func (dscpsdp *DataStoreCompletePostSharedDataParam) ExtractFrom(readable types.Readable) error {
 	if err := dscpsdp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostSharedDataParam header. %s", err.Error())
 	}
 
 	if err := dscpsdp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostSharedDataParam.DataID. %s", err.Error())
 	}
 
 	if err := dscpsdp.CompleteParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.CompleteParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostSharedDataParam.CompleteParam. %s", err.Error())
 	}
 
 	if err := dscpsdp.PrepareParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.PrepareParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostSharedDataParam.PrepareParam. %s", err.Error())
 	}
 
 	return nil

@@ -34,19 +34,19 @@ func (dsri DataStoreRatingInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreRatingInfo from the given readable
 func (dsri *DataStoreRatingInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfo header. %s", err.Error())
 	}
 
 	if err := dsri.TotalValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfo.TotalValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfo.TotalValue. %s", err.Error())
 	}
 
 	if err := dsri.Count.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfo.Count. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfo.Count. %s", err.Error())
 	}
 
 	if err := dsri.InitialValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfo.InitialValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfo.InitialValue. %s", err.Error())
 	}
 
 	return nil

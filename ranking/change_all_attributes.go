@@ -33,7 +33,7 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 
 	err = changeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, changeParam, uniqueID)
+		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("failed to read changeParam from parameters. %s", err.Error()), packet, callID, changeParam, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, changeParam, uniqueID)
+		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, changeParam, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -6,8 +6,8 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
 func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.PacketInterface) {
@@ -34,7 +34,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 
 	err = lstGID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
+		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("failed to read lstGID from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
+		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("failed to read anyGathering from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
+		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("failed to read strMessage from parameters. %s", err.Error()), packet, callID, lstGID, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

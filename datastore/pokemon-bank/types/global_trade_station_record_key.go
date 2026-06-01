@@ -32,15 +32,15 @@ func (gtsrk GlobalTradeStationRecordKey) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the GlobalTradeStationRecordKey from the given readable
 func (gtsrk *GlobalTradeStationRecordKey) ExtractFrom(readable types.Readable) error {
 	if err := gtsrk.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationRecordKey header. %s", err.Error())
 	}
 
 	if err := gtsrk.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationRecordKey.DataID. %s", err.Error())
 	}
 
 	if err := gtsrk.Password.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.Password. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationRecordKey.Password. %s", err.Error())
 	}
 
 	return nil

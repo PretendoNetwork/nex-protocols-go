@@ -35,19 +35,19 @@ func (mtmi MiiTubeMiiInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MiiTubeMiiInfo from the given readable
 func (mtmi *MiiTubeMiiInfo) ExtractFrom(readable types.Readable) error {
 	if err := mtmi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeMiiInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeMiiInfo header. %s", err.Error())
 	}
 
 	if err := mtmi.MetaInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeMiiInfo.MetaInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeMiiInfo.MetaInfo. %s", err.Error())
 	}
 
 	if err := mtmi.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeMiiInfo.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeMiiInfo.Category. %s", err.Error())
 	}
 
 	if err := mtmi.RankingType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeMiiInfo.RankingType. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeMiiInfo.RankingType. %s", err.Error())
 	}
 
 	return nil

@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, lfc, lfcList)
+		_, rmcError := protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("failed to read lfc from parameters. %s", err.Error()), packet, callID, lfc, lfcList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 
 	err = lfcList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, lfc, lfcList)
+		_, rmcError := protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("failed to read lfcList from parameters. %s", err.Error()), packet, callID, lfc, lfcList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

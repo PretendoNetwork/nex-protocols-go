@@ -33,15 +33,15 @@ func (sigphr ServiceItemGetPurchaseHistoryResponse) WriteTo(writable types.Writa
 // ExtractFrom extracts the ServiceItemGetPurchaseHistoryResponse from the given readable
 func (sigphr *ServiceItemGetPurchaseHistoryResponse) ExtractFrom(readable types.Readable) error {
 	if err := sigphr.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryResponse.ServiceItemEShopResponse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
 	if err := sigphr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryResponse header. %s", err.Error())
 	}
 
 	if err := sigphr.NullablePurchaseHistory.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryResponse.NullablePurchaseHistory. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryResponse.NullablePurchaseHistory. %s", err.Error())
 	}
 
 	return nil

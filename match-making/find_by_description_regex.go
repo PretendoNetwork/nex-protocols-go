@@ -32,7 +32,7 @@ func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterfac
 
 	err = strDescriptionRegex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByDescriptionRegex(fmt.Errorf("Failed to read strDescriptionRegex from parameters. %s", err.Error()), packet, callID, strDescriptionRegex, resultRange)
+		_, rmcError := protocol.FindByDescriptionRegex(fmt.Errorf("failed to read strDescriptionRegex from parameters. %s", err.Error()), packet, callID, strDescriptionRegex, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterfac
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByDescriptionRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, strDescriptionRegex, resultRange)
+		_, rmcError := protocol.FindByDescriptionRegex(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, strDescriptionRegex, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

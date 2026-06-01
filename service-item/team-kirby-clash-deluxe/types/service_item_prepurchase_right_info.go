@@ -40,31 +40,31 @@ func (sipri ServiceItemPrepurchaseRightInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemPrepurchaseRightInfo from the given readable
 func (sipri *ServiceItemPrepurchaseRightInfo) ExtractFrom(readable types.Readable) error {
 	if err := sipri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo header. %s", err.Error())
 	}
 
 	if err := sipri.LimitationType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.LimitationType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.LimitationType. %s", err.Error())
 	}
 
 	if err := sipri.AcquiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.AcquiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.AcquiredCount. %s", err.Error())
 	}
 
 	if err := sipri.UsedCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.UsedCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.UsedCount. %s", err.Error())
 	}
 
 	if err := sipri.ExpiryDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiryDate. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.ExpiryDate. %s", err.Error())
 	}
 
 	if err := sipri.ExpiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.ExpiredCount. %s", err.Error())
 	}
 
 	if err := sipri.ExpiryCounts.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiryCounts. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.ExpiryCounts. %s", err.Error())
 	}
 
 	return nil

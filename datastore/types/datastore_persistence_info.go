@@ -34,19 +34,19 @@ func (dspi DataStorePersistenceInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePersistenceInfo from the given readable
 func (dspi *DataStorePersistenceInfo) ExtractFrom(readable types.Readable) error {
 	if err := dspi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInfo header. %s", err.Error())
 	}
 
 	if err := dspi.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInfo.OwnerID. %s", err.Error())
 	}
 
 	if err := dspi.PersistenceSlotID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.PersistenceSlotID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInfo.PersistenceSlotID. %s", err.Error())
 	}
 
 	if err := dspi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInfo.DataID. %s", err.Error())
 	}
 
 	return nil

@@ -34,19 +34,19 @@ func (gtsdpr GlobalTradeStationDownloadPokemonResult) WriteTo(writable types.Wri
 // ExtractFrom extracts the GlobalTradeStationDownloadPokemonResult from the given readable
 func (gtsdpr *GlobalTradeStationDownloadPokemonResult) ExtractFrom(readable types.Readable) error {
 	if err := gtsdpr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadPokemonResult header. %s", err.Error())
 	}
 
 	if err := gtsdpr.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadPokemonResult.DataID. %s", err.Error())
 	}
 
 	if err := gtsdpr.IndexData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.IndexData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadPokemonResult.IndexData. %s", err.Error())
 	}
 
 	if err := gtsdpr.PokemonData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.PokemonData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadPokemonResult.PokemonData. %s", err.Error())
 	}
 
 	return nil

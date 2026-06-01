@@ -32,15 +32,15 @@ func (siar ServiceItemAccountRight) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemAccountRight from the given readable
 func (siar *ServiceItemAccountRight) ExtractFrom(readable types.Readable) error {
 	if err := siar.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRight header. %s", err.Error())
 	}
 
 	if err := siar.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRight.PID. %s", err.Error())
 	}
 
 	if err := siar.Limitation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight.Limitation. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRight.Limitation. %s", err.Error())
 	}
 
 	return nil

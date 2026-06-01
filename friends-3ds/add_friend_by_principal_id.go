@@ -32,7 +32,7 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, lfc, pid)
+		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("failed to read lfc from parameters. %s", err.Error()), packet, callID, lfc, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, lfc, pid)
+		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, lfc, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

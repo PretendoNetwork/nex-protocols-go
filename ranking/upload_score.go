@@ -33,7 +33,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	err = scoreData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), packet, callID, scoreData, uniqueID)
+		_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read scoreData from parameters. %s", err.Error()), packet, callID, scoreData, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, scoreData, uniqueID)
+		_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, scoreData, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

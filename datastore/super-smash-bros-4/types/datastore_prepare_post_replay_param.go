@@ -52,55 +52,55 @@ func (dspprp DataStorePreparePostReplayParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePreparePostReplayParam from the given readable
 func (dspprp *DataStorePreparePostReplayParam) ExtractFrom(readable types.Readable) error {
 	if err := dspprp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam header. %s", err.Error())
 	}
 
 	if err := dspprp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Size. %s", err.Error())
 	}
 
 	if err := dspprp.Mode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Mode. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Mode. %s", err.Error())
 	}
 
 	if err := dspprp.Style.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Style. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Style. %s", err.Error())
 	}
 
 	if err := dspprp.Rule.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Rule. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Rule. %s", err.Error())
 	}
 
 	if err := dspprp.Stage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Stage. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Stage. %s", err.Error())
 	}
 
 	if err := dspprp.ReplayType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.ReplayType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.ReplayType. %s", err.Error())
 	}
 
 	if err := dspprp.CompetitionID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.CompetitionID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.CompetitionID. %s", err.Error())
 	}
 
 	if err := dspprp.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Score. %s", err.Error())
 	}
 
 	if err := dspprp.Players.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Players. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Players. %s", err.Error())
 	}
 
 	if err := dspprp.Winners.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Winners. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Winners. %s", err.Error())
 	}
 
 	if err := dspprp.KeyVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.KeyVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.KeyVersion. %s", err.Error())
 	}
 
 	if err := dspprp.ExtraData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.ExtraData. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.ExtraData. %s", err.Error())
 	}
 
 	return nil

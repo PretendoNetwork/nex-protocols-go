@@ -41,31 +41,31 @@ func (rgblp Ranking2GetByListParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2GetByListParam from the given readable
 func (rgblp *Ranking2GetByListParam) ExtractFrom(readable types.Readable) error {
 	if err := rgblp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam header. %s", err.Error())
 	}
 
 	if err := rgblp.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.Category. %s", err.Error())
 	}
 
 	if err := rgblp.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.Offset. %s", err.Error())
 	}
 
 	if err := rgblp.Length.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Length. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.Length. %s", err.Error())
 	}
 
 	if err := rgblp.SortFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.SortFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.SortFlags. %s", err.Error())
 	}
 
 	if err := rgblp.OptionFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.OptionFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.OptionFlags. %s", err.Error())
 	}
 
 	if err := rgblp.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.NumSeasonsToGoBack. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.NumSeasonsToGoBack. %s", err.Error())
 	}
 
 	return nil

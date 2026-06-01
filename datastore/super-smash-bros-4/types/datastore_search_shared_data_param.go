@@ -42,35 +42,35 @@ func (dsssdp DataStoreSearchSharedDataParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreSearchSharedDataParam from the given readable
 func (dsssdp *DataStoreSearchSharedDataParam) ExtractFrom(readable types.Readable) error {
 	if err := dsssdp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchSharedDataParam header. %s", err.Error())
 	}
 
 	if err := dsssdp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchSharedDataParam.DataType. %s", err.Error())
 	}
 
 	if err := dsssdp.Owner.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Owner. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchSharedDataParam.Owner. %s", err.Error())
 	}
 
 	if err := dsssdp.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchSharedDataParam.Region. %s", err.Error())
 	}
 
 	if err := dsssdp.Attribute1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Attribute1. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchSharedDataParam.Attribute1. %s", err.Error())
 	}
 
 	if err := dsssdp.Attribute2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Attribute2. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchSharedDataParam.Attribute2. %s", err.Error())
 	}
 
 	if err := dsssdp.Fighter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Fighter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchSharedDataParam.Fighter. %s", err.Error())
 	}
 
 	if err := dsssdp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchSharedDataParam.ResultRange. %s", err.Error())
 	}
 
 	return nil

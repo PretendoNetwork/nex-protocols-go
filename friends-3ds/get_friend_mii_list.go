@@ -30,7 +30,7 @@ func (protocol *Protocol) handleGetFriendMiiList(packet nex.PacketInterface) {
 
 	err := friends.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetFriendMiiList(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, friends)
+		_, rmcError := protocol.GetFriendMiiList(fmt.Errorf("failed to read friends from parameters. %s", err.Error()), packet, callID, friends)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

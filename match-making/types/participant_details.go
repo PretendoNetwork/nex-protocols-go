@@ -36,23 +36,23 @@ func (pd ParticipantDetails) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ParticipantDetails from the given readable
 func (pd *ParticipantDetails) ExtractFrom(readable types.Readable) error {
 	if err := pd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ParticipantDetails header. %s", err.Error())
+		return fmt.Errorf("failed to extract ParticipantDetails header. %s", err.Error())
 	}
 
 	if err := pd.IDParticipant.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ParticipantDetails.IDParticipant. %s", err.Error())
+		return fmt.Errorf("failed to extract ParticipantDetails.IDParticipant. %s", err.Error())
 	}
 
 	if err := pd.StrName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ParticipantDetails.StrName. %s", err.Error())
+		return fmt.Errorf("failed to extract ParticipantDetails.StrName. %s", err.Error())
 	}
 
 	if err := pd.StrMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ParticipantDetails.StrMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract ParticipantDetails.StrMessage. %s", err.Error())
 	}
 
 	if err := pd.UIParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ParticipantDetails.UIParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract ParticipantDetails.UIParticipants. %s", err.Error())
 	}
 
 	return nil

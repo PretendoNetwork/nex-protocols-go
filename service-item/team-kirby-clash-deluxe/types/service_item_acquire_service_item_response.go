@@ -40,31 +40,31 @@ func (siasir ServiceItemAcquireServiceItemResponse) WriteTo(writable types.Writa
 // ExtractFrom extracts the ServiceItemAcquireServiceItemResponse from the given readable
 func (siasir *ServiceItemAcquireServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	if err := siasir.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse header. %s", err.Error())
 	}
 
 	if err := siasir.LimitationType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.LimitationType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.LimitationType. %s", err.Error())
 	}
 
 	if err := siasir.AcquiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.AcquiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.AcquiredCount. %s", err.Error())
 	}
 
 	if err := siasir.UsedCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.UsedCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.UsedCount. %s", err.Error())
 	}
 
 	if err := siasir.ExpiryDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiryDate. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.ExpiryDate. %s", err.Error())
 	}
 
 	if err := siasir.ExpiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.ExpiredCount. %s", err.Error())
 	}
 
 	if err := siasir.ExpiryCounts.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiryCounts. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.ExpiryCounts. %s", err.Error())
 	}
 
 	return nil

@@ -36,23 +36,23 @@ func (dsrgnurli DataStoreReqGetNotificationURLInfo) WriteTo(writable types.Writa
 // ExtractFrom extracts the DataStoreReqGetNotificationURLInfo from the given readable
 func (dsrgnurli *DataStoreReqGetNotificationURLInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsrgnurli.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetNotificationURLInfo header. %s", err.Error())
 	}
 
 	if err := dsrgnurli.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetNotificationURLInfo.URL. %s", err.Error())
 	}
 
 	if err := dsrgnurli.Key.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Key. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetNotificationURLInfo.Key. %s", err.Error())
 	}
 
 	if err := dsrgnurli.Query.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Query. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetNotificationURLInfo.Query. %s", err.Error())
 	}
 
 	if err := dsrgnurli.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetNotificationURLInfo.RootCACert. %s", err.Error())
 	}
 
 	return nil

@@ -33,7 +33,7 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 
 	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, recipient, lstMessagesToDelete)
+		_, rmcError := protocol.DeleteMessages(fmt.Errorf("failed to read recipient from parameters. %s", err.Error()), packet, callID, recipient, lstMessagesToDelete)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 
 	err = lstMessagesToDelete.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteMessages(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), packet, callID, recipient, lstMessagesToDelete)
+		_, rmcError := protocol.DeleteMessages(fmt.Errorf("failed to read lstMessagesToDelete from parameters. %s", err.Error()), packet, callID, recipient, lstMessagesToDelete)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

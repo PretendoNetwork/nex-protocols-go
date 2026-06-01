@@ -32,7 +32,7 @@ func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 
 	err = idSource.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idSource from parameters. %s", err.Error()), packet, callID, idSource, idTarget)
+		_, rmcError := protocol.RequestTicket(fmt.Errorf("failed to read idSource from parameters. %s", err.Error()), packet, callID, idSource, idTarget)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 
 	err = idTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idTarget from parameters. %s", err.Error()), packet, callID, idSource, idTarget)
+		_, rmcError := protocol.RequestTicket(fmt.Errorf("failed to read idTarget from parameters. %s", err.Error()), packet, callID, idSource, idTarget)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -42,35 +42,35 @@ func (sin ServiceItemNotice) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemNotice from the given readable
 func (sin *ServiceItemNotice) ExtractFrom(readable types.Readable) error {
 	if err := sin.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice header. %s", err.Error())
 	}
 
 	if err := sin.ScheduleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ScheduleID. %s", err.Error())
 	}
 
 	if err := sin.ScheduleType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ScheduleType. %s", err.Error())
 	}
 
 	if err := sin.ParamInt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamInt. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ParamInt. %s", err.Error())
 	}
 
 	if err := sin.ParamString.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamString. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ParamString. %s", err.Error())
 	}
 
 	if err := sin.ParamBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ParamBinary. %s", err.Error())
 	}
 
 	if err := sin.TimeBegin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeBegin. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.TimeBegin. %s", err.Error())
 	}
 
 	if err := sin.TimeEnd.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeEnd. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.TimeEnd. %s", err.Error())
 	}
 
 	return nil

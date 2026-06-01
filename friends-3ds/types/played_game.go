@@ -32,15 +32,15 @@ func (pg PlayedGame) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PlayedGame from the given readable
 func (pg *PlayedGame) ExtractFrom(readable types.Readable) error {
 	if err := pg.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayedGame header. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayedGame header. %s", err.Error())
 	}
 
 	if err := pg.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayedGame.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayedGame.GameKey. %s", err.Error())
 	}
 
 	if err := pg.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayedGame.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayedGame.Unknown. %s", err.Error())
 	}
 
 	return nil

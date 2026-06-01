@@ -40,31 +40,31 @@ func (ssdta SimpleSearchDateTimeAttribute) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SimpleSearchDateTimeAttribute from the given readable
 func (ssdta *SimpleSearchDateTimeAttribute) ExtractFrom(readable types.Readable) error {
 	if err := ssdta.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute header. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchDateTimeAttribute header. %s", err.Error())
 	}
 
 	if err := ssdta.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchDateTimeAttribute.Unknown. %s", err.Error())
 	}
 
 	if err := ssdta.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchDateTimeAttribute.Unknown2. %s", err.Error())
 	}
 
 	if err := ssdta.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchDateTimeAttribute.Unknown3. %s", err.Error())
 	}
 
 	if err := ssdta.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchDateTimeAttribute.Unknown4. %s", err.Error())
 	}
 
 	if err := ssdta.StartTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.StartTime. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchDateTimeAttribute.StartTime. %s", err.Error())
 	}
 
 	if err := ssdta.EndTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.EndTime. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchDateTimeAttribute.EndTime. %s", err.Error())
 	}
 
 	return nil

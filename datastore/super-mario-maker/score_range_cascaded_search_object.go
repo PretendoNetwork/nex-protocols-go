@@ -33,7 +33,7 @@ func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.Packet
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, param, extraData)
+		_, rmcError := protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.Packet
 
 	err = extraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, param, extraData)
+		_, rmcError := protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("failed to read extraData from parameters. %s", err.Error()), packet, callID, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

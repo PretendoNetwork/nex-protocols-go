@@ -30,11 +30,11 @@ func (gtsdmpp GlobalTradeStationDownloadMyPokemonParam) WriteTo(writable types.W
 // ExtractFrom extracts the GlobalTradeStationDownloadMyPokemonParam from the given readable
 func (gtsdmpp *GlobalTradeStationDownloadMyPokemonParam) ExtractFrom(readable types.Readable) error {
 	if err := gtsdmpp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadMyPokemonParam header. %s", err.Error())
 	}
 
 	if err := gtsdmpp.PrepareUploadKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonParam.PrepareUploadKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadMyPokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	return nil

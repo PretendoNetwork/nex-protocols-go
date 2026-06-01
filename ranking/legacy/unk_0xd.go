@@ -7,8 +7,8 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
-	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/constants"
+	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/legacy/types"
 )
 
 // TODO - Find name if possible
@@ -38,7 +38,7 @@ func (protocol *Protocol) handleUnk0xD(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0xD(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
+		_, rmcError := protocol.Unk0xD(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -49,7 +49,7 @@ func (protocol *Protocol) handleUnk0xD(packet nex.PacketInterface) {
 	if rankingVersion.GreaterOrEqual("2.0.0") {
 		err = category.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.Unk0xD(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
+			_, rmcError := protocol.Unk0xD(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -61,7 +61,7 @@ func (protocol *Protocol) handleUnk0xD(packet nex.PacketInterface) {
 
 		err = categories.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.Unk0xD(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
+			_, rmcError := protocol.Unk0xD(fmt.Errorf("failed to read categories from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -70,7 +70,7 @@ func (protocol *Protocol) handleUnk0xD(packet nex.PacketInterface) {
 		}
 
 		if len(categories) != constants.NumRankingDataCategories {
-			_, rmcError := protocol.Unk0xD(fmt.Errorf("Failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, uniqueID, category, orderParam)
+			_, rmcError := protocol.Unk0xD(fmt.Errorf("failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, uniqueID, category, orderParam)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -83,7 +83,7 @@ func (protocol *Protocol) handleUnk0xD(packet nex.PacketInterface) {
 
 	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0xD(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
+		_, rmcError := protocol.Unk0xD(fmt.Errorf("failed to read orderParam from parameters. %s", err.Error()), packet, callID, uniqueID, category, orderParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

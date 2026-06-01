@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInter
 
 	err := pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RemoveFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid)
+		_, rmcError := protocol.RemoveFriendByPrincipalID(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

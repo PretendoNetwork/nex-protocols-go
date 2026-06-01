@@ -35,19 +35,19 @@ func (prbs PrincipalRequestBlockSetting) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PrincipalRequestBlockSetting from the given readable
 func (prbs *PrincipalRequestBlockSetting) ExtractFrom(readable types.Readable) error {
 	if err := prbs.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalRequestBlockSetting.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalRequestBlockSetting.Data. %s", err.Error())
 	}
 
 	if err := prbs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalRequestBlockSetting header. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalRequestBlockSetting header. %s", err.Error())
 	}
 
 	if err := prbs.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalRequestBlockSetting.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalRequestBlockSetting.PID. %s", err.Error())
 	}
 
 	if err := prbs.IsBlocked.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalRequestBlockSetting.IsBlocked. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalRequestBlockSetting.IsBlocked. %s", err.Error())
 	}
 
 	return nil

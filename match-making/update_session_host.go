@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateSessionHost(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, isMigrateOwner)
+		_, rmcError := protocol.UpdateSessionHost(fmt.Errorf("failed to read gid from parameters. %s", err.Error()), packet, callID, gid, isMigrateOwner)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 
 	err = isMigrateOwner.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateSessionHost(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), packet, callID, gid, isMigrateOwner)
+		_, rmcError := protocol.UpdateSessionHost(fmt.Errorf("failed to read isMigrateOwner from parameters. %s", err.Error()), packet, callID, gid, isMigrateOwner)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

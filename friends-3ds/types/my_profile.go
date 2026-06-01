@@ -47,43 +47,43 @@ func (mp MyProfile) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MyProfile from the given readable
 func (mp *MyProfile) ExtractFrom(readable types.Readable) error {
 	if err := mp.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Data. %s", err.Error())
 	}
 
 	if err := mp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile header. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile header. %s", err.Error())
 	}
 
 	if err := mp.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Region. %s", err.Error())
 	}
 
 	if err := mp.Country.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Country. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Country. %s", err.Error())
 	}
 
 	if err := mp.Area.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Area. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Area. %s", err.Error())
 	}
 
 	if err := mp.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Language. %s", err.Error())
 	}
 
 	if err := mp.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Platform. %s", err.Error())
 	}
 
 	if err := mp.LocalFriendCodeSeed.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.LocalFriendCodeSeed. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.LocalFriendCodeSeed. %s", err.Error())
 	}
 
 	if err := mp.MACAddress.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.MACAddress. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.MACAddress. %s", err.Error())
 	}
 
 	if err := mp.SerialNumber.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.SerialNumber. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.SerialNumber. %s", err.Error())
 	}
 
 	return nil

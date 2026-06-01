@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketI
 
 	err := lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RemoveFriendByLocalFriendCode(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, lfc)
+		_, rmcError := protocol.RemoveFriendByLocalFriendCode(fmt.Errorf("failed to read lfc from parameters. %s", err.Error()), packet, callID, lfc)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

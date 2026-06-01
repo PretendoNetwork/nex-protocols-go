@@ -36,23 +36,23 @@ func (dsgcrp DataStoreGetCustomRankingParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreGetCustomRankingParam from the given readable
 func (dsgcrp *DataStoreGetCustomRankingParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgcrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam header. %s", err.Error())
 	}
 
 	if err := dsgcrp.ApplicationID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ApplicationID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam.ApplicationID. %s", err.Error())
 	}
 
 	if err := dsgcrp.Condition.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.Condition. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam.Condition. %s", err.Error())
 	}
 
 	if err := dsgcrp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam.ResultOption. %s", err.Error())
 	}
 
 	if err := dsgcrp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam.ResultRange. %s", err.Error())
 	}
 
 	return nil

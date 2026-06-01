@@ -32,7 +32,7 @@ func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInte
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid, resultRange)
+		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, pid, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInte
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, pid, resultRange)
+		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, pid, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

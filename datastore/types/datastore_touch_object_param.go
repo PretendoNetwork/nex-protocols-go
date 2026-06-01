@@ -34,19 +34,19 @@ func (dstop DataStoreTouchObjectParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreTouchObjectParam from the given readable
 func (dstop *DataStoreTouchObjectParam) ExtractFrom(readable types.Readable) error {
 	if err := dstop.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreTouchObjectParam header. %s", err.Error())
 	}
 
 	if err := dstop.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreTouchObjectParam.DataID. %s", err.Error())
 	}
 
 	if err := dstop.LockID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.LockID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreTouchObjectParam.LockID. %s", err.Error())
 	}
 
 	if err := dstop.AccessPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.AccessPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreTouchObjectParam.AccessPassword. %s", err.Error())
 	}
 
 	return nil

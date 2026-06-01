@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
 func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterface) {
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterfac
 
 	err := anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, anyGathering)
+		_, rmcError := protocol.UpdateMatchmakeSession(fmt.Errorf("failed to read anyGathering from parameters. %s", err.Error()), packet, callID, anyGathering)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

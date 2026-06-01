@@ -50,36 +50,36 @@ func (dsrui *DataStoreReqUpdateInfo) ExtractFrom(readable types.Readable) error 
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dsrui.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo header. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := dsrui.Version.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 	} else {
 		version, err := readable.ReadUInt16LE()
 		if err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 
 		dsrui.Version = types.UInt32(version)
 	}
 
 	if err := dsrui.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo.URL. %s", err.Error())
 	}
 
 	if err := dsrui.RequestHeaders.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RequestHeaders. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo.RequestHeaders. %s", err.Error())
 	}
 
 	if err := dsrui.FormFields.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.FormFields. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo.FormFields. %s", err.Error())
 	}
 
 	if err := dsrui.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo.RootCACert. %s", err.Error())
 	}
 
 	return nil

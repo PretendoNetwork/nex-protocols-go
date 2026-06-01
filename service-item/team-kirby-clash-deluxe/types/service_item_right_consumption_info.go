@@ -33,15 +33,15 @@ func (sirci ServiceItemRightConsumptionInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemRightConsumptionInfo from the given readable
 func (sirci *ServiceItemRightConsumptionInfo) ExtractFrom(readable types.Readable) error {
 	if err := sirci.ServiceItemRightInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightConsumptionInfo.ServiceItemRightInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightConsumptionInfo.ServiceItemRightInfo. %s", err.Error())
 	}
 
 	if err := sirci.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightConsumptionInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightConsumptionInfo header. %s", err.Error())
 	}
 
 	if err := sirci.AccountRights.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightConsumptionInfo.AccountRights. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightConsumptionInfo.AccountRights. %s", err.Error())
 	}
 
 	return nil

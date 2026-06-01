@@ -36,23 +36,23 @@ func (silsip ServiceItemListServiceItemParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemListServiceItemParam from the given readable
 func (silsip *ServiceItemListServiceItemParam) ExtractFrom(readable types.Readable) error {
 	if err := silsip.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListServiceItemParam header. %s", err.Error())
 	}
 
 	if err := silsip.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListServiceItemParam.Language. %s", err.Error())
 	}
 
 	if err := silsip.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListServiceItemParam.Offset. %s", err.Error())
 	}
 
 	if err := silsip.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListServiceItemParam.Size. %s", err.Error())
 	}
 
 	if err := silsip.TitleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.TitleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListServiceItemParam.TitleID. %s", err.Error())
 	}
 
 	return nil

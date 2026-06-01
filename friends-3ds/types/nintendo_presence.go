@@ -62,51 +62,51 @@ func (np NintendoPresence) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NintendoPresence from the given readable
 func (np *NintendoPresence) ExtractFrom(readable types.Readable) error {
 	if err := np.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.Data. %s", err.Error())
 	}
 
 	if err := np.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence header. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence header. %s", err.Error())
 	}
 
 	if err := np.ChangedFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.ChangedFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.ChangedFlags. %s", err.Error())
 	}
 
 	if err := np.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.GameKey. %s", err.Error())
 	}
 
 	if err := np.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.Message. %s", err.Error())
 	}
 
 	if err := np.JoinAvailableFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.JoinAvailableFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.JoinAvailableFlag. %s", err.Error())
 	}
 
 	if err := np.MatchmakeType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.MatchmakeType. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.MatchmakeType. %s", err.Error())
 	}
 
 	if err := np.JoinGameID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.JoinGameID. %s", err.Error())
 	}
 
 	if err := np.JoinGameMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameMode. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.JoinGameMode. %s", err.Error())
 	}
 
 	if err := np.OwnerPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.OwnerPID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.OwnerPID. %s", err.Error())
 	}
 
 	if err := np.JoinGroupID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.JoinGroupID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.JoinGroupID. %s", err.Error())
 	}
 
 	if err := np.ApplicationArg.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.ApplicationArg. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.ApplicationArg. %s", err.Error())
 	}
 
 	return nil

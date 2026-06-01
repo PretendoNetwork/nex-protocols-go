@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 
 	err := stringSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStringSettings(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, stringSettingIndex)
+		_, rmcError := protocol.GetStringSettings(fmt.Errorf("failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, stringSettingIndex)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -64,54 +64,54 @@ func (jmsp *JoinMatchmakeSessionParam) ExtractFrom(readable types.Readable) erro
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	if err := jmsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam header. %s", err.Error())
 	}
 
 	if err := jmsp.GID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GID. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.GID. %s", err.Error())
 	}
 
 	if err := jmsp.AdditionalParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
 
 	if err := jmsp.GIDForParticipationCheck.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
 	if err := jmsp.JoinMatchmakeSessionOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionOption. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionOption. %s", err.Error())
 	}
 
 	if err := jmsp.JoinMatchmakeSessionBehavior.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior. %s", err.Error())
 	}
 
 	if err := jmsp.StrUserPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.StrUserPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.StrUserPassword. %s", err.Error())
 	}
 
 	if err := jmsp.StrSystemPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.StrSystemPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.StrSystemPassword. %s", err.Error())
 	}
 
 	if err := jmsp.JoinMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.JoinMessage. %s", err.Error())
 	}
 
 	if err := jmsp.ParticipationCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ParticipationCount. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
 
 	if jmsp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0") {
 		if err := jmsp.ExtraParticipants.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
+			return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0") {
 		if err := jmsp.BlockListParam.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())
+			return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())
 		}
 	}
 

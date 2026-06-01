@@ -33,7 +33,7 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 
 	err = strPrincipalName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, strEmail)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, strEmail)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 
 	err = strKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, strEmail)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("failed to read strKey from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, strEmail)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 
 	err = strEmail.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, strEmail)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("failed to read strEmail from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, strEmail)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

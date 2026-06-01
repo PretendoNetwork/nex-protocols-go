@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPersistenceInfo(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, ownerID, persistenceSlotID)
+		_, rmcError := protocol.GetPersistenceInfo(fmt.Errorf("failed to read ownerID from parameters. %s", err.Error()), packet, callID, ownerID, persistenceSlotID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 
 	err = persistenceSlotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPersistenceInfo(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, ownerID, persistenceSlotID)
+		_, rmcError := protocol.GetPersistenceInfo(fmt.Errorf("failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, ownerID, persistenceSlotID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

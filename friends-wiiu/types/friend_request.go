@@ -47,23 +47,23 @@ func (fr FriendRequest) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendRequest from the given readable
 func (fr *FriendRequest) ExtractFrom(readable types.Readable) error {
 	if err := fr.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest.Data. %s", err.Error())
 	}
 
 	if err := fr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest header. %s", err.Error())
 	}
 
 	if err := fr.PrincipalInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest.PrincipalInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest.PrincipalInfo. %s", err.Error())
 	}
 
 	if err := fr.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest.Message. %s", err.Error())
 	}
 
 	if err := fr.SentOn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest.SentOn. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest.SentOn. %s", err.Error())
 	}
 
 	return nil

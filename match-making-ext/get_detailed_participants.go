@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetDetailedParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, bOnlyActive)
+		_, rmcError := protocol.GetDetailedParticipants(fmt.Errorf("failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, bOnlyActive)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 
 	err = bOnlyActive.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetDetailedParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, idGathering, bOnlyActive)
+		_, rmcError := protocol.GetDetailedParticipants(fmt.Errorf("failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, idGathering, bOnlyActive)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

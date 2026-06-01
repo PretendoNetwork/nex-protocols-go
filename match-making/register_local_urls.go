@@ -32,7 +32,7 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, lstURLs)
+		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("failed to read gid from parameters. %s", err.Error()), packet, callID, gid, lstURLs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 
 	err = lstURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), packet, callID, gid, lstURLs)
+		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("failed to read lstURLs from parameters. %s", err.Error()), packet, callID, gid, lstURLs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

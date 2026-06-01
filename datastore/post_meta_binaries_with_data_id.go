@@ -34,7 +34,7 @@ func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInte
 
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
+		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInte
 
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
+		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("failed to read params from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInte
 
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
+		_, rmcError := protocol.PostMetaBinariesWithDataID(fmt.Errorf("failed to read transactional from parameters. %s", err.Error()), packet, callID, dataIDs, params, transactional)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

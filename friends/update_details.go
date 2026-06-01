@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 
 	err = uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails)
+		_, rmcError := protocol.UpdateDetails(fmt.Errorf("failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 
 	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails)
+		_, rmcError := protocol.UpdateDetails(fmt.Errorf("failed to read uiDetails from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

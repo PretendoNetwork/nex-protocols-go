@@ -83,88 +83,88 @@ func (dssp *DataStoreSearchParam) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dssp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam header. %s", err.Error())
 	}
 
 	if err := dssp.SearchTarget.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.SearchTarget. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.SearchTarget. %s", err.Error())
 	}
 
 	if err := dssp.OwnerIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.OwnerIDs. %s", err.Error())
 	}
 
 	if err := dssp.OwnerType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.OwnerType. %s", err.Error())
 	}
 
 	if err := dssp.DestinationIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.DestinationIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.DestinationIDs. %s", err.Error())
 	}
 
 	if err := dssp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.DataType. %s", err.Error())
 	}
 
 	if err := dssp.CreatedAfter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedAfter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.CreatedAfter. %s", err.Error())
 	}
 
 	if err := dssp.CreatedBefore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedBefore. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.CreatedBefore. %s", err.Error())
 	}
 
 	if err := dssp.UpdatedAfter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedAfter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.UpdatedAfter. %s", err.Error())
 	}
 
 	if err := dssp.UpdatedBefore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedBefore. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.UpdatedBefore. %s", err.Error())
 	}
 
 	if err := dssp.ReferDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ReferDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ReferDataID. %s", err.Error())
 	}
 
 	if err := dssp.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.Tags. %s", err.Error())
 	}
 
 	if err := dssp.ResultOrderColumn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrderColumn. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ResultOrderColumn. %s", err.Error())
 	}
 
 	if err := dssp.ResultOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ResultOrder. %s", err.Error())
 	}
 
 	if err := dssp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ResultRange. %s", err.Error())
 	}
 
 	if err := dssp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ResultOption. %s", err.Error())
 	}
 
 	if err := dssp.MinimalRatingFrequency.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
 	}
 
 	if dssp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := dssp.UseCache.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
 		}
 	}
 
 	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := dssp.TotalCountEnabled.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
 		}
 	}
 
 	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := dssp.DataTypes.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
 		}
 	}
 

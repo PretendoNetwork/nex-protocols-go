@@ -33,7 +33,7 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 
 	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal, dtExpiry, strExpiredMessage)
+		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal, dtExpiry, strExpiredMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 
 	err = dtExpiry.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read dtExpiry from parameters. %s", err.Error()), packet, callID, idPrincipal, dtExpiry, strExpiredMessage)
+		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("failed to read dtExpiry from parameters. %s", err.Error()), packet, callID, idPrincipal, dtExpiry, strExpiredMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 
 	err = strExpiredMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read strExpiredMessage from parameters. %s", err.Error()), packet, callID, idPrincipal, dtExpiry, strExpiredMessage)
+		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("failed to read strExpiredMessage from parameters. %s", err.Error()), packet, callID, idPrincipal, dtExpiry, strExpiredMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

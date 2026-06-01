@@ -59,47 +59,47 @@ func (g Gathering) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Gathering from the given readable
 func (g *Gathering) ExtractFrom(readable types.Readable) error {
 	if err := g.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering header. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering header. %s", err.Error())
 	}
 
 	if err := g.ID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.ID. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.ID. %s", err.Error())
 	}
 
 	if err := g.OwnerPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.OwnerPID. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.OwnerPID. %s", err.Error())
 	}
 
 	if err := g.HostPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.HostPID. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.HostPID. %s", err.Error())
 	}
 
 	if err := g.MinimumParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.MinimumParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.MinimumParticipants. %s", err.Error())
 	}
 
 	if err := g.MaximumParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.MaximumParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.MaximumParticipants. %s", err.Error())
 	}
 
 	if err := g.ParticipationPolicy.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.ParticipationPolicy. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.ParticipationPolicy. %s", err.Error())
 	}
 
 	if err := g.PolicyArgument.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.PolicyArgument. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.PolicyArgument. %s", err.Error())
 	}
 
 	if err := g.Flags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.Flags. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.Flags. %s", err.Error())
 	}
 
 	if err := g.State.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.State. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.State. %s", err.Error())
 	}
 
 	if err := g.Description.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.Description. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.Description. %s", err.Error())
 	}
 
 	return nil

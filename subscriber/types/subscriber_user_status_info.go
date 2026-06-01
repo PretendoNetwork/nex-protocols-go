@@ -32,15 +32,15 @@ func (susi SubscriberUserStatusInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SubscriberUserStatusInfo from the given readable
 func (susi *SubscriberUserStatusInfo) ExtractFrom(readable types.Readable) error {
 	if err := susi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberUserStatusInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberUserStatusInfo header. %s", err.Error())
 	}
 
 	if err := susi.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberUserStatusInfo.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberUserStatusInfo.PID. %s", err.Error())
 	}
 
 	if err := susi.Values.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberUserStatusInfo.Values. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberUserStatusInfo.Values. %s", err.Error())
 	}
 
 	return nil

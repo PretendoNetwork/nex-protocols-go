@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDenyFriendRequest(packet nex.PacketInterface) {
 
 	err := id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DenyFriendRequest(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, id)
+		_, rmcError := protocol.DenyFriendRequest(fmt.Errorf("failed to read id from parameters. %s", err.Error()), packet, callID, id)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

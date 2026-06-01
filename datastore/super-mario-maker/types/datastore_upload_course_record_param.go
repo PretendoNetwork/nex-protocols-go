@@ -34,19 +34,19 @@ func (dsucrp DataStoreUploadCourseRecordParam) WriteTo(writable types.Writable) 
 // ExtractFrom extracts the DataStoreUploadCourseRecordParam from the given readable
 func (dsucrp *DataStoreUploadCourseRecordParam) ExtractFrom(readable types.Readable) error {
 	if err := dsucrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreUploadCourseRecordParam header. %s", err.Error())
 	}
 
 	if err := dsucrp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreUploadCourseRecordParam.DataID. %s", err.Error())
 	}
 
 	if err := dsucrp.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreUploadCourseRecordParam.Slot. %s", err.Error())
 	}
 
 	if err := dsucrp.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreUploadCourseRecordParam.Score. %s", err.Error())
 	}
 
 	return nil

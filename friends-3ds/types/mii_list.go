@@ -39,27 +39,27 @@ func (ml MiiList) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MiiList from the given readable
 func (ml *MiiList) ExtractFrom(readable types.Readable) error {
 	if err := ml.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiList.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiList.Data. %s", err.Error())
 	}
 
 	if err := ml.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiList header. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiList header. %s", err.Error())
 	}
 
 	if err := ml.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiList.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiList.Unknown1. %s", err.Error())
 	}
 
 	if err := ml.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiList.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiList.Unknown2. %s", err.Error())
 	}
 
 	if err := ml.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiList.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiList.Unknown3. %s", err.Error())
 	}
 
 	if err := ml.MiiDataList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiList.MiiDataList. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiList.MiiDataList. %s", err.Error())
 	}
 
 	return nil

@@ -43,35 +43,35 @@ func (rop RankingOrderParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingOrderParam from the given readable
 func (rop *RankingOrderParam) ExtractFrom(readable types.Readable) error {
 	if err := rop.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam header. %s", err.Error())
 	}
 
 	if err := rop.ScoreIndex.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.ScoreIndex. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.ScoreIndex. %s", err.Error())
 	}
 
 	if err := rop.ScoreOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.ScoreOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.ScoreOrder. %s", err.Error())
 	}
 
 	if err := rop.RankCalculation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.RankCalculation. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.RankCalculation. %s", err.Error())
 	}
 
 	if err := rop.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Unknown1. %s", err.Error())
 	}
 
 	if err := rop.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Unknown2. %s", err.Error())
 	}
 
 	if err := rop.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Unknown3. %s", err.Error())
 	}
 
 	if err := rop.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Unknown4. %s", err.Error())
 	}
 
 	return nil

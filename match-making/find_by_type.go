@@ -32,7 +32,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 
 	err = strType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByType(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), packet, callID, strType, resultRange)
+		_, rmcError := protocol.FindByType(fmt.Errorf("failed to read strType from parameters. %s", err.Error()), packet, callID, strType, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByType(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, strType, resultRange)
+		_, rmcError := protocol.FindByType(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, strType, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

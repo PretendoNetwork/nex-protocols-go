@@ -47,43 +47,43 @@ func (pg PersistentGathering) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PersistentGathering from the given readable
 func (pg *PersistentGathering) ExtractFrom(readable types.Readable) error {
 	if err := pg.Gathering.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.Gathering. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.Gathering. %s", err.Error())
 	}
 
 	if err := pg.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering header. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering header. %s", err.Error())
 	}
 
 	if err := pg.CommunityType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.CommunityType. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.CommunityType. %s", err.Error())
 	}
 
 	if err := pg.Password.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.Password. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.Password. %s", err.Error())
 	}
 
 	if err := pg.Attribs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.Attribs. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.Attribs. %s", err.Error())
 	}
 
 	if err := pg.ApplicationBuffer.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.ApplicationBuffer. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.ApplicationBuffer. %s", err.Error())
 	}
 
 	if err := pg.ParticipationStartDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationStartDate. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.ParticipationStartDate. %s", err.Error())
 	}
 
 	if err := pg.ParticipationEndDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationEndDate. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.ParticipationEndDate. %s", err.Error())
 	}
 
 	if err := pg.MatchmakeSessionCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.MatchmakeSessionCount. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.MatchmakeSessionCount. %s", err.Error())
 	}
 
 	if err := pg.ParticipationCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationCount. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.ParticipationCount. %s", err.Error())
 	}
 
 	return nil

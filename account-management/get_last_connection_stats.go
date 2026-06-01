@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterfac
 
 	err := idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetLastConnectionStats(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal)
+		_, rmcError := protocol.GetLastConnectionStats(fmt.Errorf("failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

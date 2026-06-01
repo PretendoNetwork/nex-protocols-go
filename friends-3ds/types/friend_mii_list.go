@@ -37,23 +37,23 @@ func (fml FriendMiiList) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendMiiList from the given readable
 func (fml *FriendMiiList) ExtractFrom(readable types.Readable) error {
 	if err := fml.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList.Data. %s", err.Error())
 	}
 
 	if err := fml.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList header. %s", err.Error())
 	}
 
 	if err := fml.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList.Unknown1. %s", err.Error())
 	}
 
 	if err := fml.MiiList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList.MiiList. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList.MiiList. %s", err.Error())
 	}
 
 	if err := fml.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList.Unknown2. %s", err.Error())
 	}
 
 	return nil

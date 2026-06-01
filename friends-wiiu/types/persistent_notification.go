@@ -41,31 +41,31 @@ func (pn PersistentNotification) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PersistentNotification from the given readable
 func (pn *PersistentNotification) ExtractFrom(readable types.Readable) error {
 	if err := pn.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Data. %s", err.Error())
 	}
 
 	if err := pn.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification header. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification header. %s", err.Error())
 	}
 
 	if err := pn.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown1. %s", err.Error())
 	}
 
 	if err := pn.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown2. %s", err.Error())
 	}
 
 	if err := pn.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown3. %s", err.Error())
 	}
 
 	if err := pn.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown4. %s", err.Error())
 	}
 
 	if err := pn.Unknown5.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown5. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown5. %s", err.Error())
 	}
 
 	return nil

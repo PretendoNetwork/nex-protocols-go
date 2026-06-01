@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 
 	err := keys.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetFriendUserStatuses(fmt.Errorf("Failed to read keys from parameters. %s", err.Error()), packet, callID, keys)
+		_, rmcError := protocol.GetFriendUserStatuses(fmt.Errorf("failed to read keys from parameters. %s", err.Error()), packet, callID, keys)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

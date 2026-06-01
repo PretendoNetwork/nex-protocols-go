@@ -47,43 +47,43 @@ func (rcs Ranking2CategorySetting) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2CategorySetting from the given readable
 func (rcs *Ranking2CategorySetting) ExtractFrom(readable types.Readable) error {
 	if err := rcs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting header. %s", err.Error())
 	}
 
 	if err := rcs.MinScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MinScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.MinScore. %s", err.Error())
 	}
 
 	if err := rcs.MaxScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.MaxScore. %s", err.Error())
 	}
 
 	if err := rcs.LowestRank.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.LowestRank. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.LowestRank. %s", err.Error())
 	}
 
 	if err := rcs.ResetMonth.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMonth. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ResetMonth. %s", err.Error())
 	}
 
 	if err := rcs.ResetDay.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetDay. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ResetDay. %s", err.Error())
 	}
 
 	if err := rcs.ResetHour.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetHour. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ResetHour. %s", err.Error())
 	}
 
 	if err := rcs.ResetMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMode. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ResetMode. %s", err.Error())
 	}
 
 	if err := rcs.MaxSeasonsToGoBack.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxSeasonsToGoBack. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.MaxSeasonsToGoBack. %s", err.Error())
 	}
 
 	if err := rcs.ScoreOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ScoreOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ScoreOrder. %s", err.Error())
 	}
 
 	return nil

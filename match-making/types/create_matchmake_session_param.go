@@ -40,31 +40,31 @@ func (cmsp CreateMatchmakeSessionParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the CreateMatchmakeSessionParam from the given readable
 func (cmsp *CreateMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	if err := cmsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam header. %s", err.Error())
 	}
 
 	if err := cmsp.SourceMatchmakeSession.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
 	if err := cmsp.AdditionalParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
 
 	if err := cmsp.GIDForParticipationCheck.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
 	if err := cmsp.CreateMatchmakeSessionOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.CreateMatchmakeSessionOption. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.CreateMatchmakeSessionOption. %s", err.Error())
 	}
 
 	if err := cmsp.JoinMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.JoinMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.JoinMessage. %s", err.Error())
 	}
 
 	if err := cmsp.ParticipationCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.ParticipationCount. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
 
 	return nil

@@ -34,7 +34,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, ownerID, dataID, param)
+		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("failed to read ownerID from parameters. %s", err.Error()), packet, callID, ownerID, dataID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 
 	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, ownerID, dataID, param)
+		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("failed to read dataID from parameters. %s", err.Error()), packet, callID, ownerID, dataID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, ownerID, dataID, param)
+		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, ownerID, dataID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

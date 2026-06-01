@@ -46,43 +46,43 @@ func (sit ServiceItemTransaction) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemTransaction from the given readable
 func (sit *ServiceItemTransaction) ExtractFrom(readable types.Readable) error {
 	if err := sit.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction header. %s", err.Error())
 	}
 
 	if err := sit.TransactionID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.TransactionID. %s", err.Error())
 	}
 
 	if err := sit.ExtTransactionID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.ExtTransactionID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.ExtTransactionID. %s", err.Error())
 	}
 
 	if err := sit.Time.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.Time. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.Time. %s", err.Error())
 	}
 
 	if err := sit.TransactionType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.TransactionType. %s", err.Error())
 	}
 
 	if err := sit.TransactionDescription.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionDescription. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.TransactionDescription. %s", err.Error())
 	}
 
 	if err := sit.TransactionAmount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionAmount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.TransactionAmount. %s", err.Error())
 	}
 
 	if err := sit.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.ItemCode. %s", err.Error())
 	}
 
 	if err := sit.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.ReferenceID. %s", err.Error())
 	}
 
 	if err := sit.Limitation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemTransaction.Limitation. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemTransaction.Limitation. %s", err.Error())
 	}
 
 	return nil

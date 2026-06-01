@@ -41,31 +41,31 @@ func (mv MiiV2) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MiiV2 from the given readable
 func (mv *MiiV2) ExtractFrom(readable types.Readable) error {
 	if err := mv.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiV2.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiV2.Data. %s", err.Error())
 	}
 
 	if err := mv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiV2 header. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiV2 header. %s", err.Error())
 	}
 
 	if err := mv.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiV2.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiV2.Name. %s", err.Error())
 	}
 
 	if err := mv.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiV2.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiV2.Unknown1. %s", err.Error())
 	}
 
 	if err := mv.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiV2.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiV2.Unknown2. %s", err.Error())
 	}
 
 	if err := mv.MiiData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiV2.MiiData. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiV2.MiiData. %s", err.Error())
 	}
 
 	if err := mv.Datetime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiV2.Datetime. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiV2.Datetime. %s", err.Error())
 	}
 
 	return nil

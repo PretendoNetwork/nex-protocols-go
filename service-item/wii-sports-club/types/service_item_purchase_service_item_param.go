@@ -44,39 +44,39 @@ func (sipsip ServiceItemPurchaseServiceItemParam) WriteTo(writable types.Writabl
 // ExtractFrom extracts the ServiceItemPurchaseServiceItemParam from the given readable
 func (sipsip *ServiceItemPurchaseServiceItemParam) ExtractFrom(readable types.Readable) error {
 	if err := sipsip.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam header. %s", err.Error())
 	}
 
 	if err := sipsip.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.ItemCode. %s", err.Error())
 	}
 
 	if err := sipsip.PriceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.PriceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.PriceID. %s", err.Error())
 	}
 
 	if err := sipsip.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.ReferenceID. %s", err.Error())
 	}
 
 	if err := sipsip.Balance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Balance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.Balance. %s", err.Error())
 	}
 
 	if err := sipsip.ItemName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemName. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.ItemName. %s", err.Error())
 	}
 
 	if err := sipsip.EcServiceToken.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.EcServiceToken. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.EcServiceToken. %s", err.Error())
 	}
 
 	if err := sipsip.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.Language. %s", err.Error())
 	}
 
 	if err := sipsip.TitleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.TitleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.TitleID. %s", err.Error())
 	}
 
 	return nil

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 
 	err := strStatus.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateStatus(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), packet, callID, strStatus)
+		_, rmcError := protocol.UpdateStatus(fmt.Errorf("failed to read strStatus from parameters. %s", err.Error()), packet, callID, strStatus)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

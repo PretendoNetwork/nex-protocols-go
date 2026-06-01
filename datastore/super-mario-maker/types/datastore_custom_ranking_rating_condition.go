@@ -44,30 +44,30 @@ func (dscrrc DataStoreCustomRankingRatingCondition) WriteTo(writable types.Writa
 // ExtractFrom extracts the DataStoreCustomRankingRatingCondition from the given readable
 func (dscrrc *DataStoreCustomRankingRatingCondition) ExtractFrom(readable types.Readable) error {
 	if err := dscrrc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition header. %s", err.Error())
 	}
 
 	if err := dscrrc.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.Slot. %s", err.Error())
 	}
 
 	if err := dscrrc.MinValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MinValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.MinValue. %s", err.Error())
 	}
 
 	if err := dscrrc.MaxValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.MaxValue. %s", err.Error())
 	}
 
 	if dscrrc.StructureVersion >= 1 {
 		if err := dscrrc.MinCount.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MinCount. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.MinCount. %s", err.Error())
 		}
 	}
 
 	if dscrrc.StructureVersion >= 1 {
 		if err := dscrrc.MaxCount.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxCount. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.MaxCount. %s", err.Error())
 		}
 	}
 

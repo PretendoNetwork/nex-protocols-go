@@ -34,7 +34,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	err = strPrincipalName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateAccount(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
+		_, rmcError := protocol.CreateAccount(fmt.Errorf("failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	err = strKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateAccount(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
+		_, rmcError := protocol.CreateAccount(fmt.Errorf("failed to read strKey from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	err = uiGroups.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateAccount(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
+		_, rmcError := protocol.CreateAccount(fmt.Errorf("failed to read uiGroups from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -64,7 +64,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	err = strEmail.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateAccount(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
+		_, rmcError := protocol.CreateAccount(fmt.Errorf("failed to read strEmail from parameters. %s", err.Error()), packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

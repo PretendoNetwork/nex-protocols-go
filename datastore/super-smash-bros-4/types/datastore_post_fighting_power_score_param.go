@@ -34,19 +34,19 @@ func (dspfpsp DataStorePostFightingPowerScoreParam) WriteTo(writable types.Writa
 // ExtractFrom extracts the DataStorePostFightingPowerScoreParam from the given readable
 func (dspfpsp *DataStorePostFightingPowerScoreParam) ExtractFrom(readable types.Readable) error {
 	if err := dspfpsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePostFightingPowerScoreParam header. %s", err.Error())
 	}
 
 	if err := dspfpsp.Mode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.Mode. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePostFightingPowerScoreParam.Mode. %s", err.Error())
 	}
 
 	if err := dspfpsp.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePostFightingPowerScoreParam.Score. %s", err.Error())
 	}
 
 	if err := dspfpsp.IsWorldHighScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.IsWorldHighScore. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePostFightingPowerScoreParam.IsWorldHighScore. %s", err.Error())
 	}
 
 	return nil

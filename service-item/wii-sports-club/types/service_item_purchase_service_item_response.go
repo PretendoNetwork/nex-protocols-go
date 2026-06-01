@@ -33,15 +33,15 @@ func (sipsir ServiceItemPurchaseServiceItemResponse) WriteTo(writable types.Writ
 // ExtractFrom extracts the ServiceItemPurchaseServiceItemResponse from the given readable
 func (sipsir *ServiceItemPurchaseServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	if err := sipsir.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
 	if err := sipsir.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemResponse header. %s", err.Error())
 	}
 
 	if err := sipsir.NullablePurchaceInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse.NullablePurchaceInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemResponse.NullablePurchaceInfo. %s", err.Error())
 	}
 
 	return nil

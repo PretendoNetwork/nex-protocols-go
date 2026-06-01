@@ -32,15 +32,15 @@ func (gtsdpp GlobalTradeStationDeletePokemonParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the GlobalTradeStationDeletePokemonParam from the given readable
 func (gtsdpp *GlobalTradeStationDeletePokemonParam) ExtractFrom(readable types.Readable) error {
 	if err := gtsdpp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDeletePokemonParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDeletePokemonParam header. %s", err.Error())
 	}
 
 	if err := gtsdpp.PrepareUploadKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDeletePokemonParam.PrepareUploadKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDeletePokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	if err := gtsdpp.DeleteFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDeletePokemonParam.DeleteFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDeletePokemonParam.DeleteFlag. %s", err.Error())
 	}
 
 	return nil

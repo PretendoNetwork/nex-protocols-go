@@ -29,7 +29,7 @@ func (protocol *Protocol) handleFindCommunityByGatheringID(packet nex.PacketInte
 
 	err := lstGID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindCommunityByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, lstGID)
+		_, rmcError := protocol.FindCommunityByGatheringID(fmt.Errorf("failed to read lstGID from parameters. %s", err.Error()), packet, callID, lstGID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

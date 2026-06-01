@@ -38,27 +38,27 @@ func (dsrpiv DataStoreReqPostInfoV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqPostInfoV1 from the given readable
 func (dsrpiv *DataStoreReqPostInfoV1) ExtractFrom(readable types.Readable) error {
 	if err := dsrpiv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1 header. %s", err.Error())
 	}
 
 	if err := dsrpiv.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.DataID. %s", err.Error())
 	}
 
 	if err := dsrpiv.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.URL. %s", err.Error())
 	}
 
 	if err := dsrpiv.RequestHeaders.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RequestHeaders. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.RequestHeaders. %s", err.Error())
 	}
 
 	if err := dsrpiv.FormFields.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.FormFields. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.FormFields. %s", err.Error())
 	}
 
 	if err := dsrpiv.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.RootCACert. %s", err.Error())
 	}
 
 	return nil

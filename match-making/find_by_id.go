@@ -29,7 +29,7 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 
 	err := lstID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByID(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), packet, callID, lstID)
+		_, rmcError := protocol.FindByID(fmt.Errorf("failed to read lstID from parameters. %s", err.Error()), packet, callID, lstID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

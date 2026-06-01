@@ -32,15 +32,15 @@ func (uidi UniqueIDInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the UniqueIDInfo from the given readable
 func (uidi *UniqueIDInfo) ExtractFrom(readable types.Readable) error {
 	if err := uidi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UniqueIDInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract UniqueIDInfo header. %s", err.Error())
 	}
 
 	if err := uidi.NEXUniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UniqueIDInfo.NEXUniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract UniqueIDInfo.NEXUniqueID. %s", err.Error())
 	}
 
 	if err := uidi.NEXUniqueIDPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UniqueIDInfo.NEXUniqueIDPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract UniqueIDInfo.NEXUniqueIDPassword. %s", err.Error())
 	}
 
 	return nil

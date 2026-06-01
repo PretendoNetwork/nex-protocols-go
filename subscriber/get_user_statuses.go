@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetUserStatuses(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids, keys)
+		_, rmcError := protocol.GetUserStatuses(fmt.Errorf("failed to read pids from parameters. %s", err.Error()), packet, callID, pids, keys)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	err = keys.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetUserStatuses(fmt.Errorf("Failed to read keys from parameters. %s", err.Error()), packet, callID, pids, keys)
+		_, rmcError := protocol.GetUserStatuses(fmt.Errorf("failed to read keys from parameters. %s", err.Error()), packet, callID, pids, keys)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleResetRateCustomRankingCounter(packet nex.PacketI
 
 	err := applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRateCustomRankingCounter(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID)
+		_, rmcError := protocol.ResetRateCustomRankingCounter(fmt.Errorf("failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

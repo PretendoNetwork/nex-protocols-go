@@ -34,7 +34,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	err = nnaInfo.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
+		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("failed to read nnaInfo from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	err = presence.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
+		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("failed to read presence from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	err = birthday.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
+		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("failed to read birthday from parameters. %s", err.Error()), packet, callID, nnaInfo, presence, birthday)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

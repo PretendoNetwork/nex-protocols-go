@@ -36,23 +36,23 @@ func (dsrl DataStoreRatingLog) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreRatingLog from the given readable
 func (dsrl *DataStoreRatingLog) ExtractFrom(readable types.Readable) error {
 	if err := dsrl.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog header. %s", err.Error())
 	}
 
 	if err := dsrl.IsRated.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.IsRated. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog.IsRated. %s", err.Error())
 	}
 
 	if err := dsrl.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog.PID. %s", err.Error())
 	}
 
 	if err := dsrl.RatingValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.RatingValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog.RatingValue. %s", err.Error())
 	}
 
 	if err := dsrl.LockExpirationTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.LockExpirationTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog.LockExpirationTime. %s", err.Error())
 	}
 
 	return nil

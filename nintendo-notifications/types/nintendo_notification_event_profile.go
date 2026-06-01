@@ -41,31 +41,31 @@ func (nnep NintendoNotificationEventProfile) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NintendoNotificationEventProfile from the given readable
 func (nnep *NintendoNotificationEventProfile) ExtractFrom(readable types.Readable) error {
 	if err := nnep.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Data. %s", err.Error())
 	}
 
 	if err := nnep.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile header. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile header. %s", err.Error())
 	}
 
 	if err := nnep.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Region. %s", err.Error())
 	}
 
 	if err := nnep.Country.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Country. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Country. %s", err.Error())
 	}
 
 	if err := nnep.Area.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Area. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Area. %s", err.Error())
 	}
 
 	if err := nnep.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Language. %s", err.Error())
 	}
 
 	if err := nnep.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Platform. %s", err.Error())
 	}
 
 	return nil

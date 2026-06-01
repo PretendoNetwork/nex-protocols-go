@@ -33,7 +33,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.IsActiveGame(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids, gameKey)
+		_, rmcError := protocol.IsActiveGame(fmt.Errorf("failed to read pids from parameters. %s", err.Error()), packet, callID, pids, gameKey)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	err = gameKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.IsActiveGame(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, pids, gameKey)
+		_, rmcError := protocol.IsActiveGame(fmt.Errorf("failed to read gameKey from parameters. %s", err.Error()), packet, callID, pids, gameKey)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

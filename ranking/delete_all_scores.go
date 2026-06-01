@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeleteAllScores(packet nex.PacketInterface) {
 
 	err := uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteAllScores(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID)
+		_, rmcError := protocol.DeleteAllScores(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

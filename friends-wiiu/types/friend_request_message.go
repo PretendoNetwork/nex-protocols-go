@@ -49,47 +49,47 @@ func (frm FriendRequestMessage) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendRequestMessage from the given readable
 func (frm *FriendRequestMessage) ExtractFrom(readable types.Readable) error {
 	if err := frm.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Data. %s", err.Error())
 	}
 
 	if err := frm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage header. %s", err.Error())
 	}
 
 	if err := frm.FriendRequestID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.FriendRequestID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.FriendRequestID. %s", err.Error())
 	}
 
 	if err := frm.Received.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Received. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Received. %s", err.Error())
 	}
 
 	if err := frm.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Unknown2. %s", err.Error())
 	}
 
 	if err := frm.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Message. %s", err.Error())
 	}
 
 	if err := frm.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Unknown3. %s", err.Error())
 	}
 
 	if err := frm.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Unknown4. %s", err.Error())
 	}
 
 	if err := frm.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.GameKey. %s", err.Error())
 	}
 
 	if err := frm.Unknown5.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Unknown5. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Unknown5. %s", err.Error())
 	}
 
 	if err := frm.ExpiresOn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.ExpiresOn. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.ExpiresOn. %s", err.Error())
 	}
 
 	return nil

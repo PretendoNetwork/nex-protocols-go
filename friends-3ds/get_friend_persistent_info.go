@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterfa
 
 	err := pidList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetFriendPersistentInfo(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, pidList)
+		_, rmcError := protocol.GetFriendPersistentInfo(fmt.Errorf("failed to read pidList from parameters. %s", err.Error()), packet, callID, pidList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

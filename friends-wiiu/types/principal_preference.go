@@ -47,23 +47,23 @@ func (pp PrincipalPreference) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PrincipalPreference from the given readable
 func (pp *PrincipalPreference) ExtractFrom(readable types.Readable) error {
 	if err := pp.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalPreference.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalPreference.Data. %s", err.Error())
 	}
 
 	if err := pp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalPreference header. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalPreference header. %s", err.Error())
 	}
 
 	if err := pp.ShowOnlinePresence.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalPreference.ShowOnlinePresence. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalPreference.ShowOnlinePresence. %s", err.Error())
 	}
 
 	if err := pp.ShowCurrentTitle.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalPreference.ShowCurrentTitle. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalPreference.ShowCurrentTitle. %s", err.Error())
 	}
 
 	if err := pp.BlockFriendRequests.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalPreference.BlockFriendRequests. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalPreference.BlockFriendRequests. %s", err.Error())
 	}
 
 	return nil

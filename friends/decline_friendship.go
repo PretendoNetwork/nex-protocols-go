@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
 
 	err := uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeclineFriendship(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, uiPlayer)
+		_, rmcError := protocol.DeclineFriendship(fmt.Errorf("failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, uiPlayer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

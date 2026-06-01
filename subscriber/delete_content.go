@@ -32,7 +32,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 
 	err = topics.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read topics from parameters. %s", err.Error()), packet, callID, topics, contentID)
+		_, rmcError := protocol.DeleteContent(fmt.Errorf("failed to read topics from parameters. %s", err.Error()), packet, callID, topics, contentID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 
 	err = contentID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read contentID from parameters. %s", err.Error()), packet, callID, topics, contentID)
+		_, rmcError := protocol.DeleteContent(fmt.Errorf("failed to read contentID from parameters. %s", err.Error()), packet, callID, topics, contentID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

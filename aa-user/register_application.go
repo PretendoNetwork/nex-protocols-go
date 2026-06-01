@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) 
 
 	err := titleID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RegisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, titleID)
+		_, rmcError := protocol.RegisterApplication(fmt.Errorf("failed to read titleID from parameters. %s", err.Error()), packet, callID, titleID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -60,64 +60,64 @@ func (dscmp DataStoreChangeMetaParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreChangeMetaParam from the given readable
 func (dscmp *DataStoreChangeMetaParam) ExtractFrom(readable types.Readable) error {
 	if err := dscmp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam header. %s", err.Error())
 	}
 
 	if err := dscmp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.DataID. %s", err.Error())
 	}
 
 	if err := dscmp.ModifiesFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.ModifiesFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.ModifiesFlag. %s", err.Error())
 	}
 
 	if err := dscmp.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Name. %s", err.Error())
 	}
 
 	if err := dscmp.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Permission. %s", err.Error())
 	}
 
 	if err := dscmp.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.DelPermission. %s", err.Error())
 	}
 
 	if err := dscmp.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Period. %s", err.Error())
 	}
 
 	if err := dscmp.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.MetaBinary. %s", err.Error())
 	}
 
 	if err := dscmp.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Tags. %s", err.Error())
 	}
 
 	if err := dscmp.UpdatePassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.UpdatePassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.UpdatePassword. %s", err.Error())
 	}
 
 	if err := dscmp.ReferredCnt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.ReferredCnt. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.ReferredCnt. %s", err.Error())
 	}
 
 	if err := dscmp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.DataType. %s", err.Error())
 	}
 
 	if err := dscmp.Status.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Status. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Status. %s", err.Error())
 	}
 
 	if err := dscmp.CompareParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.CompareParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.CompareParam. %s", err.Error())
 	}
 
 	if dscmp.StructureVersion >= 1 {
 		if err := dscmp.PersistenceTarget.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
 		}
 	}
 

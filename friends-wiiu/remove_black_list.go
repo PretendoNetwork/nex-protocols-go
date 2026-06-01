@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
 
 	err := pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RemoveBlackList(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid)
+		_, rmcError := protocol.RemoveBlackList(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

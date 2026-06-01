@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetUnlockKey(packet nex.PacketInterface) {
 
 	err := challengeValue.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetUnlockKey(fmt.Errorf("Failed to read challengeValue from parameters. %s", err.Error()), packet, callID, challengeValue)
+		_, rmcError := protocol.GetUnlockKey(fmt.Errorf("failed to read challengeValue from parameters. %s", err.Error()), packet, callID, challengeValue)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

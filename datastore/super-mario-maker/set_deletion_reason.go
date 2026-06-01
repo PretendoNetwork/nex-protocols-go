@@ -32,7 +32,7 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 
 	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, dataIDLst, deletionReason)
+		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, dataIDLst, deletionReason)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 
 	err = deletionReason.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, dataIDLst, deletionReason)
+		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("failed to read deletionReason from parameters. %s", err.Error()), packet, callID, dataIDLst, deletionReason)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

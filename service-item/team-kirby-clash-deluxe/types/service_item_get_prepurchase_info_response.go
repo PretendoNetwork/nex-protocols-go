@@ -33,15 +33,15 @@ func (sigpir ServiceItemGetPrepurchaseInfoResponse) WriteTo(writable types.Writa
 // ExtractFrom extracts the ServiceItemGetPrepurchaseInfoResponse from the given readable
 func (sigpir *ServiceItemGetPrepurchaseInfoResponse) ExtractFrom(readable types.Readable) error {
 	if err := sigpir.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoResponse.ServiceItemEShopResponse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
 	if err := sigpir.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoResponse header. %s", err.Error())
 	}
 
 	if err := sigpir.NullablePrepurchaseInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo. %s", err.Error())
 	}
 
 	return nil

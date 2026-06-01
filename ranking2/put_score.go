@@ -33,7 +33,7 @@ func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 
 	err = scoreDataList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PutScore(fmt.Errorf("Failed to read scoreDataList from parameters. %s", err.Error()), packet, callID, scoreDataList, nexUniqueID)
+		_, rmcError := protocol.PutScore(fmt.Errorf("failed to read scoreDataList from parameters. %s", err.Error()), packet, callID, scoreDataList, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 
 	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PutScore(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, scoreDataList, nexUniqueID)
+		_, rmcError := protocol.PutScore(fmt.Errorf("failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, scoreDataList, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

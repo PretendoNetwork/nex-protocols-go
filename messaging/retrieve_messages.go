@@ -34,7 +34,7 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 
 	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("failed to read recipient from parameters. %s", err.Error()), packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 
 	err = lstMsgIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read lstMsgIDs from parameters. %s", err.Error()), packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("failed to read lstMsgIDs from parameters. %s", err.Error()), packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 
 	err = bLeaveOnServer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read bLeaveOnServer from parameters. %s", err.Error()), packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("failed to read bLeaveOnServer from parameters. %s", err.Error()), packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

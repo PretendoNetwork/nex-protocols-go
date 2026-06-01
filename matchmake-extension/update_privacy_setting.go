@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 
 	err = onlineStatus.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, onlineStatus, participationCommunity)
+		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, onlineStatus, participationCommunity)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 
 	err = participationCommunity.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, onlineStatus, participationCommunity)
+		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, onlineStatus, participationCommunity)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

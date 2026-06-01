@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 
 	err := pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetFriendUserProfiles(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids)
+		_, rmcError := protocol.GetFriendUserProfiles(fmt.Errorf("failed to read pids from parameters. %s", err.Error()), packet, callID, pids)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleSearchSimpleSearchObjectByObjectIDs(packet nex.P
 
 	err := objectIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SearchSimpleSearchObjectByObjectIDs(fmt.Errorf("Failed to read objectIDs from parameters. %s", err.Error()), packet, callID, objectIDs)
+		_, rmcError := protocol.SearchSimpleSearchObjectByObjectIDs(fmt.Errorf("failed to read objectIDs from parameters. %s", err.Error()), packet, callID, objectIDs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

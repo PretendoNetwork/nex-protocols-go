@@ -33,7 +33,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	err = key.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("failed to read key from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	err = value.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("failed to read value from parameters. %s", err.Error()), packet, callID, applicationID, key, value)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

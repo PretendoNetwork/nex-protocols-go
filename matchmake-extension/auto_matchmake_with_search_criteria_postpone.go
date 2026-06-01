@@ -34,7 +34,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet n
 
 	err = lstSearchCriteria.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithSearchCriteriaPostpone(fmt.Errorf("Failed to read lstSearchCriteria from parameters. %s", err.Error()), packet, callID, lstSearchCriteria, anyGathering, strMessage)
+		_, rmcError := protocol.AutoMatchmakeWithSearchCriteriaPostpone(fmt.Errorf("failed to read lstSearchCriteria from parameters. %s", err.Error()), packet, callID, lstSearchCriteria, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet n
 
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithSearchCriteriaPostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, lstSearchCriteria, anyGathering, strMessage)
+		_, rmcError := protocol.AutoMatchmakeWithSearchCriteriaPostpone(fmt.Errorf("failed to read anyGathering from parameters. %s", err.Error()), packet, callID, lstSearchCriteria, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet n
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AutoMatchmakeWithSearchCriteriaPostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, lstSearchCriteria, anyGathering, strMessage)
+		_, rmcError := protocol.AutoMatchmakeWithSearchCriteriaPostpone(fmt.Errorf("failed to read strMessage from parameters. %s", err.Error()), packet, callID, lstSearchCriteria, anyGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

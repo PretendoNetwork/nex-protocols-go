@@ -32,15 +32,15 @@ func (rst RatingSessionToken) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RatingSessionToken from the given readable
 func (rst *RatingSessionToken) ExtractFrom(readable types.Readable) error {
 	if err := rst.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingSessionToken header. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingSessionToken header. %s", err.Error())
 	}
 
 	if err := rst.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingSessionToken.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingSessionToken.Unknown1. %s", err.Error())
 	}
 
 	if err := rst.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingSessionToken.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingSessionToken.Unknown2. %s", err.Error())
 	}
 
 	return nil

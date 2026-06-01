@@ -32,7 +32,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 
 	err = slot.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read slot from parameters. %s", err.Error()), packet, callID, slot, cardID)
+		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("failed to read slot from parameters. %s", err.Error()), packet, callID, slot, cardID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 
 	err = cardID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, slot, cardID)
+		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("failed to read cardID from parameters. %s", err.Error()), packet, callID, slot, cardID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

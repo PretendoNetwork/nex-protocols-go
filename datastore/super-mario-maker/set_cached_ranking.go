@@ -33,7 +33,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	err = rankingType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("failed to read rankingType from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	err = rankingArgs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, rankingType, rankingArgs, dataIDLst)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

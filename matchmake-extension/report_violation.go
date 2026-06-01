@@ -33,7 +33,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid, userName, violationCode)
+		_, rmcError := protocol.ReportViolation(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, pid, userName, violationCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	err = userName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, pid, userName, violationCode)
+		_, rmcError := protocol.ReportViolation(fmt.Errorf("failed to read userName from parameters. %s", err.Error()), packet, callID, pid, userName, violationCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	err = violationCode.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, pid, userName, violationCode)
+		_, rmcError := protocol.ReportViolation(fmt.Errorf("failed to read violationCode from parameters. %s", err.Error()), packet, callID, pid, userName, violationCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

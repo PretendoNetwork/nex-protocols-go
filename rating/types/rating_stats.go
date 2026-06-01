@@ -40,31 +40,31 @@ func (rs RatingStats) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RatingStats from the given readable
 func (rs *RatingStats) ExtractFrom(readable types.Readable) error {
 	if err := rs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats header. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats header. %s", err.Error())
 	}
 
 	if err := rs.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.PrincipalID. %s", err.Error())
 	}
 
 	if err := rs.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.UniqueID. %s", err.Error())
 	}
 
 	if err := rs.Flags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.Flags. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.Flags. %s", err.Error())
 	}
 
 	if err := rs.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.Category. %s", err.Error())
 	}
 
 	if err := rs.ReportData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.ReportData. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.ReportData. %s", err.Error())
 	}
 
 	if err := rs.Values.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.Values. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.Values. %s", err.Error())
 	}
 
 	return nil

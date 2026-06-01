@@ -27,10 +27,7 @@ func (protocol *Protocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
 
 	var slot types.UInt8
 
-	var err error
-
-	err = slot.ExtractFrom(parametersStream)
-	if err != nil {
+	if err := slot.ExtractFrom(parametersStream); err != nil {
 		_, rmcError := protocol.AcquireNexUniqueID(fmt.Errorf("failed to read slot from parameters. %s", err.Error()), packet, callID, slot)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)

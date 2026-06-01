@@ -75,7 +75,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 // NewProtocol returns a new RankingMarioKart8 protocol
 func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
 	protocol := &Protocol{endpoint: endpoint}
-	protocol.rankingProtocol.SetEndpoint(endpoint)
+	protocol.SetEndpoint(endpoint)
 
 	return protocol
 }

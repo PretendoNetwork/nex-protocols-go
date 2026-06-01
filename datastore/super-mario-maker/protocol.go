@@ -357,7 +357,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 // NewProtocol returns a new DataStoreSuperMarioMaker protocol
 func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
 	protocol := &Protocol{endpoint: endpoint}
-	protocol.dataStoreProtocol.SetEndpoint(endpoint)
+	protocol.SetEndpoint(endpoint)
 
 	return protocol
 }

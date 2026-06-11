@@ -28,10 +28,7 @@ func (protocol *Protocol) handleUnk2(packet nex.PacketInterface) {
 
 	var sessionToken rating_types.RatingSessionToken
 
-	var err error
-
-	err = sessionToken.ExtractFrom(parametersStream)
-	if err != nil {
+	if err := sessionToken.ExtractFrom(parametersStream); err != nil {
 		_, rmcError := protocol.Unk2(fmt.Errorf("failed to read sessionToken from parameters. %s", err.Error()), packet, callID, sessionToken)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)

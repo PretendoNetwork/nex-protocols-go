@@ -30,7 +30,7 @@ func (pcf PresenceChangedFlag) HasFlag(flag PresenceChangedFlag) bool {
 	return pcf&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (pcf PresenceChangedFlag) HasFlags(flags ...PresenceChangedFlag) bool {
 	if len(flags) == 0 {
 		return false

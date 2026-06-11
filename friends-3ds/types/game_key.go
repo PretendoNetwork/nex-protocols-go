@@ -125,10 +125,10 @@ func (gk GameKey) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("GameKey{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, gk.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, gk.TitleID))
-	b.WriteString(fmt.Sprintf("%sTitleVersion: %s,\n", indentationValues, gk.TitleVersion))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, gk.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTitleID: %s,\n", indentationValues, gk.TitleID)
+	fmt.Fprintf(&b, "%sTitleVersion: %s,\n", indentationValues, gk.TitleVersion)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -191,17 +191,17 @@ func (sipi ServiceItemPrepurchaseInfo) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPrepurchaseInfo{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sipi.ItemCode))
-	b.WriteString(fmt.Sprintf("%sPriceID: %s,\n", indentationValues, sipi.PriceID))
-	b.WriteString(fmt.Sprintf("%sRegularPrice: %s,\n", indentationValues, sipi.RegularPrice.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sIsTaxAvailable: %s,\n", indentationValues, sipi.IsTaxAvailable))
-	b.WriteString(fmt.Sprintf("%sTaxAmount: %s,\n", indentationValues, sipi.TaxAmount.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTotalAmount: %s,\n", indentationValues, sipi.TotalAmount.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCurrentBalance: %s,\n", indentationValues, sipi.CurrentBalance.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCurrentRightInfo: %s,\n", indentationValues, sipi.CurrentRightInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPostRightInfo: %s,\n", indentationValues, sipi.PostRightInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sipi.ItemCode)
+	fmt.Fprintf(&b, "%sPriceID: %s,\n", indentationValues, sipi.PriceID)
+	fmt.Fprintf(&b, "%sRegularPrice: %s,\n", indentationValues, sipi.RegularPrice.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sIsTaxAvailable: %s,\n", indentationValues, sipi.IsTaxAvailable)
+	fmt.Fprintf(&b, "%sTaxAmount: %s,\n", indentationValues, sipi.TaxAmount.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTotalAmount: %s,\n", indentationValues, sipi.TotalAmount.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCurrentBalance: %s,\n", indentationValues, sipi.CurrentBalance.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCurrentRightInfo: %s,\n", indentationValues, sipi.CurrentRightInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPostRightInfo: %s,\n", indentationValues, sipi.PostRightInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

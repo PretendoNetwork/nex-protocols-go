@@ -103,9 +103,9 @@ func (dspt DataStorePersistenceTarget) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("DataStorePersistenceTarget{\n")
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dspt.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %s,\n", indentationValues, dspt.PersistenceSlotID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dspt.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPersistenceSlotID: %s,\n", indentationValues, dspt.PersistenceSlotID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

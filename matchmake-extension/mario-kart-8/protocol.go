@@ -97,7 +97,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 // NewProtocol returns a new MatchmakeExtensionMarioKart8 protocol
 func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
 	protocol := &Protocol{endpoint: endpoint}
-	protocol.matchmakeExtensionProtocol.SetEndpoint(endpoint)
+	protocol.SetEndpoint(endpoint)
 
 	return protocol
 }

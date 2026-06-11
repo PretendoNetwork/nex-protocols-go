@@ -114,10 +114,10 @@ func (dspfpsp DataStorePostFightingPowerScoreParam) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStorePostFightingPowerScoreParam{\n")
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dspfpsp.Mode))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dspfpsp.Score))
-	b.WriteString(fmt.Sprintf("%sIsWorldHighScore: %s,\n", indentationValues, dspfpsp.IsWorldHighScore))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMode: %s,\n", indentationValues, dspfpsp.Mode)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dspfpsp.Score)
+	fmt.Fprintf(&b, "%sIsWorldHighScore: %s,\n", indentationValues, dspfpsp.IsWorldHighScore)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

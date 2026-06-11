@@ -125,11 +125,11 @@ func (dsrgiv DataStoreReqGetInfoV1) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetInfoV1{\n")
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrgiv.URL))
-	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrgiv.RequestHeaders))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsrgiv.Size))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrgiv.RootCACert))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrgiv.URL)
+	fmt.Fprintf(&b, "%sRequestHeaders: %s,\n", indentationValues, dsrgiv.RequestHeaders)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dsrgiv.Size)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrgiv.RootCACert)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

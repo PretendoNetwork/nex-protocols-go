@@ -115,10 +115,10 @@ func (dscprp DataStoreCompletePostReplayParam) FormatToString(indentationLevel i
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dscprp.ReplayID))
-	b.WriteString(fmt.Sprintf("%sCompleteParam: %s,\n", indentationValues, dscprp.CompleteParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareParam: %s,\n", indentationValues, dscprp.PrepareParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReplayID: %s,\n", indentationValues, dscprp.ReplayID)
+	fmt.Fprintf(&b, "%sCompleteParam: %s,\n", indentationValues, dscprp.CompleteParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrepareParam: %s,\n", indentationValues, dscprp.PrepareParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

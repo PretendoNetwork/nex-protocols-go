@@ -143,11 +143,11 @@ func (mr MessageRecipient) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MessageRecipient{\n")
-	b.WriteString(fmt.Sprintf("%sIDRecipient: %s,\n", indentationValues, mr.IDRecipient))
-	b.WriteString(fmt.Sprintf("%sUIRecipientType: %s,\n", indentationValues, mr.UIRecipientType))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, mr.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, mr.GatheringID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIDRecipient: %s,\n", indentationValues, mr.IDRecipient)
+	fmt.Fprintf(&b, "%sUIRecipientType: %s,\n", indentationValues, mr.UIRecipientType)
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, mr.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGatheringID: %s,\n", indentationValues, mr.GatheringID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -115,10 +115,10 @@ func (rcap RankingChangeAttributesParam) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("RankingChangeAttributesParam{\n")
-	b.WriteString(fmt.Sprintf("%sModificationFlag: %s,\n", indentationValues, rcap.ModificationFlag))
-	b.WriteString(fmt.Sprintf("%sGroups: %s,\n", indentationValues, rcap.Groups))
-	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, rcap.Param))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sModificationFlag: %s,\n", indentationValues, rcap.ModificationFlag)
+	fmt.Fprintf(&b, "%sGroups: %s,\n", indentationValues, rcap.Groups)
+	fmt.Fprintf(&b, "%sParam: %s,\n", indentationValues, rcap.Param)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

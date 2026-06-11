@@ -125,11 +125,11 @@ func (sgcp SubscriberGetContentParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("SubscriberGetContentParam{\n")
-	b.WriteString(fmt.Sprintf("%sTopic: %s,\n", indentationValues, sgcp.Topic))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, sgcp.Size))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, sgcp.Offset))
-	b.WriteString(fmt.Sprintf("%sMinimumContentID: %s,\n", indentationValues, sgcp.MinimumContentID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTopic: %s,\n", indentationValues, sgcp.Topic)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, sgcp.Size)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, sgcp.Offset)
+	fmt.Fprintf(&b, "%sMinimumContentID: %s,\n", indentationValues, sgcp.MinimumContentID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

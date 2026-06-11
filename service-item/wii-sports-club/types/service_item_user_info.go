@@ -103,9 +103,9 @@ func (siui ServiceItemUserInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUserInfo{\n")
-	b.WriteString(fmt.Sprintf("%sNumTotalEntryTicket: %s,\n", indentationValues, siui.NumTotalEntryTicket))
-	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %s,\n", indentationValues, siui.ApplicationBuffer))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNumTotalEntryTicket: %s,\n", indentationValues, siui.NumTotalEntryTicket)
+	fmt.Fprintf(&b, "%sApplicationBuffer: %s,\n", indentationValues, siui.ApplicationBuffer)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

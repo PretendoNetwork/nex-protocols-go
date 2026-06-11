@@ -103,9 +103,9 @@ func (bai BasicAccountInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BasicAccountInfo{\n")
-	b.WriteString(fmt.Sprintf("%sPIDOwner: %s,\n", indentationValues, bai.PIDOwner.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, bai.StrName))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPIDOwner: %s,\n", indentationValues, bai.PIDOwner.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrName: %s,\n", indentationValues, bai.StrName)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

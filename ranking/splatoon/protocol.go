@@ -81,7 +81,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 // NewProtocol returns a new RankingSplatoon protocol
 func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
 	protocol := &Protocol{endpoint: endpoint}
-	protocol.rankingProtocol.SetEndpoint(endpoint)
+	protocol.SetEndpoint(endpoint)
 
 	return protocol
 }

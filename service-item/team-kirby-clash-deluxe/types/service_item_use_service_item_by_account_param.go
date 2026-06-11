@@ -169,15 +169,15 @@ func (siusibap ServiceItemUseServiceItemByAccountParam) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUseServiceItemByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceIDForUse: %s,\n", indentationValues, siusibap.ReferenceIDForUse))
-	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %s,\n", indentationValues, siusibap.ReferenceIDForRightBinary))
-	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, siusibap.UseType))
-	b.WriteString(fmt.Sprintf("%sUseNumber: %s,\n", indentationValues, siusibap.UseNumber))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, siusibap.RightBinary))
-	b.WriteString(fmt.Sprintf("%sLogMessage: %s,\n", indentationValues, siusibap.LogMessage))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siusibap.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siusibap.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceIDForUse: %s,\n", indentationValues, siusibap.ReferenceIDForUse)
+	fmt.Fprintf(&b, "%sReferenceIDForRightBinary: %s,\n", indentationValues, siusibap.ReferenceIDForRightBinary)
+	fmt.Fprintf(&b, "%sUseType: %s,\n", indentationValues, siusibap.UseType)
+	fmt.Fprintf(&b, "%sUseNumber: %s,\n", indentationValues, siusibap.UseNumber)
+	fmt.Fprintf(&b, "%sRightBinary: %s,\n", indentationValues, siusibap.RightBinary)
+	fmt.Fprintf(&b, "%sLogMessage: %s,\n", indentationValues, siusibap.LogMessage)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, siusibap.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, siusibap.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

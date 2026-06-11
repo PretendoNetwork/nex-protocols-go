@@ -103,9 +103,9 @@ func (dsnv DataStoreNotificationV1) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("DataStoreNotificationV1{\n")
-	b.WriteString(fmt.Sprintf("%sNotificationID: %s,\n", indentationValues, dsnv.NotificationID))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsnv.DataID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNotificationID: %s,\n", indentationValues, dsnv.NotificationID)
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsnv.DataID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

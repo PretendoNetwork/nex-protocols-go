@@ -31,7 +31,7 @@ func (mf ModificationFlag) HasFlag(flag ModificationFlag) bool {
 	return mf&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (mf ModificationFlag) HasFlags(flags ...ModificationFlag) bool {
 	if len(flags) == 0 {
 		return false

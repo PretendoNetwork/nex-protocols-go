@@ -60,7 +60,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 // NewProtocol returns a new Matchmake Extension (Pokemon GEN 6) protocol
 func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
 	protocol := &Protocol{endpoint: endpoint}
-	protocol.matchmakeExtensionProtocol.SetEndpoint(endpoint)
+	protocol.SetEndpoint(endpoint)
 
 	return protocol
 }

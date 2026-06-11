@@ -115,10 +115,10 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) FormatToString(indentationL
 	var b strings.Builder
 
 	b.WriteString("FindMatchmakeSessionByParticipantParam{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalIDList: %s,\n", indentationValues, fmsbpp.PrincipalIDList))
-	b.WriteString(fmt.Sprintf("%sResultOptions: %s,\n", indentationValues, fmsbpp.ResultOptions))
-	b.WriteString(fmt.Sprintf("%sBlockListParam: %s,\n", indentationValues, fmsbpp.BlockListParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalIDList: %s,\n", indentationValues, fmsbpp.PrincipalIDList)
+	fmt.Fprintf(&b, "%sResultOptions: %s,\n", indentationValues, fmsbpp.ResultOptions)
+	fmt.Fprintf(&b, "%sBlockListParam: %s,\n", indentationValues, fmsbpp.BlockListParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

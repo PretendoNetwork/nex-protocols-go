@@ -115,10 +115,10 @@ func (mrerp MatchmakeRefereeEndRoundParam) FormatToString(indentationLevel int) 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeEndRoundParam{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrerp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRoundID: %s,\n", indentationValues, mrerp.RoundID))
-	b.WriteString(fmt.Sprintf("%sPersonalRoundResults: %s,\n", indentationValues, mrerp.PersonalRoundResults))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrerp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRoundID: %s,\n", indentationValues, mrerp.RoundID)
+	fmt.Fprintf(&b, "%sPersonalRoundResults: %s,\n", indentationValues, mrerp.PersonalRoundResults)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

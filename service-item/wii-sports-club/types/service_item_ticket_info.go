@@ -103,9 +103,9 @@ func (siti ServiceItemTicketInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemTicketInfo{\n")
-	b.WriteString(fmt.Sprintf("%sTicketType: %s,\n", indentationValues, siti.TicketType))
-	b.WriteString(fmt.Sprintf("%sNumTotal: %s,\n", indentationValues, siti.NumTotal))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTicketType: %s,\n", indentationValues, siti.TicketType)
+	fmt.Fprintf(&b, "%sNumTotal: %s,\n", indentationValues, siti.NumTotal)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -93,7 +93,7 @@ const (
 	// found, pick the one with the highest gathering ID.
 	MatchmakeSelectionMethodProgressScore
 
-	// MatchmakeSelectionMethodBroadenRange selects sessions using the same method as
+	// MatchmakeSelectionMethodBroadenRangeWithProgressScore selects sessions using the same method as
 	// MatchmakeSelectionMethodNearestNeighbor, but instead of selecting a valid session
 	// at random select the valid session using logic from MatchmakeSelectionMethodProgressScore.
 	MatchmakeSelectionMethodBroadenRangeWithProgressScore

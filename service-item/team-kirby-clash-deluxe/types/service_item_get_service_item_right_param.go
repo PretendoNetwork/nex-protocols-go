@@ -141,12 +141,12 @@ func (sigsirp ServiceItemGetServiceItemRightParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetServiceItemRightParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sDeviceID: %s,\n", indentationValues, sigsirp.DeviceID))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigsirp.UniqueID))
-	b.WriteString(fmt.Sprintf("%sItemGroup: %s,\n", indentationValues, sigsirp.ItemGroup))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sigsirp.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID)
+	fmt.Fprintf(&b, "%sDeviceID: %s,\n", indentationValues, sigsirp.DeviceID)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, sigsirp.UniqueID)
+	fmt.Fprintf(&b, "%sItemGroup: %s,\n", indentationValues, sigsirp.ItemGroup)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, sigsirp.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

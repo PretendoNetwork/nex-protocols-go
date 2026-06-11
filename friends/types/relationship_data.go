@@ -136,12 +136,12 @@ func (rd RelationshipData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RelationshipData{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, rd.PID))
-	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, rd.StrName))
-	b.WriteString(fmt.Sprintf("%sByRelationship: %s,\n", indentationValues, rd.ByRelationship))
-	b.WriteString(fmt.Sprintf("%sUIDetails: %s,\n", indentationValues, rd.UIDetails))
-	b.WriteString(fmt.Sprintf("%sByStatus: %s,\n", indentationValues, rd.ByStatus))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, rd.PID)
+	fmt.Fprintf(&b, "%sStrName: %s,\n", indentationValues, rd.StrName)
+	fmt.Fprintf(&b, "%sByRelationship: %s,\n", indentationValues, rd.ByRelationship)
+	fmt.Fprintf(&b, "%sUIDetails: %s,\n", indentationValues, rd.UIDetails)
+	fmt.Fprintf(&b, "%sByStatus: %s,\n", indentationValues, rd.ByStatus)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

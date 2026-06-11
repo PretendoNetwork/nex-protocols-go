@@ -114,10 +114,10 @@ func (rcd Ranking2CommonData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2CommonData{\n")
-	b.WriteString(fmt.Sprintf("%sUserName: %s,\n", indentationValues, rcd.UserName))
-	b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, rcd.Mii))
-	b.WriteString(fmt.Sprintf("%sBinaryData: %s,\n", indentationValues, rcd.BinaryData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUserName: %s,\n", indentationValues, rcd.UserName)
+	fmt.Fprintf(&b, "%sMii: %s,\n", indentationValues, rcd.Mii)
+	fmt.Fprintf(&b, "%sBinaryData: %s,\n", indentationValues, rcd.BinaryData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

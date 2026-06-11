@@ -1,3 +1,4 @@
+// Package constants provides all the constants, enums, etc. for the Screening protocol
 package constants
 
 import (
@@ -6,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
+// ReportCategory represents the category of a report in ScreeningUGCViolationParam
 type ReportCategory uint32
 
 // WriteTo writes the ReportCategory to the given writable

@@ -114,10 +114,10 @@ func (gtsspr GlobalTradeStationSearchPokemonResult) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationSearchPokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sTotalCount: %s,\n", indentationValues, gtsspr.TotalCount))
-	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, gtsspr.Result))
-	b.WriteString(fmt.Sprintf("%sTotalCountType: %s,\n", indentationValues, gtsspr.TotalCountType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTotalCount: %s,\n", indentationValues, gtsspr.TotalCount)
+	fmt.Fprintf(&b, "%sResult: %s,\n", indentationValues, gtsspr.Result)
+	fmt.Fprintf(&b, "%sTotalCountType: %s,\n", indentationValues, gtsspr.TotalCountType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

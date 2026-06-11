@@ -103,9 +103,9 @@ func (sigsirp ServiceItemGetServiceItemRightParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetServiceItemRightParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, sigsirp.TitleID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID)
+	fmt.Fprintf(&b, "%sTitleID: %s,\n", indentationValues, sigsirp.TitleID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

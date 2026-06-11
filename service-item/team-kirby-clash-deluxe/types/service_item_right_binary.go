@@ -103,9 +103,9 @@ func (sirb ServiceItemRightBinary) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightBinary{\n")
-	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, sirb.UseType))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, sirb.RightBinary))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUseType: %s,\n", indentationValues, sirb.UseType)
+	fmt.Fprintf(&b, "%sRightBinary: %s,\n", indentationValues, sirb.RightBinary)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

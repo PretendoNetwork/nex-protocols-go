@@ -103,9 +103,9 @@ func (dsfps DataStoreFightingPowerScore) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStoreFightingPowerScore{\n")
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dsfps.Score))
-	b.WriteString(fmt.Sprintf("%sRank: %s,\n", indentationValues, dsfps.Rank))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dsfps.Score)
+	fmt.Fprintf(&b, "%sRank: %s,\n", indentationValues, dsfps.Rank)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -103,9 +103,9 @@ func (susi SubscriberUserStatusInfo) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("SubscriberUserStatusInfo{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, susi.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sValues: %s,\n", indentationValues, susi.Values))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, susi.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sValues: %s,\n", indentationValues, susi.Values)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

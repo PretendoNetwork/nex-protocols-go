@@ -103,9 +103,9 @@ func (sigsidp ServiceItemGetSupportIDParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetSupportIDParam{\n")
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigsidp.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sigsidp.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, sigsidp.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, sigsidp.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -31,7 +31,7 @@ func (df DataFlag) HasFlag(flag DataFlag) bool {
 	return df&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (df DataFlag) HasFlags(flags ...DataFlag) bool {
 	if len(flags) == 0 {
 		return false
@@ -102,7 +102,7 @@ const (
 	// notification
 	DataFlagUseNotificationOnPost DataFlag = 0x8
 
-	// DataFlagUseNotificationOnPost means that when an existing object is updated
+	// DataFlagUseNotificationOnUpdate means that when an existing object is updated
 	// and it's access permission is not set to PermissionPublic or PermissionPrivate,
 	// then all users who have access permission for the object receive a DataStore
 	// notification

@@ -103,9 +103,9 @@ func (rst RatingSessionToken) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RatingSessionToken{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rst.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rst.Unknown2))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rst.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rst.Unknown2)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

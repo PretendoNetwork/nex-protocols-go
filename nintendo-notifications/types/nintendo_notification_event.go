@@ -115,10 +115,10 @@ func (nne NintendoNotificationEvent) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("NintendoNotificationEvent{\n")
-	b.WriteString(fmt.Sprintf("%sType: %s,\n", indentationValues, nne.Type))
-	b.WriteString(fmt.Sprintf("%sSenderPID: %s,\n", indentationValues, nne.SenderPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDataHolder: %s,\n", indentationValues, nne.DataHolder.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sType: %s,\n", indentationValues, nne.Type)
+	fmt.Fprintf(&b, "%sSenderPID: %s,\n", indentationValues, nne.SenderPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDataHolder: %s,\n", indentationValues, nne.DataHolder.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

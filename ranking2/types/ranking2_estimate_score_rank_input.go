@@ -114,10 +114,10 @@ func (resri Ranking2EstimateScoreRankInput) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("Ranking2EstimateScoreRankInput{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, resri.Category))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, resri.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, resri.Score))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, resri.Category)
+	fmt.Fprintf(&b, "%sNumSeasonsToGoBack: %s,\n", indentationValues, resri.NumSeasonsToGoBack)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, resri.Score)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

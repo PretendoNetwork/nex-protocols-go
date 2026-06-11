@@ -180,16 +180,16 @@ func (dsppsdp DataStorePreparePostSharedDataParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("DataStorePreparePostSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsppsdp.DataType))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, dsppsdp.Region))
-	b.WriteString(fmt.Sprintf("%sAttribute1: %s,\n", indentationValues, dsppsdp.Attribute1))
-	b.WriteString(fmt.Sprintf("%sAttribute2: %s,\n", indentationValues, dsppsdp.Attribute2))
-	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dsppsdp.Fighter))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsppsdp.Size))
-	b.WriteString(fmt.Sprintf("%sComment: %s,\n", indentationValues, dsppsdp.Comment))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dsppsdp.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dsppsdp.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dsppsdp.DataType)
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, dsppsdp.Region)
+	fmt.Fprintf(&b, "%sAttribute1: %s,\n", indentationValues, dsppsdp.Attribute1)
+	fmt.Fprintf(&b, "%sAttribute2: %s,\n", indentationValues, dsppsdp.Attribute2)
+	fmt.Fprintf(&b, "%sFighter: %s,\n", indentationValues, dsppsdp.Fighter)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dsppsdp.Size)
+	fmt.Fprintf(&b, "%sComment: %s,\n", indentationValues, dsppsdp.Comment)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dsppsdp.MetaBinary)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dsppsdp.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

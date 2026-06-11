@@ -152,13 +152,13 @@ func (silsip ServiceItemListServiceItemParam) FormatToString(indentationLevel in
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListServiceItemParam{\n")
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, silsip.Language))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, silsip.Offset))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, silsip.Size))
-	b.WriteString(fmt.Sprintf("%sIsBalanceAvailable: %s,\n", indentationValues, silsip.IsBalanceAvailable))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, silsip.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, silsip.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, silsip.Language)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, silsip.Offset)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, silsip.Size)
+	fmt.Fprintf(&b, "%sIsBalanceAvailable: %s,\n", indentationValues, silsip.IsBalanceAvailable)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, silsip.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, silsip.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

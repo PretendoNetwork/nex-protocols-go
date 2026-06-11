@@ -114,9 +114,9 @@ func (bm BinaryMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BinaryMessage{\n")
-	b.WriteString(fmt.Sprintf("%sUserMessage (parent): %s,\n", indentationValues, bm.UserMessage.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBinaryBody: %s,\n", indentationValues, bm.BinaryBody))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUserMessage (parent): %s,\n", indentationValues, bm.UserMessage.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBinaryBody: %s,\n", indentationValues, bm.BinaryBody)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

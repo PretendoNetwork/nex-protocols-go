@@ -92,8 +92,8 @@ func (rs RankingStats) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingStats{\n")
-	b.WriteString(fmt.Sprintf("%sStatsList: %s,\n", indentationValues, rs.StatsList))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sStatsList: %s,\n", indentationValues, rs.StatsList)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

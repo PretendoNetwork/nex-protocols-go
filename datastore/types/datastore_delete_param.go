@@ -103,9 +103,9 @@ func (dsdp DataStoreDeleteParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreDeleteParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsdp.DataID))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dsdp.UpdatePassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsdp.DataID)
+	fmt.Fprintf(&b, "%sUpdatePassword: %s,\n", indentationValues, dsdp.UpdatePassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -125,10 +125,10 @@ func (sd SubscriptionData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SubscriptionData{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, sd.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, sd.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, sd.Unknown))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, sd.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, sd.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, sd.Unknown)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

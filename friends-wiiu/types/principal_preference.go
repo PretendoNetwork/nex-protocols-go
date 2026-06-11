@@ -136,11 +136,11 @@ func (pp PrincipalPreference) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PrincipalPreference{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sShowOnlinePresence: %s,\n", indentationValues, pp.ShowOnlinePresence))
-	b.WriteString(fmt.Sprintf("%sShowCurrentTitle: %s,\n", indentationValues, pp.ShowCurrentTitle))
-	b.WriteString(fmt.Sprintf("%sBlockFriendRequests: %s,\n", indentationValues, pp.BlockFriendRequests))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, pp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sShowOnlinePresence: %s,\n", indentationValues, pp.ShowOnlinePresence)
+	fmt.Fprintf(&b, "%sShowCurrentTitle: %s,\n", indentationValues, pp.ShowCurrentTitle)
+	fmt.Fprintf(&b, "%sBlockFriendRequests: %s,\n", indentationValues, pp.BlockFriendRequests)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

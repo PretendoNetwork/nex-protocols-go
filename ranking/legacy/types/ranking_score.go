@@ -125,11 +125,11 @@ func (rs RankingScore) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingScore{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rs.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rs.Score))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rs.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rs.Unknown2))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rs.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rs.Score)
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rs.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rs.Unknown2)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

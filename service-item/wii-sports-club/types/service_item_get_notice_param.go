@@ -92,8 +92,8 @@ func (signp ServiceItemGetNoticeParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetNoticeParam{\n")
-	b.WriteString(fmt.Sprintf("%sNoticeType: %s,\n", indentationValues, signp.NoticeType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNoticeType: %s,\n", indentationValues, signp.NoticeType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

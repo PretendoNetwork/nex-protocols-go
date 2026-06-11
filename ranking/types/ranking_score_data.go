@@ -148,13 +148,13 @@ func (rsd RankingScoreData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingScoreData{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rsd.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rsd.Score))
-	b.WriteString(fmt.Sprintf("%sOrderBy: %s,\n", indentationValues, rsd.OrderBy))
-	b.WriteString(fmt.Sprintf("%sUpdateMode: %s,\n", indentationValues, rsd.UpdateMode))
-	b.WriteString(fmt.Sprintf("%sGroups: %s,\n", indentationValues, rsd.Groups))
-	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, rsd.Param))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rsd.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rsd.Score)
+	fmt.Fprintf(&b, "%sOrderBy: %s,\n", indentationValues, rsd.OrderBy)
+	fmt.Fprintf(&b, "%sUpdateMode: %s,\n", indentationValues, rsd.UpdateMode)
+	fmt.Fprintf(&b, "%sGroups: %s,\n", indentationValues, rsd.Groups)
+	fmt.Fprintf(&b, "%sParam: %s,\n", indentationValues, rsd.Param)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

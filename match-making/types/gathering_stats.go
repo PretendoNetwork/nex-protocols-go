@@ -114,10 +114,10 @@ func (gs GatheringStats) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("GatheringStats{\n")
-	b.WriteString(fmt.Sprintf("%sPIDParticipant: %s,\n", indentationValues, gs.PIDParticipant.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUIFlags: %s,\n", indentationValues, gs.UIFlags))
-	b.WriteString(fmt.Sprintf("%sLstValues: %s,\n", indentationValues, gs.LstValues))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPIDParticipant: %s,\n", indentationValues, gs.PIDParticipant.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUIFlags: %s,\n", indentationValues, gs.UIFlags)
+	fmt.Fprintf(&b, "%sLstValues: %s,\n", indentationValues, gs.LstValues)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

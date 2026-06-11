@@ -191,17 +191,17 @@ func (rrd RatingRankData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RatingRankData{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rrd.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, rrd.UniqueID))
-	b.WriteString(fmt.Sprintf("%sOrder: %s,\n", indentationValues, rrd.Order))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rrd.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rrd.Score))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rrd.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rrd.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, rrd.Unknown3))
-	b.WriteString(fmt.Sprintf("%sCommonData: %s,\n", indentationValues, rrd.CommonData))
-	b.WriteString(fmt.Sprintf("%sUpdateTime: %s,\n", indentationValues, rrd.UpdateTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, rrd.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, rrd.UniqueID)
+	fmt.Fprintf(&b, "%sOrder: %s,\n", indentationValues, rrd.Order)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rrd.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rrd.Score)
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rrd.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rrd.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, rrd.Unknown3)
+	fmt.Fprintf(&b, "%sCommonData: %s,\n", indentationValues, rrd.CommonData)
+	fmt.Fprintf(&b, "%sUpdateTime: %s,\n", indentationValues, rrd.UpdateTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

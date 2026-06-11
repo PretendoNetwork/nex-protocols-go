@@ -92,8 +92,8 @@ func (mp MatchmakeParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MatchmakeParam{\n")
-	b.WriteString(fmt.Sprintf("%sParams: %s,\n", indentationValues, mp.Params.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sParams: %s,\n", indentationValues, mp.Params.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

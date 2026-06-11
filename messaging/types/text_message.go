@@ -114,9 +114,9 @@ func (tm TextMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("TextMessage{\n")
-	b.WriteString(fmt.Sprintf("%sUserMessage (parent): %s,\n", indentationValues, tm.UserMessage.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrTextBody: %s,\n", indentationValues, tm.StrTextBody))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUserMessage (parent): %s,\n", indentationValues, tm.UserMessage.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrTextBody: %s,\n", indentationValues, tm.StrTextBody)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

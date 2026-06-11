@@ -103,9 +103,9 @@ func (sc SimpleCommunity) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SimpleCommunity{\n")
-	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, sc.GatheringID))
-	b.WriteString(fmt.Sprintf("%sMatchmakeSessionCount: %s,\n", indentationValues, sc.MatchmakeSessionCount))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGatheringID: %s,\n", indentationValues, sc.GatheringID)
+	fmt.Fprintf(&b, "%sMatchmakeSessionCount: %s,\n", indentationValues, sc.MatchmakeSessionCount)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

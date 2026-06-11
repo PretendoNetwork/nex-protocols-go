@@ -115,10 +115,10 @@ func (prbs PrincipalRequestBlockSetting) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("PrincipalRequestBlockSetting{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, prbs.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, prbs.PID))
-	b.WriteString(fmt.Sprintf("%sIsBlocked: %s,\n", indentationValues, prbs.IsBlocked))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, prbs.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, prbs.PID)
+	fmt.Fprintf(&b, "%sIsBlocked: %s,\n", indentationValues, prbs.IsBlocked)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

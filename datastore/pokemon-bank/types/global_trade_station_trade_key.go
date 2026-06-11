@@ -103,9 +103,9 @@ func (gtstk GlobalTradeStationTradeKey) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationTradeKey{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtstk.DataID))
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, gtstk.Version))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, gtstk.DataID)
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, gtstk.Version)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

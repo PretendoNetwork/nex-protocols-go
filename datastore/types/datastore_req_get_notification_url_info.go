@@ -125,11 +125,11 @@ func (dsrgnurli DataStoreReqGetNotificationURLInfo) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetNotificationURLInfo{\n")
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrgnurli.URL))
-	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, dsrgnurli.Key))
-	b.WriteString(fmt.Sprintf("%sQuery: %s,\n", indentationValues, dsrgnurli.Query))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrgnurli.RootCACert))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrgnurli.URL)
+	fmt.Fprintf(&b, "%sKey: %s,\n", indentationValues, dsrgnurli.Key)
+	fmt.Fprintf(&b, "%sQuery: %s,\n", indentationValues, dsrgnurli.Query)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrgnurli.RootCACert)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -153,14 +153,14 @@ func (mtsp MiiTubeSearchParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MiiTubeSearchParam{\n")
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, mtsp.Name))
-	b.WriteString(fmt.Sprintf("%sPage: %s,\n", indentationValues, mtsp.Page))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mtsp.Category))
-	b.WriteString(fmt.Sprintf("%sGender: %s,\n", indentationValues, mtsp.Gender))
-	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, mtsp.Country))
-	b.WriteString(fmt.Sprintf("%sSearchType: %s,\n", indentationValues, mtsp.SearchType))
-	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, mtsp.ResultOption))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, mtsp.Name)
+	fmt.Fprintf(&b, "%sPage: %s,\n", indentationValues, mtsp.Page)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mtsp.Category)
+	fmt.Fprintf(&b, "%sGender: %s,\n", indentationValues, mtsp.Gender)
+	fmt.Fprintf(&b, "%sCountry: %s,\n", indentationValues, mtsp.Country)
+	fmt.Fprintf(&b, "%sSearchType: %s,\n", indentationValues, mtsp.SearchType)
+	fmt.Fprintf(&b, "%sResultOption: %s,\n", indentationValues, mtsp.ResultOption)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

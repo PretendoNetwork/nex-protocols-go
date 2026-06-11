@@ -136,12 +136,12 @@ func (btp BankTransactionParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BankTransactionParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, btp.DataID))
-	b.WriteString(fmt.Sprintf("%sCurVersion: %s,\n", indentationValues, btp.CurVersion))
-	b.WriteString(fmt.Sprintf("%sUpdateVersion: %s,\n", indentationValues, btp.UpdateVersion))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, btp.Size))
-	b.WriteString(fmt.Sprintf("%sTransactionPassword: %s,\n", indentationValues, btp.TransactionPassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, btp.DataID)
+	fmt.Fprintf(&b, "%sCurVersion: %s,\n", indentationValues, btp.CurVersion)
+	fmt.Fprintf(&b, "%sUpdateVersion: %s,\n", indentationValues, btp.UpdateVersion)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, btp.Size)
+	fmt.Fprintf(&b, "%sTransactionPassword: %s,\n", indentationValues, btp.TransactionPassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -192,17 +192,17 @@ func (frm FriendRequestMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendRequestMessage{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, frm.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sFriendRequestID: %s,\n", indentationValues, frm.FriendRequestID))
-	b.WriteString(fmt.Sprintf("%sReceived: %s,\n", indentationValues, frm.Received))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, frm.Unknown2))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, frm.Message))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, frm.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, frm.Unknown4))
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, frm.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, frm.Unknown5.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sExpiresOn: %s,\n", indentationValues, frm.ExpiresOn.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, frm.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sFriendRequestID: %s,\n", indentationValues, frm.FriendRequestID)
+	fmt.Fprintf(&b, "%sReceived: %s,\n", indentationValues, frm.Received)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, frm.Unknown2)
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, frm.Message)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, frm.Unknown3)
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, frm.Unknown4)
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, frm.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown5: %s,\n", indentationValues, frm.Unknown5.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sExpiresOn: %s,\n", indentationValues, frm.ExpiresOn.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

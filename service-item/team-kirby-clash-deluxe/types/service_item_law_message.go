@@ -103,9 +103,9 @@ func (silm ServiceItemLawMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemLawMessage{\n")
-	b.WriteString(fmt.Sprintf("%sIsMessageRequired: %s,\n", indentationValues, silm.IsMessageRequired))
-	b.WriteString(fmt.Sprintf("%sLawMessage: %s,\n", indentationValues, silm.LawMessage))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIsMessageRequired: %s,\n", indentationValues, silm.IsMessageRequired)
+	fmt.Fprintf(&b, "%sLawMessage: %s,\n", indentationValues, silm.LawMessage)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

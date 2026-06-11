@@ -103,9 +103,9 @@ func (dsgcrp DataStoreGetCourseRecordParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCourseRecordParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsgcrp.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsgcrp.Slot))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsgcrp.DataID)
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsgcrp.Slot)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

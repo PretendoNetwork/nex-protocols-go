@@ -170,19 +170,19 @@ func (dsrip DataStoreRatingInitParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInitParam{\n")
-	b.WriteString(fmt.Sprintf("%sFlag: %s,\n", indentationValues, dsrip.Flag))
-	b.WriteString(fmt.Sprintf("%sInternalFlag: %s,\n", indentationValues, dsrip.InternalFlag))
-	b.WriteString(fmt.Sprintf("%sLockType: %s,\n", indentationValues, dsrip.LockType))
-	b.WriteString(fmt.Sprintf("%sInitialValue: %s,\n", indentationValues, dsrip.InitialValue))
-	b.WriteString(fmt.Sprintf("%sRangeMin: %s,\n", indentationValues, dsrip.RangeMin))
-	b.WriteString(fmt.Sprintf("%sRangeMax: %s,\n", indentationValues, dsrip.RangeMax))
-	b.WriteString(fmt.Sprintf("%sPeriodHour: %s,\n", indentationValues, dsrip.PeriodHour))
+	fmt.Fprintf(&b, "%sFlag: %s,\n", indentationValues, dsrip.Flag)
+	fmt.Fprintf(&b, "%sInternalFlag: %s,\n", indentationValues, dsrip.InternalFlag)
+	fmt.Fprintf(&b, "%sLockType: %s,\n", indentationValues, dsrip.LockType)
+	fmt.Fprintf(&b, "%sInitialValue: %s,\n", indentationValues, dsrip.InitialValue)
+	fmt.Fprintf(&b, "%sRangeMin: %s,\n", indentationValues, dsrip.RangeMin)
+	fmt.Fprintf(&b, "%sRangeMax: %s,\n", indentationValues, dsrip.RangeMax)
+	fmt.Fprintf(&b, "%sPeriodHour: %s,\n", indentationValues, dsrip.PeriodHour)
 	if dsrip.LockType == constants.RatingLockPeriod {
-		b.WriteString(fmt.Sprintf("%sPeriodDuration: %s\n", indentationValues, dsrip.PeriodDuration))
+		fmt.Fprintf(&b, "%sPeriodDuration: %s\n", indentationValues, dsrip.PeriodDuration)
 	} else {
-		b.WriteString(fmt.Sprintf("%sPeriodDuration: %s\n", indentationValues, types.Int16(dsrip.PeriodDuration)))
+		fmt.Fprintf(&b, "%sPeriodDuration: %s\n", indentationValues, types.Int16(dsrip.PeriodDuration))
 	}
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

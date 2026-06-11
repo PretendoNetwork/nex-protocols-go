@@ -119,10 +119,10 @@ func (siglmp ServiceItemGetLawMessageParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetLawMessageParam{\n")
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, siglmp.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siglmp.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siglmp.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, siglmp.Language)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, siglmp.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, siglmp.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

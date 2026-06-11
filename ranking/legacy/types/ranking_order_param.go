@@ -159,14 +159,14 @@ func (rop RankingOrderParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingOrderParam{\n")
-	b.WriteString(fmt.Sprintf("%sScoreIndex: %s,\n", indentationValues, rop.ScoreIndex))
-	b.WriteString(fmt.Sprintf("%sScoreOrder: %s,\n", indentationValues, rop.ScoreOrder))
-	b.WriteString(fmt.Sprintf("%sRankCalculation: %s,\n", indentationValues, rop.RankCalculation))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rop.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rop.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, rop.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, rop.Unknown4))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sScoreIndex: %s,\n", indentationValues, rop.ScoreIndex)
+	fmt.Fprintf(&b, "%sScoreOrder: %s,\n", indentationValues, rop.ScoreOrder)
+	fmt.Fprintf(&b, "%sRankCalculation: %s,\n", indentationValues, rop.RankCalculation)
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rop.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rop.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, rop.Unknown3)
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, rop.Unknown4)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

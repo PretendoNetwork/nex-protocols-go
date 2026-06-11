@@ -92,8 +92,8 @@ func (u SubscriberUserStatusParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SubscriberUserStatusParam{\n")
-	b.WriteString(fmt.Sprintf("%sValue: %s,\n", indentationValues, u.Value))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sValue: %s,\n", indentationValues, u.Value)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

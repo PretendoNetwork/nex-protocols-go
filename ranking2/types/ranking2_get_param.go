@@ -181,16 +181,16 @@ func (rgp Ranking2GetParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2GetParam{\n")
-	b.WriteString(fmt.Sprintf("%sNexUniqueID: %s,\n", indentationValues, rgp.NexUniqueID))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rgp.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rgp.Category))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, rgp.Offset))
-	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, rgp.Length))
-	b.WriteString(fmt.Sprintf("%sSortFlags: %s,\n", indentationValues, rgp.SortFlags))
-	b.WriteString(fmt.Sprintf("%sOptionFlags: %s,\n", indentationValues, rgp.OptionFlags))
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, rgp.Mode))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, rgp.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNexUniqueID: %s,\n", indentationValues, rgp.NexUniqueID)
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, rgp.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rgp.Category)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, rgp.Offset)
+	fmt.Fprintf(&b, "%sLength: %s,\n", indentationValues, rgp.Length)
+	fmt.Fprintf(&b, "%sSortFlags: %s,\n", indentationValues, rgp.SortFlags)
+	fmt.Fprintf(&b, "%sOptionFlags: %s,\n", indentationValues, rgp.OptionFlags)
+	fmt.Fprintf(&b, "%sMode: %s,\n", indentationValues, rgp.Mode)
+	fmt.Fprintf(&b, "%sNumSeasonsToGoBack: %s,\n", indentationValues, rgp.NumSeasonsToGoBack)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -148,13 +148,13 @@ func (mv MiiV2) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MiiV2{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mv.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, mv.Name))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, mv.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, mv.Unknown2))
-	b.WriteString(fmt.Sprintf("%sMiiData: %s,\n", indentationValues, mv.MiiData))
-	b.WriteString(fmt.Sprintf("%sDatetime: %s,\n", indentationValues, mv.Datetime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mv.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, mv.Name)
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, mv.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, mv.Unknown2)
+	fmt.Fprintf(&b, "%sMiiData: %s,\n", indentationValues, mv.MiiData)
+	fmt.Fprintf(&b, "%sDatetime: %s,\n", indentationValues, mv.Datetime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

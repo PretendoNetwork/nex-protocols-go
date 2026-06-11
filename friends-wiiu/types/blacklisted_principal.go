@@ -126,11 +126,11 @@ func (bp BlacklistedPrincipal) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BlacklistedPrincipal{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, bp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: %s,\n", indentationValues, bp.PrincipalBasicInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, bp.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBlackListedSince: %s,\n", indentationValues, bp.BlackListedSince.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, bp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrincipalBasicInfo: %s,\n", indentationValues, bp.PrincipalBasicInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, bp.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBlackListedSince: %s,\n", indentationValues, bp.BlackListedSince.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

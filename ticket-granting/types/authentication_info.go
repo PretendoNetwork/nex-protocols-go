@@ -160,12 +160,12 @@ func (ai AuthenticationInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("AuthenticationInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, ai.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, ai.Token))
-	b.WriteString(fmt.Sprintf("%sNGSVersion: %s,\n", indentationValues, ai.NGSVersion))
-	b.WriteString(fmt.Sprintf("%sTokenType: %s,\n", indentationValues, ai.TokenType))
-	b.WriteString(fmt.Sprintf("%sServerVersion: %s,\n", indentationValues, ai.ServerVersion))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, ai.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sToken: %s,\n", indentationValues, ai.Token)
+	fmt.Fprintf(&b, "%sNGSVersion: %s,\n", indentationValues, ai.NGSVersion)
+	fmt.Fprintf(&b, "%sTokenType: %s,\n", indentationValues, ai.TokenType)
+	fmt.Fprintf(&b, "%sServerVersion: %s,\n", indentationValues, ai.ServerVersion)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

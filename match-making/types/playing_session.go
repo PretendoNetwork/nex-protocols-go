@@ -103,9 +103,9 @@ func (ps PlayingSession) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PlayingSession{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, ps.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGathering: %s,\n", indentationValues, ps.Gathering.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, ps.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGathering: %s,\n", indentationValues, ps.Gathering.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

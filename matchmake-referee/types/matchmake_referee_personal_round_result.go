@@ -148,13 +148,13 @@ func (mrprr MatchmakeRefereePersonalRoundResult) FormatToString(indentationLevel
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereePersonalRoundResult{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrprr.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, mrprr.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPersonalRoundResultFlag: %s,\n", indentationValues, mrprr.PersonalRoundResultFlag))
-	b.WriteString(fmt.Sprintf("%sRoundWinLoss: %s,\n", indentationValues, mrprr.RoundWinLoss))
-	b.WriteString(fmt.Sprintf("%sRatingValueChange: %s,\n", indentationValues, mrprr.RatingValueChange))
-	b.WriteString(fmt.Sprintf("%sBuffer: %s,\n", indentationValues, mrprr.Buffer))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrprr.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, mrprr.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPersonalRoundResultFlag: %s,\n", indentationValues, mrprr.PersonalRoundResultFlag)
+	fmt.Fprintf(&b, "%sRoundWinLoss: %s,\n", indentationValues, mrprr.RoundWinLoss)
+	fmt.Fprintf(&b, "%sRatingValueChange: %s,\n", indentationValues, mrprr.RatingValueChange)
+	fmt.Fprintf(&b, "%sBuffer: %s,\n", indentationValues, mrprr.Buffer)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

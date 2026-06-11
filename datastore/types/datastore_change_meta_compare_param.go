@@ -192,17 +192,17 @@ func (dscmcp DataStoreChangeMetaCompareParam) FormatToString(indentationLevel in
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangeMetaCompareParam{\n")
-	b.WriteString(fmt.Sprintf("%sComparisonFlag: %s,\n", indentationValues, dscmcp.ComparisonFlag))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dscmcp.Name))
-	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dscmcp.Permission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dscmcp.DelPermission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dscmcp.Period))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dscmcp.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dscmcp.Tags))
-	b.WriteString(fmt.Sprintf("%sReferredCnt: %s,\n", indentationValues, dscmcp.ReferredCnt))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dscmcp.DataType))
-	b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, dscmcp.Status))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sComparisonFlag: %s,\n", indentationValues, dscmcp.ComparisonFlag)
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, dscmcp.Name)
+	fmt.Fprintf(&b, "%sPermission: %s,\n", indentationValues, dscmcp.Permission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDelPermission: %s,\n", indentationValues, dscmcp.DelPermission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, dscmcp.Period)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dscmcp.MetaBinary)
+	fmt.Fprintf(&b, "%sTags: %s,\n", indentationValues, dscmcp.Tags)
+	fmt.Fprintf(&b, "%sReferredCnt: %s,\n", indentationValues, dscmcp.ReferredCnt)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dscmcp.DataType)
+	fmt.Fprintf(&b, "%sStatus: %s,\n", indentationValues, dscmcp.Status)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -180,16 +180,16 @@ func (siasibap ServiceItemAcquireServiceItemByAccountParam) FormatToString(inden
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAcquireServiceItemByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceIDForAcquisition: %s,\n", indentationValues, siasibap.ReferenceIDForAcquisition))
-	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %s,\n", indentationValues, siasibap.ReferenceIDForRightBinary))
-	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, siasibap.UseType))
-	b.WriteString(fmt.Sprintf("%sLimitationType: %s,\n", indentationValues, siasibap.LimitationType))
-	b.WriteString(fmt.Sprintf("%sLimitationValue: %s,\n", indentationValues, siasibap.LimitationValue))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, siasibap.RightBinary))
-	b.WriteString(fmt.Sprintf("%sLogMessage: %s,\n", indentationValues, siasibap.LogMessage))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siasibap.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siasibap.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceIDForAcquisition: %s,\n", indentationValues, siasibap.ReferenceIDForAcquisition)
+	fmt.Fprintf(&b, "%sReferenceIDForRightBinary: %s,\n", indentationValues, siasibap.ReferenceIDForRightBinary)
+	fmt.Fprintf(&b, "%sUseType: %s,\n", indentationValues, siasibap.UseType)
+	fmt.Fprintf(&b, "%sLimitationType: %s,\n", indentationValues, siasibap.LimitationType)
+	fmt.Fprintf(&b, "%sLimitationValue: %s,\n", indentationValues, siasibap.LimitationValue)
+	fmt.Fprintf(&b, "%sRightBinary: %s,\n", indentationValues, siasibap.RightBinary)
+	fmt.Fprintf(&b, "%sLogMessage: %s,\n", indentationValues, siasibap.LogMessage)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, siasibap.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, siasibap.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -103,9 +103,9 @@ func (sil ServiceItemLimitation) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemLimitation{\n")
-	b.WriteString(fmt.Sprintf("%sLimitationType: %s,\n", indentationValues, sil.LimitationType))
-	b.WriteString(fmt.Sprintf("%sLimitationValue: %s,\n", indentationValues, sil.LimitationValue))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLimitationType: %s,\n", indentationValues, sil.LimitationType)
+	fmt.Fprintf(&b, "%sLimitationValue: %s,\n", indentationValues, sil.LimitationValue)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

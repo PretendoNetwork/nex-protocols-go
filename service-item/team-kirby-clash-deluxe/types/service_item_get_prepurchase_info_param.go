@@ -136,12 +136,12 @@ func (sigpip ServiceItemGetPrepurchaseInfoParam) FormatToString(indentationLevel
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetPrepurchaseInfoParam{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sigpip.ItemCode))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sigpip.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, sigpip.Limitation.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sigpip.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigpip.UniqueID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sigpip.ItemCode)
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sigpip.ReferenceID)
+	fmt.Fprintf(&b, "%sLimitation: %s,\n", indentationValues, sigpip.Limitation.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, sigpip.Language)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, sigpip.UniqueID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

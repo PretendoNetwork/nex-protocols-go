@@ -103,9 +103,9 @@ func (dspgrp DataStorePrepareGetReplayParam) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dspgrp.ReplayID))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspgrp.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReplayID: %s,\n", indentationValues, dspgrp.ReplayID)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dspgrp.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

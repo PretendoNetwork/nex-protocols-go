@@ -96,8 +96,8 @@ func (siart ServiceItemAccountRightTime) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAccountRightTime{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemAccountRight (parent): %s,\n", indentationValues, siart.ServiceItemAccountRight.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemAccountRight (parent): %s,\n", indentationValues, siart.ServiceItemAccountRight.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

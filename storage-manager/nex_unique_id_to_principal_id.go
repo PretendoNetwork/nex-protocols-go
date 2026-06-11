@@ -27,10 +27,7 @@ func (protocol *Protocol) handleNexUniqueIDToPrincipalID(packet nex.PacketInterf
 
 	var uniqueID types.UInt32
 
-	var err error
-
-	err = uniqueID.ExtractFrom(parametersStream)
-	if err != nil {
+	if err := uniqueID.ExtractFrom(parametersStream); err != nil {
 		_, rmcError := protocol.NexUniqueIDToPrincipalID(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)

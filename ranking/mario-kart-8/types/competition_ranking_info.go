@@ -114,10 +114,10 @@ func (cri CompetitionRankingInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("CompetitionRankingInfo{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, cri.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, cri.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, cri.Unknown3))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, cri.Unknown)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, cri.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, cri.Unknown3)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

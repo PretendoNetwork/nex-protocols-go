@@ -170,15 +170,15 @@ func (amp AutoMatchmakeParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("AutoMatchmakeParam{\n")
-	b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, amp.SourceMatchmakeSession.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %s,\n", indentationValues, amp.AdditionalParticipants))
-	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %s,\n", indentationValues, amp.GIDForParticipationCheck))
-	b.WriteString(fmt.Sprintf("%sAutoMatchmakeOption: %s,\n", indentationValues, amp.AutoMatchmakeOption))
-	b.WriteString(fmt.Sprintf("%sJoinMessage: %s,\n", indentationValues, amp.JoinMessage))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, amp.ParticipationCount))
-	b.WriteString(fmt.Sprintf("%sLstSearchCriteria: %s,\n", indentationValues, amp.LstSearchCriteria))
-	b.WriteString(fmt.Sprintf("%sTargetGIDs: %s,\n", indentationValues, amp.TargetGIDs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSourceMatchmakeSession: %s,\n", indentationValues, amp.SourceMatchmakeSession.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAdditionalParticipants: %s,\n", indentationValues, amp.AdditionalParticipants)
+	fmt.Fprintf(&b, "%sGIDForParticipationCheck: %s,\n", indentationValues, amp.GIDForParticipationCheck)
+	fmt.Fprintf(&b, "%sAutoMatchmakeOption: %s,\n", indentationValues, amp.AutoMatchmakeOption)
+	fmt.Fprintf(&b, "%sJoinMessage: %s,\n", indentationValues, amp.JoinMessage)
+	fmt.Fprintf(&b, "%sParticipationCount: %s,\n", indentationValues, amp.ParticipationCount)
+	fmt.Fprintf(&b, "%sLstSearchCriteria: %s,\n", indentationValues, amp.LstSearchCriteria)
+	fmt.Fprintf(&b, "%sTargetGIDs: %s,\n", indentationValues, amp.TargetGIDs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

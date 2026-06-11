@@ -158,14 +158,14 @@ func (sin ServiceItemNotice) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemNotice{\n")
-	b.WriteString(fmt.Sprintf("%sScheduleID: %s,\n", indentationValues, sin.ScheduleID))
-	b.WriteString(fmt.Sprintf("%sScheduleType: %s,\n", indentationValues, sin.ScheduleType))
-	b.WriteString(fmt.Sprintf("%sParamInt: %s,\n", indentationValues, sin.ParamInt))
-	b.WriteString(fmt.Sprintf("%sParamString: %s,\n", indentationValues, sin.ParamString))
-	b.WriteString(fmt.Sprintf("%sParamBinary: %s,\n", indentationValues, sin.ParamBinary))
-	b.WriteString(fmt.Sprintf("%sTimeBegin: %s,\n", indentationValues, sin.TimeBegin.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTimeEnd: %s,\n", indentationValues, sin.TimeEnd.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sScheduleID: %s,\n", indentationValues, sin.ScheduleID)
+	fmt.Fprintf(&b, "%sScheduleType: %s,\n", indentationValues, sin.ScheduleType)
+	fmt.Fprintf(&b, "%sParamInt: %s,\n", indentationValues, sin.ParamInt)
+	fmt.Fprintf(&b, "%sParamString: %s,\n", indentationValues, sin.ParamString)
+	fmt.Fprintf(&b, "%sParamBinary: %s,\n", indentationValues, sin.ParamBinary)
+	fmt.Fprintf(&b, "%sTimeBegin: %s,\n", indentationValues, sin.TimeBegin.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTimeEnd: %s,\n", indentationValues, sin.TimeEnd.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

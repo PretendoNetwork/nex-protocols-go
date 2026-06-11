@@ -137,12 +137,12 @@ func (ml MiiList) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MiiList{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, ml.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, ml.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, ml.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, ml.Unknown3))
-	b.WriteString(fmt.Sprintf("%sMiiDataList: %s,\n", indentationValues, ml.MiiDataList))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, ml.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, ml.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, ml.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, ml.Unknown3)
+	fmt.Fprintf(&b, "%sMiiDataList: %s,\n", indentationValues, ml.MiiDataList)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

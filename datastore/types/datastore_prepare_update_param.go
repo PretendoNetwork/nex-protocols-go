@@ -156,11 +156,11 @@ func (dspup DataStorePrepareUpdateParam) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareUpdateParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspup.DataID))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dspup.Size))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dspup.UpdatePassword))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspup.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dspup.DataID)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dspup.Size)
+	fmt.Fprintf(&b, "%sUpdatePassword: %s,\n", indentationValues, dspup.UpdatePassword)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dspup.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

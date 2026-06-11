@@ -103,9 +103,9 @@ func (dsfpc DataStoreFightingPowerChart) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStoreFightingPowerChart{\n")
-	b.WriteString(fmt.Sprintf("%sUserNum: %s,\n", indentationValues, dsfpc.UserNum))
-	b.WriteString(fmt.Sprintf("%sChart: %s,\n", indentationValues, dsfpc.Chart))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUserNum: %s,\n", indentationValues, dsfpc.UserNum)
+	fmt.Fprintf(&b, "%sChart: %s,\n", indentationValues, dsfpc.Chart)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

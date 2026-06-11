@@ -103,9 +103,9 @@ func (gtstpr GlobalTradeStationTradePokemonResult) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationTradePokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, gtstpr.Result.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMyDataID: %s,\n", indentationValues, gtstpr.MyDataID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sResult: %s,\n", indentationValues, gtstpr.Result.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMyDataID: %s,\n", indentationValues, gtstpr.MyDataID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

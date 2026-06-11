@@ -92,8 +92,8 @@ func (sihttpgr ServiceItemHTTPGetResponse) FormatToString(indentationLevel int) 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemHTTPGetResponse{\n")
-	b.WriteString(fmt.Sprintf("%sResponse: %s,\n", indentationValues, sihttpgr.Response))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sResponse: %s,\n", indentationValues, sihttpgr.Response)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

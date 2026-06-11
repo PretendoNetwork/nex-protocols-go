@@ -103,9 +103,9 @@ func (pg PlayedGame) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PlayedGame{\n")
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, pg.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, pg.Unknown.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, pg.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, pg.Unknown.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

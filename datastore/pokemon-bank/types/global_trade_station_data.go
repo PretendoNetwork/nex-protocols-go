@@ -136,12 +136,12 @@ func (gtsd GlobalTradeStationData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationData{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtsd.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, gtsd.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, gtsd.UpdatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtsd.IndexData))
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, gtsd.Version))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, gtsd.DataID)
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, gtsd.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUpdatedTime: %s,\n", indentationValues, gtsd.UpdatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sIndexData: %s,\n", indentationValues, gtsd.IndexData)
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, gtsd.Version)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

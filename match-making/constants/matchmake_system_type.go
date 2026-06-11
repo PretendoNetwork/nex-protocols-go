@@ -58,9 +58,9 @@ const (
 	// MatchmakeSystemTypeFriendsInvite indicates that only friends of the owner with invitation can join the MatchmakeSession
 	MatchmakeSystemTypeFriendsInvite
 
-	// MatchmakeSystemTypeFriends indicates that anybody with an invitation can join the MatchmakeSession
+	// MatchmakeSystemTypeInvite indicates that anybody with an invitation can join the MatchmakeSession
 	MatchmakeSystemTypeInvite
 
-	// MatchmakeSystemTypeFriends indicates that the MatchmakeSession is part of a PersistentGathering
+	// MatchmakeSystemTypePersistentGathering indicates that the MatchmakeSession is part of a PersistentGathering
 	MatchmakeSystemTypePersistentGathering
 )

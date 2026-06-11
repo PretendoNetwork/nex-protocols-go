@@ -125,11 +125,11 @@ func (dsrcp DataStoreReportCourseParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("DataStoreReportCourseParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrcp.DataID))
-	b.WriteString(fmt.Sprintf("%sMiiName: %s,\n", indentationValues, dsrcp.MiiName))
-	b.WriteString(fmt.Sprintf("%sReportCategory: %s,\n", indentationValues, dsrcp.ReportCategory))
-	b.WriteString(fmt.Sprintf("%sReportReason: %s,\n", indentationValues, dsrcp.ReportReason))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsrcp.DataID)
+	fmt.Fprintf(&b, "%sMiiName: %s,\n", indentationValues, dsrcp.MiiName)
+	fmt.Fprintf(&b, "%sReportCategory: %s,\n", indentationValues, dsrcp.ReportCategory)
+	fmt.Fprintf(&b, "%sReportReason: %s,\n", indentationValues, dsrcp.ReportReason)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

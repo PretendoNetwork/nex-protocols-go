@@ -115,10 +115,10 @@ func (ai ApplicationInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ApplicationInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, ai.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, ai.TitleID))
-	b.WriteString(fmt.Sprintf("%sTitleVersion: %s,\n", indentationValues, ai.TitleVersion))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, ai.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTitleID: %s,\n", indentationValues, ai.TitleID)
+	fmt.Fprintf(&b, "%sTitleVersion: %s,\n", indentationValues, ai.TitleVersion)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

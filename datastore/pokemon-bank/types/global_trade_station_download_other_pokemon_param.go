@@ -92,8 +92,8 @@ func (gtsdopp GlobalTradeStationDownloadOtherPokemonParam) FormatToString(indent
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDownloadOtherPokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtsdopp.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrepareUploadKey: %s,\n", indentationValues, gtsdopp.PrepareUploadKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

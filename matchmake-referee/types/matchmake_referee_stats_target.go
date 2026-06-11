@@ -115,10 +115,10 @@ func (mrst MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStatsTarget{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrst.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, mrst.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mrst.Category))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrst.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, mrst.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mrst.Category)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

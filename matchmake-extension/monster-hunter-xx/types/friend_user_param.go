@@ -92,8 +92,8 @@ func (fup FriendUserParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendUserParam{\n")
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, fup.Name))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, fup.Name)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

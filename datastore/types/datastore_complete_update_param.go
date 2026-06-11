@@ -149,10 +149,10 @@ func (dscup DataStoreCompleteUpdateParam) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompleteUpdateParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscup.DataID))
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dscup.Version))
-	b.WriteString(fmt.Sprintf("%sIsSuccess: %s,\n", indentationValues, dscup.IsSuccess))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscup.DataID)
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, dscup.Version)
+	fmt.Fprintf(&b, "%sIsSuccess: %s,\n", indentationValues, dscup.IsSuccess)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -115,9 +115,9 @@ func (apsd ActivePlayerSubscriptionData) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("ActivePlayerSubscriptionData{\n")
-	b.WriteString(fmt.Sprintf("%sSubscriptionData (parent): %s,\n", indentationValues, apsd.SubscriptionData.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, apsd.Unknown))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSubscriptionData (parent): %s,\n", indentationValues, apsd.SubscriptionData.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, apsd.Unknown)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -103,9 +103,9 @@ func (sirtrp ServiceItemRequestTicketRestorationParam) FormatToString(indentatio
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRequestTicketRestorationParam{\n")
-	b.WriteString(fmt.Sprintf("%sTicketType: %s,\n", indentationValues, sirtrp.TicketType))
-	b.WriteString(fmt.Sprintf("%sNumTicket: %s,\n", indentationValues, sirtrp.NumTicket))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTicketType: %s,\n", indentationValues, sirtrp.TicketType)
+	fmt.Fprintf(&b, "%sNumTicket: %s,\n", indentationValues, sirtrp.NumTicket)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

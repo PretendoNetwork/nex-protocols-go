@@ -136,12 +136,12 @@ func (rswl RankingScoreWithLimit) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingScoreWithLimit{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rswl.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rswl.Score))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rswl.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rswl.Unknown2))
-	b.WriteString(fmt.Sprintf("%sLimit: %s,\n", indentationValues, rswl.Limit))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rswl.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rswl.Score)
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rswl.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rswl.Unknown2)
+	fmt.Fprintf(&b, "%sLimit: %s,\n", indentationValues, rswl.Limit)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

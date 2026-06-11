@@ -29,7 +29,7 @@ func (g Gathering) ObjectID() types.RVType {
 	return g.GatheringObjectID()
 }
 
-// DataObjectID returns the object identifier of the type embedding Gathering
+// GatheringObjectID returns the object identifier of the type embedding Gathering
 func (g Gathering) GatheringObjectID() types.RVType {
 	return types.NewString("Gathering")
 }
@@ -202,24 +202,24 @@ func (g Gathering) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Gathering{\n")
-	b.WriteString(fmt.Sprintf("%sID: %s,\n", indentationValues, g.ID))
-	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, g.OwnerPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sHostPID: %s,\n", indentationValues, g.HostPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMinimumParticipants: %s,\n", indentationValues, g.MinimumParticipants))
-	b.WriteString(fmt.Sprintf("%sMaximumParticipants: %s,\n", indentationValues, g.MaximumParticipants))
-	b.WriteString(fmt.Sprintf("%sParticipationPolicy: %s,\n", indentationValues, g.ParticipationPolicy))
+	fmt.Fprintf(&b, "%sID: %s,\n", indentationValues, g.ID)
+	fmt.Fprintf(&b, "%sOwnerPID: %s,\n", indentationValues, g.OwnerPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sHostPID: %s,\n", indentationValues, g.HostPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMinimumParticipants: %s,\n", indentationValues, g.MinimumParticipants)
+	fmt.Fprintf(&b, "%sMaximumParticipants: %s,\n", indentationValues, g.MaximumParticipants)
+	fmt.Fprintf(&b, "%sParticipationPolicy: %s,\n", indentationValues, g.ParticipationPolicy)
 	switch g.ParticipationPolicy {
 	case constants.ParticipationPolicyAnybody:
-		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringAnybodyParticipationPolicyArgument()))
+		fmt.Fprintf(&b, "%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringAnybodyParticipationPolicyArgument())
 	case constants.ParticipationPolicyFriendsOnly:
-		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringFriendsOnlyParticipationPolicyArgument()))
+		fmt.Fprintf(&b, "%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringFriendsOnlyParticipationPolicyArgument())
 	default:
-		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument))
+		fmt.Fprintf(&b, "%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument)
 	}
-	b.WriteString(fmt.Sprintf("%sFlags: %s,\n", indentationValues, g.Flags))
-	b.WriteString(fmt.Sprintf("%sState: %s,\n", indentationValues, g.State))
-	b.WriteString(fmt.Sprintf("%sDescription: %s,\n", indentationValues, g.Description))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sFlags: %s,\n", indentationValues, g.Flags)
+	fmt.Fprintf(&b, "%sState: %s,\n", indentationValues, g.State)
+	fmt.Fprintf(&b, "%sDescription: %s,\n", indentationValues, g.Description)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -25,10 +25,12 @@ func (gf *GatheringFlags) ExtractFrom(readable types.Readable) error {
 	return nil
 }
 
+// HasFlag checks if a given flag is set
 func (gf GatheringFlags) HasFlag(flag GatheringFlags) bool {
 	return gf&flag == flag
 }
 
+// HasFlags checks if all given flags are set
 func (gf GatheringFlags) HasFlags(flags ...GatheringFlags) bool {
 	if len(flags) == 0 {
 		return false

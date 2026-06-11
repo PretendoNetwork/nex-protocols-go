@@ -121,11 +121,11 @@ func (mtsr MiiTubeSearchResult) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MiiTubeSearchResult{\n")
-	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, mtsr.Result))
-	b.WriteString(fmt.Sprintf("%sCount: %s,\n", indentationValues, mtsr.Count))
-	b.WriteString(fmt.Sprintf("%sPage: %s,\n", indentationValues, mtsr.Page))
-	b.WriteString(fmt.Sprintf("%sHasNext: %s,\n", indentationValues, mtsr.HasNext))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sResult: %s,\n", indentationValues, mtsr.Result)
+	fmt.Fprintf(&b, "%sCount: %s,\n", indentationValues, mtsr.Count)
+	fmt.Fprintf(&b, "%sPage: %s,\n", indentationValues, mtsr.Page)
+	fmt.Fprintf(&b, "%sHasNext: %s,\n", indentationValues, mtsr.HasNext)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

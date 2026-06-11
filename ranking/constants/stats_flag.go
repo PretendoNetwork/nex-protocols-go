@@ -30,7 +30,7 @@ func (sf StatsFlag) HasFlag(flag StatsFlag) bool {
 	return sf&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (sf StatsFlag) HasFlags(flags ...StatsFlag) bool {
 	if len(flags) == 0 {
 		return false

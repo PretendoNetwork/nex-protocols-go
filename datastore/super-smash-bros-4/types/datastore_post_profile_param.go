@@ -92,8 +92,8 @@ func (dsppp DataStorePostProfileParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("DataStorePostProfileParam{\n")
-	b.WriteString(fmt.Sprintf("%sProfile: %s,\n", indentationValues, dsppp.Profile))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sProfile: %s,\n", indentationValues, dsppp.Profile)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

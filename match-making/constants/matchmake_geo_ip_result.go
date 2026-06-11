@@ -45,12 +45,12 @@ const (
 	// MatchmakeGeoIPResultInvalid indicates an invalid value
 	MatchmakeGeoIPResultInvalid MatchmakeGeoIPResult = iota
 
-	// MatchmakeGeoIPResultAnybody has an unknown use
+	// MatchmakeGeoIPResultFound has an unknown use
 	MatchmakeGeoIPResultFound
 
-	// MatchmakeGeoIPResultFriends has an unknown use
+	// MatchmakeGeoIPResultNotFound has an unknown use
 	MatchmakeGeoIPResultNotFound
 
-	// MatchmakeGeoIPResultFriendsInvite has an unknown use
+	// MatchmakeGeoIPResultUnused has an unknown use
 	MatchmakeGeoIPResultUnused
 )

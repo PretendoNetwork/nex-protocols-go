@@ -119,10 +119,10 @@ func (sigbp ServiceItemGetBalanceParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetBalanceParam{\n")
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sigbp.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigbp.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sigbp.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, sigbp.Language)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, sigbp.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, sigbp.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

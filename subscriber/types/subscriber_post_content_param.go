@@ -114,10 +114,10 @@ func (spcp SubscriberPostContentParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("SubscriberPostContentParam{\n")
-	b.WriteString(fmt.Sprintf("%sTopic: %s,\n", indentationValues, spcp.Topic))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, spcp.Message))
-	b.WriteString(fmt.Sprintf("%sBinary: %s,\n", indentationValues, spcp.Binary))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTopic: %s,\n", indentationValues, spcp.Topic)
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, spcp.Message)
+	fmt.Fprintf(&b, "%sBinary: %s,\n", indentationValues, spcp.Binary)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

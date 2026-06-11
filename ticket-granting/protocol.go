@@ -108,17 +108,17 @@ func (protocol *Protocol) SetHandlerLoginWithContext(handler func(err error, pac
 	protocol.LoginWithContext = handler
 }
 
-// SetHandlerValidateAndRequestTicket sets the handler for the Login method
+// SetHandlerValidateAndRequestTicket sets the handler for the ValidateAndRequestTicket method
 func (protocol *Protocol) SetHandlerValidateAndRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ValidateAndRequestTicket = handler
 }
 
-// SetHandlerValidateAndRequestTicketWithCustomData sets the handler for the LoginEx method
+// SetHandlerValidateAndRequestTicketWithCustomData sets the handler for the ValidateAndRequestTicketWithCustomData method
 func (protocol *Protocol) SetHandlerValidateAndRequestTicketWithCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName types.String, oExtraData types.DataHolder) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ValidateAndRequestTicketWithCustomData = handler
 }
 
-// SetHandlerValidateAndRequestTicketWithParam sets the handler for the LoginWithContext method
+// SetHandlerValidateAndRequestTicketWithParam sets the handler for the ValidateAndRequestTicketWithParam method
 func (protocol *Protocol) SetHandlerValidateAndRequestTicketWithParam(handler func(err error, packet nex.PacketInterface, callID uint32, param ticket_granting_types.ValidateAndRequestTicketParam) (*nex.RMCMessage, *nex.Error)) {
 	protocol.ValidateAndRequestTicketWithParam = handler
 }

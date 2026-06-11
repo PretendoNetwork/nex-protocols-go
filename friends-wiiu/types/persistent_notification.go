@@ -41,31 +41,31 @@ func (pn PersistentNotification) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PersistentNotification from the given readable
 func (pn *PersistentNotification) ExtractFrom(readable types.Readable) error {
 	if err := pn.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Data. %s", err.Error())
 	}
 
 	if err := pn.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification header. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification header. %s", err.Error())
 	}
 
 	if err := pn.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown1. %s", err.Error())
 	}
 
 	if err := pn.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown2. %s", err.Error())
 	}
 
 	if err := pn.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown3. %s", err.Error())
 	}
 
 	if err := pn.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown4. %s", err.Error())
 	}
 
 	if err := pn.Unknown5.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotification.Unknown5. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotification.Unknown5. %s", err.Error())
 	}
 
 	return nil
@@ -148,13 +148,13 @@ func (pn PersistentNotification) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PersistentNotification{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pn.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, pn.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, pn.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, pn.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, pn.Unknown4))
-	b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, pn.Unknown5))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, pn.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, pn.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, pn.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, pn.Unknown3)
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, pn.Unknown4)
+	fmt.Fprintf(&b, "%sUnknown5: %s,\n", indentationValues, pn.Unknown5)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

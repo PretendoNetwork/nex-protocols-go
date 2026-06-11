@@ -32,15 +32,15 @@ func (fmsbpr FindMatchmakeSessionByParticipantResult) WriteTo(writable types.Wri
 // ExtractFrom extracts the FindMatchmakeSessionByParticipantResult from the given readable
 func (fmsbpr *FindMatchmakeSessionByParticipantResult) ExtractFrom(readable types.Readable) error {
 	if err := fmsbpr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract FindMatchmakeSessionByParticipantResult header. %s", err.Error())
 	}
 
 	if err := fmsbpr.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract FindMatchmakeSessionByParticipantResult.PrincipalID. %s", err.Error())
 	}
 
 	if err := fmsbpr.Session.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult.Session. %s", err.Error())
+		return fmt.Errorf("failed to extract FindMatchmakeSessionByParticipantResult.Session. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (fmsbpr FindMatchmakeSessionByParticipantResult) FormatToString(indentation
 	var b strings.Builder
 
 	b.WriteString("FindMatchmakeSessionByParticipantResult{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, fmsbpr.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sSession: %s,\n", indentationValues, fmsbpr.Session.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, fmsbpr.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sSession: %s,\n", indentationValues, fmsbpr.Session.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

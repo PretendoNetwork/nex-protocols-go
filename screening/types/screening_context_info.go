@@ -32,15 +32,15 @@ func (sci ScreeningContextInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ScreeningContextInfo from the given readable
 func (sci *ScreeningContextInfo) ExtractFrom(readable types.Readable) error {
 	if err := sci.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ScreeningContextInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ScreeningContextInfo header. %s", err.Error())
 	}
 
 	if err := sci.Key.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ScreeningContextInfo.Key. %s", err.Error())
+		return fmt.Errorf("failed to extract ScreeningContextInfo.Key. %s", err.Error())
 	}
 
 	if err := sci.Value.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ScreeningContextInfo.Value. %s", err.Error())
+		return fmt.Errorf("failed to extract ScreeningContextInfo.Value. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (sci ScreeningContextInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ScreeningContextInfo{\n")
-	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, sci.Key))
-	b.WriteString(fmt.Sprintf("%sValue: %s\n", indentationValues, sci.Value))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sKey: %s,\n", indentationValues, sci.Key)
+	fmt.Fprintf(&b, "%sValue: %s\n", indentationValues, sci.Value)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

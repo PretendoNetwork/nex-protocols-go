@@ -37,20 +37,20 @@ func (siglmp ServiceItemGetLawMessageParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemGetLawMessageParam from the given readable
 func (siglmp *ServiceItemGetLawMessageParam) ExtractFrom(readable types.Readable) error {
 	if err := siglmp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageParam header. %s", err.Error())
 	}
 
 	if err := siglmp.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageParam.Language. %s", err.Error())
 	}
 
 	if err := siglmp.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageParam.UniqueID. %s", err.Error())
 	}
 
 	if siglmp.StructureVersion >= 1 {
 		if err := siglmp.Platform.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Platform. %s", err.Error())
+			return fmt.Errorf("failed to extract ServiceItemGetLawMessageParam.Platform. %s", err.Error())
 		}
 	}
 
@@ -119,10 +119,10 @@ func (siglmp ServiceItemGetLawMessageParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetLawMessageParam{\n")
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, siglmp.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siglmp.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siglmp.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, siglmp.Language)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, siglmp.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, siglmp.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

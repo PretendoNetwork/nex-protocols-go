@@ -40,31 +40,31 @@ func (resro Ranking2EstimateScoreRankOutput) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2EstimateScoreRankOutput from the given readable
 func (resro *Ranking2EstimateScoreRankOutput) ExtractFrom(readable types.Readable) error {
 	if err := resro.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput header. %s", err.Error())
 	}
 
 	if err := resro.Rank.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Rank. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Rank. %s", err.Error())
 	}
 
 	if err := resro.Length.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Length. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Length. %s", err.Error())
 	}
 
 	if err := resro.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Score. %s", err.Error())
 	}
 
 	if err := resro.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Category. %s", err.Error())
 	}
 
 	if err := resro.Season.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Season. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.Season. %s", err.Error())
 	}
 
 	if err := resro.SamplingRate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.SamplingRate. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankOutput.SamplingRate. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (resro Ranking2EstimateScoreRankOutput) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("Ranking2EstimateScoreRankOutput{\n")
-	b.WriteString(fmt.Sprintf("%sRank: %s,\n", indentationValues, resro.Rank))
-	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, resro.Length))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, resro.Score))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, resro.Category))
-	b.WriteString(fmt.Sprintf("%sSeason: %s,\n", indentationValues, resro.Season))
-	b.WriteString(fmt.Sprintf("%sSamplingRate: %s,\n", indentationValues, resro.SamplingRate))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRank: %s,\n", indentationValues, resro.Rank)
+	fmt.Fprintf(&b, "%sLength: %s,\n", indentationValues, resro.Length)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, resro.Score)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, resro.Category)
+	fmt.Fprintf(&b, "%sSeason: %s,\n", indentationValues, resro.Season)
+	fmt.Fprintf(&b, "%sSamplingRate: %s,\n", indentationValues, resro.SamplingRate)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

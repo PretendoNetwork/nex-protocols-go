@@ -32,7 +32,7 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 
 	err = isAvailableOnly.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindOfficialCommunity(fmt.Errorf("Failed to read isAvailableOnly from parameters. %s", err.Error()), packet, callID, isAvailableOnly, resultRange)
+		_, rmcError := protocol.FindOfficialCommunity(fmt.Errorf("failed to read isAvailableOnly from parameters. %s", err.Error()), packet, callID, isAvailableOnly, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindOfficialCommunity(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, isAvailableOnly, resultRange)
+		_, rmcError := protocol.FindOfficialCommunity(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, isAvailableOnly, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

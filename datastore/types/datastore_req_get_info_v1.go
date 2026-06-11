@@ -36,23 +36,23 @@ func (dsrgiv DataStoreReqGetInfoV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqGetInfoV1 from the given readable
 func (dsrgiv *DataStoreReqGetInfoV1) ExtractFrom(readable types.Readable) error {
 	if err := dsrgiv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfoV1 header. %s", err.Error())
 	}
 
 	if err := dsrgiv.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfoV1.URL. %s", err.Error())
 	}
 
 	if err := dsrgiv.RequestHeaders.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RequestHeaders. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfoV1.RequestHeaders. %s", err.Error())
 	}
 
 	if err := dsrgiv.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfoV1.Size. %s", err.Error())
 	}
 
 	if err := dsrgiv.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfoV1.RootCACert. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (dsrgiv DataStoreReqGetInfoV1) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetInfoV1{\n")
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrgiv.URL))
-	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrgiv.RequestHeaders))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsrgiv.Size))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrgiv.RootCACert))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrgiv.URL)
+	fmt.Fprintf(&b, "%sRequestHeaders: %s,\n", indentationValues, dsrgiv.RequestHeaders)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dsrgiv.Size)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrgiv.RootCACert)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

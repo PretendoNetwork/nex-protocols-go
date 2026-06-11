@@ -34,19 +34,19 @@ func (fui FriendUserInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendUserInfo from the given readable
 func (fui *FriendUserInfo) ExtractFrom(readable types.Readable) error {
 	if err := fui.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendUserInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendUserInfo header. %s", err.Error())
 	}
 
 	if err := fui.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendUserInfo.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendUserInfo.PID. %s", err.Error())
 	}
 
 	if err := fui.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendUserInfo.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendUserInfo.Name. %s", err.Error())
 	}
 
 	if err := fui.Presence.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendUserInfo.Presence. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendUserInfo.Presence. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (fui FriendUserInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendUserInfo{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fui.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, fui.Name))
-	b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, fui.Presence))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fui.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, fui.Name)
+	fmt.Fprintf(&b, "%sPresence: %s,\n", indentationValues, fui.Presence)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

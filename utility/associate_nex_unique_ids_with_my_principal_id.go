@@ -30,7 +30,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet ne
 
 	err := uniqueIDInfo.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AssociateNexUniqueIDsWithMyPrincipalID(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, uniqueIDInfo)
+		_, rmcError := protocol.AssociateNexUniqueIDsWithMyPrincipalID(fmt.Errorf("failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, uniqueIDInfo)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

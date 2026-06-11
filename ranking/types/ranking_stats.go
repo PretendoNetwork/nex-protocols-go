@@ -30,11 +30,11 @@ func (rs RankingStats) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingStats from the given readable
 func (rs *RankingStats) ExtractFrom(readable types.Readable) error {
 	if err := rs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingStats header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingStats header. %s", err.Error())
 	}
 
 	if err := rs.StatsList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingStats.StatsList. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingStats.StatsList. %s", err.Error())
 	}
 
 	return nil
@@ -92,8 +92,8 @@ func (rs RankingStats) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingStats{\n")
-	b.WriteString(fmt.Sprintf("%sStatsList: %s,\n", indentationValues, rs.StatsList))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sStatsList: %s,\n", indentationValues, rs.StatsList)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -44,39 +44,39 @@ func (sie ServiceItemEvent) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemEvent from the given readable
 func (sie *ServiceItemEvent) ExtractFrom(readable types.Readable) error {
 	if err := sie.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent header. %s", err.Error())
 	}
 
 	if err := sie.EventID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.EventID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.EventID. %s", err.Error())
 	}
 
 	if err := sie.ParamInt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamInt. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.ParamInt. %s", err.Error())
 	}
 
 	if err := sie.ParamString.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamString. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.ParamString. %s", err.Error())
 	}
 
 	if err := sie.ParamBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.ParamBinary. %s", err.Error())
 	}
 
 	if err := sie.PresentTicketType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.PresentTicketType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.PresentTicketType. %s", err.Error())
 	}
 
 	if err := sie.PresentTicketNum.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.PresentTicketNum. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.PresentTicketNum. %s", err.Error())
 	}
 
 	if err := sie.TimeBegin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.TimeBegin. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.TimeBegin. %s", err.Error())
 	}
 
 	if err := sie.TimeEnd.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEvent.TimeEnd. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEvent.TimeEnd. %s", err.Error())
 	}
 
 	return nil
@@ -169,15 +169,15 @@ func (sie ServiceItemEvent) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemEvent{\n")
-	b.WriteString(fmt.Sprintf("%sEventID: %s,\n", indentationValues, sie.EventID))
-	b.WriteString(fmt.Sprintf("%sParamInt: %s,\n", indentationValues, sie.ParamInt))
-	b.WriteString(fmt.Sprintf("%sParamString: %s,\n", indentationValues, sie.ParamString))
-	b.WriteString(fmt.Sprintf("%sParamBinary: %s,\n", indentationValues, sie.ParamBinary))
-	b.WriteString(fmt.Sprintf("%sPresentTicketType: %s,\n", indentationValues, sie.PresentTicketType))
-	b.WriteString(fmt.Sprintf("%sPresentTicketNum: %s,\n", indentationValues, sie.PresentTicketNum))
-	b.WriteString(fmt.Sprintf("%sTimeBegin: %s,\n", indentationValues, sie.TimeBegin.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTimeEnd: %s,\n", indentationValues, sie.TimeEnd.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sEventID: %s,\n", indentationValues, sie.EventID)
+	fmt.Fprintf(&b, "%sParamInt: %s,\n", indentationValues, sie.ParamInt)
+	fmt.Fprintf(&b, "%sParamString: %s,\n", indentationValues, sie.ParamString)
+	fmt.Fprintf(&b, "%sParamBinary: %s,\n", indentationValues, sie.ParamBinary)
+	fmt.Fprintf(&b, "%sPresentTicketType: %s,\n", indentationValues, sie.PresentTicketType)
+	fmt.Fprintf(&b, "%sPresentTicketNum: %s,\n", indentationValues, sie.PresentTicketNum)
+	fmt.Fprintf(&b, "%sTimeBegin: %s,\n", indentationValues, sie.TimeBegin.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTimeEnd: %s,\n", indentationValues, sie.TimeEnd.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

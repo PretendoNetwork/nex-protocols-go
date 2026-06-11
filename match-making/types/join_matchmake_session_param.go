@@ -64,54 +64,54 @@ func (jmsp *JoinMatchmakeSessionParam) ExtractFrom(readable types.Readable) erro
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	if err := jmsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam header. %s", err.Error())
 	}
 
 	if err := jmsp.GID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GID. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.GID. %s", err.Error())
 	}
 
 	if err := jmsp.AdditionalParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
 
 	if err := jmsp.GIDForParticipationCheck.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
 	if err := jmsp.JoinMatchmakeSessionOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionOption. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionOption. %s", err.Error())
 	}
 
 	if err := jmsp.JoinMatchmakeSessionBehavior.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior. %s", err.Error())
 	}
 
 	if err := jmsp.StrUserPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.StrUserPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.StrUserPassword. %s", err.Error())
 	}
 
 	if err := jmsp.StrSystemPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.StrSystemPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.StrSystemPassword. %s", err.Error())
 	}
 
 	if err := jmsp.JoinMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.JoinMessage. %s", err.Error())
 	}
 
 	if err := jmsp.ParticipationCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ParticipationCount. %s", err.Error())
+		return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
 
 	if jmsp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0") {
 		if err := jmsp.ExtraParticipants.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
+			return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0") {
 		if err := jmsp.BlockListParam.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())
+			return fmt.Errorf("failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())
 		}
 	}
 
@@ -220,18 +220,18 @@ func (jmsp JoinMatchmakeSessionParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("JoinMatchmakeSessionParam{\n")
-	b.WriteString(fmt.Sprintf("%sGID: %s,\n", indentationValues, jmsp.GID))
-	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %s,\n", indentationValues, jmsp.AdditionalParticipants))
-	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %s,\n", indentationValues, jmsp.GIDForParticipationCheck))
-	b.WriteString(fmt.Sprintf("%sJoinMatchmakeSessionOption: %s,\n", indentationValues, jmsp.JoinMatchmakeSessionOption))
-	b.WriteString(fmt.Sprintf("%sJoinMatchmakeSessionBehavior: %s,\n", indentationValues, jmsp.JoinMatchmakeSessionBehavior))
-	b.WriteString(fmt.Sprintf("%sStrUserPassword: %s,\n", indentationValues, jmsp.StrUserPassword))
-	b.WriteString(fmt.Sprintf("%sStrSystemPassword: %s,\n", indentationValues, jmsp.StrSystemPassword))
-	b.WriteString(fmt.Sprintf("%sJoinMessage: %s,\n", indentationValues, jmsp.JoinMessage))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, jmsp.ParticipationCount))
-	b.WriteString(fmt.Sprintf("%sExtraParticipants: %s,\n", indentationValues, jmsp.ExtraParticipants))
-	b.WriteString(fmt.Sprintf("%sBlockListParam: %s,\n", indentationValues, jmsp.BlockListParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGID: %s,\n", indentationValues, jmsp.GID)
+	fmt.Fprintf(&b, "%sAdditionalParticipants: %s,\n", indentationValues, jmsp.AdditionalParticipants)
+	fmt.Fprintf(&b, "%sGIDForParticipationCheck: %s,\n", indentationValues, jmsp.GIDForParticipationCheck)
+	fmt.Fprintf(&b, "%sJoinMatchmakeSessionOption: %s,\n", indentationValues, jmsp.JoinMatchmakeSessionOption)
+	fmt.Fprintf(&b, "%sJoinMatchmakeSessionBehavior: %s,\n", indentationValues, jmsp.JoinMatchmakeSessionBehavior)
+	fmt.Fprintf(&b, "%sStrUserPassword: %s,\n", indentationValues, jmsp.StrUserPassword)
+	fmt.Fprintf(&b, "%sStrSystemPassword: %s,\n", indentationValues, jmsp.StrSystemPassword)
+	fmt.Fprintf(&b, "%sJoinMessage: %s,\n", indentationValues, jmsp.JoinMessage)
+	fmt.Fprintf(&b, "%sParticipationCount: %s,\n", indentationValues, jmsp.ParticipationCount)
+	fmt.Fprintf(&b, "%sExtraParticipants: %s,\n", indentationValues, jmsp.ExtraParticipants)
+	fmt.Fprintf(&b, "%sBlockListParam: %s,\n", indentationValues, jmsp.BlockListParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

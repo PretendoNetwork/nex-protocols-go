@@ -34,19 +34,19 @@ func (gtsdpr GlobalTradeStationDownloadPokemonResult) WriteTo(writable types.Wri
 // ExtractFrom extracts the GlobalTradeStationDownloadPokemonResult from the given readable
 func (gtsdpr *GlobalTradeStationDownloadPokemonResult) ExtractFrom(readable types.Readable) error {
 	if err := gtsdpr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadPokemonResult header. %s", err.Error())
 	}
 
 	if err := gtsdpr.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadPokemonResult.DataID. %s", err.Error())
 	}
 
 	if err := gtsdpr.IndexData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.IndexData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadPokemonResult.IndexData. %s", err.Error())
 	}
 
 	if err := gtsdpr.PokemonData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.PokemonData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadPokemonResult.PokemonData. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (gtsdpr GlobalTradeStationDownloadPokemonResult) FormatToString(indentation
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDownloadPokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtsdpr.DataID))
-	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtsdpr.IndexData))
-	b.WriteString(fmt.Sprintf("%sPokemonData: %s,\n", indentationValues, gtsdpr.PokemonData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, gtsdpr.DataID)
+	fmt.Fprintf(&b, "%sIndexData: %s,\n", indentationValues, gtsdpr.IndexData)
+	fmt.Fprintf(&b, "%sPokemonData: %s,\n", indentationValues, gtsdpr.PokemonData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

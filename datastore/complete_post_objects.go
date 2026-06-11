@@ -29,7 +29,7 @@ func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) 
 
 	err := dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CompletePostObjects(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs)
+		_, rmcError := protocol.CompletePostObjects(fmt.Errorf("failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

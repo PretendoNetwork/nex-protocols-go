@@ -34,7 +34,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, category, uniqueID, principalID)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, category, uniqueID, principalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, category, uniqueID, principalID)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, category, uniqueID, principalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	err = principalID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, category, uniqueID, principalID)
+		_, rmcError := protocol.GetRanking(fmt.Errorf("failed to read principalID from parameters. %s", err.Error()), packet, callID, category, uniqueID, principalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -37,23 +37,23 @@ func (suvp ScreeningUGCViolationParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ScreeningUGCViolationParam from the given readable
 func (suvp *ScreeningUGCViolationParam) ExtractFrom(readable types.Readable) error {
 	if err := suvp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ScreeningUGCViolationParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ScreeningUGCViolationParam header. %s", err.Error())
 	}
 
 	if err := suvp.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ScreeningUGCViolationParam.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract ScreeningUGCViolationParam.Category. %s", err.Error())
 	}
 
 	if err := suvp.Reason.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ScreeningUGCViolationParam.Reason. %s", err.Error())
+		return fmt.Errorf("failed to extract ScreeningUGCViolationParam.Reason. %s", err.Error())
 	}
 
 	if err := suvp.Context.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ScreeningUGCViolationParam.Context. %s", err.Error())
+		return fmt.Errorf("failed to extract ScreeningUGCViolationParam.Context. %s", err.Error())
 	}
 
 	if err := suvp.ScreenshotDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ScreeningUGCViolationParam.ScreenshotDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract ScreeningUGCViolationParam.ScreenshotDataID. %s", err.Error())
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func (suvp ScreeningUGCViolationParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("ScreeningUGCViolationParam{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, suvp.Category))
-	b.WriteString(fmt.Sprintf("%sReason: %s,\n", indentationValues, suvp.Reason))
-	b.WriteString(fmt.Sprintf("%sContext: %s,\n", indentationValues, suvp.Context))
-	b.WriteString(fmt.Sprintf("%sScreenshotDataID: %s\n", indentationValues, suvp.ScreenshotDataID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %d,\n", indentationValues, suvp.Category)
+	fmt.Fprintf(&b, "%sReason: %s,\n", indentationValues, suvp.Reason)
+	fmt.Fprintf(&b, "%sContext: %s,\n", indentationValues, suvp.Context)
+	fmt.Fprintf(&b, "%sScreenshotDataID: %s\n", indentationValues, suvp.ScreenshotDataID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

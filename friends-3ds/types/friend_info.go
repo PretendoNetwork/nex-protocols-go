@@ -32,15 +32,15 @@ func (fi FriendInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendInfo from the given readable
 func (fi *FriendInfo) ExtractFrom(readable types.Readable) error {
 	if err := fi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo header. %s", err.Error())
 	}
 
 	if err := fi.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.PID. %s", err.Error())
 	}
 
 	if err := fi.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.Unknown. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (fi FriendInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendInfo{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fi.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, fi.Unknown.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fi.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, fi.Unknown.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

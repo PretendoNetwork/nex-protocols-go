@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) 
 
 	err := lstPrincipalID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RemoveFromBlockList(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, lstPrincipalID)
+		_, rmcError := protocol.RemoveFromBlockList(fmt.Errorf("failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, lstPrincipalID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

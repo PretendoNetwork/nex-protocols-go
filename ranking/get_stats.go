@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, category, orderParam, flags)
+		_, rmcError := protocol.GetStats(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, category, orderParam, flags)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, category, orderParam, flags)
+		_, rmcError := protocol.GetStats(fmt.Errorf("failed to read orderParam from parameters. %s", err.Error()), packet, callID, category, orderParam, flags)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	err = flags.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read flags from parameters. %s", err.Error()), packet, callID, category, orderParam, flags)
+		_, rmcError := protocol.GetStats(fmt.Errorf("failed to read flags from parameters. %s", err.Error()), packet, callID, category, orderParam, flags)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

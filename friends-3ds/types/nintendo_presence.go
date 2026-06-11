@@ -62,51 +62,51 @@ func (np NintendoPresence) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NintendoPresence from the given readable
 func (np *NintendoPresence) ExtractFrom(readable types.Readable) error {
 	if err := np.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.Data. %s", err.Error())
 	}
 
 	if err := np.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence header. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence header. %s", err.Error())
 	}
 
 	if err := np.ChangedFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.ChangedFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.ChangedFlags. %s", err.Error())
 	}
 
 	if err := np.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.GameKey. %s", err.Error())
 	}
 
 	if err := np.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.Message. %s", err.Error())
 	}
 
 	if err := np.JoinAvailableFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.JoinAvailableFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.JoinAvailableFlag. %s", err.Error())
 	}
 
 	if err := np.MatchmakeType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.MatchmakeType. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.MatchmakeType. %s", err.Error())
 	}
 
 	if err := np.JoinGameID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.JoinGameID. %s", err.Error())
 	}
 
 	if err := np.JoinGameMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameMode. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.JoinGameMode. %s", err.Error())
 	}
 
 	if err := np.OwnerPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.OwnerPID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.OwnerPID. %s", err.Error())
 	}
 
 	if err := np.JoinGroupID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.JoinGroupID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.JoinGroupID. %s", err.Error())
 	}
 
 	if err := np.ApplicationArg.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresence.ApplicationArg. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresence.ApplicationArg. %s", err.Error())
 	}
 
 	return nil
@@ -214,18 +214,18 @@ func (np NintendoPresence) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("NintendoPresence{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, np.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, np.ChangedFlags))
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, np.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, np.Message))
-	b.WriteString(fmt.Sprintf("%sJoinAvailableFlag: %s,\n", indentationValues, np.JoinAvailableFlag))
-	b.WriteString(fmt.Sprintf("%sMatchmakeType: %s,\n", indentationValues, np.MatchmakeType))
-	b.WriteString(fmt.Sprintf("%sJoinGameID: %s,\n", indentationValues, np.JoinGameID))
-	b.WriteString(fmt.Sprintf("%sJoinGameMode: %s,\n", indentationValues, np.JoinGameMode))
-	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, np.OwnerPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sJoinGroupID: %s,\n", indentationValues, np.JoinGroupID))
-	b.WriteString(fmt.Sprintf("%sApplicationArg: %s,\n", indentationValues, np.ApplicationArg))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, np.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sChangedFlags: %d,\n", indentationValues, np.ChangedFlags)
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, np.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, np.Message)
+	fmt.Fprintf(&b, "%sJoinAvailableFlag: %s,\n", indentationValues, np.JoinAvailableFlag)
+	fmt.Fprintf(&b, "%sMatchmakeType: %s,\n", indentationValues, np.MatchmakeType)
+	fmt.Fprintf(&b, "%sJoinGameID: %s,\n", indentationValues, np.JoinGameID)
+	fmt.Fprintf(&b, "%sJoinGameMode: %s,\n", indentationValues, np.JoinGameMode)
+	fmt.Fprintf(&b, "%sOwnerPID: %s,\n", indentationValues, np.OwnerPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sJoinGroupID: %s,\n", indentationValues, np.JoinGroupID)
+	fmt.Fprintf(&b, "%sApplicationArg: %s,\n", indentationValues, np.ApplicationArg)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

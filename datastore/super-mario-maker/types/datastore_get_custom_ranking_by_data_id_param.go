@@ -34,19 +34,19 @@ func (dsgcrbdidp DataStoreGetCustomRankingByDataIDParam) WriteTo(writable types.
 // ExtractFrom extracts the DataStoreGetCustomRankingByDataIDParam from the given readable
 func (dsgcrbdidp *DataStoreGetCustomRankingByDataIDParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgcrbdidp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingByDataIDParam header. %s", err.Error())
 	}
 
 	if err := dsgcrbdidp.ApplicationID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.ApplicationID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingByDataIDParam.ApplicationID. %s", err.Error())
 	}
 
 	if err := dsgcrbdidp.DataIDList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.DataIDList. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingByDataIDParam.DataIDList. %s", err.Error())
 	}
 
 	if err := dsgcrbdidp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingByDataIDParam.ResultOption. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (dsgcrbdidp DataStoreGetCustomRankingByDataIDParam) FormatToString(indentat
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCustomRankingByDataIDParam{\n")
-	b.WriteString(fmt.Sprintf("%sApplicationID: %s,\n", indentationValues, dsgcrbdidp.ApplicationID))
-	b.WriteString(fmt.Sprintf("%sDataIDList: %s,\n", indentationValues, dsgcrbdidp.DataIDList))
-	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dsgcrbdidp.ResultOption))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sApplicationID: %s,\n", indentationValues, dsgcrbdidp.ApplicationID)
+	fmt.Fprintf(&b, "%sDataIDList: %s,\n", indentationValues, dsgcrbdidp.DataIDList)
+	fmt.Fprintf(&b, "%sResultOption: %s,\n", indentationValues, dsgcrbdidp.ResultOption)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -6,8 +6,8 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
 func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage, participationCount)
+		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("failed to read anyGathering from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage, participationCount)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage, participationCount)
+		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("failed to read strMessage from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage, participationCount)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -57,7 +57,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		err = participationCount.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage, participationCount)
+			_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("failed to read participationCount from parameters. %s", err.Error()), packet, callID, anyGathering, strMessage, participationCount)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}

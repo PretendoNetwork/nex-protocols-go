@@ -33,15 +33,15 @@ func (sipsir ServiceItemPurchaseServiceItemResponse) WriteTo(writable types.Writ
 // ExtractFrom extracts the ServiceItemPurchaseServiceItemResponse from the given readable
 func (sipsir *ServiceItemPurchaseServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	if err := sipsir.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
 	if err := sipsir.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemResponse header. %s", err.Error())
 	}
 
 	if err := sipsir.NullablePurchaseInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse.NullablePurchaseInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemResponse.NullablePurchaseInfo. %s", err.Error())
 	}
 
 	return nil
@@ -104,9 +104,9 @@ func (sipsir ServiceItemPurchaseServiceItemResponse) FormatToString(indentationL
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sipsir.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullablePurchaseInfo: %s,\n", indentationValues, sipsir.NullablePurchaseInfo))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sipsir.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullablePurchaseInfo: %s,\n", indentationValues, sipsir.NullablePurchaseInfo)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

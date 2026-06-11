@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 
 	err = uiReason.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), packet, callID, uiReason, resultRange)
+		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("failed to read uiReason from parameters. %s", err.Error()), packet, callID, uiReason, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, uiReason, resultRange)
+		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, uiReason, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

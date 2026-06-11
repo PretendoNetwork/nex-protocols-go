@@ -40,31 +40,31 @@ func (sili ServiceItemListItem) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemListItem from the given readable
 func (sili *ServiceItemListItem) ExtractFrom(readable types.Readable) error {
 	if err := sili.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListItem header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListItem header. %s", err.Error())
 	}
 
 	if err := sili.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListItem.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListItem.ItemCode. %s", err.Error())
 	}
 
 	if err := sili.RegularPrice.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListItem.RegularPrice. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListItem.RegularPrice. %s", err.Error())
 	}
 
 	if err := sili.TaxExcluded.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListItem.TaxExcluded. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListItem.TaxExcluded. %s", err.Error())
 	}
 
 	if err := sili.InitialPurchaseOnly.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListItem.InitialPurchaseOnly. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListItem.InitialPurchaseOnly. %s", err.Error())
 	}
 
 	if err := sili.Limitation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListItem.Limitation. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListItem.Limitation. %s", err.Error())
 	}
 
 	if err := sili.Attributes.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListItem.Attributes. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemListItem.Attributes. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (sili ServiceItemListItem) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListItem{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sili.ItemCode))
-	b.WriteString(fmt.Sprintf("%sRegularPrice: %s,\n", indentationValues, sili.RegularPrice.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTaxExcluded: %s,\n", indentationValues, sili.TaxExcluded))
-	b.WriteString(fmt.Sprintf("%sInitialPurchaseOnly: %s,\n", indentationValues, sili.InitialPurchaseOnly))
-	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, sili.Limitation.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAttributes: %s,\n", indentationValues, sili.Attributes))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sili.ItemCode)
+	fmt.Fprintf(&b, "%sRegularPrice: %s,\n", indentationValues, sili.RegularPrice.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTaxExcluded: %s,\n", indentationValues, sili.TaxExcluded)
+	fmt.Fprintf(&b, "%sInitialPurchaseOnly: %s,\n", indentationValues, sili.InitialPurchaseOnly)
+	fmt.Fprintf(&b, "%sLimitation: %s,\n", indentationValues, sili.Limitation.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAttributes: %s,\n", indentationValues, sili.Attributes)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

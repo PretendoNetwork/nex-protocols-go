@@ -32,15 +32,15 @@ func (dscppp DataStoreChangePlayablePlatformParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the DataStoreChangePlayablePlatformParam from the given readable
 func (dscppp *DataStoreChangePlayablePlatformParam) ExtractFrom(readable types.Readable) error {
 	if err := dscppp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangePlayablePlatformParam header. %s", err.Error())
 	}
 
 	if err := dscppp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangePlayablePlatformParam.DataID. %s", err.Error())
 	}
 
 	if err := dscppp.PlayablePlatform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.PlayablePlatform. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangePlayablePlatformParam.PlayablePlatform. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dscppp DataStoreChangePlayablePlatformParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangePlayablePlatformParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscppp.DataID))
-	b.WriteString(fmt.Sprintf("%sPlayablePlatform: %s,\n", indentationValues, dscppp.PlayablePlatform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscppp.DataID)
+	fmt.Fprintf(&b, "%sPlayablePlatform: %s,\n", indentationValues, dscppp.PlayablePlatform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -40,31 +40,31 @@ func (rs RatingStats) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RatingStats from the given readable
 func (rs *RatingStats) ExtractFrom(readable types.Readable) error {
 	if err := rs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats header. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats header. %s", err.Error())
 	}
 
 	if err := rs.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.PrincipalID. %s", err.Error())
 	}
 
 	if err := rs.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.UniqueID. %s", err.Error())
 	}
 
 	if err := rs.Flags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.Flags. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.Flags. %s", err.Error())
 	}
 
 	if err := rs.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.Category. %s", err.Error())
 	}
 
 	if err := rs.ReportData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.ReportData. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.ReportData. %s", err.Error())
 	}
 
 	if err := rs.Values.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingStats.Values. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingStats.Values. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (rs RatingStats) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RatingStats{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rs.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, rs.UniqueID))
-	b.WriteString(fmt.Sprintf("%sFlags: %s,\n", indentationValues, rs.Flags))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rs.Category))
-	b.WriteString(fmt.Sprintf("%sReportData: %s,\n", indentationValues, rs.ReportData))
-	b.WriteString(fmt.Sprintf("%sValues: %s,\n", indentationValues, rs.Values))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, rs.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, rs.UniqueID)
+	fmt.Fprintf(&b, "%sFlags: %s,\n", indentationValues, rs.Flags)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rs.Category)
+	fmt.Fprintf(&b, "%sReportData: %s,\n", indentationValues, rs.ReportData)
+	fmt.Fprintf(&b, "%sValues: %s,\n", indentationValues, rs.Values)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -32,15 +32,15 @@ func (dsgcrp DataStoreGetCourseRecordParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreGetCourseRecordParam from the given readable
 func (dsgcrp *DataStoreGetCourseRecordParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgcrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordParam header. %s", err.Error())
 	}
 
 	if err := dsgcrp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordParam.DataID. %s", err.Error())
 	}
 
 	if err := dsgcrp.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordParam.Slot. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dsgcrp DataStoreGetCourseRecordParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCourseRecordParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsgcrp.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsgcrp.Slot))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsgcrp.DataID)
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsgcrp.Slot)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

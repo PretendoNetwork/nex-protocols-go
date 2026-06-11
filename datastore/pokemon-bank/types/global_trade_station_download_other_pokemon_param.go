@@ -30,11 +30,11 @@ func (gtsdopp GlobalTradeStationDownloadOtherPokemonParam) WriteTo(writable type
 // ExtractFrom extracts the GlobalTradeStationDownloadOtherPokemonParam from the given readable
 func (gtsdopp *GlobalTradeStationDownloadOtherPokemonParam) ExtractFrom(readable types.Readable) error {
 	if err := gtsdopp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadOtherPokemonParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadOtherPokemonParam header. %s", err.Error())
 	}
 
 	if err := gtsdopp.PrepareUploadKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadOtherPokemonParam.PrepareUploadKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadOtherPokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	return nil
@@ -92,8 +92,8 @@ func (gtsdopp GlobalTradeStationDownloadOtherPokemonParam) FormatToString(indent
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDownloadOtherPokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtsdopp.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrepareUploadKey: %s,\n", indentationValues, gtsdopp.PrepareUploadKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

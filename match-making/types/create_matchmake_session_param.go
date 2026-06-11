@@ -40,31 +40,31 @@ func (cmsp CreateMatchmakeSessionParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the CreateMatchmakeSessionParam from the given readable
 func (cmsp *CreateMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	if err := cmsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam header. %s", err.Error())
 	}
 
 	if err := cmsp.SourceMatchmakeSession.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
 	if err := cmsp.AdditionalParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
 
 	if err := cmsp.GIDForParticipationCheck.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
 	if err := cmsp.CreateMatchmakeSessionOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.CreateMatchmakeSessionOption. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.CreateMatchmakeSessionOption. %s", err.Error())
 	}
 
 	if err := cmsp.JoinMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.JoinMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.JoinMessage. %s", err.Error())
 	}
 
 	if err := cmsp.ParticipationCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.ParticipationCount. %s", err.Error())
+		return fmt.Errorf("failed to extract CreateMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (cmsp CreateMatchmakeSessionParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("CreateMatchmakeSessionParam{\n")
-	b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, cmsp.SourceMatchmakeSession.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %s,\n", indentationValues, cmsp.AdditionalParticipants))
-	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %s,\n", indentationValues, cmsp.GIDForParticipationCheck))
-	b.WriteString(fmt.Sprintf("%sCreateMatchmakeSessionOption: %s,\n", indentationValues, cmsp.CreateMatchmakeSessionOption))
-	b.WriteString(fmt.Sprintf("%sJoinMessage: %s,\n", indentationValues, cmsp.JoinMessage))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, cmsp.ParticipationCount))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSourceMatchmakeSession: %s,\n", indentationValues, cmsp.SourceMatchmakeSession.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAdditionalParticipants: %s,\n", indentationValues, cmsp.AdditionalParticipants)
+	fmt.Fprintf(&b, "%sGIDForParticipationCheck: %s,\n", indentationValues, cmsp.GIDForParticipationCheck)
+	fmt.Fprintf(&b, "%sCreateMatchmakeSessionOption: %s,\n", indentationValues, cmsp.CreateMatchmakeSessionOption)
+	fmt.Fprintf(&b, "%sJoinMessage: %s,\n", indentationValues, cmsp.JoinMessage)
+	fmt.Fprintf(&b, "%sParticipationCount: %s,\n", indentationValues, cmsp.ParticipationCount)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

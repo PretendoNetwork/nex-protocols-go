@@ -65,60 +65,60 @@ func (dsppp *DataStorePreparePostParam) ExtractFrom(readable types.Readable) err
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dsppp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam header. %s", err.Error())
 	}
 
 	if err := dsppp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Size. %s", err.Error())
 	}
 
 	if err := dsppp.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Name. %s", err.Error())
 	}
 
 	if err := dsppp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.DataType. %s", err.Error())
 	}
 
 	if err := dsppp.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
 	}
 
 	if err := dsppp.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
 	}
 
 	if err := dsppp.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
 	}
 
 	if err := dsppp.Flag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
 	}
 
 	if err := dsppp.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Period. %s", err.Error())
 	}
 
 	if err := dsppp.ReferDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.ReferDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.ReferDataID. %s", err.Error())
 	}
 
 	if err := dsppp.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
 	}
 
 	if err := dsppp.RatingInitParams.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
 	}
 
 	if err := dsppp.PersistenceInitParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
 		if err := dsppp.ExtraData.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())
 		}
 	}
 
@@ -237,20 +237,20 @@ func (dsppp DataStorePreparePostParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("DataStorePreparePostParam{\n")
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsppp.Size))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dsppp.Name))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsppp.DataType))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dsppp.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dsppp.Permission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dsppp.DelPermission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sFlag: %s,\n", indentationValues, dsppp.Flag))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dsppp.Period))
-	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dsppp.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dsppp.Tags))
-	b.WriteString(fmt.Sprintf("%sRatingInitParams: %s,\n", indentationValues, dsppp.RatingInitParams))
-	b.WriteString(fmt.Sprintf("%sPersistenceInitParam: %s,\n", indentationValues, dsppp.PersistenceInitParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dsppp.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dsppp.Size)
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, dsppp.Name)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dsppp.DataType)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dsppp.MetaBinary)
+	fmt.Fprintf(&b, "%sPermission: %s,\n", indentationValues, dsppp.Permission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDelPermission: %s,\n", indentationValues, dsppp.DelPermission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sFlag: %s,\n", indentationValues, dsppp.Flag)
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, dsppp.Period)
+	fmt.Fprintf(&b, "%sReferDataID: %s,\n", indentationValues, dsppp.ReferDataID)
+	fmt.Fprintf(&b, "%sTags: %s,\n", indentationValues, dsppp.Tags)
+	fmt.Fprintf(&b, "%sRatingInitParams: %s,\n", indentationValues, dsppp.RatingInitParams)
+	fmt.Fprintf(&b, "%sPersistenceInitParam: %s,\n", indentationValues, dsppp.PersistenceInitParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dsppp.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -38,27 +38,27 @@ func (gtsd GlobalTradeStationData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the GlobalTradeStationData from the given readable
 func (gtsd *GlobalTradeStationData) ExtractFrom(readable types.Readable) error {
 	if err := gtsd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData header. %s", err.Error())
 	}
 
 	if err := gtsd.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.DataID. %s", err.Error())
 	}
 
 	if err := gtsd.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.OwnerID. %s", err.Error())
 	}
 
 	if err := gtsd.UpdatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.UpdatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.UpdatedTime. %s", err.Error())
 	}
 
 	if err := gtsd.IndexData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.IndexData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.IndexData. %s", err.Error())
 	}
 
 	if err := gtsd.Version.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.Version. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationData.Version. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (gtsd GlobalTradeStationData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationData{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtsd.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, gtsd.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, gtsd.UpdatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtsd.IndexData))
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, gtsd.Version))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, gtsd.DataID)
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, gtsd.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUpdatedTime: %s,\n", indentationValues, gtsd.UpdatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sIndexData: %s,\n", indentationValues, gtsd.IndexData)
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, gtsd.Version)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

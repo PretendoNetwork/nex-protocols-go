@@ -34,19 +34,19 @@ func (siscp ServiceItemStartChallengeParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemStartChallengeParam from the given readable
 func (siscp *ServiceItemStartChallengeParam) ExtractFrom(readable types.Readable) error {
 	if err := siscp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemStartChallengeParam header. %s", err.Error())
 	}
 
 	if err := siscp.ChallengeScheduleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.ChallengeScheduleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemStartChallengeParam.ChallengeScheduleID. %s", err.Error())
 	}
 
 	if err := siscp.TicketType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.TicketType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemStartChallengeParam.TicketType. %s", err.Error())
 	}
 
 	if err := siscp.NumTicket.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.NumTicket. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemStartChallengeParam.NumTicket. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (siscp ServiceItemStartChallengeParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ServiceItemStartChallengeParam{\n")
-	b.WriteString(fmt.Sprintf("%sChallengeScheduleID: %s,\n", indentationValues, siscp.ChallengeScheduleID))
-	b.WriteString(fmt.Sprintf("%sTicketType: %s,\n", indentationValues, siscp.TicketType))
-	b.WriteString(fmt.Sprintf("%sNumTicket: %s,\n", indentationValues, siscp.NumTicket))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sChallengeScheduleID: %s,\n", indentationValues, siscp.ChallengeScheduleID)
+	fmt.Fprintf(&b, "%sTicketType: %s,\n", indentationValues, siscp.TicketType)
+	fmt.Fprintf(&b, "%sNumTicket: %s,\n", indentationValues, siscp.NumTicket)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -47,43 +47,43 @@ func (mp MyProfile) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MyProfile from the given readable
 func (mp *MyProfile) ExtractFrom(readable types.Readable) error {
 	if err := mp.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Data. %s", err.Error())
 	}
 
 	if err := mp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile header. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile header. %s", err.Error())
 	}
 
 	if err := mp.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Region. %s", err.Error())
 	}
 
 	if err := mp.Country.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Country. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Country. %s", err.Error())
 	}
 
 	if err := mp.Area.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Area. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Area. %s", err.Error())
 	}
 
 	if err := mp.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Language. %s", err.Error())
 	}
 
 	if err := mp.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.Platform. %s", err.Error())
 	}
 
 	if err := mp.LocalFriendCodeSeed.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.LocalFriendCodeSeed. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.LocalFriendCodeSeed. %s", err.Error())
 	}
 
 	if err := mp.MACAddress.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.MACAddress. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.MACAddress. %s", err.Error())
 	}
 
 	if err := mp.SerialNumber.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MyProfile.SerialNumber. %s", err.Error())
+		return fmt.Errorf("failed to extract MyProfile.SerialNumber. %s", err.Error())
 	}
 
 	return nil
@@ -181,16 +181,16 @@ func (mp MyProfile) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MyProfile{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, mp.Region))
-	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, mp.Country))
-	b.WriteString(fmt.Sprintf("%sArea: %s,\n", indentationValues, mp.Area))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, mp.Language))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, mp.Platform))
-	b.WriteString(fmt.Sprintf("%sLocalFriendCodeSeed: %s,\n", indentationValues, mp.LocalFriendCodeSeed))
-	b.WriteString(fmt.Sprintf("%sMACAddress: %s,\n", indentationValues, mp.MACAddress))
-	b.WriteString(fmt.Sprintf("%sSerialNumber: %s,\n", indentationValues, mp.SerialNumber))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, mp.Region)
+	fmt.Fprintf(&b, "%sCountry: %s,\n", indentationValues, mp.Country)
+	fmt.Fprintf(&b, "%sArea: %s,\n", indentationValues, mp.Area)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, mp.Language)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, mp.Platform)
+	fmt.Fprintf(&b, "%sLocalFriendCodeSeed: %s,\n", indentationValues, mp.LocalFriendCodeSeed)
+	fmt.Fprintf(&b, "%sMACAddress: %s,\n", indentationValues, mp.MACAddress)
+	fmt.Fprintf(&b, "%sSerialNumber: %s,\n", indentationValues, mp.SerialNumber)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -30,11 +30,11 @@ func (dsgsmpv DataStoreGetSpecificMetaParamV1) WriteTo(writable types.Writable) 
 // ExtractFrom extracts the DataStoreGetSpecificMetaParamV1 from the given readable
 func (dsgsmpv *DataStoreGetSpecificMetaParamV1) ExtractFrom(readable types.Readable) error {
 	if err := dsgsmpv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParamV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetSpecificMetaParamV1 header. %s", err.Error())
 	}
 
 	if err := dsgsmpv.DataIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParamV1.DataIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetSpecificMetaParamV1.DataIDs. %s", err.Error())
 	}
 
 	return nil
@@ -92,8 +92,8 @@ func (dsgsmpv DataStoreGetSpecificMetaParamV1) FormatToString(indentationLevel i
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetSpecificMetaParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sDataIDs: %s,\n", indentationValues, dsgsmpv.DataIDs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataIDs: %s,\n", indentationValues, dsgsmpv.DataIDs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

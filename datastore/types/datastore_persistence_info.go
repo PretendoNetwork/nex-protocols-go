@@ -34,19 +34,19 @@ func (dspi DataStorePersistenceInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePersistenceInfo from the given readable
 func (dspi *DataStorePersistenceInfo) ExtractFrom(readable types.Readable) error {
 	if err := dspi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInfo header. %s", err.Error())
 	}
 
 	if err := dspi.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInfo.OwnerID. %s", err.Error())
 	}
 
 	if err := dspi.PersistenceSlotID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.PersistenceSlotID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInfo.PersistenceSlotID. %s", err.Error())
 	}
 
 	if err := dspi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInfo.DataID. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (dspi DataStorePersistenceInfo) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("DataStorePersistenceInfo{\n")
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dspi.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %s,\n", indentationValues, dspi.PersistenceSlotID))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspi.DataID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dspi.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPersistenceSlotID: %s,\n", indentationValues, dspi.PersistenceSlotID)
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dspi.DataID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

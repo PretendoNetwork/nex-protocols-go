@@ -38,27 +38,27 @@ func (dssmi DataStoreSpecificMetaInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreSpecificMetaInfo from the given readable
 func (dssmi *DataStoreSpecificMetaInfo) ExtractFrom(readable types.Readable) error {
 	if err := dssmi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSpecificMetaInfo header. %s", err.Error())
 	}
 
 	if err := dssmi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSpecificMetaInfo.DataID. %s", err.Error())
 	}
 
 	if err := dssmi.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSpecificMetaInfo.OwnerID. %s", err.Error())
 	}
 
 	if err := dssmi.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSpecificMetaInfo.Size. %s", err.Error())
 	}
 
 	if err := dssmi.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSpecificMetaInfo.DataType. %s", err.Error())
 	}
 
 	if err := dssmi.Version.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.Version. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSpecificMetaInfo.Version. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (dssmi DataStoreSpecificMetaInfo) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("DataStoreSpecificMetaInfo{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dssmi.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dssmi.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dssmi.Size))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dssmi.DataType))
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dssmi.Version))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dssmi.DataID)
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dssmi.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dssmi.Size)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dssmi.DataType)
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, dssmi.Version)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

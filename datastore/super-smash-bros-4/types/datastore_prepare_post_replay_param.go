@@ -52,55 +52,55 @@ func (dspprp DataStorePreparePostReplayParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePreparePostReplayParam from the given readable
 func (dspprp *DataStorePreparePostReplayParam) ExtractFrom(readable types.Readable) error {
 	if err := dspprp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam header. %s", err.Error())
 	}
 
 	if err := dspprp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Size. %s", err.Error())
 	}
 
 	if err := dspprp.Mode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Mode. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Mode. %s", err.Error())
 	}
 
 	if err := dspprp.Style.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Style. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Style. %s", err.Error())
 	}
 
 	if err := dspprp.Rule.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Rule. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Rule. %s", err.Error())
 	}
 
 	if err := dspprp.Stage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Stage. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Stage. %s", err.Error())
 	}
 
 	if err := dspprp.ReplayType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.ReplayType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.ReplayType. %s", err.Error())
 	}
 
 	if err := dspprp.CompetitionID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.CompetitionID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.CompetitionID. %s", err.Error())
 	}
 
 	if err := dspprp.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Score. %s", err.Error())
 	}
 
 	if err := dspprp.Players.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Players. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Players. %s", err.Error())
 	}
 
 	if err := dspprp.Winners.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Winners. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.Winners. %s", err.Error())
 	}
 
 	if err := dspprp.KeyVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.KeyVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.KeyVersion. %s", err.Error())
 	}
 
 	if err := dspprp.ExtraData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.ExtraData. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostReplayParam.ExtraData. %s", err.Error())
 	}
 
 	return nil
@@ -213,19 +213,19 @@ func (dspprp DataStorePreparePostReplayParam) FormatToString(indentationLevel in
 	var b strings.Builder
 
 	b.WriteString("DataStorePreparePostReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dspprp.Size))
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dspprp.Mode))
-	b.WriteString(fmt.Sprintf("%sStyle: %s,\n", indentationValues, dspprp.Style))
-	b.WriteString(fmt.Sprintf("%sRule: %s,\n", indentationValues, dspprp.Rule))
-	b.WriteString(fmt.Sprintf("%sStage: %s,\n", indentationValues, dspprp.Stage))
-	b.WriteString(fmt.Sprintf("%sReplayType: %s,\n", indentationValues, dspprp.ReplayType))
-	b.WriteString(fmt.Sprintf("%sCompetitionID: %s,\n", indentationValues, dspprp.CompetitionID))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dspprp.Score))
-	b.WriteString(fmt.Sprintf("%sPlayers: %s,\n", indentationValues, dspprp.Players))
-	b.WriteString(fmt.Sprintf("%sWinners: %s,\n", indentationValues, dspprp.Winners))
-	b.WriteString(fmt.Sprintf("%sKeyVersion: %s,\n", indentationValues, dspprp.KeyVersion))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspprp.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dspprp.Size)
+	fmt.Fprintf(&b, "%sMode: %s,\n", indentationValues, dspprp.Mode)
+	fmt.Fprintf(&b, "%sStyle: %s,\n", indentationValues, dspprp.Style)
+	fmt.Fprintf(&b, "%sRule: %s,\n", indentationValues, dspprp.Rule)
+	fmt.Fprintf(&b, "%sStage: %s,\n", indentationValues, dspprp.Stage)
+	fmt.Fprintf(&b, "%sReplayType: %s,\n", indentationValues, dspprp.ReplayType)
+	fmt.Fprintf(&b, "%sCompetitionID: %s,\n", indentationValues, dspprp.CompetitionID)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dspprp.Score)
+	fmt.Fprintf(&b, "%sPlayers: %s,\n", indentationValues, dspprp.Players)
+	fmt.Fprintf(&b, "%sWinners: %s,\n", indentationValues, dspprp.Winners)
+	fmt.Fprintf(&b, "%sKeyVersion: %s,\n", indentationValues, dspprp.KeyVersion)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dspprp.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

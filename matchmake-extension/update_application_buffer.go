@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, applicationBuffer)
+		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("failed to read gid from parameters. %s", err.Error()), packet, callID, gid, applicationBuffer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 
 	err = applicationBuffer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("Failed to read applicationBuffer from parameters. %s", err.Error()), packet, callID, gid, applicationBuffer)
+		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("failed to read applicationBuffer from parameters. %s", err.Error()), packet, callID, gid, applicationBuffer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

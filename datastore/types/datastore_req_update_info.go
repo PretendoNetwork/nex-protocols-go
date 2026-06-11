@@ -50,36 +50,36 @@ func (dsrui *DataStoreReqUpdateInfo) ExtractFrom(readable types.Readable) error 
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dsrui.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo header. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := dsrui.Version.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 	} else {
 		version, err := readable.ReadUInt16LE()
 		if err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 
 		dsrui.Version = types.UInt32(version)
 	}
 
 	if err := dsrui.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo.URL. %s", err.Error())
 	}
 
 	if err := dsrui.RequestHeaders.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RequestHeaders. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo.RequestHeaders. %s", err.Error())
 	}
 
 	if err := dsrui.FormFields.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.FormFields. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo.FormFields. %s", err.Error())
 	}
 
 	if err := dsrui.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqUpdateInfo.RootCACert. %s", err.Error())
 	}
 
 	return nil
@@ -157,12 +157,12 @@ func (dsrui DataStoreReqUpdateInfo) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqUpdateInfo{\n")
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dsrui.Version))
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrui.URL))
-	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrui.RequestHeaders))
-	b.WriteString(fmt.Sprintf("%sFormFields: %s,\n", indentationValues, dsrui.FormFields))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrui.RootCACert))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, dsrui.Version)
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrui.URL)
+	fmt.Fprintf(&b, "%sRequestHeaders: %s,\n", indentationValues, dsrui.RequestHeaders)
+	fmt.Fprintf(&b, "%sFormFields: %s,\n", indentationValues, dsrui.FormFields)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrui.RootCACert)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

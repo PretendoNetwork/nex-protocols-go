@@ -32,15 +32,15 @@ func (dsrop DataStoreRateObjectParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreRateObjectParam from the given readable
 func (dsrop *DataStoreRateObjectParam) ExtractFrom(readable types.Readable) error {
 	if err := dsrop.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRateObjectParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRateObjectParam header. %s", err.Error())
 	}
 
 	if err := dsrop.RatingValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRateObjectParam.RatingValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRateObjectParam.RatingValue. %s", err.Error())
 	}
 
 	if err := dsrop.AccessPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRateObjectParam.AccessPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRateObjectParam.AccessPassword. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dsrop DataStoreRateObjectParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("DataStoreRateObjectParam{\n")
-	b.WriteString(fmt.Sprintf("%sRatingValue: %s,\n", indentationValues, dsrop.RatingValue))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dsrop.AccessPassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRatingValue: %s,\n", indentationValues, dsrop.RatingValue)
+	fmt.Fprintf(&b, "%sAccessPassword: %s,\n", indentationValues, dsrop.AccessPassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

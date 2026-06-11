@@ -53,55 +53,55 @@ func (fpi FriendPersistentInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendPersistentInfo from the given readable
 func (fpi *FriendPersistentInfo) ExtractFrom(readable types.Readable) error {
 	if err := fpi.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.Data. %s", err.Error())
 	}
 
 	if err := fpi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo header. %s", err.Error())
 	}
 
 	if err := fpi.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.PID. %s", err.Error())
 	}
 
 	if err := fpi.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.Region. %s", err.Error())
 	}
 
 	if err := fpi.Country.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.Country. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.Country. %s", err.Error())
 	}
 
 	if err := fpi.Area.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.Area. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.Area. %s", err.Error())
 	}
 
 	if err := fpi.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.Language. %s", err.Error())
 	}
 
 	if err := fpi.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.Platform. %s", err.Error())
 	}
 
 	if err := fpi.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.GameKey. %s", err.Error())
 	}
 
 	if err := fpi.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.Message. %s", err.Error())
 	}
 
 	if err := fpi.MessageUpdatedAt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.MessageUpdatedAt. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.MessageUpdatedAt. %s", err.Error())
 	}
 
 	if err := fpi.MiiModifiedAt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.MiiModifiedAt. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.MiiModifiedAt. %s", err.Error())
 	}
 
 	if err := fpi.LastOnline.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPersistentInfo.LastOnline. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPersistentInfo.LastOnline. %s", err.Error())
 	}
 
 	return nil
@@ -214,19 +214,19 @@ func (fpi FriendPersistentInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendPersistentInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fpi.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fpi.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, fpi.Region))
-	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, fpi.Country))
-	b.WriteString(fmt.Sprintf("%sArea: %s,\n", indentationValues, fpi.Area))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, fpi.Language))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, fpi.Platform))
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, fpi.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, fpi.Message))
-	b.WriteString(fmt.Sprintf("%sMessageUpdatedAt: %s,\n", indentationValues, fpi.MessageUpdatedAt.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMiiModifiedAt: %s,\n", indentationValues, fpi.MiiModifiedAt.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLastOnline: %s,\n", indentationValues, fpi.LastOnline.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fpi.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fpi.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, fpi.Region)
+	fmt.Fprintf(&b, "%sCountry: %s,\n", indentationValues, fpi.Country)
+	fmt.Fprintf(&b, "%sArea: %s,\n", indentationValues, fpi.Area)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, fpi.Language)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, fpi.Platform)
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, fpi.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, fpi.Message)
+	fmt.Fprintf(&b, "%sMessageUpdatedAt: %s,\n", indentationValues, fpi.MessageUpdatedAt.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMiiModifiedAt: %s,\n", indentationValues, fpi.MiiModifiedAt.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLastOnline: %s,\n", indentationValues, fpi.LastOnline.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

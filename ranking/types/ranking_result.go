@@ -34,19 +34,19 @@ func (rr RankingResult) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingResult from the given readable
 func (rr *RankingResult) ExtractFrom(readable types.Readable) error {
 	if err := rr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingResult header. %s", err.Error())
 	}
 
 	if err := rr.RankDataList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.RankDataList. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingResult.RankDataList. %s", err.Error())
 	}
 
 	if err := rr.TotalCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.TotalCount. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingResult.TotalCount. %s", err.Error())
 	}
 
 	if err := rr.SinceTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.SinceTime. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingResult.SinceTime. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (rr RankingResult) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingResult{\n")
-	b.WriteString(fmt.Sprintf("%sRankDataList: %s,\n", indentationValues, rr.RankDataList))
-	b.WriteString(fmt.Sprintf("%sTotalCount: %s,\n", indentationValues, rr.TotalCount))
-	b.WriteString(fmt.Sprintf("%sSinceTime: %s,\n", indentationValues, rr.SinceTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRankDataList: %s,\n", indentationValues, rr.RankDataList)
+	fmt.Fprintf(&b, "%sTotalCount: %s,\n", indentationValues, rr.TotalCount)
+	fmt.Fprintf(&b, "%sSinceTime: %s,\n", indentationValues, rr.SinceTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

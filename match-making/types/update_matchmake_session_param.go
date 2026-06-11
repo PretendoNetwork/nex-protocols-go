@@ -63,75 +63,75 @@ func (umsp UpdateMatchmakeSessionParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the UpdateMatchmakeSessionParam from the given readable
 func (umsp *UpdateMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	if err := umsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam header. %s", err.Error())
 	}
 
 	if err := umsp.GID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.GID. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.GID. %s", err.Error())
 	}
 
 	if err := umsp.ModificationFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ModificationFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.ModificationFlag. %s", err.Error())
 	}
 
 	if err := umsp.Attributes.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Attributes. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.Attributes. %s", err.Error())
 	}
 
 	if err := umsp.OpenParticipation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.OpenParticipation. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.OpenParticipation. %s", err.Error())
 	}
 
 	if err := umsp.ApplicationBuffer.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ApplicationBuffer. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.ApplicationBuffer. %s", err.Error())
 	}
 
 	if err := umsp.ProgressScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ProgressScore. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.ProgressScore. %s", err.Error())
 	}
 
 	if err := umsp.MatchmakeParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MatchmakeParam. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.MatchmakeParam. %s", err.Error())
 	}
 
 	if err := umsp.StartedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.StartedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.StartedTime. %s", err.Error())
 	}
 
 	if err := umsp.UserPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.UserPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.UserPassword. %s", err.Error())
 	}
 
 	if err := umsp.GameMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.GameMode. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.GameMode. %s", err.Error())
 	}
 
 	if err := umsp.Description.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Description. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.Description. %s", err.Error())
 	}
 
 	if err := umsp.MinParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MinParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.MinParticipants. %s", err.Error())
 	}
 
 	if err := umsp.MaxParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MaxParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.MaxParticipants. %s", err.Error())
 	}
 
 	if err := umsp.MatchmakeSystemType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MatchmakeSystemType. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.MatchmakeSystemType. %s", err.Error())
 	}
 
 	if err := umsp.ParticipationPolicy.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ParticipationPolicy. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.ParticipationPolicy. %s", err.Error())
 	}
 
 	if err := umsp.PolicyArgument.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.PolicyArgument. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.PolicyArgument. %s", err.Error())
 	}
 
 	if err := umsp.Codeword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Codeword. %s", err.Error())
+		return fmt.Errorf("failed to extract UpdateMatchmakeSessionParam.Codeword. %s", err.Error())
 	}
 
 	return nil
@@ -269,24 +269,24 @@ func (umsp UpdateMatchmakeSessionParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("UpdateMatchmakeSessionParam{\n")
-	b.WriteString(fmt.Sprintf("%sGID: %s,\n", indentationValues, umsp.GID))
-	b.WriteString(fmt.Sprintf("%sModificationFlag: %s,\n", indentationValues, umsp.ModificationFlag))
-	b.WriteString(fmt.Sprintf("%sAttributes: %s,\n", indentationValues, umsp.Attributes))
-	b.WriteString(fmt.Sprintf("%sOpenParticipation: %s,\n", indentationValues, umsp.OpenParticipation))
-	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %s,\n", indentationValues, umsp.ApplicationBuffer))
-	b.WriteString(fmt.Sprintf("%sProgressScore: %s,\n", indentationValues, umsp.ProgressScore))
-	b.WriteString(fmt.Sprintf("%sMatchmakeParam: %s,\n", indentationValues, umsp.MatchmakeParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStartedTime: %s,\n", indentationValues, umsp.StartedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUserPassword: %s,\n", indentationValues, umsp.UserPassword))
-	b.WriteString(fmt.Sprintf("%sGameMode: %s,\n", indentationValues, umsp.GameMode))
-	b.WriteString(fmt.Sprintf("%sDescription: %s,\n", indentationValues, umsp.Description))
-	b.WriteString(fmt.Sprintf("%sMinParticipants: %s,\n", indentationValues, umsp.MinParticipants))
-	b.WriteString(fmt.Sprintf("%sMaxParticipants: %s,\n", indentationValues, umsp.MaxParticipants))
-	b.WriteString(fmt.Sprintf("%sMatchmakeSystemType: %s,\n", indentationValues, umsp.MatchmakeSystemType))
-	b.WriteString(fmt.Sprintf("%sParticipationPolicy: %s,\n", indentationValues, umsp.ParticipationPolicy))
-	b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, umsp.PolicyArgument))
-	b.WriteString(fmt.Sprintf("%sCodeword: %s,\n", indentationValues, umsp.Codeword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGID: %s,\n", indentationValues, umsp.GID)
+	fmt.Fprintf(&b, "%sModificationFlag: %s,\n", indentationValues, umsp.ModificationFlag)
+	fmt.Fprintf(&b, "%sAttributes: %s,\n", indentationValues, umsp.Attributes)
+	fmt.Fprintf(&b, "%sOpenParticipation: %s,\n", indentationValues, umsp.OpenParticipation)
+	fmt.Fprintf(&b, "%sApplicationBuffer: %s,\n", indentationValues, umsp.ApplicationBuffer)
+	fmt.Fprintf(&b, "%sProgressScore: %s,\n", indentationValues, umsp.ProgressScore)
+	fmt.Fprintf(&b, "%sMatchmakeParam: %s,\n", indentationValues, umsp.MatchmakeParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStartedTime: %s,\n", indentationValues, umsp.StartedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUserPassword: %s,\n", indentationValues, umsp.UserPassword)
+	fmt.Fprintf(&b, "%sGameMode: %s,\n", indentationValues, umsp.GameMode)
+	fmt.Fprintf(&b, "%sDescription: %s,\n", indentationValues, umsp.Description)
+	fmt.Fprintf(&b, "%sMinParticipants: %s,\n", indentationValues, umsp.MinParticipants)
+	fmt.Fprintf(&b, "%sMaxParticipants: %s,\n", indentationValues, umsp.MaxParticipants)
+	fmt.Fprintf(&b, "%sMatchmakeSystemType: %s,\n", indentationValues, umsp.MatchmakeSystemType)
+	fmt.Fprintf(&b, "%sParticipationPolicy: %s,\n", indentationValues, umsp.ParticipationPolicy)
+	fmt.Fprintf(&b, "%sPolicyArgument: %s,\n", indentationValues, umsp.PolicyArgument)
+	fmt.Fprintf(&b, "%sCodeword: %s,\n", indentationValues, umsp.Codeword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

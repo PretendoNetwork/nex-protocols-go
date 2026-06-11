@@ -32,15 +32,15 @@ func (susi SubscriberUserStatusInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SubscriberUserStatusInfo from the given readable
 func (susi *SubscriberUserStatusInfo) ExtractFrom(readable types.Readable) error {
 	if err := susi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberUserStatusInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberUserStatusInfo header. %s", err.Error())
 	}
 
 	if err := susi.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberUserStatusInfo.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberUserStatusInfo.PID. %s", err.Error())
 	}
 
 	if err := susi.Values.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberUserStatusInfo.Values. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberUserStatusInfo.Values. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (susi SubscriberUserStatusInfo) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("SubscriberUserStatusInfo{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, susi.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sValues: %s,\n", indentationValues, susi.Values))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, susi.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sValues: %s,\n", indentationValues, susi.Values)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

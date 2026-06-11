@@ -32,15 +32,15 @@ func (gurl GatheringURLs) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the GatheringURLs from the given readable
 func (gurl *GatheringURLs) ExtractFrom(readable types.Readable) error {
 	if err := gurl.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GatheringURLs header. %s", err.Error())
+		return fmt.Errorf("failed to extract GatheringURLs header. %s", err.Error())
 	}
 
 	if err := gurl.GID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GatheringURLs.GID. %s", err.Error())
+		return fmt.Errorf("failed to extract GatheringURLs.GID. %s", err.Error())
 	}
 
 	if err := gurl.LstStationURLs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GatheringURLs.LstStationURLs. %s", err.Error())
+		return fmt.Errorf("failed to extract GatheringURLs.LstStationURLs. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (gurl GatheringURLs) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("GatheringURLs{\n")
-	b.WriteString(fmt.Sprintf("%sGID: %s,\n", indentationValues, gurl.GID))
-	b.WriteString(fmt.Sprintf("%sLstStationURLs: %s,\n", indentationValues, gurl.LstStationURLs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGID: %s,\n", indentationValues, gurl.GID)
+	fmt.Fprintf(&b, "%sLstStationURLs: %s,\n", indentationValues, gurl.LstStationURLs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

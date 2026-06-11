@@ -46,43 +46,43 @@ func (dsppsdp DataStorePreparePostSharedDataParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the DataStorePreparePostSharedDataParam from the given readable
 func (dsppsdp *DataStorePreparePostSharedDataParam) ExtractFrom(readable types.Readable) error {
 	if err := dsppsdp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam header. %s", err.Error())
 	}
 
 	if err := dsppsdp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.DataType. %s", err.Error())
 	}
 
 	if err := dsppsdp.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Region. %s", err.Error())
 	}
 
 	if err := dsppsdp.Attribute1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Attribute1. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Attribute1. %s", err.Error())
 	}
 
 	if err := dsppsdp.Attribute2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Attribute2. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Attribute2. %s", err.Error())
 	}
 
 	if err := dsppsdp.Fighter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Fighter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Fighter. %s", err.Error())
 	}
 
 	if err := dsppsdp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Size. %s", err.Error())
 	}
 
 	if err := dsppsdp.Comment.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Comment. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.Comment. %s", err.Error())
 	}
 
 	if err := dsppsdp.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.MetaBinary. %s", err.Error())
 	}
 
 	if err := dsppsdp.ExtraData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.ExtraData. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostSharedDataParam.ExtraData. %s", err.Error())
 	}
 
 	return nil
@@ -180,16 +180,16 @@ func (dsppsdp DataStorePreparePostSharedDataParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("DataStorePreparePostSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsppsdp.DataType))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, dsppsdp.Region))
-	b.WriteString(fmt.Sprintf("%sAttribute1: %s,\n", indentationValues, dsppsdp.Attribute1))
-	b.WriteString(fmt.Sprintf("%sAttribute2: %s,\n", indentationValues, dsppsdp.Attribute2))
-	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dsppsdp.Fighter))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsppsdp.Size))
-	b.WriteString(fmt.Sprintf("%sComment: %s,\n", indentationValues, dsppsdp.Comment))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dsppsdp.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dsppsdp.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dsppsdp.DataType)
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, dsppsdp.Region)
+	fmt.Fprintf(&b, "%sAttribute1: %s,\n", indentationValues, dsppsdp.Attribute1)
+	fmt.Fprintf(&b, "%sAttribute2: %s,\n", indentationValues, dsppsdp.Attribute2)
+	fmt.Fprintf(&b, "%sFighter: %s,\n", indentationValues, dsppsdp.Fighter)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dsppsdp.Size)
+	fmt.Fprintf(&b, "%sComment: %s,\n", indentationValues, dsppsdp.Comment)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dsppsdp.MetaBinary)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dsppsdp.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

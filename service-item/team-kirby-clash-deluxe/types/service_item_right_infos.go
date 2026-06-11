@@ -38,27 +38,27 @@ func (siri ServiceItemRightInfos) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemRightInfos from the given readable
 func (siri *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
 	if err := siri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightInfos header. %s", err.Error())
 	}
 
 	if err := siri.SupportID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.SupportID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightInfos.SupportID. %s", err.Error())
 	}
 
 	if err := siri.ConsumptionRightInfos.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.ConsumptionRightInfos. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightInfos.ConsumptionRightInfos. %s", err.Error())
 	}
 
 	if err := siri.AdditionalTimeRightInfos.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AdditionalTimeRightInfos. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightInfos.AdditionalTimeRightInfos. %s", err.Error())
 	}
 
 	if err := siri.PermanentRightInfos.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.PermanentRightInfos. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightInfos.PermanentRightInfos. %s", err.Error())
 	}
 
 	if err := siri.AlreadyPurchasedInitialOnlyItem.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AlreadyPurchasedInitialOnlyItem. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightInfos.AlreadyPurchasedInitialOnlyItem. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (siri ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightInfos{\n")
-	b.WriteString(fmt.Sprintf("%sSupportID: %s,\n", indentationValues, siri.SupportID))
-	b.WriteString(fmt.Sprintf("%sConsumptionRightInfos: %s,\n", indentationValues, siri.ConsumptionRightInfos))
-	b.WriteString(fmt.Sprintf("%sAdditionalTimeRightInfos: %s,\n", indentationValues, siri.AdditionalTimeRightInfos))
-	b.WriteString(fmt.Sprintf("%sPermanentRightInfos: %s,\n", indentationValues, siri.PermanentRightInfos))
-	b.WriteString(fmt.Sprintf("%sAlreadyPurchasedInitialOnlyItem: %s,\n", indentationValues, siri.AlreadyPurchasedInitialOnlyItem))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSupportID: %s,\n", indentationValues, siri.SupportID)
+	fmt.Fprintf(&b, "%sConsumptionRightInfos: %s,\n", indentationValues, siri.ConsumptionRightInfos)
+	fmt.Fprintf(&b, "%sAdditionalTimeRightInfos: %s,\n", indentationValues, siri.AdditionalTimeRightInfos)
+	fmt.Fprintf(&b, "%sPermanentRightInfos: %s,\n", indentationValues, siri.PermanentRightInfos)
+	fmt.Fprintf(&b, "%sAlreadyPurchasedInitialOnlyItem: %s,\n", indentationValues, siri.AlreadyPurchasedInitialOnlyItem)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -67,83 +67,83 @@ func (dsmi DataStoreMetaInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreMetaInfo from the given readable
 func (dsmi *DataStoreMetaInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsmi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo header. %s", err.Error())
 	}
 
 	if err := dsmi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.DataID. %s", err.Error())
 	}
 
 	if err := dsmi.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.OwnerID. %s", err.Error())
 	}
 
 	if err := dsmi.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Size. %s", err.Error())
 	}
 
 	if err := dsmi.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Name. %s", err.Error())
 	}
 
 	if err := dsmi.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
 	}
 
 	if err := dsmi.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.MetaBinary. %s", err.Error())
 	}
 
 	if err := dsmi.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Permission. %s", err.Error())
 	}
 
 	if err := dsmi.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.DelPermission. %s", err.Error())
 	}
 
 	if err := dsmi.CreatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.CreatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.CreatedTime. %s", err.Error())
 	}
 
 	if err := dsmi.UpdatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.UpdatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.UpdatedTime. %s", err.Error())
 	}
 
 	if err := dsmi.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Period. %s", err.Error())
 	}
 
 	if err := dsmi.Status.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Status. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Status. %s", err.Error())
 	}
 
 	if err := dsmi.ReferredCnt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredCnt. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.ReferredCnt. %s", err.Error())
 	}
 
 	if err := dsmi.ReferDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.ReferDataID. %s", err.Error())
 	}
 
 	if err := dsmi.Flag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Flag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Flag. %s", err.Error())
 	}
 
 	if err := dsmi.ReferredTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.ReferredTime. %s", err.Error())
 	}
 
 	if err := dsmi.ExpireTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ExpireTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.ExpireTime. %s", err.Error())
 	}
 
 	if err := dsmi.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Tags. %s", err.Error())
 	}
 
 	if err := dsmi.Ratings.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Ratings. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreMetaInfo.Ratings. %s", err.Error())
 	}
 
 	return nil
@@ -291,26 +291,26 @@ func (dsmi DataStoreMetaInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreMetaInfo{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsmi.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dsmi.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsmi.Size))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dsmi.Name))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsmi.DataType))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dsmi.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dsmi.Permission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dsmi.DelPermission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dsmi.CreatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, dsmi.UpdatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dsmi.Period))
-	b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, dsmi.Status))
-	b.WriteString(fmt.Sprintf("%sReferredCnt: %s,\n", indentationValues, dsmi.ReferredCnt))
-	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dsmi.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sFlag: %s,\n", indentationValues, dsmi.Flag))
-	b.WriteString(fmt.Sprintf("%sReferredTime: %s,\n", indentationValues, dsmi.ReferredTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sExpireTime: %s,\n", indentationValues, dsmi.ExpireTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dsmi.Tags))
-	b.WriteString(fmt.Sprintf("%sRatings: %s,\n", indentationValues, dsmi.Ratings))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsmi.DataID)
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dsmi.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dsmi.Size)
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, dsmi.Name)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dsmi.DataType)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dsmi.MetaBinary)
+	fmt.Fprintf(&b, "%sPermission: %s,\n", indentationValues, dsmi.Permission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDelPermission: %s,\n", indentationValues, dsmi.DelPermission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCreatedTime: %s,\n", indentationValues, dsmi.CreatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUpdatedTime: %s,\n", indentationValues, dsmi.UpdatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, dsmi.Period)
+	fmt.Fprintf(&b, "%sStatus: %s,\n", indentationValues, dsmi.Status)
+	fmt.Fprintf(&b, "%sReferredCnt: %s,\n", indentationValues, dsmi.ReferredCnt)
+	fmt.Fprintf(&b, "%sReferDataID: %s,\n", indentationValues, dsmi.ReferDataID)
+	fmt.Fprintf(&b, "%sFlag: %s,\n", indentationValues, dsmi.Flag)
+	fmt.Fprintf(&b, "%sReferredTime: %s,\n", indentationValues, dsmi.ReferredTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sExpireTime: %s,\n", indentationValues, dsmi.ExpireTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTags: %s,\n", indentationValues, dsmi.Tags)
+	fmt.Fprintf(&b, "%sRatings: %s,\n", indentationValues, dsmi.Ratings)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -32,15 +32,15 @@ func (dscppv DataStoreCompletePostParamV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreCompletePostParamV1 from the given readable
 func (dscppv *DataStoreCompletePostParamV1) ExtractFrom(readable types.Readable) error {
 	if err := dscppv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostParamV1 header. %s", err.Error())
 	}
 
 	if err := dscppv.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostParamV1.DataID. %s", err.Error())
 	}
 
 	if err := dscppv.IsSuccess.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.IsSuccess. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostParamV1.IsSuccess. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dscppv DataStoreCompletePostParamV1) FormatToString(indentationLevel int) 
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscppv.DataID))
-	b.WriteString(fmt.Sprintf("%sIsSuccess: %s,\n", indentationValues, dscppv.IsSuccess))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscppv.DataID)
+	fmt.Fprintf(&b, "%sIsSuccess: %s,\n", indentationValues, dscppv.IsSuccess)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

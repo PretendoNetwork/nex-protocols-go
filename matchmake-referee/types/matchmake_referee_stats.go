@@ -63,75 +63,75 @@ func (mrs MatchmakeRefereeStats) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeRefereeStats from the given readable
 func (mrs *MatchmakeRefereeStats) ExtractFrom(readable types.Readable) error {
 	if err := mrs.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.Data. %s", err.Error())
 	}
 
 	if err := mrs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats header. %s", err.Error())
 	}
 
 	if err := mrs.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.UniqueID. %s", err.Error())
 	}
 
 	if err := mrs.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.Category. %s", err.Error())
 	}
 
 	if err := mrs.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.PID. %s", err.Error())
 	}
 
 	if err := mrs.RecentDisconnection.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentDisconnection. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentDisconnection. %s", err.Error())
 	}
 
 	if err := mrs.RecentViolation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentViolation. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentViolation. %s", err.Error())
 	}
 
 	if err := mrs.RecentMismatch.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentMismatch. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentMismatch. %s", err.Error())
 	}
 
 	if err := mrs.RecentWin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentWin. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentWin. %s", err.Error())
 	}
 
 	if err := mrs.RecentLoss.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentLoss. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentLoss. %s", err.Error())
 	}
 
 	if err := mrs.RecentDraw.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentDraw. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RecentDraw. %s", err.Error())
 	}
 
 	if err := mrs.TotalDisconnect.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalDisconnect. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalDisconnect. %s", err.Error())
 	}
 
 	if err := mrs.TotalViolation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalViolation. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalViolation. %s", err.Error())
 	}
 
 	if err := mrs.TotalMismatch.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalMismatch. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalMismatch. %s", err.Error())
 	}
 
 	if err := mrs.TotalWin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalWin. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalWin. %s", err.Error())
 	}
 
 	if err := mrs.TotalLoss.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalLoss. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalLoss. %s", err.Error())
 	}
 
 	if err := mrs.TotalDraw.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalDraw. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.TotalDraw. %s", err.Error())
 	}
 
 	if err := mrs.RatingValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RatingValue. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStats.RatingValue. %s", err.Error())
 	}
 
 	return nil
@@ -269,24 +269,24 @@ func (mrs MatchmakeRefereeStats) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStats{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrs.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, mrs.UniqueID))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mrs.Category))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, mrs.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRecentDisconnection: %s,\n", indentationValues, mrs.RecentDisconnection))
-	b.WriteString(fmt.Sprintf("%sRecentViolation: %s,\n", indentationValues, mrs.RecentViolation))
-	b.WriteString(fmt.Sprintf("%sRecentMismatch: %s,\n", indentationValues, mrs.RecentMismatch))
-	b.WriteString(fmt.Sprintf("%sRecentWin: %s,\n", indentationValues, mrs.RecentWin))
-	b.WriteString(fmt.Sprintf("%sRecentLoss: %s,\n", indentationValues, mrs.RecentLoss))
-	b.WriteString(fmt.Sprintf("%sRecentDraw: %s,\n", indentationValues, mrs.RecentDraw))
-	b.WriteString(fmt.Sprintf("%sTotalDisconnect: %s,\n", indentationValues, mrs.TotalDisconnect))
-	b.WriteString(fmt.Sprintf("%sTotalViolation: %s,\n", indentationValues, mrs.TotalViolation))
-	b.WriteString(fmt.Sprintf("%sTotalMismatch: %s,\n", indentationValues, mrs.TotalMismatch))
-	b.WriteString(fmt.Sprintf("%sTotalWin: %s,\n", indentationValues, mrs.TotalWin))
-	b.WriteString(fmt.Sprintf("%sTotalLoss: %s,\n", indentationValues, mrs.TotalLoss))
-	b.WriteString(fmt.Sprintf("%sTotalDraw: %s,\n", indentationValues, mrs.TotalDraw))
-	b.WriteString(fmt.Sprintf("%sRatingValue: %s,\n", indentationValues, mrs.RatingValue))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrs.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, mrs.UniqueID)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mrs.Category)
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, mrs.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRecentDisconnection: %s,\n", indentationValues, mrs.RecentDisconnection)
+	fmt.Fprintf(&b, "%sRecentViolation: %s,\n", indentationValues, mrs.RecentViolation)
+	fmt.Fprintf(&b, "%sRecentMismatch: %s,\n", indentationValues, mrs.RecentMismatch)
+	fmt.Fprintf(&b, "%sRecentWin: %s,\n", indentationValues, mrs.RecentWin)
+	fmt.Fprintf(&b, "%sRecentLoss: %s,\n", indentationValues, mrs.RecentLoss)
+	fmt.Fprintf(&b, "%sRecentDraw: %s,\n", indentationValues, mrs.RecentDraw)
+	fmt.Fprintf(&b, "%sTotalDisconnect: %s,\n", indentationValues, mrs.TotalDisconnect)
+	fmt.Fprintf(&b, "%sTotalViolation: %s,\n", indentationValues, mrs.TotalViolation)
+	fmt.Fprintf(&b, "%sTotalMismatch: %s,\n", indentationValues, mrs.TotalMismatch)
+	fmt.Fprintf(&b, "%sTotalWin: %s,\n", indentationValues, mrs.TotalWin)
+	fmt.Fprintf(&b, "%sTotalLoss: %s,\n", indentationValues, mrs.TotalLoss)
+	fmt.Fprintf(&b, "%sTotalDraw: %s,\n", indentationValues, mrs.TotalDraw)
+	fmt.Fprintf(&b, "%sRatingValue: %s,\n", indentationValues, mrs.RatingValue)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

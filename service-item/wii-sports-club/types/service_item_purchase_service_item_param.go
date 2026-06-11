@@ -44,39 +44,39 @@ func (sipsip ServiceItemPurchaseServiceItemParam) WriteTo(writable types.Writabl
 // ExtractFrom extracts the ServiceItemPurchaseServiceItemParam from the given readable
 func (sipsip *ServiceItemPurchaseServiceItemParam) ExtractFrom(readable types.Readable) error {
 	if err := sipsip.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam header. %s", err.Error())
 	}
 
 	if err := sipsip.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.ItemCode. %s", err.Error())
 	}
 
 	if err := sipsip.PriceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.PriceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.PriceID. %s", err.Error())
 	}
 
 	if err := sipsip.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.ReferenceID. %s", err.Error())
 	}
 
 	if err := sipsip.Balance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Balance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.Balance. %s", err.Error())
 	}
 
 	if err := sipsip.ItemName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemName. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.ItemName. %s", err.Error())
 	}
 
 	if err := sipsip.EcServiceToken.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.EcServiceToken. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.EcServiceToken. %s", err.Error())
 	}
 
 	if err := sipsip.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.Language. %s", err.Error())
 	}
 
 	if err := sipsip.TitleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.TitleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaseServiceItemParam.TitleID. %s", err.Error())
 	}
 
 	return nil
@@ -169,15 +169,15 @@ func (sipsip ServiceItemPurchaseServiceItemParam) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseServiceItemParam{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sipsip.ItemCode))
-	b.WriteString(fmt.Sprintf("%sPriceID: %s,\n", indentationValues, sipsip.PriceID))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sipsip.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sBalance: %s,\n", indentationValues, sipsip.Balance))
-	b.WriteString(fmt.Sprintf("%sItemName: %s,\n", indentationValues, sipsip.ItemName))
-	b.WriteString(fmt.Sprintf("%sEcServiceToken: %s,\n", indentationValues, sipsip.EcServiceToken))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sipsip.Language))
-	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, sipsip.TitleID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sipsip.ItemCode)
+	fmt.Fprintf(&b, "%sPriceID: %s,\n", indentationValues, sipsip.PriceID)
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sipsip.ReferenceID)
+	fmt.Fprintf(&b, "%sBalance: %s,\n", indentationValues, sipsip.Balance)
+	fmt.Fprintf(&b, "%sItemName: %s,\n", indentationValues, sipsip.ItemName)
+	fmt.Fprintf(&b, "%sEcServiceToken: %s,\n", indentationValues, sipsip.EcServiceToken)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, sipsip.Language)
+	fmt.Fprintf(&b, "%sTitleID: %s,\n", indentationValues, sipsip.TitleID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

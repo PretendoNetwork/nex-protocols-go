@@ -33,15 +33,15 @@ func (dsfsoi DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreFileServerObjectInfo from the given readable
 func (dsfsoi *DataStoreFileServerObjectInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsfsoi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFileServerObjectInfo header. %s", err.Error())
 	}
 
 	if err := dsfsoi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFileServerObjectInfo.DataID. %s", err.Error())
 	}
 
 	if err := dsfsoi.GetInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.GetInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFileServerObjectInfo.GetInfo. %s", err.Error())
 	}
 
 	return nil
@@ -104,9 +104,9 @@ func (dsfsoi DataStoreFileServerObjectInfo) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("DataStoreFileServerObjectInfo{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsfsoi.DataID))
-	b.WriteString(fmt.Sprintf("%sGetInfo: %s,\n", indentationValues, dsfsoi.GetInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsfsoi.DataID)
+	fmt.Fprintf(&b, "%sGetInfo: %s,\n", indentationValues, dsfsoi.GetInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

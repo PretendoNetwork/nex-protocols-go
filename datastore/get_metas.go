@@ -33,7 +33,7 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, param)
+		_, rmcError := protocol.GetMetas(fmt.Errorf("failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMetas(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, dataIDs, param)
+		_, rmcError := protocol.GetMetas(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, dataIDs, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

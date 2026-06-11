@@ -38,7 +38,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -48,7 +48,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -58,7 +58,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	err = message.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("failed to read message from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -68,7 +68,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	err = unknown4.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("failed to read unknown4 from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -78,7 +78,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	err = unknown5.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("failed to read unknown5 from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -88,7 +88,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	err = gameKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("failed to read gameKey from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -98,7 +98,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	err = unknown6.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("failed to read unknown6 from parameters. %s", err.Error()), packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

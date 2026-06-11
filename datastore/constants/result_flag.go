@@ -31,7 +31,7 @@ func (rf ResultFlag) HasFlag(flag ResultFlag) bool {
 	return rf&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (rf ResultFlag) HasFlags(flags ...ResultFlag) bool {
 	if len(flags) == 0 {
 		return false

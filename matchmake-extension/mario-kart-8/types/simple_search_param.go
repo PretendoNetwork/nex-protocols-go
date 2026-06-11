@@ -40,31 +40,31 @@ func (ssp SimpleSearchParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SimpleSearchParam from the given readable
 func (ssp *SimpleSearchParam) ExtractFrom(readable types.Readable) error {
 	if err := ssp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam header. %s", err.Error())
 	}
 
 	if err := ssp.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Unknown. %s", err.Error())
 	}
 
 	if err := ssp.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Unknown2. %s", err.Error())
 	}
 
 	if err := ssp.Conditions.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Conditions. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Conditions. %s", err.Error())
 	}
 
 	if err := ssp.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Unknown3. %s", err.Error())
 	}
 
 	if err := ssp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.ResultRange. %s", err.Error())
 	}
 
 	if err := ssp.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleSearchParam.Unknown4. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (ssp SimpleSearchParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SimpleSearchParam{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, ssp.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, ssp.Unknown2.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sConditions: %s,\n", indentationValues, ssp.Conditions))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, ssp.Unknown3))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, ssp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, ssp.Unknown4.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, ssp.Unknown)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, ssp.Unknown2.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sConditions: %s,\n", indentationValues, ssp.Conditions)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, ssp.Unknown3)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, ssp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, ssp.Unknown4.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

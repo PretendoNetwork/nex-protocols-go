@@ -34,7 +34,7 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("failed to read slotID from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 
 	err = transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("failed to read transactionParam from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 
 	err = isForce.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("failed to read isForce from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

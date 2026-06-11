@@ -72,71 +72,71 @@ func (npv NintendoPresenceV2) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NintendoPresenceV2 from the given readable
 func (npv *NintendoPresenceV2) ExtractFrom(readable types.Readable) error {
 	if err := npv.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Data. %s", err.Error())
 	}
 
 	if err := npv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2 header. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2 header. %s", err.Error())
 	}
 
 	if err := npv.ChangedFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.ChangedFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.ChangedFlags. %s", err.Error())
 	}
 
 	if err := npv.Online.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Online. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Online. %s", err.Error())
 	}
 
 	if err := npv.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.GameKey. %s", err.Error())
 	}
 
 	if err := npv.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Unknown1. %s", err.Error())
 	}
 
 	if err := npv.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Message. %s", err.Error())
 	}
 
 	if err := npv.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Unknown2. %s", err.Error())
 	}
 
 	if err := npv.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Unknown3. %s", err.Error())
 	}
 
 	if err := npv.GameServerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameServerID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.GameServerID. %s", err.Error())
 	}
 
 	if err := npv.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Unknown4. %s", err.Error())
 	}
 
 	if err := npv.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.PID. %s", err.Error())
 	}
 
 	if err := npv.GatheringID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.GatheringID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.GatheringID. %s", err.Error())
 	}
 
 	if err := npv.ApplicationData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.ApplicationData. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.ApplicationData. %s", err.Error())
 	}
 
 	if err := npv.Unknown5.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown5. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Unknown5. %s", err.Error())
 	}
 
 	if err := npv.Unknown6.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown6. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Unknown6. %s", err.Error())
 	}
 
 	if err := npv.Unknown7.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown7. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoPresenceV2.Unknown7. %s", err.Error())
 	}
 
 	return nil
@@ -269,23 +269,23 @@ func (npv NintendoPresenceV2) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("NintendoPresenceV2{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, npv.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, npv.ChangedFlags))
-	b.WriteString(fmt.Sprintf("%sOnline: %s,\n", indentationValues, npv.Online))
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, npv.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, npv.Unknown1))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, npv.Message))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, npv.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, npv.Unknown3))
-	b.WriteString(fmt.Sprintf("%sGameServerID: %s,\n", indentationValues, npv.GameServerID))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, npv.Unknown4))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, npv.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, npv.GatheringID))
-	b.WriteString(fmt.Sprintf("%sApplicationData: %s,\n", indentationValues, npv.ApplicationData))
-	b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, npv.Unknown5))
-	b.WriteString(fmt.Sprintf("%sUnknown6: %s,\n", indentationValues, npv.Unknown6))
-	b.WriteString(fmt.Sprintf("%sUnknown7: %s,\n", indentationValues, npv.Unknown7))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, npv.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sChangedFlags: %d,\n", indentationValues, npv.ChangedFlags)
+	fmt.Fprintf(&b, "%sOnline: %s,\n", indentationValues, npv.Online)
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, npv.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, npv.Unknown1)
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, npv.Message)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, npv.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, npv.Unknown3)
+	fmt.Fprintf(&b, "%sGameServerID: %s,\n", indentationValues, npv.GameServerID)
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, npv.Unknown4)
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, npv.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGatheringID: %s,\n", indentationValues, npv.GatheringID)
+	fmt.Fprintf(&b, "%sApplicationData: %s,\n", indentationValues, npv.ApplicationData)
+	fmt.Fprintf(&b, "%sUnknown5: %s,\n", indentationValues, npv.Unknown5)
+	fmt.Fprintf(&b, "%sUnknown6: %s,\n", indentationValues, npv.Unknown6)
+	fmt.Fprintf(&b, "%sUnknown7: %s,\n", indentationValues, npv.Unknown7)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

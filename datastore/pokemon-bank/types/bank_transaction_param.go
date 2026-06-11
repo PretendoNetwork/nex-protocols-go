@@ -38,27 +38,27 @@ func (btp BankTransactionParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the BankTransactionParam from the given readable
 func (btp *BankTransactionParam) ExtractFrom(readable types.Readable) error {
 	if err := btp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam header. %s", err.Error())
 	}
 
 	if err := btp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.DataID. %s", err.Error())
 	}
 
 	if err := btp.CurVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.CurVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.CurVersion. %s", err.Error())
 	}
 
 	if err := btp.UpdateVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.UpdateVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.UpdateVersion. %s", err.Error())
 	}
 
 	if err := btp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.Size. %s", err.Error())
 	}
 
 	if err := btp.TransactionPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankTransactionParam.TransactionPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract BankTransactionParam.TransactionPassword. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (btp BankTransactionParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BankTransactionParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, btp.DataID))
-	b.WriteString(fmt.Sprintf("%sCurVersion: %s,\n", indentationValues, btp.CurVersion))
-	b.WriteString(fmt.Sprintf("%sUpdateVersion: %s,\n", indentationValues, btp.UpdateVersion))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, btp.Size))
-	b.WriteString(fmt.Sprintf("%sTransactionPassword: %s,\n", indentationValues, btp.TransactionPassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, btp.DataID)
+	fmt.Fprintf(&b, "%sCurVersion: %s,\n", indentationValues, btp.CurVersion)
+	fmt.Fprintf(&b, "%sUpdateVersion: %s,\n", indentationValues, btp.UpdateVersion)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, btp.Size)
+	fmt.Fprintf(&b, "%sTransactionPassword: %s,\n", indentationValues, btp.TransactionPassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

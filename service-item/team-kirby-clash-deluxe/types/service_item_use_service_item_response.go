@@ -33,15 +33,15 @@ func (siusir ServiceItemUseServiceItemResponse) WriteTo(writable types.Writable)
 // ExtractFrom extracts the ServiceItemUseServiceItemResponse from the given readable
 func (siusir *ServiceItemUseServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	if err := siusir.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
 	if err := siusir.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemResponse header. %s", err.Error())
 	}
 
 	if err := siusir.NullableUsedInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemResponse.NullableUsedInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemResponse.NullableUsedInfo. %s", err.Error())
 	}
 
 	return nil
@@ -104,9 +104,9 @@ func (siusir ServiceItemUseServiceItemResponse) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUseServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, siusir.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullableUsedInfo: %s,\n", indentationValues, siusir.NullableUsedInfo))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, siusir.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullableUsedInfo: %s,\n", indentationValues, siusir.NullableUsedInfo)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

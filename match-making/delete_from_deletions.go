@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	err := lstDeletions.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, lstDeletions)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, lstDeletions)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

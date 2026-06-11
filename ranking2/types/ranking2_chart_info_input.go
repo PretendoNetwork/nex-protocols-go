@@ -32,15 +32,15 @@ func (rcii Ranking2ChartInfoInput) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2ChartInfoInput from the given readable
 func (rcii *Ranking2ChartInfoInput) ExtractFrom(readable types.Readable) error {
 	if err := rcii.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfoInput header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfoInput header. %s", err.Error())
 	}
 
 	if err := rcii.ChartIndex.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfoInput.ChartIndex. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfoInput.ChartIndex. %s", err.Error())
 	}
 
 	if err := rcii.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfoInput.NumSeasonsToGoBack. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfoInput.NumSeasonsToGoBack. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (rcii Ranking2ChartInfoInput) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2ChartInfoInput{\n")
-	b.WriteString(fmt.Sprintf("%sChartIndex: %s,\n", indentationValues, rcii.ChartIndex))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, rcii.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sChartIndex: %s,\n", indentationValues, rcii.ChartIndex)
+	fmt.Fprintf(&b, "%sNumSeasonsToGoBack: %s,\n", indentationValues, rcii.NumSeasonsToGoBack)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

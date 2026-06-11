@@ -44,39 +44,39 @@ func (crusp CompetitionRankingUploadScoreParam) WriteTo(writable types.Writable)
 // ExtractFrom extracts the CompetitionRankingUploadScoreParam from the given readable
 func (crusp *CompetitionRankingUploadScoreParam) ExtractFrom(readable types.Readable) error {
 	if err := crusp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam header. %s", err.Error())
 	}
 
 	if err := crusp.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam.Unknown. %s", err.Error())
 	}
 
 	if err := crusp.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam.Unknown2. %s", err.Error())
 	}
 
 	if err := crusp.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam.Unknown3. %s", err.Error())
 	}
 
 	if err := crusp.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam.Unknown4. %s", err.Error())
 	}
 
 	if err := crusp.Unknown5.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown5. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam.Unknown5. %s", err.Error())
 	}
 
 	if err := crusp.Unknown6.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown6. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam.Unknown6. %s", err.Error())
 	}
 
 	if err := crusp.Unknown7.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown7. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam.Unknown7. %s", err.Error())
 	}
 
 	if err := crusp.Metadata.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Metadata. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingUploadScoreParam.Metadata. %s", err.Error())
 	}
 
 	return nil
@@ -169,15 +169,15 @@ func (crusp CompetitionRankingUploadScoreParam) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("CompetitionRankingUploadScoreParam{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, crusp.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, crusp.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, crusp.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, crusp.Unknown4))
-	b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, crusp.Unknown5))
-	b.WriteString(fmt.Sprintf("%sUnknown6: %s,\n", indentationValues, crusp.Unknown6))
-	b.WriteString(fmt.Sprintf("%sUnknown7: %s,\n", indentationValues, crusp.Unknown7))
-	b.WriteString(fmt.Sprintf("%sMetadata: %s,\n", indentationValues, crusp.Metadata))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, crusp.Unknown)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, crusp.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, crusp.Unknown3)
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, crusp.Unknown4)
+	fmt.Fprintf(&b, "%sUnknown5: %s,\n", indentationValues, crusp.Unknown5)
+	fmt.Fprintf(&b, "%sUnknown6: %s,\n", indentationValues, crusp.Unknown6)
+	fmt.Fprintf(&b, "%sUnknown7: %s,\n", indentationValues, crusp.Unknown7)
+	fmt.Fprintf(&b, "%sMetadata: %s,\n", indentationValues, crusp.Metadata)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

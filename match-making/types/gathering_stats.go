@@ -34,19 +34,19 @@ func (gs GatheringStats) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the GatheringStats from the given readable
 func (gs *GatheringStats) ExtractFrom(readable types.Readable) error {
 	if err := gs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GatheringStats header. %s", err.Error())
+		return fmt.Errorf("failed to extract GatheringStats header. %s", err.Error())
 	}
 
 	if err := gs.PIDParticipant.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GatheringStats.PIDParticipant. %s", err.Error())
+		return fmt.Errorf("failed to extract GatheringStats.PIDParticipant. %s", err.Error())
 	}
 
 	if err := gs.UIFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GatheringStats.UIFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract GatheringStats.UIFlags. %s", err.Error())
 	}
 
 	if err := gs.LstValues.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GatheringStats.LstValues. %s", err.Error())
+		return fmt.Errorf("failed to extract GatheringStats.LstValues. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (gs GatheringStats) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("GatheringStats{\n")
-	b.WriteString(fmt.Sprintf("%sPIDParticipant: %s,\n", indentationValues, gs.PIDParticipant.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUIFlags: %s,\n", indentationValues, gs.UIFlags))
-	b.WriteString(fmt.Sprintf("%sLstValues: %s,\n", indentationValues, gs.LstValues))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPIDParticipant: %s,\n", indentationValues, gs.PIDParticipant.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUIFlags: %s,\n", indentationValues, gs.UIFlags)
+	fmt.Fprintf(&b, "%sLstValues: %s,\n", indentationValues, gs.LstValues)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

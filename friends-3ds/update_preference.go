@@ -33,7 +33,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	err = publicMode.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read publicMode from parameters. %s", err.Error()), packet, callID, publicMode, showGame, showPlayedGame)
+		_, rmcError := protocol.UpdatePreference(fmt.Errorf("failed to read publicMode from parameters. %s", err.Error()), packet, callID, publicMode, showGame, showPlayedGame)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	err = showGame.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, publicMode, showGame, showPlayedGame)
+		_, rmcError := protocol.UpdatePreference(fmt.Errorf("failed to read showGame from parameters. %s", err.Error()), packet, callID, publicMode, showGame, showPlayedGame)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	err = showPlayedGame.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read showPlayedGame from parameters. %s", err.Error()), packet, callID, publicMode, showGame, showPlayedGame)
+		_, rmcError := protocol.UpdatePreference(fmt.Errorf("failed to read showPlayedGame from parameters. %s", err.Error()), packet, callID, publicMode, showGame, showPlayedGame)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

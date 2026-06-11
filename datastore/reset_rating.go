@@ -33,7 +33,7 @@ func (protocol *Protocol) handleResetRating(packet nex.PacketInterface) {
 
 	err = target.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRating(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, target, updatePassword)
+		_, rmcError := protocol.ResetRating(fmt.Errorf("failed to read target from parameters. %s", err.Error()), packet, callID, target, updatePassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleResetRating(packet nex.PacketInterface) {
 
 	err = updatePassword.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ResetRating(fmt.Errorf("Failed to read updatePassword from parameters. %s", err.Error()), packet, callID, target, updatePassword)
+		_, rmcError := protocol.ResetRating(fmt.Errorf("failed to read updatePassword from parameters. %s", err.Error()), packet, callID, target, updatePassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

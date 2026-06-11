@@ -38,27 +38,27 @@ func (rswl RankingScoreWithLimit) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingScoreWithLimit from the given readable
 func (rswl *RankingScoreWithLimit) ExtractFrom(readable types.Readable) error {
 	if err := rswl.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreWithLimit header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreWithLimit header. %s", err.Error())
 	}
 
 	if err := rswl.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreWithLimit.Category. %s", err.Error())
 	}
 
 	if err := rswl.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreWithLimit.Score. %s", err.Error())
 	}
 
 	if err := rswl.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreWithLimit.Unknown1. %s", err.Error())
 	}
 
 	if err := rswl.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreWithLimit.Unknown2. %s", err.Error())
 	}
 
 	if err := rswl.Limit.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreWithLimit.Limit. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreWithLimit.Limit. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (rswl RankingScoreWithLimit) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingScoreWithLimit{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rswl.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rswl.Score))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rswl.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rswl.Unknown2))
-	b.WriteString(fmt.Sprintf("%sLimit: %s,\n", indentationValues, rswl.Limit))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rswl.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rswl.Score)
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rswl.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rswl.Unknown2)
+	fmt.Fprintf(&b, "%sLimit: %s,\n", indentationValues, rswl.Limit)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

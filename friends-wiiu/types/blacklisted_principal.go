@@ -37,23 +37,23 @@ func (bp BlacklistedPrincipal) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the BlacklistedPrincipal from the given readable
 func (bp *BlacklistedPrincipal) ExtractFrom(readable types.Readable) error {
 	if err := bp.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BlacklistedPrincipal.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract BlacklistedPrincipal.Data. %s", err.Error())
 	}
 
 	if err := bp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BlacklistedPrincipal header. %s", err.Error())
+		return fmt.Errorf("failed to extract BlacklistedPrincipal header. %s", err.Error())
 	}
 
 	if err := bp.PrincipalBasicInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BlacklistedPrincipal.PrincipalBasicInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract BlacklistedPrincipal.PrincipalBasicInfo. %s", err.Error())
 	}
 
 	if err := bp.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BlacklistedPrincipal.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract BlacklistedPrincipal.GameKey. %s", err.Error())
 	}
 
 	if err := bp.BlackListedSince.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BlacklistedPrincipal.BlackListedSince. %s", err.Error())
+		return fmt.Errorf("failed to extract BlacklistedPrincipal.BlackListedSince. %s", err.Error())
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func (bp BlacklistedPrincipal) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BlacklistedPrincipal{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, bp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: %s,\n", indentationValues, bp.PrincipalBasicInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, bp.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBlackListedSince: %s,\n", indentationValues, bp.BlackListedSince.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, bp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrincipalBasicInfo: %s,\n", indentationValues, bp.PrincipalBasicInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, bp.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBlackListedSince: %s,\n", indentationValues, bp.BlackListedSince.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

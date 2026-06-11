@@ -32,15 +32,15 @@ func (dsfpc DataStoreFightingPowerChart) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreFightingPowerChart from the given readable
 func (dsfpc *DataStoreFightingPowerChart) ExtractFrom(readable types.Readable) error {
 	if err := dsfpc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFightingPowerChart header. %s", err.Error())
 	}
 
 	if err := dsfpc.UserNum.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.UserNum. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFightingPowerChart.UserNum. %s", err.Error())
 	}
 
 	if err := dsfpc.Chart.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.Chart. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFightingPowerChart.Chart. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dsfpc DataStoreFightingPowerChart) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStoreFightingPowerChart{\n")
-	b.WriteString(fmt.Sprintf("%sUserNum: %s,\n", indentationValues, dsfpc.UserNum))
-	b.WriteString(fmt.Sprintf("%sChart: %s,\n", indentationValues, dsfpc.Chart))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUserNum: %s,\n", indentationValues, dsfpc.UserNum)
+	fmt.Fprintf(&b, "%sChart: %s,\n", indentationValues, dsfpc.Chart)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

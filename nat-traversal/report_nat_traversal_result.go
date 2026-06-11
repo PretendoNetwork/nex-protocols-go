@@ -35,7 +35,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	err = cid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, cid, result, rtt)
+		_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("failed to read cid from parameters. %s", err.Error()), packet, callID, cid, result, rtt)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	err = result.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, cid, result, rtt)
+		_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("failed to read result from parameters. %s", err.Error()), packet, callID, cid, result, rtt)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -57,7 +57,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 	if natTraversalVersion.GreaterOrEqual("3.0.0") {
 		err = rtt.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, cid, result, rtt)
+			_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("failed to read rtt from parameters. %s", err.Error()), packet, callID, cid, result, rtt)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}

@@ -32,15 +32,15 @@ func (crigp CompetitionRankingInfoGetParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the CompetitionRankingInfoGetParam from the given readable
 func (crigp *CompetitionRankingInfoGetParam) ExtractFrom(readable types.Readable) error {
 	if err := crigp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingInfoGetParam header. %s", err.Error())
 	}
 
 	if err := crigp.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingInfoGetParam.Unknown. %s", err.Error())
 	}
 
 	if err := crigp.Result.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam.Result. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingInfoGetParam.Result. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (crigp CompetitionRankingInfoGetParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("CompetitionRankingInfoGetParam{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, crigp.Unknown))
-	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, crigp.Result.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, crigp.Unknown)
+	fmt.Fprintf(&b, "%sResult: %s,\n", indentationValues, crigp.Result.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

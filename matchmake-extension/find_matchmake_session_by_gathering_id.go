@@ -29,7 +29,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionByGatheringID(packet nex.Pac
 
 	err := lstGID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindMatchmakeSessionByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, lstGID)
+		_, rmcError := protocol.FindMatchmakeSessionByGatheringID(fmt.Errorf("failed to read lstGID from parameters. %s", err.Error()), packet, callID, lstGID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 
 	err := dataID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetPasswordInfo(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, dataID)
+		_, rmcError := protocol.GetPasswordInfo(fmt.Errorf("failed to read dataID from parameters. %s", err.Error()), packet, callID, dataID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

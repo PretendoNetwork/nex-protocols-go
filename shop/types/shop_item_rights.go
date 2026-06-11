@@ -34,19 +34,19 @@ func (sir ShopItemRights) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ShopItemRights from the given readable
 func (sir *ShopItemRights) ExtractFrom(readable types.Readable) error {
 	if err := sir.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItemRights header. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItemRights header. %s", err.Error())
 	}
 
 	if err := sir.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItemRights.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItemRights.ReferenceID. %s", err.Error())
 	}
 
 	if err := sir.ItemType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItemRights.ItemType. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItemRights.ItemType. %s", err.Error())
 	}
 
 	if err := sir.Attribute.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItemRights.Attribute. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItemRights.Attribute. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (sir ShopItemRights) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ShopItemRights{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sir.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sItemType: %s,\n", indentationValues, sir.ItemType))
-	b.WriteString(fmt.Sprintf("%sAttribute: %s,\n", indentationValues, sir.Attribute))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sir.ReferenceID)
+	fmt.Fprintf(&b, "%sItemType: %s,\n", indentationValues, sir.ItemType)
+	fmt.Fprintf(&b, "%sAttribute: %s,\n", indentationValues, sir.Attribute)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

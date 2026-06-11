@@ -32,15 +32,15 @@ func (dsfps DataStoreFightingPowerScore) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreFightingPowerScore from the given readable
 func (dsfps *DataStoreFightingPowerScore) ExtractFrom(readable types.Readable) error {
 	if err := dsfps.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFightingPowerScore header. %s", err.Error())
 	}
 
 	if err := dsfps.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFightingPowerScore.Score. %s", err.Error())
 	}
 
 	if err := dsfps.Rank.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore.Rank. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreFightingPowerScore.Rank. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dsfps DataStoreFightingPowerScore) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStoreFightingPowerScore{\n")
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dsfps.Score))
-	b.WriteString(fmt.Sprintf("%sRank: %s,\n", indentationValues, dsfps.Rank))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dsfps.Score)
+	fmt.Fprintf(&b, "%sRank: %s,\n", indentationValues, dsfps.Rank)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

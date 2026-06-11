@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 
 	err := lstPrincipals.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMultiplePublicData(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, lstPrincipals)
+		_, rmcError := protocol.GetMultiplePublicData(fmt.Errorf("failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, lstPrincipals)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -32,7 +32,7 @@ func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 
 	err = strQuery.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, strQuery, resultRange)
+		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("failed to read strQuery from parameters. %s", err.Error()), packet, callID, strQuery, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, strQuery, resultRange)
+		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, strQuery, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

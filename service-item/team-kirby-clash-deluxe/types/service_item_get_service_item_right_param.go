@@ -41,28 +41,28 @@ func (sigsirp ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the ServiceItemGetServiceItemRightParam from the given readable
 func (sigsirp *ServiceItemGetServiceItemRightParam) ExtractFrom(readable types.Readable) error {
 	if err := sigsirp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam header. %s", err.Error())
 	}
 
 	if err := sigsirp.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.ReferenceID. %s", err.Error())
 	}
 
 	if err := sigsirp.DeviceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.DeviceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.DeviceID. %s", err.Error())
 	}
 
 	if err := sigsirp.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.UniqueID. %s", err.Error())
 	}
 
 	if err := sigsirp.ItemGroup.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ItemGroup. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.ItemGroup. %s", err.Error())
 	}
 
 	if sigsirp.StructureVersion >= 1 {
 		if err := sigsirp.Platform.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.Platform. %s", err.Error())
+			return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.Platform. %s", err.Error())
 		}
 	}
 
@@ -141,12 +141,12 @@ func (sigsirp ServiceItemGetServiceItemRightParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetServiceItemRightParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sDeviceID: %s,\n", indentationValues, sigsirp.DeviceID))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigsirp.UniqueID))
-	b.WriteString(fmt.Sprintf("%sItemGroup: %s,\n", indentationValues, sigsirp.ItemGroup))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sigsirp.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID)
+	fmt.Fprintf(&b, "%sDeviceID: %s,\n", indentationValues, sigsirp.DeviceID)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, sigsirp.UniqueID)
+	fmt.Fprintf(&b, "%sItemGroup: %s,\n", indentationValues, sigsirp.ItemGroup)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, sigsirp.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

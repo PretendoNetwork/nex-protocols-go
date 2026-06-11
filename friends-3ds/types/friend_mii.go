@@ -37,23 +37,23 @@ func (fm FriendMii) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendMii from the given readable
 func (fm *FriendMii) ExtractFrom(readable types.Readable) error {
 	if err := fm.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii.Data. %s", err.Error())
 	}
 
 	if err := fm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii header. %s", err.Error())
 	}
 
 	if err := fm.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii.PID. %s", err.Error())
 	}
 
 	if err := fm.Mii.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii.Mii. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii.Mii. %s", err.Error())
 	}
 
 	if err := fm.ModifiedAt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMii.ModifiedAt. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMii.ModifiedAt. %s", err.Error())
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func (fm FriendMii) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendMii{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fm.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fm.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, fm.Mii.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sModifiedAt: %s,\n", indentationValues, fm.ModifiedAt.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fm.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fm.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMii: %s,\n", indentationValues, fm.Mii.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sModifiedAt: %s,\n", indentationValues, fm.ModifiedAt.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

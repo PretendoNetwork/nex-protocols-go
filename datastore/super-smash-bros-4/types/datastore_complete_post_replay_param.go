@@ -35,19 +35,19 @@ func (dscprp DataStoreCompletePostReplayParam) WriteTo(writable types.Writable) 
 // ExtractFrom extracts the DataStoreCompletePostReplayParam from the given readable
 func (dscprp *DataStoreCompletePostReplayParam) ExtractFrom(readable types.Readable) error {
 	if err := dscprp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostReplayParam header. %s", err.Error())
 	}
 
 	if err := dscprp.ReplayID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.ReplayID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostReplayParam.ReplayID. %s", err.Error())
 	}
 
 	if err := dscprp.CompleteParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.CompleteParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostReplayParam.CompleteParam. %s", err.Error())
 	}
 
 	if err := dscprp.PrepareParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.PrepareParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostReplayParam.PrepareParam. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (dscprp DataStoreCompletePostReplayParam) FormatToString(indentationLevel i
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dscprp.ReplayID))
-	b.WriteString(fmt.Sprintf("%sCompleteParam: %s,\n", indentationValues, dscprp.CompleteParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareParam: %s,\n", indentationValues, dscprp.PrepareParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReplayID: %s,\n", indentationValues, dscprp.ReplayID)
+	fmt.Fprintf(&b, "%sCompleteParam: %s,\n", indentationValues, dscprp.CompleteParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrepareParam: %s,\n", indentationValues, dscprp.PrepareParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

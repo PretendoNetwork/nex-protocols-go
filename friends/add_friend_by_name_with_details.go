@@ -33,7 +33,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	err = uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
+		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
+		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("failed to read uiDetails from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
+		_, rmcError := protocol.AddFriendWithDetails(fmt.Errorf("failed to read strMessage from parameters. %s", err.Error()), packet, callID, uiPlayer, uiDetails, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

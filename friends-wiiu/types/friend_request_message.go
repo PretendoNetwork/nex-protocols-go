@@ -49,47 +49,47 @@ func (frm FriendRequestMessage) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendRequestMessage from the given readable
 func (frm *FriendRequestMessage) ExtractFrom(readable types.Readable) error {
 	if err := frm.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Data. %s", err.Error())
 	}
 
 	if err := frm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage header. %s", err.Error())
 	}
 
 	if err := frm.FriendRequestID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.FriendRequestID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.FriendRequestID. %s", err.Error())
 	}
 
 	if err := frm.Received.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Received. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Received. %s", err.Error())
 	}
 
 	if err := frm.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Unknown2. %s", err.Error())
 	}
 
 	if err := frm.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Message. %s", err.Error())
 	}
 
 	if err := frm.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Unknown3. %s", err.Error())
 	}
 
 	if err := frm.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Unknown4. %s", err.Error())
 	}
 
 	if err := frm.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.GameKey. %s", err.Error())
 	}
 
 	if err := frm.Unknown5.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.Unknown5. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.Unknown5. %s", err.Error())
 	}
 
 	if err := frm.ExpiresOn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequestMessage.ExpiresOn. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequestMessage.ExpiresOn. %s", err.Error())
 	}
 
 	return nil
@@ -192,17 +192,17 @@ func (frm FriendRequestMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendRequestMessage{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, frm.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sFriendRequestID: %s,\n", indentationValues, frm.FriendRequestID))
-	b.WriteString(fmt.Sprintf("%sReceived: %s,\n", indentationValues, frm.Received))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, frm.Unknown2))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, frm.Message))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, frm.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, frm.Unknown4))
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, frm.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, frm.Unknown5.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sExpiresOn: %s,\n", indentationValues, frm.ExpiresOn.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, frm.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sFriendRequestID: %s,\n", indentationValues, frm.FriendRequestID)
+	fmt.Fprintf(&b, "%sReceived: %s,\n", indentationValues, frm.Received)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, frm.Unknown2)
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, frm.Message)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, frm.Unknown3)
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, frm.Unknown4)
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, frm.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown5: %s,\n", indentationValues, frm.Unknown5.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sExpiresOn: %s,\n", indentationValues, frm.ExpiresOn.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

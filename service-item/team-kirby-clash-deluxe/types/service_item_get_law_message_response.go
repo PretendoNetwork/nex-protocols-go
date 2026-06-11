@@ -33,15 +33,15 @@ func (siglmr ServiceItemGetLawMessageResponse) WriteTo(writable types.Writable) 
 // ExtractFrom extracts the ServiceItemGetLawMessageResponse from the given readable
 func (siglmr *ServiceItemGetLawMessageResponse) ExtractFrom(readable types.Readable) error {
 	if err := siglmr.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageResponse.ServiceItemEShopResponse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
 	if err := siglmr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageResponse header. %s", err.Error())
 	}
 
 	if err := siglmr.NullableLawMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageResponse.NullableLawMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetLawMessageResponse.NullableLawMessage. %s", err.Error())
 	}
 
 	return nil
@@ -104,9 +104,9 @@ func (siglmr ServiceItemGetLawMessageResponse) FormatToString(indentationLevel i
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetLawMessageResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, siglmr.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullableLawMessage: %s,\n", indentationValues, siglmr.NullableLawMessage))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, siglmr.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullableLawMessage: %s,\n", indentationValues, siglmr.NullableLawMessage)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

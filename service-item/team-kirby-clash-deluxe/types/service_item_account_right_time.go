@@ -30,11 +30,11 @@ func (siart ServiceItemAccountRightTime) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemAccountRightTime from the given readable
 func (siart *ServiceItemAccountRightTime) ExtractFrom(readable types.Readable) error {
 	if err := siart.ServiceItemAccountRight.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRightTime.ServiceItemAccountRight. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRightTime.ServiceItemAccountRight. %s", err.Error())
 	}
 
 	if err := siart.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRightTime header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRightTime header. %s", err.Error())
 	}
 
 	return nil
@@ -96,8 +96,8 @@ func (siart ServiceItemAccountRightTime) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAccountRightTime{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemAccountRight (parent): %s,\n", indentationValues, siart.ServiceItemAccountRight.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemAccountRight (parent): %s,\n", indentationValues, siart.ServiceItemAccountRight.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

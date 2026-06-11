@@ -30,7 +30,7 @@ func (protocol *Protocol) handleUpdateMySubscriptionData(packet nex.PacketInterf
 
 	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateMySubscriptionData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, param)
+		_, rmcError := protocol.UpdateMySubscriptionData(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

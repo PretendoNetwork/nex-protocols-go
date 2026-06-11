@@ -38,23 +38,23 @@ func (fr FriendRelationship) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendRelationship from the given readable
 func (fr *FriendRelationship) ExtractFrom(readable types.Readable) error {
 	if err := fr.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRelationship.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRelationship.Data. %s", err.Error())
 	}
 
 	if err := fr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRelationship header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRelationship header. %s", err.Error())
 	}
 
 	if err := fr.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRelationship.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRelationship.PID. %s", err.Error())
 	}
 
 	if err := fr.LFC.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRelationship.LFC. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRelationship.LFC. %s", err.Error())
 	}
 
 	if err := fr.RelationshipType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRelationship.RelationshipType. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRelationship.RelationshipType. %s", err.Error())
 	}
 
 	return nil
@@ -127,11 +127,11 @@ func (fr FriendRelationship) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendRelationship{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fr.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fr.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLFC: %s,\n", indentationValues, fr.LFC))
-	b.WriteString(fmt.Sprintf("%sRelationshipType: %d,\n", indentationValues, fr.RelationshipType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fr.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fr.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLFC: %s,\n", indentationValues, fr.LFC)
+	fmt.Fprintf(&b, "%sRelationshipType: %d,\n", indentationValues, fr.RelationshipType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

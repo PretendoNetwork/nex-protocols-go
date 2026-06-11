@@ -41,31 +41,31 @@ func (rsd RankingScoreData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingScoreData from the given readable
 func (rsd *RankingScoreData) ExtractFrom(readable types.Readable) error {
 	if err := rsd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreData header. %s", err.Error())
 	}
 
 	if err := rsd.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreData.Category. %s", err.Error())
 	}
 
 	if err := rsd.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreData.Score. %s", err.Error())
 	}
 
 	if err := rsd.OrderBy.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.OrderBy. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreData.OrderBy. %s", err.Error())
 	}
 
 	if err := rsd.UpdateMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.UpdateMode. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreData.UpdateMode. %s", err.Error())
 	}
 
 	if err := rsd.Groups.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.Groups. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreData.Groups. %s", err.Error())
 	}
 
 	if err := rsd.Param.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.Param. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingScoreData.Param. %s", err.Error())
 	}
 
 	return nil
@@ -148,13 +148,13 @@ func (rsd RankingScoreData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingScoreData{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rsd.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rsd.Score))
-	b.WriteString(fmt.Sprintf("%sOrderBy: %s,\n", indentationValues, rsd.OrderBy))
-	b.WriteString(fmt.Sprintf("%sUpdateMode: %s,\n", indentationValues, rsd.UpdateMode))
-	b.WriteString(fmt.Sprintf("%sGroups: %s,\n", indentationValues, rsd.Groups))
-	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, rsd.Param))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rsd.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rsd.Score)
+	fmt.Fprintf(&b, "%sOrderBy: %s,\n", indentationValues, rsd.OrderBy)
+	fmt.Fprintf(&b, "%sUpdateMode: %s,\n", indentationValues, rsd.UpdateMode)
+	fmt.Fprintf(&b, "%sGroups: %s,\n", indentationValues, rsd.Groups)
+	fmt.Fprintf(&b, "%sParam: %s,\n", indentationValues, rsd.Param)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

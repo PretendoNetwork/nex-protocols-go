@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInte
 
 	err := applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetApplicationConfigString(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID)
+		_, rmcError := protocol.GetApplicationConfigString(fmt.Errorf("failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

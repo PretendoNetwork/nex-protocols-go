@@ -29,7 +29,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 
 	err := name.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Hello(fmt.Errorf("Failed to read name from parameters. %s", err.Error()), packet, callID, name)
+		_, rmcError := protocol.Hello(fmt.Errorf("failed to read name from parameters. %s", err.Error()), packet, callID, name)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

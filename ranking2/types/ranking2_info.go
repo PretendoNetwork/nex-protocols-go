@@ -36,23 +36,23 @@ func (ri Ranking2Info) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2Info from the given readable
 func (ri *Ranking2Info) ExtractFrom(readable types.Readable) error {
 	if err := ri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2Info header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2Info header. %s", err.Error())
 	}
 
 	if err := ri.RankDataList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2Info.RankDataList. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2Info.RankDataList. %s", err.Error())
 	}
 
 	if err := ri.LowestRank.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2Info.LowestRank. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2Info.LowestRank. %s", err.Error())
 	}
 
 	if err := ri.NumRankedIn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2Info.NumRankedIn. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2Info.NumRankedIn. %s", err.Error())
 	}
 
 	if err := ri.Season.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2Info.Season. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2Info.Season. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (ri Ranking2Info) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2Info{\n")
-	b.WriteString(fmt.Sprintf("%sRankDataList: %s,\n", indentationValues, ri.RankDataList))
-	b.WriteString(fmt.Sprintf("%sLowestRank: %s,\n", indentationValues, ri.LowestRank))
-	b.WriteString(fmt.Sprintf("%sNumRankedIn: %s,\n", indentationValues, ri.NumRankedIn))
-	b.WriteString(fmt.Sprintf("%sSeason: %s,\n", indentationValues, ri.Season))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRankDataList: %s,\n", indentationValues, ri.RankDataList)
+	fmt.Fprintf(&b, "%sLowestRank: %s,\n", indentationValues, ri.LowestRank)
+	fmt.Fprintf(&b, "%sNumRankedIn: %s,\n", indentationValues, ri.NumRankedIn)
+	fmt.Fprintf(&b, "%sSeason: %s,\n", indentationValues, ri.Season)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -34,19 +34,19 @@ func (cri CompetitionRankingInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the CompetitionRankingInfo from the given readable
 func (cri *CompetitionRankingInfo) ExtractFrom(readable types.Readable) error {
 	if err := cri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingInfo header. %s", err.Error())
 	}
 
 	if err := cri.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingInfo.Unknown. %s", err.Error())
 	}
 
 	if err := cri.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingInfo.Unknown2. %s", err.Error())
 	}
 
 	if err := cri.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract CompetitionRankingInfo.Unknown3. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (cri CompetitionRankingInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("CompetitionRankingInfo{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, cri.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, cri.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, cri.Unknown3))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, cri.Unknown)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, cri.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, cri.Unknown3)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

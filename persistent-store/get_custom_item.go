@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetCustomItem(packet nex.PacketInterface) {
 
 	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCustomItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, uiGroup, strTag)
+		_, rmcError := protocol.GetCustomItem(fmt.Errorf("failed to read uiGroup from parameters. %s", err.Error()), packet, callID, uiGroup, strTag)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetCustomItem(packet nex.PacketInterface) {
 
 	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCustomItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, uiGroup, strTag)
+		_, rmcError := protocol.GetCustomItem(fmt.Errorf("failed to read strTag from parameters. %s", err.Error()), packet, callID, uiGroup, strTag)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

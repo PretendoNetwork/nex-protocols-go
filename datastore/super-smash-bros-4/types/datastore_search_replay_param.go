@@ -36,23 +36,23 @@ func (dssrp DataStoreSearchReplayParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreSearchReplayParam from the given readable
 func (dssrp *DataStoreSearchReplayParam) ExtractFrom(readable types.Readable) error {
 	if err := dssrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchReplayParam header. %s", err.Error())
 	}
 
 	if err := dssrp.Mode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Mode. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchReplayParam.Mode. %s", err.Error())
 	}
 
 	if err := dssrp.Style.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Style. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchReplayParam.Style. %s", err.Error())
 	}
 
 	if err := dssrp.Fighter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Fighter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchReplayParam.Fighter. %s", err.Error())
 	}
 
 	if err := dssrp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchReplayParam.ResultRange. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (dssrp DataStoreSearchReplayParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dssrp.Mode))
-	b.WriteString(fmt.Sprintf("%sStyle: %s,\n", indentationValues, dssrp.Style))
-	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dssrp.Fighter))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dssrp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMode: %s,\n", indentationValues, dssrp.Mode)
+	fmt.Fprintf(&b, "%sStyle: %s,\n", indentationValues, dssrp.Style)
+	fmt.Fprintf(&b, "%sFighter: %s,\n", indentationValues, dssrp.Fighter)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, dssrp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

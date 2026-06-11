@@ -32,15 +32,15 @@ func (rst RatingSessionToken) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RatingSessionToken from the given readable
 func (rst *RatingSessionToken) ExtractFrom(readable types.Readable) error {
 	if err := rst.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingSessionToken header. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingSessionToken header. %s", err.Error())
 	}
 
 	if err := rst.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingSessionToken.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingSessionToken.Unknown1. %s", err.Error())
 	}
 
 	if err := rst.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingSessionToken.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingSessionToken.Unknown2. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (rst RatingSessionToken) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RatingSessionToken{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rst.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rst.Unknown2))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rst.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rst.Unknown2)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

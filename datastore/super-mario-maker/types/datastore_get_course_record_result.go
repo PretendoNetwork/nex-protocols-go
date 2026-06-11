@@ -42,35 +42,35 @@ func (dsgcrr DataStoreGetCourseRecordResult) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreGetCourseRecordResult from the given readable
 func (dsgcrr *DataStoreGetCourseRecordResult) ExtractFrom(readable types.Readable) error {
 	if err := dsgcrr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordResult header. %s", err.Error())
 	}
 
 	if err := dsgcrr.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordResult.DataID. %s", err.Error())
 	}
 
 	if err := dsgcrr.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordResult.Slot. %s", err.Error())
 	}
 
 	if err := dsgcrr.FirstPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.FirstPID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordResult.FirstPID. %s", err.Error())
 	}
 
 	if err := dsgcrr.BestPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.BestPID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordResult.BestPID. %s", err.Error())
 	}
 
 	if err := dsgcrr.BestScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.BestScore. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordResult.BestScore. %s", err.Error())
 	}
 
 	if err := dsgcrr.CreatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.CreatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordResult.CreatedTime. %s", err.Error())
 	}
 
 	if err := dsgcrr.UpdatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.UpdatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCourseRecordResult.UpdatedTime. %s", err.Error())
 	}
 
 	return nil
@@ -158,14 +158,14 @@ func (dsgcrr DataStoreGetCourseRecordResult) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCourseRecordResult{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsgcrr.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsgcrr.Slot))
-	b.WriteString(fmt.Sprintf("%sFirstPID: %s,\n", indentationValues, dsgcrr.FirstPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBestPID: %s,\n", indentationValues, dsgcrr.BestPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBestScore: %s,\n", indentationValues, dsgcrr.BestScore))
-	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dsgcrr.CreatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, dsgcrr.UpdatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsgcrr.DataID)
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsgcrr.Slot)
+	fmt.Fprintf(&b, "%sFirstPID: %s,\n", indentationValues, dsgcrr.FirstPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBestPID: %s,\n", indentationValues, dsgcrr.BestPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBestScore: %s,\n", indentationValues, dsgcrr.BestScore)
+	fmt.Fprintf(&b, "%sCreatedTime: %s,\n", indentationValues, dsgcrr.CreatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUpdatedTime: %s,\n", indentationValues, dsgcrr.UpdatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

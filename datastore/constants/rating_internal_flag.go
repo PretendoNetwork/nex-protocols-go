@@ -31,7 +31,7 @@ func (rif RatingInternalFlag) HasFlag(flag RatingInternalFlag) bool {
 	return rif&flag == flag
 }
 
-// HasFlag checks if all given flags are set
+// HasFlags checks if all given flags are set
 func (rif RatingInternalFlag) HasFlags(flags ...RatingInternalFlag) bool {
 	if len(flags) == 0 {
 		return false

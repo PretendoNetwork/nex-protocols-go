@@ -32,7 +32,7 @@ func (protocol *Protocol) handleEndParticipation(packet nex.PacketInterface) {
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.EndParticipation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, strMessage)
+		_, rmcError := protocol.EndParticipation(fmt.Errorf("failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleEndParticipation(packet nex.PacketInterface) {
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.EndParticipation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, idGathering, strMessage)
+		_, rmcError := protocol.EndParticipation(fmt.Errorf("failed to read strMessage from parameters. %s", err.Error()), packet, callID, idGathering, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

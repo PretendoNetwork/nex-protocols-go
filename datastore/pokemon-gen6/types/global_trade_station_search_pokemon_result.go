@@ -34,19 +34,19 @@ func (gtsspr GlobalTradeStationSearchPokemonResult) WriteTo(writable types.Writa
 // ExtractFrom extracts the GlobalTradeStationSearchPokemonResult from the given readable
 func (gtsspr *GlobalTradeStationSearchPokemonResult) ExtractFrom(readable types.Readable) error {
 	if err := gtsspr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonResult header. %s", err.Error())
 	}
 
 	if err := gtsspr.TotalCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult.TotalCount. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonResult.TotalCount. %s", err.Error())
 	}
 
 	if err := gtsspr.Result.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult.Result. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonResult.Result. %s", err.Error())
 	}
 
 	if err := gtsspr.TotalCountType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult.TotalCountType. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonResult.TotalCountType. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (gtsspr GlobalTradeStationSearchPokemonResult) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationSearchPokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sTotalCount: %s,\n", indentationValues, gtsspr.TotalCount))
-	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, gtsspr.Result))
-	b.WriteString(fmt.Sprintf("%sTotalCountType: %s,\n", indentationValues, gtsspr.TotalCountType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTotalCount: %s,\n", indentationValues, gtsspr.TotalCount)
+	fmt.Fprintf(&b, "%sResult: %s,\n", indentationValues, gtsspr.Result)
+	fmt.Fprintf(&b, "%sTotalCountType: %s,\n", indentationValues, gtsspr.TotalCountType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

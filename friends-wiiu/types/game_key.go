@@ -35,19 +35,19 @@ func (gk GameKey) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the GameKey from the given readable
 func (gk *GameKey) ExtractFrom(readable types.Readable) error {
 	if err := gk.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GameKey.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract GameKey.Data. %s", err.Error())
 	}
 
 	if err := gk.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GameKey header. %s", err.Error())
+		return fmt.Errorf("failed to extract GameKey header. %s", err.Error())
 	}
 
 	if err := gk.TitleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GameKey.TitleID. %s", err.Error())
+		return fmt.Errorf("failed to extract GameKey.TitleID. %s", err.Error())
 	}
 
 	if err := gk.TitleVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GameKey.TitleVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract GameKey.TitleVersion. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (gk GameKey) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("GameKey{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, gk.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, gk.TitleID))
-	b.WriteString(fmt.Sprintf("%sTitleVersion: %s,\n", indentationValues, gk.TitleVersion))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, gk.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTitleID: %s,\n", indentationValues, gk.TitleID)
+	fmt.Fprintf(&b, "%sTitleVersion: %s,\n", indentationValues, gk.TitleVersion)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

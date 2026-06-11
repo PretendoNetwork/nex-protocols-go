@@ -29,7 +29,7 @@ func (protocol *Protocol) handleAddFriend(packet nex.PacketInterface) {
 
 	err := pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddFriend(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, pid)
+		_, rmcError := protocol.AddFriend(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

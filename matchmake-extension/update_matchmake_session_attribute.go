@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, attribs)
+		_, rmcError := protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("failed to read gid from parameters. %s", err.Error()), packet, callID, gid, attribs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 
 	err = attribs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), packet, callID, gid, attribs)
+		_, rmcError := protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("failed to read attribs from parameters. %s", err.Error()), packet, callID, gid, attribs)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

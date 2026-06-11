@@ -44,39 +44,39 @@ func (sipi ServiceItemPrepurchaseInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemPrepurchaseInfo from the given readable
 func (sipi *ServiceItemPrepurchaseInfo) ExtractFrom(readable types.Readable) error {
 	if err := sipi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo header. %s", err.Error())
 	}
 
 	if err := sipi.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo.ItemCode. %s", err.Error())
 	}
 
 	if err := sipi.PriceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PriceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo.PriceID. %s", err.Error())
 	}
 
 	if err := sipi.RegularPrice.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.RegularPrice. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo.RegularPrice. %s", err.Error())
 	}
 
 	if err := sipi.IsTaxAvailable.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.IsTaxAvailable. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo.IsTaxAvailable. %s", err.Error())
 	}
 
 	if err := sipi.TaxAmount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.TaxAmount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo.TaxAmount. %s", err.Error())
 	}
 
 	if err := sipi.TotalAmount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.TotalAmount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo.TotalAmount. %s", err.Error())
 	}
 
 	if err := sipi.CurrentBalance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.CurrentBalance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo.CurrentBalance. %s", err.Error())
 	}
 
 	if err := sipi.PostBalance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PostBalance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseInfo.PostBalance. %s", err.Error())
 	}
 
 	return nil
@@ -169,15 +169,15 @@ func (sipi ServiceItemPrepurchaseInfo) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPrepurchaseInfo{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sipi.ItemCode))
-	b.WriteString(fmt.Sprintf("%sPriceID: %s,\n", indentationValues, sipi.PriceID))
-	b.WriteString(fmt.Sprintf("%sRegularPrice: %s,\n", indentationValues, sipi.RegularPrice.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sIsTaxAvailable: %s,\n", indentationValues, sipi.IsTaxAvailable))
-	b.WriteString(fmt.Sprintf("%sTaxAmount: %s,\n", indentationValues, sipi.TaxAmount.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTotalAmount: %s,\n", indentationValues, sipi.TotalAmount.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCurrentBalance: %s,\n", indentationValues, sipi.CurrentBalance.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sipi.ItemCode)
+	fmt.Fprintf(&b, "%sPriceID: %s,\n", indentationValues, sipi.PriceID)
+	fmt.Fprintf(&b, "%sRegularPrice: %s,\n", indentationValues, sipi.RegularPrice.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sIsTaxAvailable: %s,\n", indentationValues, sipi.IsTaxAvailable)
+	fmt.Fprintf(&b, "%sTaxAmount: %s,\n", indentationValues, sipi.TaxAmount.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTotalAmount: %s,\n", indentationValues, sipi.TotalAmount.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCurrentBalance: %s,\n", indentationValues, sipi.CurrentBalance.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

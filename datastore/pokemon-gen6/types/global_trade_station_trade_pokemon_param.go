@@ -44,39 +44,39 @@ func (gtstpp GlobalTradeStationTradePokemonParam) WriteTo(writable types.Writabl
 // ExtractFrom extracts the GlobalTradeStationTradePokemonParam from the given readable
 func (gtstpp *GlobalTradeStationTradePokemonParam) ExtractFrom(readable types.Readable) error {
 	if err := gtstpp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam header. %s", err.Error())
 	}
 
 	if err := gtstpp.TradeKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.TradeKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam.TradeKey. %s", err.Error())
 	}
 
 	if err := gtstpp.PrepareTradeKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PrepareTradeKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam.PrepareTradeKey. %s", err.Error())
 	}
 
 	if err := gtstpp.PrepareUploadKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PrepareUploadKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	if err := gtstpp.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam.Period. %s", err.Error())
 	}
 
 	if err := gtstpp.IndexData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.IndexData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam.IndexData. %s", err.Error())
 	}
 
 	if err := gtstpp.PokemonData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PokemonData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam.PokemonData. %s", err.Error())
 	}
 
 	if err := gtstpp.Signature.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.Signature. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam.Signature. %s", err.Error())
 	}
 
 	if err := gtstpp.NeedData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.NeedData. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradePokemonParam.NeedData. %s", err.Error())
 	}
 
 	return nil
@@ -169,15 +169,15 @@ func (gtstpp GlobalTradeStationTradePokemonParam) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationTradePokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sTradeKey: %s,\n", indentationValues, gtstpp.TradeKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareTradeKey: %s,\n", indentationValues, gtstpp.PrepareTradeKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtstpp.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, gtstpp.Period))
-	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtstpp.IndexData))
-	b.WriteString(fmt.Sprintf("%sPokemonData: %s,\n", indentationValues, gtstpp.PokemonData))
-	b.WriteString(fmt.Sprintf("%sSignature: %s,\n", indentationValues, gtstpp.Signature))
-	b.WriteString(fmt.Sprintf("%sNeedData: %s,\n", indentationValues, gtstpp.NeedData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTradeKey: %s,\n", indentationValues, gtstpp.TradeKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrepareTradeKey: %s,\n", indentationValues, gtstpp.PrepareTradeKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrepareUploadKey: %s,\n", indentationValues, gtstpp.PrepareUploadKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, gtstpp.Period)
+	fmt.Fprintf(&b, "%sIndexData: %s,\n", indentationValues, gtstpp.IndexData)
+	fmt.Fprintf(&b, "%sPokemonData: %s,\n", indentationValues, gtstpp.PokemonData)
+	fmt.Fprintf(&b, "%sSignature: %s,\n", indentationValues, gtstpp.Signature)
+	fmt.Fprintf(&b, "%sNeedData: %s,\n", indentationValues, gtstpp.NeedData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

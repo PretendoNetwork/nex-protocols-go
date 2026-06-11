@@ -35,7 +35,7 @@ func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterf
 
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterf
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterf
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, param, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

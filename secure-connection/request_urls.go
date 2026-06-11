@@ -32,7 +32,7 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 
 	err = cidTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestURLs(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, cidTarget, pidTarget)
+		_, rmcError := protocol.RequestURLs(fmt.Errorf("failed to read cidTarget from parameters. %s", err.Error()), packet, callID, cidTarget, pidTarget)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 
 	err = pidTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestURLs(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, cidTarget, pidTarget)
+		_, rmcError := protocol.RequestURLs(fmt.Errorf("failed to read pidTarget from parameters. %s", err.Error()), packet, callID, cidTarget, pidTarget)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

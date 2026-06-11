@@ -30,7 +30,7 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 
 	err := persistentNotifications.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeletePersistentNotification(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), packet, callID, persistentNotifications)
+		_, rmcError := protocol.DeletePersistentNotification(fmt.Errorf("failed to read persistentNotifications from parameters. %s", err.Error()), packet, callID, persistentNotifications)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

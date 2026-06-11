@@ -33,7 +33,7 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 
 	err = commonData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PutCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, commonData, nexUniqueID)
+		_, rmcError := protocol.PutCommonData(fmt.Errorf("failed to read commonData from parameters. %s", err.Error()), packet, callID, commonData, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 
 	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PutCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, commonData, nexUniqueID)
+		_, rmcError := protocol.PutCommonData(fmt.Errorf("failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, commonData, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

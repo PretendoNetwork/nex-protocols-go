@@ -34,19 +34,19 @@ func (spcp SubscriberPostContentParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SubscriberPostContentParam from the given readable
 func (spcp *SubscriberPostContentParam) ExtractFrom(readable types.Readable) error {
 	if err := spcp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberPostContentParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberPostContentParam header. %s", err.Error())
 	}
 
 	if err := spcp.Topic.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Topic. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberPostContentParam.Topic. %s", err.Error())
 	}
 
 	if err := spcp.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberPostContentParam.Message. %s", err.Error())
 	}
 
 	if err := spcp.Binary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Binary. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberPostContentParam.Binary. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (spcp SubscriberPostContentParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("SubscriberPostContentParam{\n")
-	b.WriteString(fmt.Sprintf("%sTopic: %s,\n", indentationValues, spcp.Topic))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, spcp.Message))
-	b.WriteString(fmt.Sprintf("%sBinary: %s,\n", indentationValues, spcp.Binary))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTopic: %s,\n", indentationValues, spcp.Topic)
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, spcp.Message)
+	fmt.Fprintf(&b, "%sBinary: %s,\n", indentationValues, spcp.Binary)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

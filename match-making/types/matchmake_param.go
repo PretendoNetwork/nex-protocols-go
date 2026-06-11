@@ -30,11 +30,11 @@ func (mp MatchmakeParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeParam from the given readable
 func (mp *MatchmakeParam) ExtractFrom(readable types.Readable) error {
 	if err := mp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeParam header. %s", err.Error())
 	}
 
 	if err := mp.Params.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeParam.Params. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeParam.Params. %s", err.Error())
 	}
 
 	return nil
@@ -92,8 +92,8 @@ func (mp MatchmakeParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MatchmakeParam{\n")
-	b.WriteString(fmt.Sprintf("%sParams: %s,\n", indentationValues, mp.Params.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sParams: %s,\n", indentationValues, mp.Params.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -32,15 +32,15 @@ func (dsriws DataStoreRatingInfoWithSlot) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreRatingInfoWithSlot from the given readable
 func (dsriws *DataStoreRatingInfoWithSlot) ExtractFrom(readable types.Readable) error {
 	if err := dsriws.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfoWithSlot header. %s", err.Error())
 	}
 
 	if err := dsriws.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfoWithSlot.Slot. %s", err.Error())
 	}
 
 	if err := dsriws.Rating.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Rating. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfoWithSlot.Rating. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dsriws DataStoreRatingInfoWithSlot) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInfoWithSlot{\n")
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsriws.Slot))
-	b.WriteString(fmt.Sprintf("%sRating: %s,\n", indentationValues, dsriws.Rating.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsriws.Slot)
+	fmt.Fprintf(&b, "%sRating: %s,\n", indentationValues, dsriws.Rating.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

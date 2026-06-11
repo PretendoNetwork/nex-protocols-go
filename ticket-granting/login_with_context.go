@@ -29,7 +29,7 @@ func (protocol *Protocol) handleLoginWithContext(packet nex.PacketInterface) {
 
 	err := loginData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.LoginWithContext(fmt.Errorf("Failed to read loginData from parameters. %s", err.Error()), packet, callID, loginData)
+		_, rmcError := protocol.LoginWithContext(fmt.Errorf("failed to read loginData from parameters. %s", err.Error()), packet, callID, loginData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

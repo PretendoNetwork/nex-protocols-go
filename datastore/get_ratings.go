@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRatings(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, accessPassword)
+		_, rmcError := protocol.GetRatings(fmt.Errorf("failed to read dataIDs from parameters. %s", err.Error()), packet, callID, dataIDs, accessPassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 
 	err = accessPassword.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRatings(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, dataIDs, accessPassword)
+		_, rmcError := protocol.GetRatings(fmt.Errorf("failed to read accessPassword from parameters. %s", err.Error()), packet, callID, dataIDs, accessPassword)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

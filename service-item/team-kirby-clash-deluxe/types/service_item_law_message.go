@@ -32,15 +32,15 @@ func (silm ServiceItemLawMessage) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemLawMessage from the given readable
 func (silm *ServiceItemLawMessage) ExtractFrom(readable types.Readable) error {
 	if err := silm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemLawMessage header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemLawMessage header. %s", err.Error())
 	}
 
 	if err := silm.IsMessageRequired.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemLawMessage.IsMessageRequired. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemLawMessage.IsMessageRequired. %s", err.Error())
 	}
 
 	if err := silm.LawMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemLawMessage.LawMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemLawMessage.LawMessage. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (silm ServiceItemLawMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemLawMessage{\n")
-	b.WriteString(fmt.Sprintf("%sIsMessageRequired: %s,\n", indentationValues, silm.IsMessageRequired))
-	b.WriteString(fmt.Sprintf("%sLawMessage: %s,\n", indentationValues, silm.LawMessage))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIsMessageRequired: %s,\n", indentationValues, silm.IsMessageRequired)
+	fmt.Fprintf(&b, "%sLawMessage: %s,\n", indentationValues, silm.LawMessage)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

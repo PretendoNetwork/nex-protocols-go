@@ -36,23 +36,23 @@ func (dsrl DataStoreRatingLog) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreRatingLog from the given readable
 func (dsrl *DataStoreRatingLog) ExtractFrom(readable types.Readable) error {
 	if err := dsrl.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog header. %s", err.Error())
 	}
 
 	if err := dsrl.IsRated.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.IsRated. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog.IsRated. %s", err.Error())
 	}
 
 	if err := dsrl.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog.PID. %s", err.Error())
 	}
 
 	if err := dsrl.RatingValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.RatingValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog.RatingValue. %s", err.Error())
 	}
 
 	if err := dsrl.LockExpirationTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.LockExpirationTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingLog.LockExpirationTime. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (dsrl DataStoreRatingLog) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingLog{\n")
-	b.WriteString(fmt.Sprintf("%sIsRated: %s,\n", indentationValues, dsrl.IsRated))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, dsrl.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRatingValue: %s,\n", indentationValues, dsrl.RatingValue))
-	b.WriteString(fmt.Sprintf("%sLockExpirationTime: %s,\n", indentationValues, dsrl.LockExpirationTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIsRated: %s,\n", indentationValues, dsrl.IsRated)
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, dsrl.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRatingValue: %s,\n", indentationValues, dsrl.RatingValue)
+	fmt.Fprintf(&b, "%sLockExpirationTime: %s,\n", indentationValues, dsrl.LockExpirationTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

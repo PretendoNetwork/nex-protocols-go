@@ -36,23 +36,23 @@ func (dsgcrp DataStoreGetCustomRankingParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreGetCustomRankingParam from the given readable
 func (dsgcrp *DataStoreGetCustomRankingParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgcrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam header. %s", err.Error())
 	}
 
 	if err := dsgcrp.ApplicationID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ApplicationID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam.ApplicationID. %s", err.Error())
 	}
 
 	if err := dsgcrp.Condition.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.Condition. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam.Condition. %s", err.Error())
 	}
 
 	if err := dsgcrp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam.ResultOption. %s", err.Error())
 	}
 
 	if err := dsgcrp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetCustomRankingParam.ResultRange. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (dsgcrp DataStoreGetCustomRankingParam) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCustomRankingParam{\n")
-	b.WriteString(fmt.Sprintf("%sApplicationID: %s,\n", indentationValues, dsgcrp.ApplicationID))
-	b.WriteString(fmt.Sprintf("%sCondition: %s,\n", indentationValues, dsgcrp.Condition.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dsgcrp.ResultOption))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dsgcrp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sApplicationID: %s,\n", indentationValues, dsgcrp.ApplicationID)
+	fmt.Fprintf(&b, "%sCondition: %s,\n", indentationValues, dsgcrp.Condition.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sResultOption: %s,\n", indentationValues, dsgcrp.ResultOption)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, dsgcrp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

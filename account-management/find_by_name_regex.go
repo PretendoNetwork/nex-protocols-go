@@ -33,7 +33,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	err = uiGroups.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, uiGroups, strRegex, resultRange)
+		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("failed to read uiGroups from parameters. %s", err.Error()), packet, callID, uiGroups, strRegex, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	err = strRegex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("Failed to read strRegex from parameters. %s", err.Error()), packet, callID, uiGroups, strRegex, resultRange)
+		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("failed to read strRegex from parameters. %s", err.Error()), packet, callID, uiGroups, strRegex, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, uiGroups, strRegex, resultRange)
+		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, uiGroups, strRegex, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

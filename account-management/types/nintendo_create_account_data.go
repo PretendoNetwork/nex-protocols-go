@@ -47,23 +47,23 @@ func (ncad NintendoCreateAccountData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NintendoCreateAccountData from the given readable
 func (ncad *NintendoCreateAccountData) ExtractFrom(readable types.Readable) error {
 	if err := ncad.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoCreateAccountData header. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoCreateAccountData header. %s", err.Error())
 	}
 
 	if err := ncad.NNAInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoCreateAccountData.NNAInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoCreateAccountData.NNAInfo. %s", err.Error())
 	}
 
 	if err := ncad.Token.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Token. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoCreateAccountData.Token. %s", err.Error())
 	}
 
 	if err := ncad.Birthday.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Birthday. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoCreateAccountData.Birthday. %s", err.Error())
 	}
 
 	if err := ncad.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoCreateAccountData.Unknown. %s", err.Error())
 	}
 
 	return nil
@@ -136,11 +136,11 @@ func (ncad NintendoCreateAccountData) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("NintendoCreateAccountData{\n")
-	b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, ncad.NNAInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, ncad.Token))
-	b.WriteString(fmt.Sprintf("%sBirthday: %s,\n", indentationValues, ncad.Birthday.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, ncad.Unknown))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNNAInfo: %s,\n", indentationValues, ncad.NNAInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sToken: %s,\n", indentationValues, ncad.Token)
+	fmt.Fprintf(&b, "%sBirthday: %s,\n", indentationValues, ncad.Birthday.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, ncad.Unknown)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

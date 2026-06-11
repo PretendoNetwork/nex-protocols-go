@@ -48,28 +48,28 @@ func (dspgp *DataStorePrepareGetParam) ExtractFrom(readable types.Readable) erro
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dspgp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParam header. %s", err.Error())
 	}
 
 	if err := dspgp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParam.DataID. %s", err.Error())
 	}
 
 	if err := dspgp.LockID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.LockID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParam.LockID. %s", err.Error())
 	}
 
 	if err := dspgp.PersistenceTarget.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.PersistenceTarget. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParam.PersistenceTarget. %s", err.Error())
 	}
 
 	if err := dspgp.AccessPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.AccessPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParam.AccessPassword. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
 		if err := dspgp.ExtraData.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStorePrepareGetParam.ExtraData. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStorePrepareGetParam.ExtraData. %s", err.Error())
 		}
 	}
 
@@ -148,12 +148,12 @@ func (dspgp DataStorePrepareGetParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspgp.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %s,\n", indentationValues, dspgp.LockID))
-	b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dspgp.PersistenceTarget.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dspgp.AccessPassword))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspgp.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dspgp.DataID)
+	fmt.Fprintf(&b, "%sLockID: %s,\n", indentationValues, dspgp.LockID)
+	fmt.Fprintf(&b, "%sPersistenceTarget: %s,\n", indentationValues, dspgp.PersistenceTarget.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAccessPassword: %s,\n", indentationValues, dspgp.AccessPassword)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dspgp.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

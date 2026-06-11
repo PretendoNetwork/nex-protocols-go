@@ -32,15 +32,15 @@ func (bmi BankMigrationInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the BankMigrationInfo from the given readable
 func (bmi *BankMigrationInfo) ExtractFrom(readable types.Readable) error {
 	if err := bmi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankMigrationInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract BankMigrationInfo header. %s", err.Error())
 	}
 
 	if err := bmi.MigrationStatus.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankMigrationInfo.MigrationStatus. %s", err.Error())
+		return fmt.Errorf("failed to extract BankMigrationInfo.MigrationStatus. %s", err.Error())
 	}
 
 	if err := bmi.UpdatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BankMigrationInfo.UpdatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract BankMigrationInfo.UpdatedTime. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (bmi BankMigrationInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BankMigrationInfo{\n")
-	b.WriteString(fmt.Sprintf("%sMigrationStatus: %s,\n", indentationValues, bmi.MigrationStatus))
-	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, bmi.UpdatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMigrationStatus: %s,\n", indentationValues, bmi.MigrationStatus)
+	fmt.Fprintf(&b, "%sUpdatedTime: %s,\n", indentationValues, bmi.UpdatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

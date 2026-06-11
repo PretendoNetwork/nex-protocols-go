@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 
 	err := nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nexUniqueID)
+		_, rmcError := protocol.DeleteCommonData(fmt.Errorf("failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

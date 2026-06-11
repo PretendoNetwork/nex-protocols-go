@@ -42,35 +42,35 @@ func (sin ServiceItemNotice) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemNotice from the given readable
 func (sin *ServiceItemNotice) ExtractFrom(readable types.Readable) error {
 	if err := sin.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice header. %s", err.Error())
 	}
 
 	if err := sin.ScheduleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ScheduleID. %s", err.Error())
 	}
 
 	if err := sin.ScheduleType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ScheduleType. %s", err.Error())
 	}
 
 	if err := sin.ParamInt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamInt. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ParamInt. %s", err.Error())
 	}
 
 	if err := sin.ParamString.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamString. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ParamString. %s", err.Error())
 	}
 
 	if err := sin.ParamBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.ParamBinary. %s", err.Error())
 	}
 
 	if err := sin.TimeBegin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeBegin. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.TimeBegin. %s", err.Error())
 	}
 
 	if err := sin.TimeEnd.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeEnd. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemNotice.TimeEnd. %s", err.Error())
 	}
 
 	return nil
@@ -158,14 +158,14 @@ func (sin ServiceItemNotice) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemNotice{\n")
-	b.WriteString(fmt.Sprintf("%sScheduleID: %s,\n", indentationValues, sin.ScheduleID))
-	b.WriteString(fmt.Sprintf("%sScheduleType: %s,\n", indentationValues, sin.ScheduleType))
-	b.WriteString(fmt.Sprintf("%sParamInt: %s,\n", indentationValues, sin.ParamInt))
-	b.WriteString(fmt.Sprintf("%sParamString: %s,\n", indentationValues, sin.ParamString))
-	b.WriteString(fmt.Sprintf("%sParamBinary: %s,\n", indentationValues, sin.ParamBinary))
-	b.WriteString(fmt.Sprintf("%sTimeBegin: %s,\n", indentationValues, sin.TimeBegin.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sTimeEnd: %s,\n", indentationValues, sin.TimeEnd.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sScheduleID: %s,\n", indentationValues, sin.ScheduleID)
+	fmt.Fprintf(&b, "%sScheduleType: %s,\n", indentationValues, sin.ScheduleType)
+	fmt.Fprintf(&b, "%sParamInt: %s,\n", indentationValues, sin.ParamInt)
+	fmt.Fprintf(&b, "%sParamString: %s,\n", indentationValues, sin.ParamString)
+	fmt.Fprintf(&b, "%sParamBinary: %s,\n", indentationValues, sin.ParamBinary)
+	fmt.Fprintf(&b, "%sTimeBegin: %s,\n", indentationValues, sin.TimeBegin.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sTimeEnd: %s,\n", indentationValues, sin.TimeEnd.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

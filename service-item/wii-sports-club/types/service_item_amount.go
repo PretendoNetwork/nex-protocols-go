@@ -34,19 +34,19 @@ func (sia ServiceItemAmount) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemAmount from the given readable
 func (sia *ServiceItemAmount) ExtractFrom(readable types.Readable) error {
 	if err := sia.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAmount header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAmount header. %s", err.Error())
 	}
 
 	if err := sia.FormattedAmount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAmount.FormattedAmount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAmount.FormattedAmount. %s", err.Error())
 	}
 
 	if err := sia.Currency.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAmount.Currency. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAmount.Currency. %s", err.Error())
 	}
 
 	if err := sia.RawValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAmount.RawValue. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAmount.RawValue. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (sia ServiceItemAmount) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAmount{\n")
-	b.WriteString(fmt.Sprintf("%sFormattedAmount: %s,\n", indentationValues, sia.FormattedAmount))
-	b.WriteString(fmt.Sprintf("%sCurrency: %s,\n", indentationValues, sia.Currency))
-	b.WriteString(fmt.Sprintf("%sRawValue: %s,\n", indentationValues, sia.RawValue))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sFormattedAmount: %s,\n", indentationValues, sia.FormattedAmount)
+	fmt.Fprintf(&b, "%sCurrency: %s,\n", indentationValues, sia.Currency)
+	fmt.Fprintf(&b, "%sRawValue: %s,\n", indentationValues, sia.RawValue)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -53,35 +53,35 @@ func (fi FriendInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendInfo from the given readable
 func (fi *FriendInfo) ExtractFrom(readable types.Readable) error {
 	if err := fi.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.Data. %s", err.Error())
 	}
 
 	if err := fi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo header. %s", err.Error())
 	}
 
 	if err := fi.NNAInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.NNAInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.NNAInfo. %s", err.Error())
 	}
 
 	if err := fi.Presence.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.Presence. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.Presence. %s", err.Error())
 	}
 
 	if err := fi.Status.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.Status. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.Status. %s", err.Error())
 	}
 
 	if err := fi.BecameFriend.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.BecameFriend. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.BecameFriend. %s", err.Error())
 	}
 
 	if err := fi.LastOnline.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.LastOnline. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.LastOnline. %s", err.Error())
 	}
 
 	if err := fi.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendInfo.Unknown. %s", err.Error())
 	}
 
 	return nil
@@ -169,14 +169,14 @@ func (fi FriendInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fi.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, fi.NNAInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, fi.Presence.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, fi.Status.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBecameFriend: %s,\n", indentationValues, fi.BecameFriend.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLastOnline: %s,\n", indentationValues, fi.LastOnline.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, fi.Unknown))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fi.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNNAInfo: %s,\n", indentationValues, fi.NNAInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPresence: %s,\n", indentationValues, fi.Presence.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStatus: %s,\n", indentationValues, fi.Status.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBecameFriend: %s,\n", indentationValues, fi.BecameFriend.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLastOnline: %s,\n", indentationValues, fi.LastOnline.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, fi.Unknown)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

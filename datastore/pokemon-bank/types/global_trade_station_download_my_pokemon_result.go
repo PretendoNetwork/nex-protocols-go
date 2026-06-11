@@ -32,15 +32,15 @@ func (gtsdmpr GlobalTradeStationDownloadMyPokemonResult) WriteTo(writable types.
 // ExtractFrom extracts the GlobalTradeStationDownloadMyPokemonResult from the given readable
 func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) ExtractFrom(readable types.Readable) error {
 	if err := gtsdmpr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadMyPokemonResult header. %s", err.Error())
 	}
 
 	if err := gtsdmpr.Result.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonResult.Result. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadMyPokemonResult.Result. %s", err.Error())
 	}
 
 	if err := gtsdmpr.IsTraded.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonResult.IsTraded. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDownloadMyPokemonResult.IsTraded. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (gtsdmpr GlobalTradeStationDownloadMyPokemonResult) FormatToString(indentat
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDownloadMyPokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, gtsdmpr.Result.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sIsTraded: %s,\n", indentationValues, gtsdmpr.IsTraded))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sResult: %s,\n", indentationValues, gtsdmpr.Result.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sIsTraded: %s,\n", indentationValues, gtsdmpr.IsTraded)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

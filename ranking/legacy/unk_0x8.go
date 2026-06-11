@@ -34,7 +34,7 @@ func (protocol *Protocol) handleUnk0x8(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x8(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, unknown)
+		_, rmcError := protocol.Unk0x8(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, unknown)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleUnk0x8(packet nex.PacketInterface) {
 
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x8(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, unknown)
+		_, rmcError := protocol.Unk0x8(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, unknown)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

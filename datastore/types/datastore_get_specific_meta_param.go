@@ -30,11 +30,11 @@ func (dsgsmp DataStoreGetSpecificMetaParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreGetSpecificMetaParam from the given readable
 func (dsgsmp *DataStoreGetSpecificMetaParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgsmp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetSpecificMetaParam header. %s", err.Error())
 	}
 
 	if err := dsgsmp.DataIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParam.DataIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetSpecificMetaParam.DataIDs. %s", err.Error())
 	}
 
 	return nil
@@ -92,8 +92,8 @@ func (dsgsmp DataStoreGetSpecificMetaParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetSpecificMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataIDs: %s,\n", indentationValues, dsgsmp.DataIDs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataIDs: %s,\n", indentationValues, dsgsmp.DataIDs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

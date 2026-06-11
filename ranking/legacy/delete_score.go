@@ -31,11 +31,8 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 	var uniqueID types.UInt32
 	var category types.UInt32
 
-	var err error
-
-	err = uniqueID.ExtractFrom(parametersStream)
-	if err != nil {
-		_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category)
+	if err := uniqueID.ExtractFrom(parametersStream); err != nil {
+		_, rmcError := protocol.DeleteScore(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,9 +41,8 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 	}
 
 	if rankingVersion.GreaterOrEqual("2.0.0") {
-		err = category.ExtractFrom(parametersStream)
-		if err != nil {
-			_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category)
+		if err := category.ExtractFrom(parametersStream); err != nil {
+			_, rmcError := protocol.DeleteScore(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -56,9 +52,8 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 	} else {
 		var categories types.List[types.UInt16]
 
-		err = categories.ExtractFrom(parametersStream)
-		if err != nil {
-			_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, uniqueID, category)
+		if err := categories.ExtractFrom(parametersStream); err != nil {
+			_, rmcError := protocol.DeleteScore(fmt.Errorf("failed to read categories from parameters. %s", err.Error()), packet, callID, uniqueID, category)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -67,7 +62,7 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 		}
 
 		if len(categories) != constants.NumRankingDataCategories {
-			_, rmcError := protocol.DeleteScore(fmt.Errorf("Failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, uniqueID, category)
+			_, rmcError := protocol.DeleteScore(fmt.Errorf("failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, uniqueID, category)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}

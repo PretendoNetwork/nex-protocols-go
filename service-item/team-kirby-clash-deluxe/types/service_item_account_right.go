@@ -34,19 +34,19 @@ func (siar ServiceItemAccountRight) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemAccountRight from the given readable
 func (siar *ServiceItemAccountRight) ExtractFrom(readable types.Readable) error {
 	if err := siar.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRight header. %s", err.Error())
 	}
 
 	if err := siar.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRight.PID. %s", err.Error())
 	}
 
 	if err := siar.Limitation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight.Limitation. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRight.Limitation. %s", err.Error())
 	}
 
 	if err := siar.RightBinaries.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight.RightBinaries. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAccountRight.RightBinaries. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (siar ServiceItemAccountRight) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAccountRight{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, siar.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, siar.Limitation.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRightBinaries: %s,\n", indentationValues, siar.RightBinaries))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, siar.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLimitation: %s,\n", indentationValues, siar.Limitation.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRightBinaries: %s,\n", indentationValues, siar.RightBinaries)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

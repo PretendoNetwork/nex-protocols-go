@@ -45,39 +45,39 @@ func (amp AutoMatchmakeParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the AutoMatchmakeParam from the given readable
 func (amp *AutoMatchmakeParam) ExtractFrom(readable types.Readable) error {
 	if err := amp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam header. %s", err.Error())
 	}
 
 	if err := amp.SourceMatchmakeSession.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam.SourceMatchmakeSession. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
 	if err := amp.AdditionalParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AdditionalParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam.AdditionalParticipants. %s", err.Error())
 	}
 
 	if err := amp.GIDForParticipationCheck.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam.GIDForParticipationCheck. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
 	if err := amp.AutoMatchmakeOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AutoMatchmakeOption. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam.AutoMatchmakeOption. %s", err.Error())
 	}
 
 	if err := amp.JoinMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam.JoinMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam.JoinMessage. %s", err.Error())
 	}
 
 	if err := amp.ParticipationCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam.ParticipationCount. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam.ParticipationCount. %s", err.Error())
 	}
 
 	if err := amp.LstSearchCriteria.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam.LstSearchCriteria. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam.LstSearchCriteria. %s", err.Error())
 	}
 
 	if err := amp.TargetGIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AutoMatchmakeParam.TargetGIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract AutoMatchmakeParam.TargetGIDs. %s", err.Error())
 	}
 
 	return nil
@@ -170,15 +170,15 @@ func (amp AutoMatchmakeParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("AutoMatchmakeParam{\n")
-	b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, amp.SourceMatchmakeSession.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %s,\n", indentationValues, amp.AdditionalParticipants))
-	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %s,\n", indentationValues, amp.GIDForParticipationCheck))
-	b.WriteString(fmt.Sprintf("%sAutoMatchmakeOption: %s,\n", indentationValues, amp.AutoMatchmakeOption))
-	b.WriteString(fmt.Sprintf("%sJoinMessage: %s,\n", indentationValues, amp.JoinMessage))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, amp.ParticipationCount))
-	b.WriteString(fmt.Sprintf("%sLstSearchCriteria: %s,\n", indentationValues, amp.LstSearchCriteria))
-	b.WriteString(fmt.Sprintf("%sTargetGIDs: %s,\n", indentationValues, amp.TargetGIDs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSourceMatchmakeSession: %s,\n", indentationValues, amp.SourceMatchmakeSession.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAdditionalParticipants: %s,\n", indentationValues, amp.AdditionalParticipants)
+	fmt.Fprintf(&b, "%sGIDForParticipationCheck: %s,\n", indentationValues, amp.GIDForParticipationCheck)
+	fmt.Fprintf(&b, "%sAutoMatchmakeOption: %s,\n", indentationValues, amp.AutoMatchmakeOption)
+	fmt.Fprintf(&b, "%sJoinMessage: %s,\n", indentationValues, amp.JoinMessage)
+	fmt.Fprintf(&b, "%sParticipationCount: %s,\n", indentationValues, amp.ParticipationCount)
+	fmt.Fprintf(&b, "%sLstSearchCriteria: %s,\n", indentationValues, amp.LstSearchCriteria)
+	fmt.Fprintf(&b, "%sTargetGIDs: %s,\n", indentationValues, amp.TargetGIDs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

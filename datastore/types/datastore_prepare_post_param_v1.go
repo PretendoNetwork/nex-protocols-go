@@ -51,51 +51,51 @@ func (dspppv DataStorePreparePostParamV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePreparePostParamV1 from the given readable
 func (dspppv *DataStorePreparePostParamV1) ExtractFrom(readable types.Readable) error {
 	if err := dspppv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1 header. %s", err.Error())
 	}
 
 	if err := dspppv.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Size. %s", err.Error())
 	}
 
 	if err := dspppv.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Name. %s", err.Error())
 	}
 
 	if err := dspppv.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.DataType. %s", err.Error())
 	}
 
 	if err := dspppv.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.MetaBinary. %s", err.Error())
 	}
 
 	if err := dspppv.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Permission. %s", err.Error())
 	}
 
 	if err := dspppv.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.DelPermission. %s", err.Error())
 	}
 
 	if err := dspppv.Flag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Flag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Flag. %s", err.Error())
 	}
 
 	if err := dspppv.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Period. %s", err.Error())
 	}
 
 	if err := dspppv.ReferDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.ReferDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.ReferDataID. %s", err.Error())
 	}
 
 	if err := dspppv.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.Tags. %s", err.Error())
 	}
 
 	if err := dspppv.RatingInitParams.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.RatingInitParams. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePreparePostParamV1.RatingInitParams. %s", err.Error())
 	}
 
 	return nil
@@ -203,18 +203,18 @@ func (dspppv DataStorePreparePostParamV1) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("DataStorePreparePostParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dspppv.Size))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dspppv.Name))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dspppv.DataType))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dspppv.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dspppv.Permission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dspppv.DelPermission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sFlag: %s,\n", indentationValues, dspppv.Flag))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dspppv.Period))
-	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dspppv.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dspppv.Tags))
-	b.WriteString(fmt.Sprintf("%sRatingInitParams: %s,\n", indentationValues, dspppv.RatingInitParams))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dspppv.Size)
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, dspppv.Name)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dspppv.DataType)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dspppv.MetaBinary)
+	fmt.Fprintf(&b, "%sPermission: %s,\n", indentationValues, dspppv.Permission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDelPermission: %s,\n", indentationValues, dspppv.DelPermission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sFlag: %s,\n", indentationValues, dspppv.Flag)
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, dspppv.Period)
+	fmt.Fprintf(&b, "%sReferDataID: %s,\n", indentationValues, dspppv.ReferDataID)
+	fmt.Fprintf(&b, "%sTags: %s,\n", indentationValues, dspppv.Tags)
+	fmt.Fprintf(&b, "%sRatingInitParams: %s,\n", indentationValues, dspppv.RatingInitParams)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

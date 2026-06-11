@@ -42,35 +42,35 @@ func (gtsspp GlobalTradeStationSearchPokemonParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the GlobalTradeStationSearchPokemonParam from the given readable
 func (gtsspp *GlobalTradeStationSearchPokemonParam) ExtractFrom(readable types.Readable) error {
 	if err := gtsspp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam header. %s", err.Error())
 	}
 
 	if err := gtsspp.PrepareUploadKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.PrepareUploadKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	if err := gtsspp.Conditions.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.Conditions. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.Conditions. %s", err.Error())
 	}
 
 	if err := gtsspp.ResultOrderColumn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.ResultOrderColumn. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.ResultOrderColumn. %s", err.Error())
 	}
 
 	if err := gtsspp.ResultOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.ResultOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.ResultOrder. %s", err.Error())
 	}
 
 	if err := gtsspp.UploadedAfter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.UploadedAfter. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.UploadedAfter. %s", err.Error())
 	}
 
 	if err := gtsspp.UploadedBefore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.UploadedBefore. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.UploadedBefore. %s", err.Error())
 	}
 
 	if err := gtsspp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationSearchPokemonParam.ResultRange. %s", err.Error())
 	}
 
 	return nil
@@ -158,14 +158,14 @@ func (gtsspp GlobalTradeStationSearchPokemonParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationSearchPokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtsspp.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sConditions: %s,\n", indentationValues, gtsspp.Conditions))
-	b.WriteString(fmt.Sprintf("%sResultOrderColumn: %s,\n", indentationValues, gtsspp.ResultOrderColumn))
-	b.WriteString(fmt.Sprintf("%sResultOrder: %s,\n", indentationValues, gtsspp.ResultOrder))
-	b.WriteString(fmt.Sprintf("%sUploadedAfter: %s,\n", indentationValues, gtsspp.UploadedAfter.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUploadedBefore: %s,\n", indentationValues, gtsspp.UploadedBefore.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, gtsspp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrepareUploadKey: %s,\n", indentationValues, gtsspp.PrepareUploadKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sConditions: %s,\n", indentationValues, gtsspp.Conditions)
+	fmt.Fprintf(&b, "%sResultOrderColumn: %s,\n", indentationValues, gtsspp.ResultOrderColumn)
+	fmt.Fprintf(&b, "%sResultOrder: %s,\n", indentationValues, gtsspp.ResultOrder)
+	fmt.Fprintf(&b, "%sUploadedAfter: %s,\n", indentationValues, gtsspp.UploadedAfter.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUploadedBefore: %s,\n", indentationValues, gtsspp.UploadedBefore.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, gtsspp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

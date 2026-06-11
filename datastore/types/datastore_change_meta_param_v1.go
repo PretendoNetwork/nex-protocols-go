@@ -47,43 +47,43 @@ func (dscmpv DataStoreChangeMetaParamV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreChangeMetaParamV1 from the given readable
 func (dscmpv *DataStoreChangeMetaParamV1) ExtractFrom(readable types.Readable) error {
 	if err := dscmpv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1 header. %s", err.Error())
 	}
 
 	if err := dscmpv.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.DataID. %s", err.Error())
 	}
 
 	if err := dscmpv.ModifiesFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.ModifiesFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.ModifiesFlag. %s", err.Error())
 	}
 
 	if err := dscmpv.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.Name. %s", err.Error())
 	}
 
 	if err := dscmpv.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.Permission. %s", err.Error())
 	}
 
 	if err := dscmpv.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.DelPermission. %s", err.Error())
 	}
 
 	if err := dscmpv.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.Period. %s", err.Error())
 	}
 
 	if err := dscmpv.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.MetaBinary. %s", err.Error())
 	}
 
 	if err := dscmpv.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.Tags. %s", err.Error())
 	}
 
 	if err := dscmpv.UpdatePassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.UpdatePassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParamV1.UpdatePassword. %s", err.Error())
 	}
 
 	return nil
@@ -181,16 +181,16 @@ func (dscmpv DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangeMetaParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscmpv.DataID))
-	b.WriteString(fmt.Sprintf("%sModifiesFlag: %s,\n", indentationValues, dscmpv.ModifiesFlag))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dscmpv.Name))
-	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dscmpv.Permission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dscmpv.DelPermission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dscmpv.Period))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dscmpv.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dscmpv.Tags))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dscmpv.UpdatePassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscmpv.DataID)
+	fmt.Fprintf(&b, "%sModifiesFlag: %s,\n", indentationValues, dscmpv.ModifiesFlag)
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, dscmpv.Name)
+	fmt.Fprintf(&b, "%sPermission: %s,\n", indentationValues, dscmpv.Permission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDelPermission: %s,\n", indentationValues, dscmpv.DelPermission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, dscmpv.Period)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dscmpv.MetaBinary)
+	fmt.Fprintf(&b, "%sTags: %s,\n", indentationValues, dscmpv.Tags)
+	fmt.Fprintf(&b, "%sUpdatePassword: %s,\n", indentationValues, dscmpv.UpdatePassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

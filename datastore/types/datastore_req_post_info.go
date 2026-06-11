@@ -38,27 +38,27 @@ func (dsrpi DataStoreReqPostInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqPostInfo from the given readable
 func (dsrpi *DataStoreReqPostInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsrpi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo header. %s", err.Error())
 	}
 
 	if err := dsrpi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.DataID. %s", err.Error())
 	}
 
 	if err := dsrpi.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.URL. %s", err.Error())
 	}
 
 	if err := dsrpi.RequestHeaders.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.RequestHeaders. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.RequestHeaders. %s", err.Error())
 	}
 
 	if err := dsrpi.FormFields.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.FormFields. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.FormFields. %s", err.Error())
 	}
 
 	if err := dsrpi.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfo.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfo.RootCACert. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (dsrpi DataStoreReqPostInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqPostInfo{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrpi.DataID))
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrpi.URL))
-	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrpi.RequestHeaders))
-	b.WriteString(fmt.Sprintf("%sFormFields: %s,\n", indentationValues, dsrpi.FormFields))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrpi.RootCACert))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsrpi.DataID)
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrpi.URL)
+	fmt.Fprintf(&b, "%sRequestHeaders: %s,\n", indentationValues, dsrpi.RequestHeaders)
+	fmt.Fprintf(&b, "%sFormFields: %s,\n", indentationValues, dsrpi.FormFields)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrpi.RootCACert)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

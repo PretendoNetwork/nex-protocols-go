@@ -34,19 +34,19 @@ func (dspfpsp DataStorePostFightingPowerScoreParam) WriteTo(writable types.Writa
 // ExtractFrom extracts the DataStorePostFightingPowerScoreParam from the given readable
 func (dspfpsp *DataStorePostFightingPowerScoreParam) ExtractFrom(readable types.Readable) error {
 	if err := dspfpsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePostFightingPowerScoreParam header. %s", err.Error())
 	}
 
 	if err := dspfpsp.Mode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.Mode. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePostFightingPowerScoreParam.Mode. %s", err.Error())
 	}
 
 	if err := dspfpsp.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePostFightingPowerScoreParam.Score. %s", err.Error())
 	}
 
 	if err := dspfpsp.IsWorldHighScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.IsWorldHighScore. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePostFightingPowerScoreParam.IsWorldHighScore. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (dspfpsp DataStorePostFightingPowerScoreParam) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStorePostFightingPowerScoreParam{\n")
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dspfpsp.Mode))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dspfpsp.Score))
-	b.WriteString(fmt.Sprintf("%sIsWorldHighScore: %s,\n", indentationValues, dspfpsp.IsWorldHighScore))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMode: %s,\n", indentationValues, dspfpsp.Mode)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dspfpsp.Score)
+	fmt.Fprintf(&b, "%sIsWorldHighScore: %s,\n", indentationValues, dspfpsp.IsWorldHighScore)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

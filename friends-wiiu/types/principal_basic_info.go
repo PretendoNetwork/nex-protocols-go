@@ -39,27 +39,27 @@ func (pbi PrincipalBasicInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PrincipalBasicInfo from the given readable
 func (pbi *PrincipalBasicInfo) ExtractFrom(readable types.Readable) error {
 	if err := pbi.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.Data. %s", err.Error())
 	}
 
 	if err := pbi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo header. %s", err.Error())
 	}
 
 	if err := pbi.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.PID. %s", err.Error())
 	}
 
 	if err := pbi.NNID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.NNID. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.NNID. %s", err.Error())
 	}
 
 	if err := pbi.Mii.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Mii. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.Mii. %s", err.Error())
 	}
 
 	if err := pbi.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract PrincipalBasicInfo.Unknown. %s", err.Error())
 	}
 
 	return nil
@@ -137,12 +137,12 @@ func (pbi PrincipalBasicInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PrincipalBasicInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pbi.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, pbi.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNNID: %s,\n", indentationValues, pbi.NNID))
-	b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, pbi.Mii.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, pbi.Unknown))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, pbi.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, pbi.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNNID: %s,\n", indentationValues, pbi.NNID)
+	fmt.Fprintf(&b, "%sMii: %s,\n", indentationValues, pbi.Mii.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, pbi.Unknown)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

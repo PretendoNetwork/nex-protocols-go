@@ -38,27 +38,27 @@ func (sic ServiceItemCatalog) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemCatalog from the given readable
 func (sic *ServiceItemCatalog) ExtractFrom(readable types.Readable) error {
 	if err := sic.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog header. %s", err.Error())
 	}
 
 	if err := sic.TotalSize.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.TotalSize. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog.TotalSize. %s", err.Error())
 	}
 
 	if err := sic.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog.Offset. %s", err.Error())
 	}
 
 	if err := sic.ListItems.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.ListItems. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog.ListItems. %s", err.Error())
 	}
 
 	if err := sic.IsBalanceAvailable.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.IsBalanceAvailable. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog.IsBalanceAvailable. %s", err.Error())
 	}
 
 	if err := sic.Balance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.Balance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemCatalog.Balance. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (sic ServiceItemCatalog) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemCatalog{\n")
-	b.WriteString(fmt.Sprintf("%sTotalSize: %s,\n", indentationValues, sic.TotalSize))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, sic.Offset))
-	b.WriteString(fmt.Sprintf("%sListItems: %s,\n", indentationValues, sic.ListItems))
-	b.WriteString(fmt.Sprintf("%sIsBalanceAvailable: %s,\n", indentationValues, sic.IsBalanceAvailable))
-	b.WriteString(fmt.Sprintf("%sBalance: %s,\n", indentationValues, sic.Balance.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTotalSize: %s,\n", indentationValues, sic.TotalSize)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, sic.Offset)
+	fmt.Fprintf(&b, "%sListItems: %s,\n", indentationValues, sic.ListItems)
+	fmt.Fprintf(&b, "%sIsBalanceAvailable: %s,\n", indentationValues, sic.IsBalanceAvailable)
+	fmt.Fprintf(&b, "%sBalance: %s,\n", indentationValues, sic.Balance.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

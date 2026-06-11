@@ -34,7 +34,7 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, params, metaParam)
+		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("failed to read params from parameters. %s", err.Error()), packet, callID, params, metaParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 
 	err = metaParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, params, metaParam)
+		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("failed to read metaParam from parameters. %s", err.Error()), packet, callID, params, metaParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

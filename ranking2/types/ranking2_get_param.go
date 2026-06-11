@@ -47,43 +47,43 @@ func (rgp Ranking2GetParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2GetParam from the given readable
 func (rgp *Ranking2GetParam) ExtractFrom(readable types.Readable) error {
 	if err := rgp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam header. %s", err.Error())
 	}
 
 	if err := rgp.NexUniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.NexUniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.NexUniqueID. %s", err.Error())
 	}
 
 	if err := rgp.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.PrincipalID. %s", err.Error())
 	}
 
 	if err := rgp.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.Category. %s", err.Error())
 	}
 
 	if err := rgp.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.Offset. %s", err.Error())
 	}
 
 	if err := rgp.Length.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.Length. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.Length. %s", err.Error())
 	}
 
 	if err := rgp.SortFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.SortFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.SortFlags. %s", err.Error())
 	}
 
 	if err := rgp.OptionFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.OptionFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.OptionFlags. %s", err.Error())
 	}
 
 	if err := rgp.Mode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.Mode. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.Mode. %s", err.Error())
 	}
 
 	if err := rgp.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.NumSeasonsToGoBack. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetParam.NumSeasonsToGoBack. %s", err.Error())
 	}
 
 	return nil
@@ -181,16 +181,16 @@ func (rgp Ranking2GetParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2GetParam{\n")
-	b.WriteString(fmt.Sprintf("%sNexUniqueID: %s,\n", indentationValues, rgp.NexUniqueID))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rgp.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rgp.Category))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, rgp.Offset))
-	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, rgp.Length))
-	b.WriteString(fmt.Sprintf("%sSortFlags: %s,\n", indentationValues, rgp.SortFlags))
-	b.WriteString(fmt.Sprintf("%sOptionFlags: %s,\n", indentationValues, rgp.OptionFlags))
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, rgp.Mode))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, rgp.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNexUniqueID: %s,\n", indentationValues, rgp.NexUniqueID)
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, rgp.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rgp.Category)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, rgp.Offset)
+	fmt.Fprintf(&b, "%sLength: %s,\n", indentationValues, rgp.Length)
+	fmt.Fprintf(&b, "%sSortFlags: %s,\n", indentationValues, rgp.SortFlags)
+	fmt.Fprintf(&b, "%sOptionFlags: %s,\n", indentationValues, rgp.OptionFlags)
+	fmt.Fprintf(&b, "%sMode: %s,\n", indentationValues, rgp.Mode)
+	fmt.Fprintf(&b, "%sNumSeasonsToGoBack: %s,\n", indentationValues, rgp.NumSeasonsToGoBack)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

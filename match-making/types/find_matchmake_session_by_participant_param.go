@@ -35,19 +35,19 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) WriteTo(writable types.Writ
 // ExtractFrom extracts the FindMatchmakeSessionByParticipantParam from the given readable
 func (fmsbpp *FindMatchmakeSessionByParticipantParam) ExtractFrom(readable types.Readable) error {
 	if err := fmsbpp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract FindMatchmakeSessionByParticipantParam header. %s", err.Error())
 	}
 
 	if err := fmsbpp.PrincipalIDList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.PrincipalIDList. %s", err.Error())
+		return fmt.Errorf("failed to extract FindMatchmakeSessionByParticipantParam.PrincipalIDList. %s", err.Error())
 	}
 
 	if err := fmsbpp.ResultOptions.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.ResultOptions. %s", err.Error())
+		return fmt.Errorf("failed to extract FindMatchmakeSessionByParticipantParam.ResultOptions. %s", err.Error())
 	}
 
 	if err := fmsbpp.BlockListParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.BlockListParam. %s", err.Error())
+		return fmt.Errorf("failed to extract FindMatchmakeSessionByParticipantParam.BlockListParam. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (fmsbpp FindMatchmakeSessionByParticipantParam) FormatToString(indentationL
 	var b strings.Builder
 
 	b.WriteString("FindMatchmakeSessionByParticipantParam{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalIDList: %s,\n", indentationValues, fmsbpp.PrincipalIDList))
-	b.WriteString(fmt.Sprintf("%sResultOptions: %s,\n", indentationValues, fmsbpp.ResultOptions))
-	b.WriteString(fmt.Sprintf("%sBlockListParam: %s,\n", indentationValues, fmsbpp.BlockListParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalIDList: %s,\n", indentationValues, fmsbpp.PrincipalIDList)
+	fmt.Fprintf(&b, "%sResultOptions: %s,\n", indentationValues, fmsbpp.ResultOptions)
+	fmt.Fprintf(&b, "%sBlockListParam: %s,\n", indentationValues, fmsbpp.BlockListParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -54,35 +54,35 @@ func (dspup *DataStorePrepareUpdateParam) ExtractFrom(readable types.Readable) e
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dspup.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareUpdateParam header. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := dspup.DataID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 	} else {
 		dataID, err := readable.ReadUInt32LE()
 		if err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 
 		dspup.DataID = types.UInt64(dataID)
 	}
 
 	if err := dspup.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareUpdateParam.Size. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := dspup.UpdatePassword.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.UpdatePassword. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStorePrepareUpdateParam.UpdatePassword. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
 		if err := dspup.ExtraData.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.ExtraData. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStorePrepareUpdateParam.ExtraData. %s", err.Error())
 		}
 	}
 
@@ -156,11 +156,11 @@ func (dspup DataStorePrepareUpdateParam) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareUpdateParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspup.DataID))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dspup.Size))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dspup.UpdatePassword))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspup.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dspup.DataID)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dspup.Size)
+	fmt.Fprintf(&b, "%sUpdatePassword: %s,\n", indentationValues, dspup.UpdatePassword)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dspup.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

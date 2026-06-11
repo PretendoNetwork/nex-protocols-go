@@ -32,7 +32,7 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 
 	err = strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, strUserName, oExtraData)
+		_, rmcError := protocol.LoginEx(fmt.Errorf("failed to read strUserName from parameters. %s", err.Error()), packet, callID, strUserName, oExtraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 
 	err = oExtraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, strUserName, oExtraData)
+		_, rmcError := protocol.LoginEx(fmt.Errorf("failed to read oExtraData from parameters. %s", err.Error()), packet, callID, strUserName, oExtraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

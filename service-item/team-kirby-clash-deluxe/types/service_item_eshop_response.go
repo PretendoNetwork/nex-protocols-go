@@ -34,19 +34,19 @@ func (siesr ServiceItemEShopResponse) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemEShopResponse from the given readable
 func (siesr *ServiceItemEShopResponse) ExtractFrom(readable types.Readable) error {
 	if err := siesr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEShopResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEShopResponse header. %s", err.Error())
 	}
 
 	if err := siesr.HTTPStatus.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.HTTPStatus. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEShopResponse.HTTPStatus. %s", err.Error())
 	}
 
 	if err := siesr.ErrorCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.ErrorCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEShopResponse.ErrorCode. %s", err.Error())
 	}
 
 	if err := siesr.CorrelationID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.CorrelationID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEShopResponse.CorrelationID. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (siesr ServiceItemEShopResponse) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("ServiceItemEShopResponse{\n")
-	b.WriteString(fmt.Sprintf("%sHTTPStatus: %s,\n", indentationValues, siesr.HTTPStatus))
-	b.WriteString(fmt.Sprintf("%sErrorCode: %s,\n", indentationValues, siesr.ErrorCode))
-	b.WriteString(fmt.Sprintf("%sCorrelationID: %s,\n", indentationValues, siesr.CorrelationID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sHTTPStatus: %s,\n", indentationValues, siesr.HTTPStatus)
+	fmt.Fprintf(&b, "%sErrorCode: %s,\n", indentationValues, siesr.ErrorCode)
+	fmt.Fprintf(&b, "%sCorrelationID: %s,\n", indentationValues, siesr.CorrelationID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

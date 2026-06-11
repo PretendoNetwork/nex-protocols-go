@@ -30,11 +30,11 @@ func (mblp MatchmakeBlockListParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeBlockListParam from the given readable
 func (mblp *MatchmakeBlockListParam) ExtractFrom(readable types.Readable) error {
 	if err := mblp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeBlockListParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeBlockListParam header. %s", err.Error())
 	}
 
 	if err := mblp.OptionFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeBlockListParam.OptionFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeBlockListParam.OptionFlag. %s", err.Error())
 	}
 
 	return nil
@@ -92,8 +92,8 @@ func (mblp MatchmakeBlockListParam) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeBlockListParam{\n")
-	b.WriteString(fmt.Sprintf("%sOptionFlag: %s,\n", indentationValues, mblp.OptionFlag))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOptionFlag: %s,\n", indentationValues, mblp.OptionFlag)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

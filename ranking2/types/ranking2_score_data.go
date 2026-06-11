@@ -34,19 +34,19 @@ func (rsd Ranking2ScoreData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2ScoreData from the given readable
 func (rsd *Ranking2ScoreData) ExtractFrom(readable types.Readable) error {
 	if err := rsd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ScoreData header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ScoreData header. %s", err.Error())
 	}
 
 	if err := rsd.Misc.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ScoreData.Misc. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ScoreData.Misc. %s", err.Error())
 	}
 
 	if err := rsd.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ScoreData.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ScoreData.Category. %s", err.Error())
 	}
 
 	if err := rsd.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ScoreData.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ScoreData.Score. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (rsd Ranking2ScoreData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2ScoreData{\n")
-	b.WriteString(fmt.Sprintf("%sMisc: %s,\n", indentationValues, rsd.Misc))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rsd.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rsd.Score))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMisc: %s,\n", indentationValues, rsd.Misc)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rsd.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rsd.Score)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -32,15 +32,15 @@ func (sirtrp ServiceItemRequestTicketRestorationParam) WriteTo(writable types.Wr
 // ExtractFrom extracts the ServiceItemRequestTicketRestorationParam from the given readable
 func (sirtrp *ServiceItemRequestTicketRestorationParam) ExtractFrom(readable types.Readable) error {
 	if err := sirtrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRequestTicketRestorationParam header. %s", err.Error())
 	}
 
 	if err := sirtrp.TicketType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.TicketType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRequestTicketRestorationParam.TicketType. %s", err.Error())
 	}
 
 	if err := sirtrp.NumTicket.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.NumTicket. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRequestTicketRestorationParam.NumTicket. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (sirtrp ServiceItemRequestTicketRestorationParam) FormatToString(indentatio
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRequestTicketRestorationParam{\n")
-	b.WriteString(fmt.Sprintf("%sTicketType: %s,\n", indentationValues, sirtrp.TicketType))
-	b.WriteString(fmt.Sprintf("%sNumTicket: %s,\n", indentationValues, sirtrp.NumTicket))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTicketType: %s,\n", indentationValues, sirtrp.TicketType)
+	fmt.Fprintf(&b, "%sNumTicket: %s,\n", indentationValues, sirtrp.NumTicket)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

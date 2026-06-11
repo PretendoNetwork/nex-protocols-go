@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
 
 	err := pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetBasicInfo(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids)
+		_, rmcError := protocol.GetBasicInfo(fmt.Errorf("failed to read pids from parameters. %s", err.Error()), packet, callID, pids)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

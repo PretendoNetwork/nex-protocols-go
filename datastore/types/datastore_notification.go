@@ -32,15 +32,15 @@ func (dsn DataStoreNotification) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreNotification from the given readable
 func (dsn *DataStoreNotification) ExtractFrom(readable types.Readable) error {
 	if err := dsn.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreNotification header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreNotification header. %s", err.Error())
 	}
 
 	if err := dsn.NotificationID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreNotification.NotificationID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreNotification.NotificationID. %s", err.Error())
 	}
 
 	if err := dsn.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreNotification.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreNotification.DataID. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dsn DataStoreNotification) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreNotification{\n")
-	b.WriteString(fmt.Sprintf("%sNotificationID: %s,\n", indentationValues, dsn.NotificationID))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsn.DataID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNotificationID: %s,\n", indentationValues, dsn.NotificationID)
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsn.DataID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

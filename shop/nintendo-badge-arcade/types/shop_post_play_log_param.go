@@ -34,19 +34,19 @@ func (spplp ShopPostPlayLogParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ShopPostPlayLogParam from the given readable
 func (spplp *ShopPostPlayLogParam) ExtractFrom(readable types.Readable) error {
 	if err := spplp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopPostPlayLogParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopPostPlayLogParam header. %s", err.Error())
 	}
 
 	if err := spplp.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopPostPlayLogParam.Unknown1. %s", err.Error())
 	}
 
 	if err := spplp.Timestamp.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Timestamp. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopPostPlayLogParam.Timestamp. %s", err.Error())
 	}
 
 	if err := spplp.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopPostPlayLogParam.Unknown2. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (spplp ShopPostPlayLogParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ShopPostPlayLogParam{\n")
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, spplp.Unknown1))
-	b.WriteString(fmt.Sprintf("%sTimestamp: %s,\n", indentationValues, spplp.Timestamp.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, spplp.Unknown2))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, spplp.Unknown1)
+	fmt.Fprintf(&b, "%sTimestamp: %s,\n", indentationValues, spplp.Timestamp.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, spplp.Unknown2)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

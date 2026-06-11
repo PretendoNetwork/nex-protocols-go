@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 
 	err := dataIDList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteCustomRanking(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), packet, callID, dataIDList)
+		_, rmcError := protocol.DeleteCustomRanking(fmt.Errorf("failed to read dataIDList from parameters. %s", err.Error()), packet, callID, dataIDList)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

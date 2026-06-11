@@ -37,7 +37,7 @@ func (ms MatchmakeSession) ObjectID() types.RVType {
 	return ms.GatheringObjectID()
 }
 
-// DataObjectID returns the object identifier of the type embedding Gathering
+// GatheringObjectID returns the object identifier of the type embedding Gathering
 func (ms MatchmakeSession) GatheringObjectID() types.RVType {
 	return types.NewString("MatchmakeSession")
 }
@@ -111,94 +111,94 @@ func (ms *MatchmakeSession) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	if err := ms.Gathering.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSession.Gathering. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSession.Gathering. %s", err.Error())
 	}
 
 	if err := ms.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSession header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSession header. %s", err.Error())
 	}
 
 	if err := ms.GameMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSession.GameMode. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSession.GameMode. %s", err.Error())
 	}
 
 	if err := ms.Attributes.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSession.Attributes. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSession.Attributes. %s", err.Error())
 	}
 
 	if err := ms.OpenParticipation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSession.OpenParticipation. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSession.OpenParticipation. %s", err.Error())
 	}
 
 	if err := ms.MatchmakeSystemType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeSystemType. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSession.MatchmakeSystemType. %s", err.Error())
 	}
 
 	if err := ms.ApplicationBuffer.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSession.ApplicationBuffer. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSession.ApplicationBuffer. %s", err.Error())
 	}
 
 	if err := ms.ParticipationCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSession.ParticipationCount. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSession.ParticipationCount. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.4.0") {
 		if err := ms.ProgressScore.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.ProgressScore. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.ProgressScore. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := ms.SessionKey.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.SessionKey. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.SessionKey. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
 		if err := ms.Option0.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.Option0. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.Option0. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
 		if err := ms.MatchmakeParam.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeParam. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.MatchmakeParam. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
 		if err := ms.StartedTime.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.StartedTime. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.StartedTime. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
 		if err := ms.UserPassword.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.UserPassword. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.UserPassword. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
 		if err := ms.ReferGID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.ReferGID. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.ReferGID. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
 		if err := ms.UserPasswordEnabled.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.UserPasswordEnabled. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.UserPasswordEnabled. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
 		if err := ms.SystemPasswordEnabled.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.SystemPasswordEnabled. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.SystemPasswordEnabled. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := ms.CodeWord.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSession.CodeWord. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSession.CodeWord. %s", err.Error())
 		}
 	}
 
@@ -337,24 +337,24 @@ func (ms MatchmakeSession) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MatchmakeSession{\n")
-	b.WriteString(fmt.Sprintf("%sGathering (parent): %s,\n", indentationValues, ms.Gathering.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGameMode: %s,\n", indentationValues, ms.GameMode))
-	b.WriteString(fmt.Sprintf("%sAttributes: %s,\n", indentationValues, ms.Attributes))
-	b.WriteString(fmt.Sprintf("%sOpenParticipation: %s,\n", indentationValues, ms.OpenParticipation))
-	b.WriteString(fmt.Sprintf("%sMatchmakeSystemType: %s,\n", indentationValues, ms.MatchmakeSystemType))
-	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %s,\n", indentationValues, ms.ApplicationBuffer))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, ms.ParticipationCount))
-	b.WriteString(fmt.Sprintf("%sProgressScore: %s,\n", indentationValues, ms.ProgressScore))
-	b.WriteString(fmt.Sprintf("%sSessionKey: %s,\n", indentationValues, ms.SessionKey))
-	b.WriteString(fmt.Sprintf("%sOption: %s,\n", indentationValues, ms.Option0))
-	b.WriteString(fmt.Sprintf("%sMatchmakeParam: %s,\n", indentationValues, ms.MatchmakeParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStartedTime: %s,\n", indentationValues, ms.StartedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUserPassword: %s,\n", indentationValues, ms.UserPassword))
-	b.WriteString(fmt.Sprintf("%sReferGID: %s,\n", indentationValues, ms.ReferGID))
-	b.WriteString(fmt.Sprintf("%sUserPasswordEnabled: %s,\n", indentationValues, ms.UserPasswordEnabled))
-	b.WriteString(fmt.Sprintf("%sSystemPasswordEnabled: %s,\n", indentationValues, ms.SystemPasswordEnabled))
-	b.WriteString(fmt.Sprintf("%sCodeWord: %s,\n", indentationValues, ms.CodeWord))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGathering (parent): %s,\n", indentationValues, ms.Gathering.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGameMode: %s,\n", indentationValues, ms.GameMode)
+	fmt.Fprintf(&b, "%sAttributes: %s,\n", indentationValues, ms.Attributes)
+	fmt.Fprintf(&b, "%sOpenParticipation: %s,\n", indentationValues, ms.OpenParticipation)
+	fmt.Fprintf(&b, "%sMatchmakeSystemType: %s,\n", indentationValues, ms.MatchmakeSystemType)
+	fmt.Fprintf(&b, "%sApplicationBuffer: %s,\n", indentationValues, ms.ApplicationBuffer)
+	fmt.Fprintf(&b, "%sParticipationCount: %s,\n", indentationValues, ms.ParticipationCount)
+	fmt.Fprintf(&b, "%sProgressScore: %s,\n", indentationValues, ms.ProgressScore)
+	fmt.Fprintf(&b, "%sSessionKey: %s,\n", indentationValues, ms.SessionKey)
+	fmt.Fprintf(&b, "%sOption: %s,\n", indentationValues, ms.Option0)
+	fmt.Fprintf(&b, "%sMatchmakeParam: %s,\n", indentationValues, ms.MatchmakeParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStartedTime: %s,\n", indentationValues, ms.StartedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUserPassword: %s,\n", indentationValues, ms.UserPassword)
+	fmt.Fprintf(&b, "%sReferGID: %s,\n", indentationValues, ms.ReferGID)
+	fmt.Fprintf(&b, "%sUserPasswordEnabled: %s,\n", indentationValues, ms.UserPasswordEnabled)
+	fmt.Fprintf(&b, "%sSystemPasswordEnabled: %s,\n", indentationValues, ms.SystemPasswordEnabled)
+	fmt.Fprintf(&b, "%sCodeWord: %s,\n", indentationValues, ms.CodeWord)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

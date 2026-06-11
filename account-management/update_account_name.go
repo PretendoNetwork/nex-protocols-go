@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
 
 	err := strName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountName(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, strName)
+		_, rmcError := protocol.UpdateAccountName(fmt.Errorf("failed to read strName from parameters. %s", err.Error()), packet, callID, strName)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

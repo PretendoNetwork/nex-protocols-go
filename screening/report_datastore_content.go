@@ -30,7 +30,7 @@ func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterfac
 
 	err := pContentParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportDataStoreContent(fmt.Errorf("Failed to read pContentParam from parameters. %s", err.Error()), packet, callID, pContentParam, pViolationParam)
+		_, rmcError := protocol.ReportDataStoreContent(fmt.Errorf("failed to read pContentParam from parameters. %s", err.Error()), packet, callID, pContentParam, pViolationParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterfac
 
 	err = pViolationParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportDataStoreContent(fmt.Errorf("Failed to read pViolationParam from parameters. %s", err.Error()), packet, callID, pContentParam, pViolationParam)
+		_, rmcError := protocol.ReportDataStoreContent(fmt.Errorf("failed to read pViolationParam from parameters. %s", err.Error()), packet, callID, pContentParam, pViolationParam)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

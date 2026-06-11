@@ -32,15 +32,15 @@ func (dspgrp DataStorePrepareGetReplayParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePrepareGetReplayParam from the given readable
 func (dspgrp *DataStorePrepareGetReplayParam) ExtractFrom(readable types.Readable) error {
 	if err := dspgrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetReplayParam header. %s", err.Error())
 	}
 
 	if err := dspgrp.ReplayID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam.ReplayID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetReplayParam.ReplayID. %s", err.Error())
 	}
 
 	if err := dspgrp.ExtraData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam.ExtraData. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetReplayParam.ExtraData. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dspgrp DataStorePrepareGetReplayParam) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dspgrp.ReplayID))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspgrp.ExtraData))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReplayID: %s,\n", indentationValues, dspgrp.ReplayID)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, dspgrp.ExtraData)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

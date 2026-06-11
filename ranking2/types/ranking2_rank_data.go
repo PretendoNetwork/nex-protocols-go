@@ -40,31 +40,31 @@ func (rrd Ranking2RankData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2RankData from the given readable
 func (rrd *Ranking2RankData) ExtractFrom(readable types.Readable) error {
 	if err := rrd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData header. %s", err.Error())
 	}
 
 	if err := rrd.Misc.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Misc. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.Misc. %s", err.Error())
 	}
 
 	if err := rrd.NexUniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.NexUniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.NexUniqueID. %s", err.Error())
 	}
 
 	if err := rrd.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.PrincipalID. %s", err.Error())
 	}
 
 	if err := rrd.Rank.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Rank. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.Rank. %s", err.Error())
 	}
 
 	if err := rrd.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.Score. %s", err.Error())
 	}
 
 	if err := rrd.CommonData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.CommonData. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2RankData.CommonData. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (rrd Ranking2RankData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2RankData{\n")
-	b.WriteString(fmt.Sprintf("%sMisc: %s,\n", indentationValues, rrd.Misc))
-	b.WriteString(fmt.Sprintf("%sNexUniqueID: %s,\n", indentationValues, rrd.NexUniqueID))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rrd.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRank: %s,\n", indentationValues, rrd.Rank))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rrd.Score))
-	b.WriteString(fmt.Sprintf("%sCommonData: %s,\n", indentationValues, rrd.CommonData.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sMisc: %s,\n", indentationValues, rrd.Misc)
+	fmt.Fprintf(&b, "%sNexUniqueID: %s,\n", indentationValues, rrd.NexUniqueID)
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, rrd.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRank: %s,\n", indentationValues, rrd.Rank)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rrd.Score)
+	fmt.Fprintf(&b, "%sCommonData: %s,\n", indentationValues, rrd.CommonData.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

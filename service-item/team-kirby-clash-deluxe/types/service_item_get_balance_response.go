@@ -33,15 +33,15 @@ func (sigbr ServiceItemGetBalanceResponse) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemGetBalanceResponse from the given readable
 func (sigbr *ServiceItemGetBalanceResponse) ExtractFrom(readable types.Readable) error {
 	if err := sigbr.ServiceItemEShopResponse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse.ServiceItemEShopResponse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetBalanceResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
 	if err := sigbr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetBalanceResponse header. %s", err.Error())
 	}
 
 	if err := sigbr.NullableBalance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse.NullableBalance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetBalanceResponse.NullableBalance. %s", err.Error())
 	}
 
 	return nil
@@ -104,9 +104,9 @@ func (sigbr ServiceItemGetBalanceResponse) FormatToString(indentationLevel int) 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetBalanceResponse{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sigbr.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNullableBalance: %s,\n", indentationValues, sigbr.NullableBalance))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sigbr.ServiceItemEShopResponse.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNullableBalance: %s,\n", indentationValues, sigbr.NullableBalance)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

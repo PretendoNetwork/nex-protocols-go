@@ -37,23 +37,23 @@ func (dsgmp DataStoreGetMetaParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreGetMetaParam from the given readable
 func (dsgmp *DataStoreGetMetaParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgmp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam header. %s", err.Error())
 	}
 
 	if err := dsgmp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam.DataID. %s", err.Error())
 	}
 
 	if err := dsgmp.PersistenceTarget.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.PersistenceTarget. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam.PersistenceTarget. %s", err.Error())
 	}
 
 	if err := dsgmp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam.ResultOption. %s", err.Error())
 	}
 
 	if err := dsgmp.AccessPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.AccessPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetMetaParam.AccessPassword. %s", err.Error())
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func (dsgmp DataStoreGetMetaParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsgmp.DataID))
-	b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dsgmp.PersistenceTarget.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dsgmp.ResultOption))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dsgmp.AccessPassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsgmp.DataID)
+	fmt.Fprintf(&b, "%sPersistenceTarget: %s,\n", indentationValues, dsgmp.PersistenceTarget.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sResultOption: %s,\n", indentationValues, dsgmp.ResultOption)
+	fmt.Fprintf(&b, "%sAccessPassword: %s,\n", indentationValues, dsgmp.AccessPassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

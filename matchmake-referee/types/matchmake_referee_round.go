@@ -41,31 +41,31 @@ func (mrr MatchmakeRefereeRound) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeRefereeRound from the given readable
 func (mrr *MatchmakeRefereeRound) ExtractFrom(readable types.Readable) error {
 	if err := mrr.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeRound.Data. %s", err.Error())
 	}
 
 	if err := mrr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeRound header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeRound header. %s", err.Error())
 	}
 
 	if err := mrr.RoundID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.RoundID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeRound.RoundID. %s", err.Error())
 	}
 
 	if err := mrr.GID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.GID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeRound.GID. %s", err.Error())
 	}
 
 	if err := mrr.State.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.State. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeRound.State. %s", err.Error())
 	}
 
 	if err := mrr.PersonalDataCategory.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.PersonalDataCategory. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeRound.PersonalDataCategory. %s", err.Error())
 	}
 
 	if err := mrr.NormalizedPersonalRoundResults.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.NormalizedPersonalRoundResults. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeRound.NormalizedPersonalRoundResults. %s", err.Error())
 	}
 
 	return nil
@@ -148,13 +148,13 @@ func (mrr MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeRound{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrr.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRoundID: %s,\n", indentationValues, mrr.RoundID))
-	b.WriteString(fmt.Sprintf("%sGID: %s,\n", indentationValues, mrr.GID))
-	b.WriteString(fmt.Sprintf("%sState: %s,\n", indentationValues, mrr.State))
-	b.WriteString(fmt.Sprintf("%sPersonalDataCategory: %s,\n", indentationValues, mrr.PersonalDataCategory))
-	b.WriteString(fmt.Sprintf("%sNormalizedPersonalRoundResults: %s,\n", indentationValues, mrr.NormalizedPersonalRoundResults))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrr.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRoundID: %s,\n", indentationValues, mrr.RoundID)
+	fmt.Fprintf(&b, "%sGID: %s,\n", indentationValues, mrr.GID)
+	fmt.Fprintf(&b, "%sState: %s,\n", indentationValues, mrr.State)
+	fmt.Fprintf(&b, "%sPersonalDataCategory: %s,\n", indentationValues, mrr.PersonalDataCategory)
+	fmt.Fprintf(&b, "%sNormalizedPersonalRoundResults: %s,\n", indentationValues, mrr.NormalizedPersonalRoundResults)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

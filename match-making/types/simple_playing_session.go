@@ -36,23 +36,23 @@ func (sps SimplePlayingSession) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SimplePlayingSession from the given readable
 func (sps *SimplePlayingSession) ExtractFrom(readable types.Readable) error {
 	if err := sps.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimplePlayingSession header. %s", err.Error())
+		return fmt.Errorf("failed to extract SimplePlayingSession header. %s", err.Error())
 	}
 
 	if err := sps.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimplePlayingSession.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract SimplePlayingSession.PrincipalID. %s", err.Error())
 	}
 
 	if err := sps.GatheringID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimplePlayingSession.GatheringID. %s", err.Error())
+		return fmt.Errorf("failed to extract SimplePlayingSession.GatheringID. %s", err.Error())
 	}
 
 	if err := sps.GameMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimplePlayingSession.GameMode. %s", err.Error())
+		return fmt.Errorf("failed to extract SimplePlayingSession.GameMode. %s", err.Error())
 	}
 
 	if err := sps.Attribute0.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimplePlayingSession.Attribute0. %s", err.Error())
+		return fmt.Errorf("failed to extract SimplePlayingSession.Attribute0. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (sps SimplePlayingSession) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SimplePlayingSession{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, sps.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, sps.GatheringID))
-	b.WriteString(fmt.Sprintf("%sGameMode: %s,\n", indentationValues, sps.GameMode))
-	b.WriteString(fmt.Sprintf("%sAttribute0: %s,\n", indentationValues, sps.Attribute0))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, sps.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGatheringID: %s,\n", indentationValues, sps.GatheringID)
+	fmt.Fprintf(&b, "%sGameMode: %s,\n", indentationValues, sps.GameMode)
+	fmt.Fprintf(&b, "%sAttribute0: %s,\n", indentationValues, sps.Attribute0)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

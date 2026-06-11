@@ -37,23 +37,23 @@ func (fml FriendMiiList) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendMiiList from the given readable
 func (fml *FriendMiiList) ExtractFrom(readable types.Readable) error {
 	if err := fml.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList.Data. %s", err.Error())
 	}
 
 	if err := fml.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList header. %s", err.Error())
 	}
 
 	if err := fml.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList.Unknown1. %s", err.Error())
 	}
 
 	if err := fml.MiiList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList.MiiList. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList.MiiList. %s", err.Error())
 	}
 
 	if err := fml.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendMiiList.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendMiiList.Unknown2. %s", err.Error())
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func (fml FriendMiiList) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendMiiList{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fml.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, fml.Unknown1))
-	b.WriteString(fmt.Sprintf("%sMiiList: %s,\n", indentationValues, fml.MiiList.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, fml.Unknown2.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fml.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, fml.Unknown1)
+	fmt.Fprintf(&b, "%sMiiList: %s,\n", indentationValues, fml.MiiList.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, fml.Unknown2.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

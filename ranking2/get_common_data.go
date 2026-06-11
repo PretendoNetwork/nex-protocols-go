@@ -34,7 +34,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	err = optionFlags.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
+		_, rmcError := protocol.GetCommonData(fmt.Errorf("failed to read optionFlags from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	err = principalID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
+		_, rmcError := protocol.GetCommonData(fmt.Errorf("failed to read principalID from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
+		_, rmcError := protocol.GetCommonData(fmt.Errorf("failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, optionFlags, principalID, nexUniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

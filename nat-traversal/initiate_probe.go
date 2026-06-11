@@ -29,7 +29,7 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 
 	err := urlStationToProbe.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.InitiateProbe(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, urlStationToProbe)
+		_, rmcError := protocol.InitiateProbe(fmt.Errorf("failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, urlStationToProbe)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

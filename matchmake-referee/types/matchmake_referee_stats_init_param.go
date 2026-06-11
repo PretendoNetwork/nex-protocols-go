@@ -35,19 +35,19 @@ func (mrsip MatchmakeRefereeStatsInitParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeRefereeStatsInitParam from the given readable
 func (mrsip *MatchmakeRefereeStatsInitParam) ExtractFrom(readable types.Readable) error {
 	if err := mrsip.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStatsInitParam.Data. %s", err.Error())
 	}
 
 	if err := mrsip.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStatsInitParam header. %s", err.Error())
 	}
 
 	if err := mrsip.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStatsInitParam.Category. %s", err.Error())
 	}
 
 	if err := mrsip.InitialRatingValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.InitialRatingValue. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStatsInitParam.InitialRatingValue. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (mrsip MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStatsInitParam{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrsip.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mrsip.Category))
-	b.WriteString(fmt.Sprintf("%sInitialRatingValue: %s,\n", indentationValues, mrsip.InitialRatingValue))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrsip.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mrsip.Category)
+	fmt.Fprintf(&b, "%sInitialRatingValue: %s,\n", indentationValues, mrsip.InitialRatingValue)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

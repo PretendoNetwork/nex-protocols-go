@@ -40,31 +40,31 @@ func (sipri ServiceItemPrepurchaseRightInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemPrepurchaseRightInfo from the given readable
 func (sipri *ServiceItemPrepurchaseRightInfo) ExtractFrom(readable types.Readable) error {
 	if err := sipri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo header. %s", err.Error())
 	}
 
 	if err := sipri.LimitationType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.LimitationType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.LimitationType. %s", err.Error())
 	}
 
 	if err := sipri.AcquiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.AcquiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.AcquiredCount. %s", err.Error())
 	}
 
 	if err := sipri.UsedCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.UsedCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.UsedCount. %s", err.Error())
 	}
 
 	if err := sipri.ExpiryDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiryDate. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.ExpiryDate. %s", err.Error())
 	}
 
 	if err := sipri.ExpiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.ExpiredCount. %s", err.Error())
 	}
 
 	if err := sipri.ExpiryCounts.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseRightInfo.ExpiryCounts. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPrepurchaseRightInfo.ExpiryCounts. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (sipri ServiceItemPrepurchaseRightInfo) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPrepurchaseRightInfo{\n")
-	b.WriteString(fmt.Sprintf("%sLimitationType: %s,\n", indentationValues, sipri.LimitationType))
-	b.WriteString(fmt.Sprintf("%sAcquiredCount: %s,\n", indentationValues, sipri.AcquiredCount))
-	b.WriteString(fmt.Sprintf("%sUsedCount: %s,\n", indentationValues, sipri.UsedCount))
-	b.WriteString(fmt.Sprintf("%sExpiryDate: %s,\n", indentationValues, sipri.ExpiryDate))
-	b.WriteString(fmt.Sprintf("%sExpiredCount: %s,\n", indentationValues, sipri.ExpiredCount))
-	b.WriteString(fmt.Sprintf("%sExpiryCounts: %s,\n", indentationValues, sipri.ExpiryCounts))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLimitationType: %s,\n", indentationValues, sipri.LimitationType)
+	fmt.Fprintf(&b, "%sAcquiredCount: %s,\n", indentationValues, sipri.AcquiredCount)
+	fmt.Fprintf(&b, "%sUsedCount: %s,\n", indentationValues, sipri.UsedCount)
+	fmt.Fprintf(&b, "%sExpiryDate: %s,\n", indentationValues, sipri.ExpiryDate)
+	fmt.Fprintf(&b, "%sExpiredCount: %s,\n", indentationValues, sipri.ExpiredCount)
+	fmt.Fprintf(&b, "%sExpiryCounts: %s,\n", indentationValues, sipri.ExpiryCounts)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

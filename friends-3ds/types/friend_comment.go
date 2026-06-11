@@ -37,23 +37,23 @@ func (fc FriendComment) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendComment from the given readable
 func (fc *FriendComment) ExtractFrom(readable types.Readable) error {
 	if err := fc.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment.Data. %s", err.Error())
 	}
 
 	if err := fc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment header. %s", err.Error())
 	}
 
 	if err := fc.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment.PID. %s", err.Error())
 	}
 
 	if err := fc.Comment.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment.Comment. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment.Comment. %s", err.Error())
 	}
 
 	if err := fc.ModifiedAt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendComment.ModifiedAt. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendComment.ModifiedAt. %s", err.Error())
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func (fc FriendComment) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendComment{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fc.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fc.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sComment: %s,\n", indentationValues, fc.Comment))
-	b.WriteString(fmt.Sprintf("%sModifiedAt: %s,\n", indentationValues, fc.ModifiedAt.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fc.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fc.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sComment: %s,\n", indentationValues, fc.Comment)
+	fmt.Fprintf(&b, "%sModifiedAt: %s,\n", indentationValues, fc.ModifiedAt.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

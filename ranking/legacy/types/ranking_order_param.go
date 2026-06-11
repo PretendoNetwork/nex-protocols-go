@@ -43,35 +43,35 @@ func (rop RankingOrderParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingOrderParam from the given readable
 func (rop *RankingOrderParam) ExtractFrom(readable types.Readable) error {
 	if err := rop.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam header. %s", err.Error())
 	}
 
 	if err := rop.ScoreIndex.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.ScoreIndex. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.ScoreIndex. %s", err.Error())
 	}
 
 	if err := rop.ScoreOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.ScoreOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.ScoreOrder. %s", err.Error())
 	}
 
 	if err := rop.RankCalculation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.RankCalculation. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.RankCalculation. %s", err.Error())
 	}
 
 	if err := rop.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Unknown1. %s", err.Error())
 	}
 
 	if err := rop.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Unknown2. %s", err.Error())
 	}
 
 	if err := rop.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Unknown3. %s", err.Error())
 	}
 
 	if err := rop.Unknown4.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingOrderParam.Unknown4. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingOrderParam.Unknown4. %s", err.Error())
 	}
 
 	return nil
@@ -159,14 +159,14 @@ func (rop RankingOrderParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingOrderParam{\n")
-	b.WriteString(fmt.Sprintf("%sScoreIndex: %s,\n", indentationValues, rop.ScoreIndex))
-	b.WriteString(fmt.Sprintf("%sScoreOrder: %s,\n", indentationValues, rop.ScoreOrder))
-	b.WriteString(fmt.Sprintf("%sRankCalculation: %s,\n", indentationValues, rop.RankCalculation))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rop.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rop.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, rop.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, rop.Unknown4))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sScoreIndex: %s,\n", indentationValues, rop.ScoreIndex)
+	fmt.Fprintf(&b, "%sScoreOrder: %s,\n", indentationValues, rop.ScoreOrder)
+	fmt.Fprintf(&b, "%sRankCalculation: %s,\n", indentationValues, rop.RankCalculation)
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rop.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rop.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, rop.Unknown3)
+	fmt.Fprintf(&b, "%sUnknown4: %s,\n", indentationValues, rop.Unknown4)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

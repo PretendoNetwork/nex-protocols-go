@@ -50,31 +50,31 @@ func (vartp ValidateAndRequestTicketParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ValidateAndRequestTicketParam from the given readable
 func (vartp *ValidateAndRequestTicketParam) ExtractFrom(readable types.Readable) error {
 	if err := vartp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketParam header. %s", err.Error())
 	}
 
 	if err := vartp.PlatformType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.PlatformType. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketParam.PlatformType. %s", err.Error())
 	}
 
 	if err := vartp.Username.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.Username. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketParam.Username. %s", err.Error())
 	}
 
 	if err := vartp.ExtraData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.ExtraData. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketParam.ExtraData. %s", err.Error())
 	}
 
 	if err := vartp.IgnoreAPIVersionCheck.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.IgnoreAPIVersionCheck. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketParam.IgnoreAPIVersionCheck. %s", err.Error())
 	}
 
 	if err := vartp.APIVersionGeneral.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.APIVersionGeneral. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketParam.APIVersionGeneral. %s", err.Error())
 	}
 
 	if err := vartp.APIVersionCustom.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.APIVersionCustom. %s", err.Error())
+		return fmt.Errorf("failed to extract ValidateAndRequestTicketParam.APIVersionCustom. %s", err.Error())
 	}
 
 	// * This is a hack. This field is not based on a NEX
@@ -85,7 +85,7 @@ func (vartp *ValidateAndRequestTicketParam) ExtractFrom(readable types.Readable)
 	// * the best we can do
 	if readable.Remaining() != 0 {
 		if err := vartp.PlatformTypeForPlatformPID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract ValidateAndRequestTicketParam.PlatformTypeForPlatformPID. %s", err.Error())
+			return fmt.Errorf("failed to extract ValidateAndRequestTicketParam.PlatformTypeForPlatformPID. %s", err.Error())
 		}
 	}
 
@@ -174,11 +174,11 @@ func (vartp ValidateAndRequestTicketParam) FormatToString(indentationLevel int) 
 	var b strings.Builder
 
 	b.WriteString("ValidateAndRequestTicketParam{\n")
-	b.WriteString(fmt.Sprintf("%sPlatformType: %s,\n", indentationValues, vartp.PlatformType))
-	b.WriteString(fmt.Sprintf("%sUsername: %s,\n", indentationValues, vartp.Username))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, vartp.ExtraData.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sIgnoreAPIVersionCheck: %s,\n", indentationValues, vartp.IgnoreAPIVersionCheck))
-	b.WriteString(fmt.Sprintf("%sAPIVersionGeneral: %s,\n", indentationValues, vartp.APIVersionGeneral))
+	fmt.Fprintf(&b, "%sPlatformType: %s,\n", indentationValues, vartp.PlatformType)
+	fmt.Fprintf(&b, "%sUsername: %s,\n", indentationValues, vartp.Username)
+	fmt.Fprintf(&b, "%sExtraData: %s,\n", indentationValues, vartp.ExtraData.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sIgnoreAPIVersionCheck: %s,\n", indentationValues, vartp.IgnoreAPIVersionCheck)
+	fmt.Fprintf(&b, "%sAPIVersionGeneral: %s,\n", indentationValues, vartp.APIVersionGeneral)
 
 	// * This is a hack. This field is not based on a NEX
 	// * version difference or a structure version update.
@@ -187,13 +187,13 @@ func (vartp ValidateAndRequestTicketParam) FormatToString(indentationLevel int) 
 	// * or not a game has crossplay at this stage, this is
 	// * the best we can do
 	if vartp.PlatformTypeForPlatformPID != 0 {
-		b.WriteString(fmt.Sprintf("%sAPIVersionCustom: %s,\n", indentationValues, vartp.APIVersionCustom))
-		b.WriteString(fmt.Sprintf("%sPlatformTypeForPlatformPID: %s\n", indentationValues, vartp.PlatformTypeForPlatformPID))
+		fmt.Fprintf(&b, "%sAPIVersionCustom: %s,\n", indentationValues, vartp.APIVersionCustom)
+		fmt.Fprintf(&b, "%sPlatformTypeForPlatformPID: %s\n", indentationValues, vartp.PlatformTypeForPlatformPID)
 	} else {
-		b.WriteString(fmt.Sprintf("%sAPIVersionCustom: %s\n", indentationValues, vartp.APIVersionCustom))
+		fmt.Fprintf(&b, "%sAPIVersionCustom: %s\n", indentationValues, vartp.APIVersionCustom)
 	}
 
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -35,19 +35,19 @@ func (rcap RankingChangeAttributesParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingChangeAttributesParam from the given readable
 func (rcap *RankingChangeAttributesParam) ExtractFrom(readable types.Readable) error {
 	if err := rcap.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingChangeAttributesParam header. %s", err.Error())
 	}
 
 	if err := rcap.ModificationFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.ModificationFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingChangeAttributesParam.ModificationFlag. %s", err.Error())
 	}
 
 	if err := rcap.Groups.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Groups. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingChangeAttributesParam.Groups. %s", err.Error())
 	}
 
 	if err := rcap.Param.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Param. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingChangeAttributesParam.Param. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (rcap RankingChangeAttributesParam) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("RankingChangeAttributesParam{\n")
-	b.WriteString(fmt.Sprintf("%sModificationFlag: %s,\n", indentationValues, rcap.ModificationFlag))
-	b.WriteString(fmt.Sprintf("%sGroups: %s,\n", indentationValues, rcap.Groups))
-	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, rcap.Param))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sModificationFlag: %s,\n", indentationValues, rcap.ModificationFlag)
+	fmt.Fprintf(&b, "%sGroups: %s,\n", indentationValues, rcap.Groups)
+	fmt.Fprintf(&b, "%sParam: %s,\n", indentationValues, rcap.Param)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

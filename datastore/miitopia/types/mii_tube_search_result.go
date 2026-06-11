@@ -37,23 +37,23 @@ func (mtsr MiiTubeSearchResult) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MiiTubeSearchResult from the given readable
 func (mtsr *MiiTubeSearchResult) ExtractFrom(readable types.Readable) error {
 	if err := mtsr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchResult header. %s", err.Error())
 	}
 
 	if err := mtsr.Result.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchResult.Result. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchResult.Result. %s", err.Error())
 	}
 
 	if err := mtsr.Count.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchResult.Count. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchResult.Count. %s", err.Error())
 	}
 
 	if err := mtsr.Page.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchResult.Page. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchResult.Page. %s", err.Error())
 	}
 
 	if err := mtsr.HasNext.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MiiTubeSearchResult.ExtractNext. %s", err.Error())
+		return fmt.Errorf("failed to extract MiiTubeSearchResult.ExtractNext. %s", err.Error())
 	}
 
 	return nil
@@ -121,11 +121,11 @@ func (mtsr MiiTubeSearchResult) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MiiTubeSearchResult{\n")
-	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, mtsr.Result))
-	b.WriteString(fmt.Sprintf("%sCount: %s,\n", indentationValues, mtsr.Count))
-	b.WriteString(fmt.Sprintf("%sPage: %s,\n", indentationValues, mtsr.Page))
-	b.WriteString(fmt.Sprintf("%sHasNext: %s,\n", indentationValues, mtsr.HasNext))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sResult: %s,\n", indentationValues, mtsr.Result)
+	fmt.Fprintf(&b, "%sCount: %s,\n", indentationValues, mtsr.Count)
+	fmt.Fprintf(&b, "%sPage: %s,\n", indentationValues, mtsr.Page)
+	fmt.Fprintf(&b, "%sHasNext: %s,\n", indentationValues, mtsr.HasNext)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

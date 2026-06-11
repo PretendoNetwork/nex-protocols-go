@@ -32,15 +32,15 @@ func (gtsrk GlobalTradeStationRecordKey) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the GlobalTradeStationRecordKey from the given readable
 func (gtsrk *GlobalTradeStationRecordKey) ExtractFrom(readable types.Readable) error {
 	if err := gtsrk.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationRecordKey header. %s", err.Error())
 	}
 
 	if err := gtsrk.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationRecordKey.DataID. %s", err.Error())
 	}
 
 	if err := gtsrk.Password.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.Password. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationRecordKey.Password. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (gtsrk GlobalTradeStationRecordKey) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationRecordKey{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtsrk.DataID))
-	b.WriteString(fmt.Sprintf("%sPassword: %s,\n", indentationValues, gtsrk.Password))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, gtsrk.DataID)
+	fmt.Fprintf(&b, "%sPassword: %s,\n", indentationValues, gtsrk.Password)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

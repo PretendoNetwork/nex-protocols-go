@@ -40,31 +40,31 @@ func (siasir ServiceItemAcquireServiceItemResponse) WriteTo(writable types.Writa
 // ExtractFrom extracts the ServiceItemAcquireServiceItemResponse from the given readable
 func (siasir *ServiceItemAcquireServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	if err := siasir.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse header. %s", err.Error())
 	}
 
 	if err := siasir.LimitationType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.LimitationType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.LimitationType. %s", err.Error())
 	}
 
 	if err := siasir.AcquiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.AcquiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.AcquiredCount. %s", err.Error())
 	}
 
 	if err := siasir.UsedCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.UsedCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.UsedCount. %s", err.Error())
 	}
 
 	if err := siasir.ExpiryDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiryDate. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.ExpiryDate. %s", err.Error())
 	}
 
 	if err := siasir.ExpiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.ExpiredCount. %s", err.Error())
 	}
 
 	if err := siasir.ExpiryCounts.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiryCounts. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemResponse.ExpiryCounts. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (siasir ServiceItemAcquireServiceItemResponse) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAcquireServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sLimitationType: %s,\n", indentationValues, siasir.LimitationType))
-	b.WriteString(fmt.Sprintf("%sAcquiredCount: %s,\n", indentationValues, siasir.AcquiredCount))
-	b.WriteString(fmt.Sprintf("%sUsedCount: %s,\n", indentationValues, siasir.UsedCount))
-	b.WriteString(fmt.Sprintf("%sExpiryDate: %s,\n", indentationValues, siasir.ExpiryDate))
-	b.WriteString(fmt.Sprintf("%sExpiredCount: %s,\n", indentationValues, siasir.ExpiredCount))
-	b.WriteString(fmt.Sprintf("%sExpiryCounts: %s,\n", indentationValues, siasir.ExpiryCounts))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLimitationType: %s,\n", indentationValues, siasir.LimitationType)
+	fmt.Fprintf(&b, "%sAcquiredCount: %s,\n", indentationValues, siasir.AcquiredCount)
+	fmt.Fprintf(&b, "%sUsedCount: %s,\n", indentationValues, siasir.UsedCount)
+	fmt.Fprintf(&b, "%sExpiryDate: %s,\n", indentationValues, siasir.ExpiryDate)
+	fmt.Fprintf(&b, "%sExpiredCount: %s,\n", indentationValues, siasir.ExpiredCount)
+	fmt.Fprintf(&b, "%sExpiryCounts: %s,\n", indentationValues, siasir.ExpiryCounts)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

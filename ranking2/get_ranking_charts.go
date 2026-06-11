@@ -30,7 +30,7 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 
 	err := infoArray.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, infoArray)
+		_, rmcError := protocol.GetRankingCharts(fmt.Errorf("failed to read infoArray from parameters. %s", err.Error()), packet, callID, infoArray)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

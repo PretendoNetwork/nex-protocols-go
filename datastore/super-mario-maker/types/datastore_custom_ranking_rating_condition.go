@@ -44,30 +44,30 @@ func (dscrrc DataStoreCustomRankingRatingCondition) WriteTo(writable types.Writa
 // ExtractFrom extracts the DataStoreCustomRankingRatingCondition from the given readable
 func (dscrrc *DataStoreCustomRankingRatingCondition) ExtractFrom(readable types.Readable) error {
 	if err := dscrrc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition header. %s", err.Error())
 	}
 
 	if err := dscrrc.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.Slot. %s", err.Error())
 	}
 
 	if err := dscrrc.MinValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MinValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.MinValue. %s", err.Error())
 	}
 
 	if err := dscrrc.MaxValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.MaxValue. %s", err.Error())
 	}
 
 	if dscrrc.StructureVersion >= 1 {
 		if err := dscrrc.MinCount.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MinCount. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.MinCount. %s", err.Error())
 		}
 	}
 
 	if dscrrc.StructureVersion >= 1 {
 		if err := dscrrc.MaxCount.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxCount. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreCustomRankingRatingCondition.MaxCount. %s", err.Error())
 		}
 	}
 
@@ -146,12 +146,12 @@ func (dscrrc DataStoreCustomRankingRatingCondition) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStoreCustomRankingRatingCondition{\n")
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dscrrc.Slot))
-	b.WriteString(fmt.Sprintf("%sMinValue: %s,\n", indentationValues, dscrrc.MinValue))
-	b.WriteString(fmt.Sprintf("%sMaxValue: %s,\n", indentationValues, dscrrc.MaxValue))
-	b.WriteString(fmt.Sprintf("%sMinCount: %s,\n", indentationValues, dscrrc.MinCount))
-	b.WriteString(fmt.Sprintf("%sMaxCount: %s,\n", indentationValues, dscrrc.MaxCount))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dscrrc.Slot)
+	fmt.Fprintf(&b, "%sMinValue: %s,\n", indentationValues, dscrrc.MinValue)
+	fmt.Fprintf(&b, "%sMaxValue: %s,\n", indentationValues, dscrrc.MaxValue)
+	fmt.Fprintf(&b, "%sMinCount: %s,\n", indentationValues, dscrrc.MinCount)
+	fmt.Fprintf(&b, "%sMaxCount: %s,\n", indentationValues, dscrrc.MaxCount)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

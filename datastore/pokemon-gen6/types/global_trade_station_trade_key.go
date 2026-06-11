@@ -32,15 +32,15 @@ func (gtstk GlobalTradeStationTradeKey) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the GlobalTradeStationTradeKey from the given readable
 func (gtstk *GlobalTradeStationTradeKey) ExtractFrom(readable types.Readable) error {
 	if err := gtstk.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradeKey header. %s", err.Error())
 	}
 
 	if err := gtstk.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradeKey.DataID. %s", err.Error())
 	}
 
 	if err := gtstk.Version.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.Version. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationTradeKey.Version. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (gtstk GlobalTradeStationTradeKey) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationTradeKey{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtstk.DataID))
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, gtstk.Version))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, gtstk.DataID)
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, gtstk.Version)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

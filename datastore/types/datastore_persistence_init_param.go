@@ -32,15 +32,15 @@ func (dspip DataStorePersistenceInitParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePersistenceInitParam from the given readable
 func (dspip *DataStorePersistenceInitParam) ExtractFrom(readable types.Readable) error {
 	if err := dspip.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInitParam header. %s", err.Error())
 	}
 
 	if err := dspip.PersistenceSlotID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.PersistenceSlotID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInitParam.PersistenceSlotID. %s", err.Error())
 	}
 
 	if err := dspip.DeleteLastObject.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.DeleteLastObject. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceInitParam.DeleteLastObject. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dspip DataStorePersistenceInitParam) FormatToString(indentationLevel int) 
 	var b strings.Builder
 
 	b.WriteString("DataStorePersistenceInitParam{\n")
-	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %s,\n", indentationValues, dspip.PersistenceSlotID))
-	b.WriteString(fmt.Sprintf("%sDeleteLastObject: %s,\n", indentationValues, dspip.DeleteLastObject))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPersistenceSlotID: %s,\n", indentationValues, dspip.PersistenceSlotID)
+	fmt.Fprintf(&b, "%sDeleteLastObject: %s,\n", indentationValues, dspip.DeleteLastObject)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

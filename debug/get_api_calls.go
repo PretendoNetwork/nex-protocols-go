@@ -33,7 +33,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
+		_, rmcError := protocol.GetAPICalls(fmt.Errorf("failed to read pids from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
+		_, rmcError := protocol.GetAPICalls(fmt.Errorf("failed to read unknown from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
+		_, rmcError := protocol.GetAPICalls(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, pids, unknown, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

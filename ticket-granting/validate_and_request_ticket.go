@@ -29,7 +29,7 @@ func (protocol *Protocol) handleValidateAndRequestTicket(packet nex.PacketInterf
 
 	err := strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ValidateAndRequestTicket(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, strUserName)
+		_, rmcError := protocol.ValidateAndRequestTicket(fmt.Errorf("failed to read strUserName from parameters. %s", err.Error()), packet, callID, strUserName)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

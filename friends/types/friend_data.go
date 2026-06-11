@@ -38,27 +38,27 @@ func (fd FriendData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendData from the given readable
 func (fd *FriendData) ExtractFrom(readable types.Readable) error {
 	if err := fd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendData header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendData header. %s", err.Error())
 	}
 
 	if err := fd.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendData.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendData.PID. %s", err.Error())
 	}
 
 	if err := fd.StrName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendData.StrName. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendData.StrName. %s", err.Error())
 	}
 
 	if err := fd.ByRelationship.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendData.ByRelationship. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendData.ByRelationship. %s", err.Error())
 	}
 
 	if err := fd.UIDetails.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendData.UIDetails. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendData.UIDetails. %s", err.Error())
 	}
 
 	if err := fd.StrStatus.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendData.StrStatus. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendData.StrStatus. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (fd FriendData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendData{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fd.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, fd.StrName))
-	b.WriteString(fmt.Sprintf("%sByRelationship: %s,\n", indentationValues, fd.ByRelationship))
-	b.WriteString(fmt.Sprintf("%sUIDetails: %s,\n", indentationValues, fd.UIDetails))
-	b.WriteString(fmt.Sprintf("%sStrStatus: %s,\n", indentationValues, fd.StrStatus))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fd.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrName: %s,\n", indentationValues, fd.StrName)
+	fmt.Fprintf(&b, "%sByRelationship: %s,\n", indentationValues, fd.ByRelationship)
+	fmt.Fprintf(&b, "%sUIDetails: %s,\n", indentationValues, fd.UIDetails)
+	fmt.Fprintf(&b, "%sStrStatus: %s,\n", indentationValues, fd.StrStatus)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

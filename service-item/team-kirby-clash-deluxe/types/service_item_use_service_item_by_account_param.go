@@ -44,39 +44,39 @@ func (siusibap ServiceItemUseServiceItemByAccountParam) WriteTo(writable types.W
 // ExtractFrom extracts the ServiceItemUseServiceItemByAccountParam from the given readable
 func (siusibap *ServiceItemUseServiceItemByAccountParam) ExtractFrom(readable types.Readable) error {
 	if err := siusibap.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam header. %s", err.Error())
 	}
 
 	if err := siusibap.ReferenceIDForUse.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForUse. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForUse. %s", err.Error())
 	}
 
 	if err := siusibap.ReferenceIDForRightBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary. %s", err.Error())
 	}
 
 	if err := siusibap.UseType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UseType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.UseType. %s", err.Error())
 	}
 
 	if err := siusibap.UseNumber.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UseNumber. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.UseNumber. %s", err.Error())
 	}
 
 	if err := siusibap.RightBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.RightBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.RightBinary. %s", err.Error())
 	}
 
 	if err := siusibap.LogMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.LogMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.LogMessage. %s", err.Error())
 	}
 
 	if err := siusibap.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.UniqueID. %s", err.Error())
 	}
 
 	if err := siusibap.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUseServiceItemByAccountParam.Platform. %s", err.Error())
 	}
 
 	return nil
@@ -169,15 +169,15 @@ func (siusibap ServiceItemUseServiceItemByAccountParam) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUseServiceItemByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceIDForUse: %s,\n", indentationValues, siusibap.ReferenceIDForUse))
-	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %s,\n", indentationValues, siusibap.ReferenceIDForRightBinary))
-	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, siusibap.UseType))
-	b.WriteString(fmt.Sprintf("%sUseNumber: %s,\n", indentationValues, siusibap.UseNumber))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, siusibap.RightBinary))
-	b.WriteString(fmt.Sprintf("%sLogMessage: %s,\n", indentationValues, siusibap.LogMessage))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siusibap.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siusibap.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceIDForUse: %s,\n", indentationValues, siusibap.ReferenceIDForUse)
+	fmt.Fprintf(&b, "%sReferenceIDForRightBinary: %s,\n", indentationValues, siusibap.ReferenceIDForRightBinary)
+	fmt.Fprintf(&b, "%sUseType: %s,\n", indentationValues, siusibap.UseType)
+	fmt.Fprintf(&b, "%sUseNumber: %s,\n", indentationValues, siusibap.UseNumber)
+	fmt.Fprintf(&b, "%sRightBinary: %s,\n", indentationValues, siusibap.RightBinary)
+	fmt.Fprintf(&b, "%sLogMessage: %s,\n", indentationValues, siusibap.LogMessage)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, siusibap.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, siusibap.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

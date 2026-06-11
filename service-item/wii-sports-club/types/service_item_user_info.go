@@ -32,15 +32,15 @@ func (siui ServiceItemUserInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemUserInfo from the given readable
 func (siui *ServiceItemUserInfo) ExtractFrom(readable types.Readable) error {
 	if err := siui.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUserInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUserInfo header. %s", err.Error())
 	}
 
 	if err := siui.NumTotalEntryTicket.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUserInfo.NumTotalEntryTicket. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUserInfo.NumTotalEntryTicket. %s", err.Error())
 	}
 
 	if err := siui.ApplicationBuffer.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUserInfo.ApplicationBuffer. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUserInfo.ApplicationBuffer. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (siui ServiceItemUserInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUserInfo{\n")
-	b.WriteString(fmt.Sprintf("%sNumTotalEntryTicket: %s,\n", indentationValues, siui.NumTotalEntryTicket))
-	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %s,\n", indentationValues, siui.ApplicationBuffer))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sNumTotalEntryTicket: %s,\n", indentationValues, siui.NumTotalEntryTicket)
+	fmt.Fprintf(&b, "%sApplicationBuffer: %s,\n", indentationValues, siui.ApplicationBuffer)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

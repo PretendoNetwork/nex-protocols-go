@@ -32,7 +32,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 
 	err = targetList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, targetList, stationToProbe)
+		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("failed to read targetList from parameters. %s", err.Error()), packet, callID, targetList, stationToProbe)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 
 	err = stationToProbe.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, targetList, stationToProbe)
+		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, targetList, stationToProbe)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

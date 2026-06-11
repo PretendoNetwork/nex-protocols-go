@@ -33,7 +33,7 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, param, buffer)
+		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, param, buffer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 
 	err = buffer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("Failed to read buffer from parameters. %s", err.Error()), packet, callID, param, buffer)
+		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("failed to read buffer from parameters. %s", err.Error()), packet, callID, param, buffer)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

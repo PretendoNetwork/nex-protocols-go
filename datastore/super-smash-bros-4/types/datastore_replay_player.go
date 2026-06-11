@@ -46,43 +46,43 @@ func (dsrp DataStoreReplayPlayer) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReplayPlayer from the given readable
 func (dsrp *DataStoreReplayPlayer) ExtractFrom(readable types.Readable) error {
 	if err := dsrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer header. %s", err.Error())
 	}
 
 	if err := dsrp.Fighter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Fighter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.Fighter. %s", err.Error())
 	}
 
 	if err := dsrp.Health.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Health. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.Health. %s", err.Error())
 	}
 
 	if err := dsrp.WinningRate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.WinningRate. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.WinningRate. %s", err.Error())
 	}
 
 	if err := dsrp.Color.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Color. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.Color. %s", err.Error())
 	}
 
 	if err := dsrp.Color2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Color2. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.Color2. %s", err.Error())
 	}
 
 	if err := dsrp.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.PrincipalID. %s", err.Error())
 	}
 
 	if err := dsrp.Country.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Country. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.Country. %s", err.Error())
 	}
 
 	if err := dsrp.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.Region. %s", err.Error())
 	}
 
 	if err := dsrp.Number.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Number. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReplayPlayer.Number. %s", err.Error())
 	}
 
 	return nil
@@ -180,16 +180,16 @@ func (dsrp DataStoreReplayPlayer) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreReplayPlayer{\n")
-	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dsrp.Fighter))
-	b.WriteString(fmt.Sprintf("%sHealth: %s,\n", indentationValues, dsrp.Health))
-	b.WriteString(fmt.Sprintf("%sWinningRate: %s,\n", indentationValues, dsrp.WinningRate))
-	b.WriteString(fmt.Sprintf("%sColor: %s,\n", indentationValues, dsrp.Color))
-	b.WriteString(fmt.Sprintf("%sColor2: %s,\n", indentationValues, dsrp.Color2))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, dsrp.PrincipalID))
-	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, dsrp.Country))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, dsrp.Region))
-	b.WriteString(fmt.Sprintf("%sNumber: %s,\n", indentationValues, dsrp.Number))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sFighter: %s,\n", indentationValues, dsrp.Fighter)
+	fmt.Fprintf(&b, "%sHealth: %s,\n", indentationValues, dsrp.Health)
+	fmt.Fprintf(&b, "%sWinningRate: %s,\n", indentationValues, dsrp.WinningRate)
+	fmt.Fprintf(&b, "%sColor: %s,\n", indentationValues, dsrp.Color)
+	fmt.Fprintf(&b, "%sColor2: %s,\n", indentationValues, dsrp.Color2)
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, dsrp.PrincipalID)
+	fmt.Fprintf(&b, "%sCountry: %s,\n", indentationValues, dsrp.Country)
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, dsrp.Region)
+	fmt.Fprintf(&b, "%sNumber: %s,\n", indentationValues, dsrp.Number)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

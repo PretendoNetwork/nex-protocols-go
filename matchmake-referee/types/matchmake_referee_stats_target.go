@@ -35,19 +35,19 @@ func (mrst MatchmakeRefereeStatsTarget) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeRefereeStatsTarget from the given readable
 func (mrst *MatchmakeRefereeStatsTarget) ExtractFrom(readable types.Readable) error {
 	if err := mrst.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStatsTarget.Data. %s", err.Error())
 	}
 
 	if err := mrst.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStatsTarget header. %s", err.Error())
 	}
 
 	if err := mrst.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStatsTarget.PID. %s", err.Error())
 	}
 
 	if err := mrst.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeRefereeStatsTarget.Category. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (mrst MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStatsTarget{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrst.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, mrst.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mrst.Category))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrst.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, mrst.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mrst.Category)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -32,15 +32,15 @@ func (dspgpv DataStorePrepareGetParamV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePrepareGetParamV1 from the given readable
 func (dspgpv *DataStorePrepareGetParamV1) ExtractFrom(readable types.Readable) error {
 	if err := dspgpv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParamV1 header. %s", err.Error())
 	}
 
 	if err := dspgpv.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParamV1.DataID. %s", err.Error())
 	}
 
 	if err := dspgpv.LockID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1.LockID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePrepareGetParamV1.LockID. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dspgpv DataStorePrepareGetParamV1) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspgpv.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %s,\n", indentationValues, dspgpv.LockID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dspgpv.DataID)
+	fmt.Fprintf(&b, "%sLockID: %s,\n", indentationValues, dspgpv.LockID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -41,31 +41,31 @@ func (nnep NintendoNotificationEventProfile) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NintendoNotificationEventProfile from the given readable
 func (nnep *NintendoNotificationEventProfile) ExtractFrom(readable types.Readable) error {
 	if err := nnep.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Data. %s", err.Error())
 	}
 
 	if err := nnep.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile header. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile header. %s", err.Error())
 	}
 
 	if err := nnep.Region.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Region. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Region. %s", err.Error())
 	}
 
 	if err := nnep.Country.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Country. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Country. %s", err.Error())
 	}
 
 	if err := nnep.Area.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Area. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Area. %s", err.Error())
 	}
 
 	if err := nnep.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Language. %s", err.Error())
 	}
 
 	if err := nnep.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEventProfile.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEventProfile.Platform. %s", err.Error())
 	}
 
 	return nil
@@ -148,13 +148,13 @@ func (nnep NintendoNotificationEventProfile) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("NintendoNotificationEventProfile{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, nnep.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, nnep.Region))
-	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, nnep.Country))
-	b.WriteString(fmt.Sprintf("%sArea: %s,\n", indentationValues, nnep.Area))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, nnep.Language))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s\n", indentationValues, nnep.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, nnep.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sRegion: %s,\n", indentationValues, nnep.Region)
+	fmt.Fprintf(&b, "%sCountry: %s,\n", indentationValues, nnep.Country)
+	fmt.Fprintf(&b, "%sArea: %s,\n", indentationValues, nnep.Area)
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, nnep.Language)
+	fmt.Fprintf(&b, "%sPlatform: %s\n", indentationValues, nnep.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

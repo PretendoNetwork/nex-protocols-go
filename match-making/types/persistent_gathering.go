@@ -47,43 +47,43 @@ func (pg PersistentGathering) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PersistentGathering from the given readable
 func (pg *PersistentGathering) ExtractFrom(readable types.Readable) error {
 	if err := pg.Gathering.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.Gathering. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.Gathering. %s", err.Error())
 	}
 
 	if err := pg.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering header. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering header. %s", err.Error())
 	}
 
 	if err := pg.CommunityType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.CommunityType. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.CommunityType. %s", err.Error())
 	}
 
 	if err := pg.Password.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.Password. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.Password. %s", err.Error())
 	}
 
 	if err := pg.Attribs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.Attribs. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.Attribs. %s", err.Error())
 	}
 
 	if err := pg.ApplicationBuffer.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.ApplicationBuffer. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.ApplicationBuffer. %s", err.Error())
 	}
 
 	if err := pg.ParticipationStartDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationStartDate. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.ParticipationStartDate. %s", err.Error())
 	}
 
 	if err := pg.ParticipationEndDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationEndDate. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.ParticipationEndDate. %s", err.Error())
 	}
 
 	if err := pg.MatchmakeSessionCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.MatchmakeSessionCount. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.MatchmakeSessionCount. %s", err.Error())
 	}
 
 	if err := pg.ParticipationCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationCount. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentGathering.ParticipationCount. %s", err.Error())
 	}
 
 	return nil
@@ -181,16 +181,16 @@ func (pg PersistentGathering) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PersistentGathering{\n")
-	b.WriteString(fmt.Sprintf("%sGathering (parent): %s,\n", indentationValues, pg.Gathering.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCommunityType: %s,\n", indentationValues, pg.CommunityType))
-	b.WriteString(fmt.Sprintf("%sPassword: %s,\n", indentationValues, pg.Password))
-	b.WriteString(fmt.Sprintf("%sAttribs: %s,\n", indentationValues, pg.Attribs))
-	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %s,\n", indentationValues, pg.ApplicationBuffer))
-	b.WriteString(fmt.Sprintf("%sParticipationStartDate: %s,\n", indentationValues, pg.ParticipationStartDate.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sParticipationEndDate: %s,\n", indentationValues, pg.ParticipationEndDate.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMatchmakeSessionCount: %s,\n", indentationValues, pg.MatchmakeSessionCount))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, pg.ParticipationCount))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGathering (parent): %s,\n", indentationValues, pg.Gathering.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCommunityType: %s,\n", indentationValues, pg.CommunityType)
+	fmt.Fprintf(&b, "%sPassword: %s,\n", indentationValues, pg.Password)
+	fmt.Fprintf(&b, "%sAttribs: %s,\n", indentationValues, pg.Attribs)
+	fmt.Fprintf(&b, "%sApplicationBuffer: %s,\n", indentationValues, pg.ApplicationBuffer)
+	fmt.Fprintf(&b, "%sParticipationStartDate: %s,\n", indentationValues, pg.ParticipationStartDate.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sParticipationEndDate: %s,\n", indentationValues, pg.ParticipationEndDate.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMatchmakeSessionCount: %s,\n", indentationValues, pg.MatchmakeSessionCount)
+	fmt.Fprintf(&b, "%sParticipationCount: %s,\n", indentationValues, pg.ParticipationCount)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

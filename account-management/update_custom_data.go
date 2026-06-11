@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 
 	err = oPublicData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, oPublicData, oPrivateData)
+		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("failed to read oPublicData from parameters. %s", err.Error()), packet, callID, oPublicData, oPrivateData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 
 	err = oPrivateData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, oPublicData, oPrivateData)
+		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, oPublicData, oPrivateData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

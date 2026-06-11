@@ -38,7 +38,7 @@ func (protocol *Protocol) handleUnk0x13(packet nex.PacketInterface) {
 
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x13(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
+		_, rmcError := protocol.Unk0x13(fmt.Errorf("failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -48,7 +48,7 @@ func (protocol *Protocol) handleUnk0x13(packet nex.PacketInterface) {
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x13(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
+		_, rmcError := protocol.Unk0x13(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -58,7 +58,7 @@ func (protocol *Protocol) handleUnk0x13(packet nex.PacketInterface) {
 
 	err = unknown3.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x13(fmt.Errorf("Failed to read unknown3 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
+		_, rmcError := protocol.Unk0x13(fmt.Errorf("failed to read unknown3 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -68,7 +68,7 @@ func (protocol *Protocol) handleUnk0x13(packet nex.PacketInterface) {
 
 	err = unknown4.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x13(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
+		_, rmcError := protocol.Unk0x13(fmt.Errorf("failed to read unknown4 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -78,7 +78,7 @@ func (protocol *Protocol) handleUnk0x13(packet nex.PacketInterface) {
 
 	err = unknown5.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x13(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
+		_, rmcError := protocol.Unk0x13(fmt.Errorf("failed to read unknown5 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -88,7 +88,7 @@ func (protocol *Protocol) handleUnk0x13(packet nex.PacketInterface) {
 
 	err = unknown6.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x13(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
+		_, rmcError := protocol.Unk0x13(fmt.Errorf("failed to read unknown6 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

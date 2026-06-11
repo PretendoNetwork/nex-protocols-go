@@ -46,43 +46,43 @@ func (ad AccountData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the AccountData from the given readable
 func (ad *AccountData) ExtractFrom(readable types.Readable) error {
 	if err := ad.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData header. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData header. %s", err.Error())
 	}
 
 	if err := ad.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.PID. %s", err.Error())
 	}
 
 	if err := ad.StrName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.StrName. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.StrName. %s", err.Error())
 	}
 
 	if err := ad.UIGroups.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.UIGroups. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.UIGroups. %s", err.Error())
 	}
 
 	if err := ad.StrEmail.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.StrEmail. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.StrEmail. %s", err.Error())
 	}
 
 	if err := ad.DTCreationDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.DTCreationDate. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.DTCreationDate. %s", err.Error())
 	}
 
 	if err := ad.DTEffectiveDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.DTEffectiveDate. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.DTEffectiveDate. %s", err.Error())
 	}
 
 	if err := ad.StrNotEffectiveMsg.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.StrNotEffectiveMsg. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.StrNotEffectiveMsg. %s", err.Error())
 	}
 
 	if err := ad.DTExpiryDate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.DTExpiryDate. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.DTExpiryDate. %s", err.Error())
 	}
 
 	if err := ad.StrExpiredMsg.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AccountData.StrExpiredMsg. %s", err.Error())
+		return fmt.Errorf("failed to extract AccountData.StrExpiredMsg. %s", err.Error())
 	}
 
 	return nil
@@ -180,16 +180,16 @@ func (ad AccountData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("AccountData{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, ad.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, ad.StrName))
-	b.WriteString(fmt.Sprintf("%sUIGroups: %s,\n", indentationValues, ad.UIGroups))
-	b.WriteString(fmt.Sprintf("%sStrEmail: %s,\n", indentationValues, ad.StrEmail))
-	b.WriteString(fmt.Sprintf("%sDTCreationDate: %s,\n", indentationValues, ad.DTCreationDate.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDTEffectiveDate: %s,\n", indentationValues, ad.DTEffectiveDate.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrNotEffectiveMsg: %s,\n", indentationValues, ad.StrNotEffectiveMsg))
-	b.WriteString(fmt.Sprintf("%sDTExpiryDate: %s,\n", indentationValues, ad.DTExpiryDate.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrExpiredMsg: %s,\n", indentationValues, ad.StrExpiredMsg))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, ad.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrName: %s,\n", indentationValues, ad.StrName)
+	fmt.Fprintf(&b, "%sUIGroups: %s,\n", indentationValues, ad.UIGroups)
+	fmt.Fprintf(&b, "%sStrEmail: %s,\n", indentationValues, ad.StrEmail)
+	fmt.Fprintf(&b, "%sDTCreationDate: %s,\n", indentationValues, ad.DTCreationDate.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDTEffectiveDate: %s,\n", indentationValues, ad.DTEffectiveDate.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrNotEffectiveMsg: %s,\n", indentationValues, ad.StrNotEffectiveMsg)
+	fmt.Fprintf(&b, "%sDTExpiryDate: %s,\n", indentationValues, ad.DTExpiryDate.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrExpiredMsg: %s,\n", indentationValues, ad.StrExpiredMsg)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

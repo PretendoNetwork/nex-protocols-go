@@ -32,7 +32,7 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 
 	err = strPlayerName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.BlackListByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, strPlayerName, uiDetails)
+		_, rmcError := protocol.BlackListByName(fmt.Errorf("failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, strPlayerName, uiDetails)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 
 	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.BlackListByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, strPlayerName, uiDetails)
+		_, rmcError := protocol.BlackListByName(fmt.Errorf("failed to read uiDetails from parameters. %s", err.Error()), packet, callID, strPlayerName, uiDetails)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

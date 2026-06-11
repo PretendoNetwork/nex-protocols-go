@@ -34,19 +34,19 @@ func (dsri DataStoreRatingInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreRatingInfo from the given readable
 func (dsri *DataStoreRatingInfo) ExtractFrom(readable types.Readable) error {
 	if err := dsri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfo header. %s", err.Error())
 	}
 
 	if err := dsri.TotalValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfo.TotalValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfo.TotalValue. %s", err.Error())
 	}
 
 	if err := dsri.Count.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfo.Count. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfo.Count. %s", err.Error())
 	}
 
 	if err := dsri.InitialValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInfo.InitialValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInfo.InitialValue. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (dsri DataStoreRatingInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInfo{\n")
-	b.WriteString(fmt.Sprintf("%sTotalValue: %s,\n", indentationValues, dsri.TotalValue))
-	b.WriteString(fmt.Sprintf("%sCount: %s,\n", indentationValues, dsri.Count))
-	b.WriteString(fmt.Sprintf("%sInitialValue: %s,\n", indentationValues, dsri.InitialValue))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTotalValue: %s,\n", indentationValues, dsri.TotalValue)
+	fmt.Fprintf(&b, "%sCount: %s,\n", indentationValues, dsri.Count)
+	fmt.Fprintf(&b, "%sInitialValue: %s,\n", indentationValues, dsri.InitialValue)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -46,43 +46,43 @@ func (dssdi DataStoreSharedDataInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreSharedDataInfo from the given readable
 func (dssdi *DataStoreSharedDataInfo) ExtractFrom(readable types.Readable) error {
 	if err := dssdi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo header. %s", err.Error())
 	}
 
 	if err := dssdi.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.DataID. %s", err.Error())
 	}
 
 	if err := dssdi.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.OwnerID. %s", err.Error())
 	}
 
 	if err := dssdi.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.DataType. %s", err.Error())
 	}
 
 	if err := dssdi.Comment.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Comment. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.Comment. %s", err.Error())
 	}
 
 	if err := dssdi.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.MetaBinary. %s", err.Error())
 	}
 
 	if err := dssdi.Profile.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Profile. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.Profile. %s", err.Error())
 	}
 
 	if err := dssdi.Rating.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Rating. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.Rating. %s", err.Error())
 	}
 
 	if err := dssdi.CreatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.CreatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.CreatedTime. %s", err.Error())
 	}
 
 	if err := dssdi.Info.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Info. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSharedDataInfo.Info. %s", err.Error())
 	}
 
 	return nil
@@ -180,16 +180,16 @@ func (dssdi DataStoreSharedDataInfo) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("DataStoreSharedDataInfo{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dssdi.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dssdi.OwnerID))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dssdi.DataType))
-	b.WriteString(fmt.Sprintf("%sComment: %s,\n", indentationValues, dssdi.Comment))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dssdi.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sProfile: %s,\n", indentationValues, dssdi.Profile))
-	b.WriteString(fmt.Sprintf("%sRating: %s,\n", indentationValues, dssdi.Rating))
-	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dssdi.CreatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sInfo: %s,\n", indentationValues, dssdi.Info.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dssdi.DataID)
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dssdi.OwnerID)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dssdi.DataType)
+	fmt.Fprintf(&b, "%sComment: %s,\n", indentationValues, dssdi.Comment)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dssdi.MetaBinary)
+	fmt.Fprintf(&b, "%sProfile: %s,\n", indentationValues, dssdi.Profile)
+	fmt.Fprintf(&b, "%sRating: %s,\n", indentationValues, dssdi.Rating)
+	fmt.Fprintf(&b, "%sCreatedTime: %s,\n", indentationValues, dssdi.CreatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sInfo: %s,\n", indentationValues, dssdi.Info.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

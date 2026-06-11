@@ -33,15 +33,15 @@ func (dsp DataStorePermission) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePermission from the given readable
 func (dsp *DataStorePermission) ExtractFrom(readable types.Readable) error {
 	if err := dsp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePermission header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePermission header. %s", err.Error())
 	}
 
 	if err := dsp.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePermission.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePermission.Permission. %s", err.Error())
 	}
 
 	if err := dsp.RecipientIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePermission.RecipientIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePermission.RecipientIDs. %s", err.Error())
 	}
 
 	return nil
@@ -104,9 +104,9 @@ func (dsp DataStorePermission) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStorePermission{\n")
-	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dsp.Permission))
-	b.WriteString(fmt.Sprintf("%sRecipientIDs: %s,\n", indentationValues, dsp.RecipientIDs))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPermission: %s,\n", indentationValues, dsp.Permission)
+	fmt.Fprintf(&b, "%sRecipientIDs: %s,\n", indentationValues, dsp.RecipientIDs)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

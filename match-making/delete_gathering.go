@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeleteGathering(packet nex.PacketInterface) {
 
 	err := idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteGathering(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering)
+		_, rmcError := protocol.DeleteGathering(fmt.Errorf("failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

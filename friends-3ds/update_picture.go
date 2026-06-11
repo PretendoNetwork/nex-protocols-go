@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePicture(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, unknown, picture)
+		_, rmcError := protocol.UpdatePicture(fmt.Errorf("failed to read unknown from parameters. %s", err.Error()), packet, callID, unknown, picture)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 
 	err = picture.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdatePicture(fmt.Errorf("Failed to read picture from parameters. %s", err.Error()), packet, callID, unknown, picture)
+		_, rmcError := protocol.UpdatePicture(fmt.Errorf("failed to read picture from parameters. %s", err.Error()), packet, callID, unknown, picture)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

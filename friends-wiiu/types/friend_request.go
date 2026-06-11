@@ -47,23 +47,23 @@ func (fr FriendRequest) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendRequest from the given readable
 func (fr *FriendRequest) ExtractFrom(readable types.Readable) error {
 	if err := fr.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest.Data. %s", err.Error())
 	}
 
 	if err := fr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest header. %s", err.Error())
 	}
 
 	if err := fr.PrincipalInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest.PrincipalInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest.PrincipalInfo. %s", err.Error())
 	}
 
 	if err := fr.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest.Message. %s", err.Error())
 	}
 
 	if err := fr.SentOn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendRequest.SentOn. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendRequest.SentOn. %s", err.Error())
 	}
 
 	return nil
@@ -136,11 +136,11 @@ func (fr FriendRequest) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendRequest{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fr.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrincipalInfo: %s,\n", indentationValues, fr.PrincipalInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, fr.Message.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sSentOn: %s,\n", indentationValues, fr.SentOn.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fr.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrincipalInfo: %s,\n", indentationValues, fr.PrincipalInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, fr.Message.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sSentOn: %s,\n", indentationValues, fr.SentOn.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -34,19 +34,19 @@ func (dstop DataStoreTouchObjectParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreTouchObjectParam from the given readable
 func (dstop *DataStoreTouchObjectParam) ExtractFrom(readable types.Readable) error {
 	if err := dstop.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreTouchObjectParam header. %s", err.Error())
 	}
 
 	if err := dstop.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreTouchObjectParam.DataID. %s", err.Error())
 	}
 
 	if err := dstop.LockID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.LockID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreTouchObjectParam.LockID. %s", err.Error())
 	}
 
 	if err := dstop.AccessPassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.AccessPassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreTouchObjectParam.AccessPassword. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (dstop DataStoreTouchObjectParam) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("DataStoreTouchObjectParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dstop.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %s,\n", indentationValues, dstop.LockID))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dstop.AccessPassword))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dstop.DataID)
+	fmt.Fprintf(&b, "%sLockID: %s,\n", indentationValues, dstop.LockID)
+	fmt.Fprintf(&b, "%sAccessPassword: %s,\n", indentationValues, dstop.AccessPassword)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -32,7 +32,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	err = lstDeletions.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, lstDeletions, pid)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, lstDeletions, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, lstDeletions, pid)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("failed to read pid from parameters. %s", err.Error()), packet, callID, lstDeletions, pid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

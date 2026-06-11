@@ -46,43 +46,43 @@ func (siasibap ServiceItemAcquireServiceItemByAccountParam) WriteTo(writable typ
 // ExtractFrom extracts the ServiceItemAcquireServiceItemByAccountParam from the given readable
 func (siasibap *ServiceItemAcquireServiceItemByAccountParam) ExtractFrom(readable types.Readable) error {
 	if err := siasibap.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam header. %s", err.Error())
 	}
 
 	if err := siasibap.ReferenceIDForAcquisition.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition. %s", err.Error())
 	}
 
 	if err := siasibap.ReferenceIDForRightBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary. %s", err.Error())
 	}
 
 	if err := siasibap.UseType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UseType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.UseType. %s", err.Error())
 	}
 
 	if err := siasibap.LimitationType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationType. %s", err.Error())
 	}
 
 	if err := siasibap.LimitationValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationValue. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationValue. %s", err.Error())
 	}
 
 	if err := siasibap.RightBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.RightBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.RightBinary. %s", err.Error())
 	}
 
 	if err := siasibap.LogMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LogMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.LogMessage. %s", err.Error())
 	}
 
 	if err := siasibap.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.UniqueID. %s", err.Error())
 	}
 
 	if err := siasibap.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemAcquireServiceItemByAccountParam.Platform. %s", err.Error())
 	}
 
 	return nil
@@ -180,16 +180,16 @@ func (siasibap ServiceItemAcquireServiceItemByAccountParam) FormatToString(inden
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAcquireServiceItemByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceIDForAcquisition: %s,\n", indentationValues, siasibap.ReferenceIDForAcquisition))
-	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %s,\n", indentationValues, siasibap.ReferenceIDForRightBinary))
-	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, siasibap.UseType))
-	b.WriteString(fmt.Sprintf("%sLimitationType: %s,\n", indentationValues, siasibap.LimitationType))
-	b.WriteString(fmt.Sprintf("%sLimitationValue: %s,\n", indentationValues, siasibap.LimitationValue))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, siasibap.RightBinary))
-	b.WriteString(fmt.Sprintf("%sLogMessage: %s,\n", indentationValues, siasibap.LogMessage))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siasibap.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siasibap.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceIDForAcquisition: %s,\n", indentationValues, siasibap.ReferenceIDForAcquisition)
+	fmt.Fprintf(&b, "%sReferenceIDForRightBinary: %s,\n", indentationValues, siasibap.ReferenceIDForRightBinary)
+	fmt.Fprintf(&b, "%sUseType: %s,\n", indentationValues, siasibap.UseType)
+	fmt.Fprintf(&b, "%sLimitationType: %s,\n", indentationValues, siasibap.LimitationType)
+	fmt.Fprintf(&b, "%sLimitationValue: %s,\n", indentationValues, siasibap.LimitationValue)
+	fmt.Fprintf(&b, "%sRightBinary: %s,\n", indentationValues, siasibap.RightBinary)
+	fmt.Fprintf(&b, "%sLogMessage: %s,\n", indentationValues, siasibap.LogMessage)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, siasibap.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, siasibap.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

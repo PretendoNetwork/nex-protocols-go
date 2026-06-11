@@ -32,15 +32,15 @@ func (bai BasicAccountInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the BasicAccountInfo from the given readable
 func (bai *BasicAccountInfo) ExtractFrom(readable types.Readable) error {
 	if err := bai.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BasicAccountInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract BasicAccountInfo header. %s", err.Error())
 	}
 
 	if err := bai.PIDOwner.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BasicAccountInfo.PIDOwner. %s", err.Error())
+		return fmt.Errorf("failed to extract BasicAccountInfo.PIDOwner. %s", err.Error())
 	}
 
 	if err := bai.StrName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BasicAccountInfo.StrName. %s", err.Error())
+		return fmt.Errorf("failed to extract BasicAccountInfo.StrName. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (bai BasicAccountInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BasicAccountInfo{\n")
-	b.WriteString(fmt.Sprintf("%sPIDOwner: %s,\n", indentationValues, bai.PIDOwner.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, bai.StrName))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPIDOwner: %s,\n", indentationValues, bai.PIDOwner.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrName: %s,\n", indentationValues, bai.StrName)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

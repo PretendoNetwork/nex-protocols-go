@@ -32,15 +32,15 @@ func (pg PlayedGame) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PlayedGame from the given readable
 func (pg *PlayedGame) ExtractFrom(readable types.Readable) error {
 	if err := pg.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayedGame header. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayedGame header. %s", err.Error())
 	}
 
 	if err := pg.GameKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayedGame.GameKey. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayedGame.GameKey. %s", err.Error())
 	}
 
 	if err := pg.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayedGame.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayedGame.Unknown. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (pg PlayedGame) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PlayedGame{\n")
-	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, pg.GameKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, pg.Unknown.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGameKey: %s,\n", indentationValues, pg.GameKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, pg.Unknown.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -34,19 +34,19 @@ func (resri Ranking2EstimateScoreRankInput) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2EstimateScoreRankInput from the given readable
 func (resri *Ranking2EstimateScoreRankInput) ExtractFrom(readable types.Readable) error {
 	if err := resri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankInput header. %s", err.Error())
 	}
 
 	if err := resri.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankInput.Category. %s", err.Error())
 	}
 
 	if err := resri.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.NumSeasonsToGoBack. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankInput.NumSeasonsToGoBack. %s", err.Error())
 	}
 
 	if err := resri.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2EstimateScoreRankInput.Score. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (resri Ranking2EstimateScoreRankInput) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("Ranking2EstimateScoreRankInput{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, resri.Category))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, resri.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, resri.Score))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, resri.Category)
+	fmt.Fprintf(&b, "%sNumSeasonsToGoBack: %s,\n", indentationValues, resri.NumSeasonsToGoBack)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, resri.Score)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

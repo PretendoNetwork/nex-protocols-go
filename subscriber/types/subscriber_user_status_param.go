@@ -30,11 +30,11 @@ func (u SubscriberUserStatusParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SubscriberUserStatusParam from the given readable
 func (u *SubscriberUserStatusParam) ExtractFrom(readable types.Readable) error {
 	if err := u.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberUserStatusParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberUserStatusParam header. %s", err.Error())
 	}
 
 	if err := u.Value.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberUserStatusParam.Value. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberUserStatusParam.Value. %s", err.Error())
 	}
 
 	return nil
@@ -92,8 +92,8 @@ func (u SubscriberUserStatusParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SubscriberUserStatusParam{\n")
-	b.WriteString(fmt.Sprintf("%sValue: %s,\n", indentationValues, u.Value))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sValue: %s,\n", indentationValues, u.Value)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -53,7 +53,7 @@ func (msts MatchmakeSystemTypeString) String() string {
 }
 
 const (
-	// MatchmakeSystemTypeStringInvalid indicates that the field in MatchmakeSessionSearchCriteria
+	// MatchmakeSystemTypeStringMissing indicates that the field in MatchmakeSessionSearchCriteria
 	// should be skipped.
 	MatchmakeSystemTypeStringMissing MatchmakeSystemTypeString = ""
 
@@ -69,9 +69,9 @@ const (
 	// MatchmakeSystemTypeStringFriendsInvite represents MatchmakeSystemTypeFriendsInvite but as a string.
 	MatchmakeSystemTypeStringFriendsInvite MatchmakeSystemTypeString = "3"
 
-	// MatchmakeSystemTypeStringFriends represents MatchmakeSystemTypeInvite but as a string.
+	// MatchmakeSystemTypeStringInvite represents MatchmakeSystemTypeInvite but as a string.
 	MatchmakeSystemTypeStringInvite MatchmakeSystemTypeString = "4"
 
-	// MatchmakeSystemTypeStringFriends represents MatchmakeSystemTypePersistentGathering but as a string.
+	// MatchmakeSystemTypeStringPersistentGathering represents MatchmakeSystemTypePersistentGathering but as a string.
 	MatchmakeSystemTypeStringPersistentGathering MatchmakeSystemTypeString = "5"
 )

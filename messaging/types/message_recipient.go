@@ -50,26 +50,26 @@ func (mr *MessageRecipient) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.Messaging
 
 	if err := mr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient header. %s", err.Error())
+		return fmt.Errorf("failed to extract MessageRecipient header. %s", err.Error())
 	}
 
 	if !libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := mr.IDRecipient.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MessageRecipient.IDRecipient. %s", err.Error())
+			return fmt.Errorf("failed to extract MessageRecipient.IDRecipient. %s", err.Error())
 		}
 	}
 
 	if err := mr.UIRecipientType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient.UIRecipientType. %s", err.Error())
+		return fmt.Errorf("failed to extract MessageRecipient.UIRecipientType. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := mr.PrincipalID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MessageRecipient.PrincipalID. %s", err.Error())
+			return fmt.Errorf("failed to extract MessageRecipient.PrincipalID. %s", err.Error())
 		}
 
 		if err := mr.GatheringID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MessageRecipient.GatheringID. %s", err.Error())
+			return fmt.Errorf("failed to extract MessageRecipient.GatheringID. %s", err.Error())
 		}
 	}
 
@@ -143,11 +143,11 @@ func (mr MessageRecipient) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MessageRecipient{\n")
-	b.WriteString(fmt.Sprintf("%sIDRecipient: %s,\n", indentationValues, mr.IDRecipient))
-	b.WriteString(fmt.Sprintf("%sUIRecipientType: %s,\n", indentationValues, mr.UIRecipientType))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, mr.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, mr.GatheringID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sIDRecipient: %s,\n", indentationValues, mr.IDRecipient)
+	fmt.Fprintf(&b, "%sUIRecipientType: %s,\n", indentationValues, mr.UIRecipientType)
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, mr.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGatheringID: %s,\n", indentationValues, mr.GatheringID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

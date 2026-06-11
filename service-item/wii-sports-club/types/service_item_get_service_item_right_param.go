@@ -32,15 +32,15 @@ func (sigsirp ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the ServiceItemGetServiceItemRightParam from the given readable
 func (sigsirp *ServiceItemGetServiceItemRightParam) ExtractFrom(readable types.Readable) error {
 	if err := sigsirp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam header. %s", err.Error())
 	}
 
 	if err := sigsirp.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.ReferenceID. %s", err.Error())
 	}
 
 	if err := sigsirp.TitleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.TitleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetServiceItemRightParam.TitleID. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (sigsirp ServiceItemGetServiceItemRightParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetServiceItemRightParam{\n")
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, sigsirp.TitleID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID)
+	fmt.Fprintf(&b, "%sTitleID: %s,\n", indentationValues, sigsirp.TitleID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

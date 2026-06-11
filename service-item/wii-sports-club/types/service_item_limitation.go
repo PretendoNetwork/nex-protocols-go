@@ -32,15 +32,15 @@ func (sil ServiceItemLimitation) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemLimitation from the given readable
 func (sil *ServiceItemLimitation) ExtractFrom(readable types.Readable) error {
 	if err := sil.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemLimitation header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemLimitation header. %s", err.Error())
 	}
 
 	if err := sil.LimitationType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemLimitation.LimitationType. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemLimitation.LimitationType. %s", err.Error())
 	}
 
 	if err := sil.LimitationValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemLimitation.LimitationValue. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemLimitation.LimitationValue. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (sil ServiceItemLimitation) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemLimitation{\n")
-	b.WriteString(fmt.Sprintf("%sLimitationType: %s,\n", indentationValues, sil.LimitationType))
-	b.WriteString(fmt.Sprintf("%sLimitationValue: %s,\n", indentationValues, sil.LimitationValue))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLimitationType: %s,\n", indentationValues, sil.LimitationType)
+	fmt.Fprintf(&b, "%sLimitationValue: %s,\n", indentationValues, sil.LimitationValue)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

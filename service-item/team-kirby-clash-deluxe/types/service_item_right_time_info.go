@@ -33,15 +33,15 @@ func (sirti ServiceItemRightTimeInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemRightTimeInfo from the given readable
 func (sirti *ServiceItemRightTimeInfo) ExtractFrom(readable types.Readable) error {
 	if err := sirti.ServiceItemRightInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightTimeInfo.ServiceItemRightInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightTimeInfo.ServiceItemRightInfo. %s", err.Error())
 	}
 
 	if err := sirti.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightTimeInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightTimeInfo header. %s", err.Error())
 	}
 
 	if err := sirti.AccountRights.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightTimeInfo.AccountRights. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightTimeInfo.AccountRights. %s", err.Error())
 	}
 
 	return nil
@@ -104,9 +104,9 @@ func (sirti ServiceItemRightTimeInfo) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightTimeInfo{\n")
-	b.WriteString(fmt.Sprintf("%sServiceItemRightInfo (parent): %s,\n", indentationValues, sirti.ServiceItemRightInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sAccountRights: %s,\n", indentationValues, sirti.AccountRights))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sServiceItemRightInfo (parent): %s,\n", indentationValues, sirti.ServiceItemRightInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sAccountRights: %s,\n", indentationValues, sirti.AccountRights)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

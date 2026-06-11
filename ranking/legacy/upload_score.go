@@ -38,7 +38,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
+		_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -49,7 +49,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 	if rankingVersion.GreaterOrEqual("2.0.0") {
 		err = category.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
+			_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -61,7 +61,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 		err = categories.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
+			_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read categories from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -70,7 +70,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 		}
 
 		if len(categories) != constants.NumRankingDataCategories {
-			_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, uniqueID, category, scores, unknown1, unknown2)
+			_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read categories from parameters. Expected length of 1, got %d", len(categories)), packet, callID, uniqueID, category, scores, unknown1, unknown2)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
@@ -83,7 +83,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	err = scores.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read scores from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
+		_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read scores from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -93,7 +93,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
+		_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read unknown1 from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -103,7 +103,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UploadScore(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
+		_, rmcError := protocol.UploadScore(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, uniqueID, category, scores, unknown1, unknown2)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

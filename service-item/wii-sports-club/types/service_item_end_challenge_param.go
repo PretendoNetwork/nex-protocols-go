@@ -32,15 +32,15 @@ func (siecp ServiceItemEndChallengeParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemEndChallengeParam from the given readable
 func (siecp *ServiceItemEndChallengeParam) ExtractFrom(readable types.Readable) error {
 	if err := siecp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEndChallengeParam header. %s", err.Error())
 	}
 
 	if err := siecp.ChallengeScheduleID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.ChallengeScheduleID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEndChallengeParam.ChallengeScheduleID. %s", err.Error())
 	}
 
 	if err := siecp.UserInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.UserInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemEndChallengeParam.UserInfo. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (siecp ServiceItemEndChallengeParam) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("ServiceItemEndChallengeParam{\n")
-	b.WriteString(fmt.Sprintf("%sChallengeScheduleID: %s,\n", indentationValues, siecp.ChallengeScheduleID))
-	b.WriteString(fmt.Sprintf("%sUserInfo: %s,\n", indentationValues, siecp.UserInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sChallengeScheduleID: %s,\n", indentationValues, siecp.ChallengeScheduleID)
+	fmt.Fprintf(&b, "%sUserInfo: %s,\n", indentationValues, siecp.UserInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleSetPrivacyLevel(packet nex.PacketInterface) {
 
 	err := privacyLevel.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SetPrivacyLevel(fmt.Errorf("Failed to read privacyLevel from parameters. %s", err.Error()), packet, callID, privacyLevel)
+		_, rmcError := protocol.SetPrivacyLevel(fmt.Errorf("failed to read privacyLevel from parameters. %s", err.Error()), packet, callID, privacyLevel)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

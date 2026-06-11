@@ -34,7 +34,7 @@ func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterf
 
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
+		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("failed to read slotID from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterf
 
 	err = transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
+		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("failed to read transactionParam from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterf
 
 	err = isForce.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
+		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("failed to read isForce from parameters. %s", err.Error()), packet, callID, slotID, transactionParam, isForce)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

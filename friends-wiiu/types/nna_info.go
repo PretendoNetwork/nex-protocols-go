@@ -47,23 +47,23 @@ func (nnai NNAInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NNAInfo from the given readable
 func (nnai *NNAInfo) ExtractFrom(readable types.Readable) error {
 	if err := nnai.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NNAInfo.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract NNAInfo.Data. %s", err.Error())
 	}
 
 	if err := nnai.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NNAInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract NNAInfo header. %s", err.Error())
 	}
 
 	if err := nnai.PrincipalBasicInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NNAInfo.PrincipalBasicInfo. %s", err.Error())
+		return fmt.Errorf("failed to extract NNAInfo.PrincipalBasicInfo. %s", err.Error())
 	}
 
 	if err := nnai.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NNAInfo.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract NNAInfo.Unknown1. %s", err.Error())
 	}
 
 	if err := nnai.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NNAInfo.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract NNAInfo.Unknown2. %s", err.Error())
 	}
 
 	return nil
@@ -136,11 +136,11 @@ func (nnai NNAInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("NNAInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, nnai.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: %s,\n", indentationValues, nnai.PrincipalBasicInfo.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, nnai.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, nnai.Unknown2))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, nnai.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrincipalBasicInfo: %s,\n", indentationValues, nnai.PrincipalBasicInfo.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, nnai.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, nnai.Unknown2)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

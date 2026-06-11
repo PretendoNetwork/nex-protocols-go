@@ -30,7 +30,7 @@ func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
 
 	err := params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ClearBufferQueues(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, params)
+		_, rmcError := protocol.ClearBufferQueues(fmt.Errorf("failed to read params from parameters. %s", err.Error()), packet, callID, params)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -32,15 +32,15 @@ func (gtsdpp GlobalTradeStationDeletePokemonParam) WriteTo(writable types.Writab
 // ExtractFrom extracts the GlobalTradeStationDeletePokemonParam from the given readable
 func (gtsdpp *GlobalTradeStationDeletePokemonParam) ExtractFrom(readable types.Readable) error {
 	if err := gtsdpp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDeletePokemonParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDeletePokemonParam header. %s", err.Error())
 	}
 
 	if err := gtsdpp.PrepareUploadKey.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDeletePokemonParam.PrepareUploadKey. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDeletePokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	if err := gtsdpp.DeleteFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDeletePokemonParam.DeleteFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract GlobalTradeStationDeletePokemonParam.DeleteFlag. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (gtsdpp GlobalTradeStationDeletePokemonParam) FormatToString(indentationLev
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDeletePokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtsdpp.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDeleteFlag: %s,\n", indentationValues, gtsdpp.DeleteFlag))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrepareUploadKey: %s,\n", indentationValues, gtsdpp.PrepareUploadKey.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDeleteFlag: %s,\n", indentationValues, gtsdpp.DeleteFlag)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -34,7 +34,7 @@ func (protocol *Protocol) handleReportRatingStats(packet nex.PacketInterface) {
 
 	err = sessionToken.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportRatingStats(fmt.Errorf("Failed to read sessionToken from parameters. %s", err.Error()), packet, callID, sessionToken, stats)
+		_, rmcError := protocol.ReportRatingStats(fmt.Errorf("failed to read sessionToken from parameters. %s", err.Error()), packet, callID, sessionToken, stats)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleReportRatingStats(packet nex.PacketInterface) {
 
 	err = stats.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ReportRatingStats(fmt.Errorf("Failed to read stats from parameters. %s", err.Error()), packet, callID, sessionToken, stats)
+		_, rmcError := protocol.ReportRatingStats(fmt.Errorf("failed to read stats from parameters. %s", err.Error()), packet, callID, sessionToken, stats)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

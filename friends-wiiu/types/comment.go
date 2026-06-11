@@ -37,23 +37,23 @@ func (c Comment) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Comment from the given readable
 func (c *Comment) ExtractFrom(readable types.Readable) error {
 	if err := c.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment.Data. %s", err.Error())
 	}
 
 	if err := c.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment header. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment header. %s", err.Error())
 	}
 
 	if err := c.Unknown.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment.Unknown. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment.Unknown. %s", err.Error())
 	}
 
 	if err := c.Contents.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment.Contents. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment.Contents. %s", err.Error())
 	}
 
 	if err := c.LastChanged.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Comment.LastChanged. %s", err.Error())
+		return fmt.Errorf("failed to extract Comment.LastChanged. %s", err.Error())
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func (c Comment) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Comment{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, c.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, c.Unknown))
-	b.WriteString(fmt.Sprintf("%sContents: %s,\n", indentationValues, c.Contents))
-	b.WriteString(fmt.Sprintf("%sLastChanged: %s,\n", indentationValues, c.LastChanged.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, c.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUnknown: %s,\n", indentationValues, c.Unknown)
+	fmt.Fprintf(&b, "%sContents: %s,\n", indentationValues, c.Contents)
+	fmt.Fprintf(&b, "%sLastChanged: %s,\n", indentationValues, c.LastChanged.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

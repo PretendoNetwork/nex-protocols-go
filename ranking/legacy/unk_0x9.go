@@ -36,7 +36,7 @@ func (protocol *Protocol) handleUnk0x9(packet nex.PacketInterface) {
 
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x9(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.Unk0x9(fmt.Errorf("failed to read unknown1 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleUnk0x9(packet nex.PacketInterface) {
 
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x9(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.Unk0x9(fmt.Errorf("failed to read unknown2 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -56,7 +56,7 @@ func (protocol *Protocol) handleUnk0x9(packet nex.PacketInterface) {
 
 	err = unknown3.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x9(fmt.Errorf("Failed to read unknown3 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.Unk0x9(fmt.Errorf("failed to read unknown3 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -66,7 +66,7 @@ func (protocol *Protocol) handleUnk0x9(packet nex.PacketInterface) {
 
 	err = unknown4.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.Unk0x9(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4)
+		_, rmcError := protocol.Unk0x9(fmt.Errorf("failed to read unknown4 from parameters. %s", err.Error()), packet, callID, unknown1, unknown2, unknown3, unknown4)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -34,19 +34,19 @@ func (dsucrp DataStoreUploadCourseRecordParam) WriteTo(writable types.Writable) 
 // ExtractFrom extracts the DataStoreUploadCourseRecordParam from the given readable
 func (dsucrp *DataStoreUploadCourseRecordParam) ExtractFrom(readable types.Readable) error {
 	if err := dsucrp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreUploadCourseRecordParam header. %s", err.Error())
 	}
 
 	if err := dsucrp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreUploadCourseRecordParam.DataID. %s", err.Error())
 	}
 
 	if err := dsucrp.Slot.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Slot. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreUploadCourseRecordParam.Slot. %s", err.Error())
 	}
 
 	if err := dsucrp.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreUploadCourseRecordParam.Score. %s", err.Error())
 	}
 
 	return nil
@@ -114,10 +114,10 @@ func (dsucrp DataStoreUploadCourseRecordParam) FormatToString(indentationLevel i
 	var b strings.Builder
 
 	b.WriteString("DataStoreUploadCourseRecordParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsucrp.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsucrp.Slot))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dsucrp.Score))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsucrp.DataID)
+	fmt.Fprintf(&b, "%sSlot: %s,\n", indentationValues, dsucrp.Slot)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, dsucrp.Score)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

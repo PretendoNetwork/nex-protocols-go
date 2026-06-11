@@ -34,7 +34,7 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 
 	err = condition.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
+		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("failed to read condition from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
+		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 
 	err = extraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
+		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("failed to read extraData from parameters. %s", err.Error()), packet, callID, condition, param, extraData)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

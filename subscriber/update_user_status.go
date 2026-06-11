@@ -33,7 +33,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, param, isNotify)
+		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, param, isNotify)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 
 	err = isNotify.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read isNotify from parameters. %s", err.Error()), packet, callID, param, isNotify)
+		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("failed to read isNotify from parameters. %s", err.Error()), packet, callID, param, isNotify)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

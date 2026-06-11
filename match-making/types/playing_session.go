@@ -32,15 +32,15 @@ func (ps PlayingSession) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PlayingSession from the given readable
 func (ps *PlayingSession) ExtractFrom(readable types.Readable) error {
 	if err := ps.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayingSession header. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayingSession header. %s", err.Error())
 	}
 
 	if err := ps.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayingSession.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayingSession.PrincipalID. %s", err.Error())
 	}
 
 	if err := ps.Gathering.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PlayingSession.Gathering. %s", err.Error())
+		return fmt.Errorf("failed to extract PlayingSession.Gathering. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (ps PlayingSession) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PlayingSession{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, ps.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sGathering: %s,\n", indentationValues, ps.Gathering.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, ps.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sGathering: %s,\n", indentationValues, ps.Gathering.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

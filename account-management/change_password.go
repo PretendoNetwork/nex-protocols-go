@@ -29,7 +29,7 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 
 	err := strNewKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangePassword(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), packet, callID, strNewKey)
+		_, rmcError := protocol.ChangePassword(fmt.Errorf("failed to read strNewKey from parameters. %s", err.Error()), packet, callID, strNewKey)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

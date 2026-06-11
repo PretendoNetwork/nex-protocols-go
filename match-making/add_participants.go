@@ -33,7 +33,7 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
+		_, rmcError := protocol.AddParticipants(fmt.Errorf("failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 
 	err = lstPrincipals.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddParticipants(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
+		_, rmcError := protocol.AddParticipants(fmt.Errorf("failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.AddParticipants(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
+		_, rmcError := protocol.AddParticipants(fmt.Errorf("failed to read strMessage from parameters. %s", err.Error()), packet, callID, idGathering, lstPrincipals, strMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

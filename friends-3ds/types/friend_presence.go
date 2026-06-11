@@ -35,19 +35,19 @@ func (fp FriendPresence) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the FriendPresence from the given readable
 func (fp *FriendPresence) ExtractFrom(readable types.Readable) error {
 	if err := fp.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPresence.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPresence.Data. %s", err.Error())
 	}
 
 	if err := fp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPresence header. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPresence header. %s", err.Error())
 	}
 
 	if err := fp.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPresence.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPresence.PID. %s", err.Error())
 	}
 
 	if err := fp.Presence.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract FriendPresence.Presence. %s", err.Error())
+		return fmt.Errorf("failed to extract FriendPresence.Presence. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (fp FriendPresence) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendPresence{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fp.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fp.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, fp.Presence.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, fp.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, fp.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPresence: %s,\n", indentationValues, fp.Presence.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

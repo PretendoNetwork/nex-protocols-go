@@ -48,47 +48,47 @@ func (rrd RatingRankData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RatingRankData from the given readable
 func (rrd *RatingRankData) ExtractFrom(readable types.Readable) error {
 	if err := rrd.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData header. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData header. %s", err.Error())
 	}
 
 	if err := rrd.PrincipalID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.PrincipalID. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.PrincipalID. %s", err.Error())
 	}
 
 	if err := rrd.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.UniqueID. %s", err.Error())
 	}
 
 	if err := rrd.Order.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Order. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Order. %s", err.Error())
 	}
 
 	if err := rrd.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Category. %s", err.Error())
 	}
 
 	if err := rrd.Score.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Score. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Score. %s", err.Error())
 	}
 
 	if err := rrd.Unknown1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Unknown1. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Unknown1. %s", err.Error())
 	}
 
 	if err := rrd.Unknown2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Unknown2. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Unknown2. %s", err.Error())
 	}
 
 	if err := rrd.Unknown3.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.Unknown3. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.Unknown3. %s", err.Error())
 	}
 
 	if err := rrd.CommonData.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.CommonData. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.CommonData. %s", err.Error())
 	}
 
 	if err := rrd.UpdateTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RatingRankData.UpdateTime. %s", err.Error())
+		return fmt.Errorf("failed to extract RatingRankData.UpdateTime. %s", err.Error())
 	}
 
 	return nil
@@ -191,17 +191,17 @@ func (rrd RatingRankData) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RatingRankData{\n")
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rrd.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, rrd.UniqueID))
-	b.WriteString(fmt.Sprintf("%sOrder: %s,\n", indentationValues, rrd.Order))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rrd.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rrd.Score))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, rrd.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, rrd.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, rrd.Unknown3))
-	b.WriteString(fmt.Sprintf("%sCommonData: %s,\n", indentationValues, rrd.CommonData))
-	b.WriteString(fmt.Sprintf("%sUpdateTime: %s,\n", indentationValues, rrd.UpdateTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPrincipalID: %s,\n", indentationValues, rrd.PrincipalID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, rrd.UniqueID)
+	fmt.Fprintf(&b, "%sOrder: %s,\n", indentationValues, rrd.Order)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rrd.Category)
+	fmt.Fprintf(&b, "%sScore: %s,\n", indentationValues, rrd.Score)
+	fmt.Fprintf(&b, "%sUnknown1: %s,\n", indentationValues, rrd.Unknown1)
+	fmt.Fprintf(&b, "%sUnknown2: %s,\n", indentationValues, rrd.Unknown2)
+	fmt.Fprintf(&b, "%sUnknown3: %s,\n", indentationValues, rrd.Unknown3)
+	fmt.Fprintf(&b, "%sCommonData: %s,\n", indentationValues, rrd.CommonData)
+	fmt.Fprintf(&b, "%sUpdateTime: %s,\n", indentationValues, rrd.UpdateTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

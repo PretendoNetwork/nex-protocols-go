@@ -43,15 +43,15 @@ func (tm TextMessage) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the TextMessage from the given readable
 func (tm *TextMessage) ExtractFrom(readable types.Readable) error {
 	if err := tm.UserMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract TextMessage.UserMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract TextMessage.UserMessage. %s", err.Error())
 	}
 
 	if err := tm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract TextMessage header. %s", err.Error())
+		return fmt.Errorf("failed to extract TextMessage header. %s", err.Error())
 	}
 
 	if err := tm.StrTextBody.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract TextMessage.StrTextBody. %s", err.Error())
+		return fmt.Errorf("failed to extract TextMessage.StrTextBody. %s", err.Error())
 	}
 
 	return nil
@@ -114,9 +114,9 @@ func (tm TextMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("TextMessage{\n")
-	b.WriteString(fmt.Sprintf("%sUserMessage (parent): %s,\n", indentationValues, tm.UserMessage.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrTextBody: %s,\n", indentationValues, tm.StrTextBody))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUserMessage (parent): %s,\n", indentationValues, tm.UserMessage.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sStrTextBody: %s,\n", indentationValues, tm.StrTextBody)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

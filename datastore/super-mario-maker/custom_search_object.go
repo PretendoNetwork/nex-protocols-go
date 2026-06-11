@@ -33,7 +33,7 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 
 	err = condition.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, condition, param)
+		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("failed to read condition from parameters. %s", err.Error()), packet, callID, condition, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, condition, param)
+		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("failed to read param from parameters. %s", err.Error()), packet, callID, condition, param)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

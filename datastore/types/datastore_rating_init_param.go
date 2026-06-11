@@ -45,39 +45,39 @@ func (dsrip DataStoreRatingInitParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreRatingInitParam from the given readable
 func (dsrip *DataStoreRatingInitParam) ExtractFrom(readable types.Readable) error {
 	if err := dsrip.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam header. %s", err.Error())
 	}
 
 	if err := dsrip.Flag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.Flag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam.Flag. %s", err.Error())
 	}
 
 	if err := dsrip.InternalFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.InternalFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam.InternalFlag. %s", err.Error())
 	}
 
 	if err := dsrip.LockType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.LockType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam.LockType. %s", err.Error())
 	}
 
 	if err := dsrip.InitialValue.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.InitialValue. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam.InitialValue. %s", err.Error())
 	}
 
 	if err := dsrip.RangeMin.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.RangeMin. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam.RangeMin. %s", err.Error())
 	}
 
 	if err := dsrip.RangeMax.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.RangeMax. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam.RangeMax. %s", err.Error())
 	}
 
 	if err := dsrip.PeriodHour.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.PeriodHour. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam.PeriodHour. %s", err.Error())
 	}
 
 	if err := dsrip.PeriodDuration.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.PeriodDuration. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreRatingInitParam.PeriodDuration. %s", err.Error())
 	}
 
 	return nil
@@ -170,19 +170,19 @@ func (dsrip DataStoreRatingInitParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInitParam{\n")
-	b.WriteString(fmt.Sprintf("%sFlag: %s,\n", indentationValues, dsrip.Flag))
-	b.WriteString(fmt.Sprintf("%sInternalFlag: %s,\n", indentationValues, dsrip.InternalFlag))
-	b.WriteString(fmt.Sprintf("%sLockType: %s,\n", indentationValues, dsrip.LockType))
-	b.WriteString(fmt.Sprintf("%sInitialValue: %s,\n", indentationValues, dsrip.InitialValue))
-	b.WriteString(fmt.Sprintf("%sRangeMin: %s,\n", indentationValues, dsrip.RangeMin))
-	b.WriteString(fmt.Sprintf("%sRangeMax: %s,\n", indentationValues, dsrip.RangeMax))
-	b.WriteString(fmt.Sprintf("%sPeriodHour: %s,\n", indentationValues, dsrip.PeriodHour))
+	fmt.Fprintf(&b, "%sFlag: %s,\n", indentationValues, dsrip.Flag)
+	fmt.Fprintf(&b, "%sInternalFlag: %s,\n", indentationValues, dsrip.InternalFlag)
+	fmt.Fprintf(&b, "%sLockType: %s,\n", indentationValues, dsrip.LockType)
+	fmt.Fprintf(&b, "%sInitialValue: %s,\n", indentationValues, dsrip.InitialValue)
+	fmt.Fprintf(&b, "%sRangeMin: %s,\n", indentationValues, dsrip.RangeMin)
+	fmt.Fprintf(&b, "%sRangeMax: %s,\n", indentationValues, dsrip.RangeMax)
+	fmt.Fprintf(&b, "%sPeriodHour: %s,\n", indentationValues, dsrip.PeriodHour)
 	if dsrip.LockType == constants.RatingLockPeriod {
-		b.WriteString(fmt.Sprintf("%sPeriodDuration: %s\n", indentationValues, dsrip.PeriodDuration))
+		fmt.Fprintf(&b, "%sPeriodDuration: %s\n", indentationValues, dsrip.PeriodDuration)
 	} else {
-		b.WriteString(fmt.Sprintf("%sPeriodDuration: %s\n", indentationValues, types.Int16(dsrip.PeriodDuration)))
+		fmt.Fprintf(&b, "%sPeriodDuration: %s\n", indentationValues, types.Int16(dsrip.PeriodDuration))
 	}
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

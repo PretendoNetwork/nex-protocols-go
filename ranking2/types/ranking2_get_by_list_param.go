@@ -41,31 +41,31 @@ func (rgblp Ranking2GetByListParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2GetByListParam from the given readable
 func (rgblp *Ranking2GetByListParam) ExtractFrom(readable types.Readable) error {
 	if err := rgblp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam header. %s", err.Error())
 	}
 
 	if err := rgblp.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.Category. %s", err.Error())
 	}
 
 	if err := rgblp.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.Offset. %s", err.Error())
 	}
 
 	if err := rgblp.Length.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Length. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.Length. %s", err.Error())
 	}
 
 	if err := rgblp.SortFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.SortFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.SortFlags. %s", err.Error())
 	}
 
 	if err := rgblp.OptionFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.OptionFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.OptionFlags. %s", err.Error())
 	}
 
 	if err := rgblp.NumSeasonsToGoBack.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.NumSeasonsToGoBack. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2GetByListParam.NumSeasonsToGoBack. %s", err.Error())
 	}
 
 	return nil
@@ -148,13 +148,13 @@ func (rgblp Ranking2GetByListParam) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("Ranking2GetByListParam{\n")
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rgblp.Category))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, rgblp.Offset))
-	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, rgblp.Length))
-	b.WriteString(fmt.Sprintf("%sSortFlags: %s,\n", indentationValues, rgblp.SortFlags))
-	b.WriteString(fmt.Sprintf("%sOptionFlags: %s,\n", indentationValues, rgblp.OptionFlags))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, rgblp.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rgblp.Category)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, rgblp.Offset)
+	fmt.Fprintf(&b, "%sLength: %s,\n", indentationValues, rgblp.Length)
+	fmt.Fprintf(&b, "%sSortFlags: %s,\n", indentationValues, rgblp.SortFlags)
+	fmt.Fprintf(&b, "%sOptionFlags: %s,\n", indentationValues, rgblp.OptionFlags)
+	fmt.Fprintf(&b, "%sNumSeasonsToGoBack: %s,\n", indentationValues, rgblp.NumSeasonsToGoBack)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

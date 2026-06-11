@@ -30,11 +30,11 @@ func (siri ServiceItemRightInfos) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemRightInfos from the given readable
 func (siri *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
 	if err := siri.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightInfos header. %s", err.Error())
 	}
 
 	if err := siri.RightInfos.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.RightInfos. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemRightInfos.RightInfos. %s", err.Error())
 	}
 
 	return nil
@@ -92,8 +92,8 @@ func (siri ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightInfos{\n")
-	b.WriteString(fmt.Sprintf("%sRightInfos: %s,\n", indentationValues, siri.RightInfos))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRightInfos: %s,\n", indentationValues, siri.RightInfos)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

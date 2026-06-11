@@ -38,27 +38,27 @@ func (sigpip ServiceItemGetPrepurchaseInfoParam) WriteTo(writable types.Writable
 // ExtractFrom extracts the ServiceItemGetPrepurchaseInfoParam from the given readable
 func (sigpip *ServiceItemGetPrepurchaseInfoParam) ExtractFrom(readable types.Readable) error {
 	if err := sigpip.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam header. %s", err.Error())
 	}
 
 	if err := sigpip.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.ItemCode. %s", err.Error())
 	}
 
 	if err := sigpip.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.ReferenceID. %s", err.Error())
 	}
 
 	if err := sigpip.Limitation.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Limitation. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.Limitation. %s", err.Error())
 	}
 
 	if err := sigpip.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.Language. %s", err.Error())
 	}
 
 	if err := sigpip.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPrepurchaseInfoParam.UniqueID. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (sigpip ServiceItemGetPrepurchaseInfoParam) FormatToString(indentationLevel
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetPrepurchaseInfoParam{\n")
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sigpip.ItemCode))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sigpip.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, sigpip.Limitation.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sigpip.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigpip.UniqueID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sigpip.ItemCode)
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, sigpip.ReferenceID)
+	fmt.Fprintf(&b, "%sLimitation: %s,\n", indentationValues, sigpip.Limitation.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, sigpip.Language)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, sigpip.UniqueID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

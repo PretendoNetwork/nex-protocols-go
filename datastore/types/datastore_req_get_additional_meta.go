@@ -36,23 +36,23 @@ func (dsrgam DataStoreReqGetAdditionalMeta) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqGetAdditionalMeta from the given readable
 func (dsrgam *DataStoreReqGetAdditionalMeta) ExtractFrom(readable types.Readable) error {
 	if err := dsrgam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta header. %s", err.Error())
 	}
 
 	if err := dsrgam.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta.OwnerID. %s", err.Error())
 	}
 
 	if err := dsrgam.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta.DataType. %s", err.Error())
 	}
 
 	if err := dsrgam.Version.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.Version. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta.Version. %s", err.Error())
 	}
 
 	if err := dsrgam.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetAdditionalMeta.MetaBinary. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (dsrgam DataStoreReqGetAdditionalMeta) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetAdditionalMeta{\n")
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dsrgam.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsrgam.DataType))
-	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dsrgam.Version))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dsrgam.MetaBinary))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dsrgam.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dsrgam.DataType)
+	fmt.Fprintf(&b, "%sVersion: %s,\n", indentationValues, dsrgam.Version)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dsrgam.MetaBinary)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -37,23 +37,23 @@ func (rcr RankingCachedResult) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingCachedResult from the given readable
 func (rcr *RankingCachedResult) ExtractFrom(readable types.Readable) error {
 	if err := rcr.RankingResult.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.RankingResult. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult.RankingResult. %s", err.Error())
 	}
 
 	if err := rcr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult header. %s", err.Error())
 	}
 
 	if err := rcr.CreatedTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.CreatedTime. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult.CreatedTime. %s", err.Error())
 	}
 
 	if err := rcr.ExpiredTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.ExpiredTime. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult.ExpiredTime. %s", err.Error())
 	}
 
 	if err := rcr.MaxLength.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.MaxLength. %s", err.Error())
+		return fmt.Errorf("failed to extract RankingCachedResult.MaxLength. %s", err.Error())
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func (rcr RankingCachedResult) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingCachedResult{\n")
-	b.WriteString(fmt.Sprintf("%sRankingResult (parent): %s,\n", indentationValues, rcr.RankingResult.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, rcr.CreatedTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sExpiredTime: %s,\n", indentationValues, rcr.ExpiredTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMaxLength: %s,\n", indentationValues, rcr.MaxLength))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sRankingResult (parent): %s,\n", indentationValues, rcr.RankingResult.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCreatedTime: %s,\n", indentationValues, rcr.CreatedTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sExpiredTime: %s,\n", indentationValues, rcr.ExpiredTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMaxLength: %s,\n", indentationValues, rcr.MaxLength)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

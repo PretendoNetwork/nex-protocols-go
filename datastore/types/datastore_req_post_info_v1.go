@@ -38,27 +38,27 @@ func (dsrpiv DataStoreReqPostInfoV1) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqPostInfoV1 from the given readable
 func (dsrpiv *DataStoreReqPostInfoV1) ExtractFrom(readable types.Readable) error {
 	if err := dsrpiv.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1 header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1 header. %s", err.Error())
 	}
 
 	if err := dsrpiv.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.DataID. %s", err.Error())
 	}
 
 	if err := dsrpiv.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.URL. %s", err.Error())
 	}
 
 	if err := dsrpiv.RequestHeaders.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RequestHeaders. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.RequestHeaders. %s", err.Error())
 	}
 
 	if err := dsrpiv.FormFields.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.FormFields. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.FormFields. %s", err.Error())
 	}
 
 	if err := dsrpiv.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqPostInfoV1.RootCACert. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (dsrpiv DataStoreReqPostInfoV1) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqPostInfoV1{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrpiv.DataID))
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrpiv.URL))
-	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrpiv.RequestHeaders))
-	b.WriteString(fmt.Sprintf("%sFormFields: %s,\n", indentationValues, dsrpiv.FormFields))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrpiv.RootCACert))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsrpiv.DataID)
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrpiv.URL)
+	fmt.Fprintf(&b, "%sRequestHeaders: %s,\n", indentationValues, dsrpiv.RequestHeaders)
+	fmt.Fprintf(&b, "%sFormFields: %s,\n", indentationValues, dsrpiv.FormFields)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrpiv.RootCACert)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

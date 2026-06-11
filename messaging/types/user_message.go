@@ -78,58 +78,58 @@ func (um *UserMessage) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.Messaging
 
 	if err := um.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.Data. %s", err.Error())
 	}
 
 	if err := um.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage header. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage header. %s", err.Error())
 	}
 
 	if err := um.UIID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.UIID. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.UIID. %s", err.Error())
 	}
 
 	if !libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := um.IDRecipient.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract UserMessage.IDRecipient. %s", err.Error())
+			return fmt.Errorf("failed to extract UserMessage.IDRecipient. %s", err.Error())
 		}
 
 		if err := um.UIRecipientType.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract UserMessage.UIRecipientType. %s", err.Error())
+			return fmt.Errorf("failed to extract UserMessage.UIRecipientType. %s", err.Error())
 		}
 	}
 
 	if err := um.UIParentID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.UIParentID. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.UIParentID. %s", err.Error())
 	}
 
 	if err := um.PIDSender.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.PIDSender. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.PIDSender. %s", err.Error())
 	}
 
 	if err := um.Receptiontime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.Receptiontime. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.Receptiontime. %s", err.Error())
 	}
 
 	if err := um.UILifeTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.UILifeTime. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.UILifeTime. %s", err.Error())
 	}
 
 	if err := um.UIFlags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.UIFlags. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.UIFlags. %s", err.Error())
 	}
 
 	if err := um.StrSubject.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.StrSubject. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.StrSubject. %s", err.Error())
 	}
 
 	if err := um.StrSender.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.StrSender. %s", err.Error())
+		return fmt.Errorf("failed to extract UserMessage.StrSender. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := um.MessageRecipient.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract UserMessage.MessageRecipient. %s", err.Error())
+			return fmt.Errorf("failed to extract UserMessage.MessageRecipient. %s", err.Error())
 		}
 	}
 
@@ -243,19 +243,19 @@ func (um UserMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UserMessage{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, um.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUIID: %s,\n", indentationValues, um.UIID))
-	b.WriteString(fmt.Sprintf("%sIDRecipient: %s,\n", indentationValues, um.IDRecipient))
-	b.WriteString(fmt.Sprintf("%sUIRecipientType: %s,\n", indentationValues, um.UIRecipientType))
-	b.WriteString(fmt.Sprintf("%sUIParentID: %s,\n", indentationValues, um.UIParentID))
-	b.WriteString(fmt.Sprintf("%sPIDSender: %s,\n", indentationValues, um.PIDSender.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sReceptiontime: %s,\n", indentationValues, um.Receptiontime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUILifeTime: %s,\n", indentationValues, um.UILifeTime))
-	b.WriteString(fmt.Sprintf("%sUIFlags: %s,\n", indentationValues, um.UIFlags))
-	b.WriteString(fmt.Sprintf("%sStrSubject: %s,\n", indentationValues, um.StrSubject))
-	b.WriteString(fmt.Sprintf("%sStrSender: %s,\n", indentationValues, um.StrSender))
-	b.WriteString(fmt.Sprintf("%sMessageRecipient: %s,\n", indentationValues, um.MessageRecipient.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, um.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUIID: %s,\n", indentationValues, um.UIID)
+	fmt.Fprintf(&b, "%sIDRecipient: %s,\n", indentationValues, um.IDRecipient)
+	fmt.Fprintf(&b, "%sUIRecipientType: %s,\n", indentationValues, um.UIRecipientType)
+	fmt.Fprintf(&b, "%sUIParentID: %s,\n", indentationValues, um.UIParentID)
+	fmt.Fprintf(&b, "%sPIDSender: %s,\n", indentationValues, um.PIDSender.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sReceptiontime: %s,\n", indentationValues, um.Receptiontime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUILifeTime: %s,\n", indentationValues, um.UILifeTime)
+	fmt.Fprintf(&b, "%sUIFlags: %s,\n", indentationValues, um.UIFlags)
+	fmt.Fprintf(&b, "%sStrSubject: %s,\n", indentationValues, um.StrSubject)
+	fmt.Fprintf(&b, "%sStrSender: %s,\n", indentationValues, um.StrSender)
+	fmt.Fprintf(&b, "%sMessageRecipient: %s,\n", indentationValues, um.MessageRecipient.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

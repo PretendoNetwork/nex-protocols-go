@@ -36,23 +36,23 @@ func (sipi ServiceItemPurchaceInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemPurchaceInfo from the given readable
 func (sipi *ServiceItemPurchaceInfo) ExtractFrom(readable types.Readable) error {
 	if err := sipi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo header. %s", err.Error())
 	}
 
 	if err := sipi.TransactionID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo.TransactionID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo.TransactionID. %s", err.Error())
 	}
 
 	if err := sipi.ExtTransactionID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo.ExtTransactionID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo.ExtTransactionID. %s", err.Error())
 	}
 
 	if err := sipi.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo.ItemCode. %s", err.Error())
 	}
 
 	if err := sipi.PostBalance.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaceInfo.PostBalance. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemPurchaceInfo.PostBalance. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (sipi ServiceItemPurchaceInfo) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaceInfo{\n")
-	b.WriteString(fmt.Sprintf("%sTransactionID: %s,\n", indentationValues, sipi.TransactionID))
-	b.WriteString(fmt.Sprintf("%sExtTransactionID: %s,\n", indentationValues, sipi.ExtTransactionID))
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sipi.ItemCode))
-	b.WriteString(fmt.Sprintf("%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTransactionID: %s,\n", indentationValues, sipi.TransactionID)
+	fmt.Fprintf(&b, "%sExtTransactionID: %s,\n", indentationValues, sipi.ExtTransactionID)
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, sipi.ItemCode)
+	fmt.Fprintf(&b, "%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

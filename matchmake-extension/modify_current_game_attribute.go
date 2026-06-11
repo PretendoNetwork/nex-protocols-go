@@ -33,7 +33,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("failed to read gid from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	err = attribIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("failed to read attribIndex from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	err = newValue.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("failed to read newValue from parameters. %s", err.Error()), packet, callID, gid, attribIndex, newValue)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

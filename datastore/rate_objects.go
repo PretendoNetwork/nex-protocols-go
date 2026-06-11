@@ -35,7 +35,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	err = targets.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RateObjects(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), packet, callID, targets, params, transactional, fetchRatings)
+		_, rmcError := protocol.RateObjects(fmt.Errorf("failed to read targets from parameters. %s", err.Error()), packet, callID, targets, params, transactional, fetchRatings)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RateObjects(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, targets, params, transactional, fetchRatings)
+		_, rmcError := protocol.RateObjects(fmt.Errorf("failed to read params from parameters. %s", err.Error()), packet, callID, targets, params, transactional, fetchRatings)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RateObjects(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, targets, params, transactional, fetchRatings)
+		_, rmcError := protocol.RateObjects(fmt.Errorf("failed to read transactional from parameters. %s", err.Error()), packet, callID, targets, params, transactional, fetchRatings)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -65,7 +65,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	err = fetchRatings.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RateObjects(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), packet, callID, targets, params, transactional, fetchRatings)
+		_, rmcError := protocol.RateObjects(fmt.Errorf("failed to read fetchRatings from parameters. %s", err.Error()), packet, callID, targets, params, transactional, fetchRatings)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

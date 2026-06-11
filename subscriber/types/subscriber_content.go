@@ -40,31 +40,31 @@ func (sc SubscriberContent) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SubscriberContent from the given readable
 func (sc *SubscriberContent) ExtractFrom(readable types.Readable) error {
 	if err := sc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent header. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberContent header. %s", err.Error())
 	}
 
 	if err := sc.ContentID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.ContentID. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberContent.ContentID. %s", err.Error())
 	}
 
 	if err := sc.Message.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Message. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberContent.Message. %s", err.Error())
 	}
 
 	if err := sc.Binary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Binary. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberContent.Binary. %s", err.Error())
 	}
 
 	if err := sc.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberContent.PID. %s", err.Error())
 	}
 
 	if err := sc.Topics.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Topics. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberContent.Topics. %s", err.Error())
 	}
 
 	if err := sc.PostTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.PostTime. %s", err.Error())
+		return fmt.Errorf("failed to extract SubscriberContent.PostTime. %s", err.Error())
 	}
 
 	return nil
@@ -147,13 +147,13 @@ func (sc SubscriberContent) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SubscriberContent{\n")
-	b.WriteString(fmt.Sprintf("%sContentID: %s,\n", indentationValues, sc.ContentID))
-	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, sc.Message))
-	b.WriteString(fmt.Sprintf("%sBinary: %s,\n", indentationValues, sc.Binary))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, sc.PID))
-	b.WriteString(fmt.Sprintf("%sTopics: %s,\n", indentationValues, sc.Topics))
-	b.WriteString(fmt.Sprintf("%sPostTime: %s,\n", indentationValues, sc.PostTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sContentID: %s,\n", indentationValues, sc.ContentID)
+	fmt.Fprintf(&b, "%sMessage: %s,\n", indentationValues, sc.Message)
+	fmt.Fprintf(&b, "%sBinary: %s,\n", indentationValues, sc.Binary)
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, sc.PID)
+	fmt.Fprintf(&b, "%sTopics: %s,\n", indentationValues, sc.Topics)
+	fmt.Fprintf(&b, "%sPostTime: %s,\n", indentationValues, sc.PostTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

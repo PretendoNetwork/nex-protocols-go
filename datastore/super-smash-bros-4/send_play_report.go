@@ -29,7 +29,7 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 
 	err := playReport.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SendPlayReport(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, playReport)
+		_, rmcError := protocol.SendPlayReport(fmt.Errorf("failed to read playReport from parameters. %s", err.Error()), packet, callID, playReport)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

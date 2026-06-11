@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 
 	err := forceRetrieveFromEShop.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAndGetTicketInfo(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), packet, callID, forceRetrieveFromEShop)
+		_, rmcError := protocol.UpdateAndGetTicketInfo(fmt.Errorf("failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), packet, callID, forceRetrieveFromEShop)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

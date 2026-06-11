@@ -32,7 +32,7 @@ func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface
 
 	err = strDescriptionLike.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("Failed to read strDescriptionLike from parameters. %s", err.Error()), packet, callID, strDescriptionLike, resultRange)
+		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("failed to read strDescriptionLike from parameters. %s", err.Error()), packet, callID, strDescriptionLike, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, strDescriptionLike, resultRange)
+		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, strDescriptionLike, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

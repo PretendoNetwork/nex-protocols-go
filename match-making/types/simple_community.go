@@ -32,15 +32,15 @@ func (sc SimpleCommunity) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the SimpleCommunity from the given readable
 func (sc *SimpleCommunity) ExtractFrom(readable types.Readable) error {
 	if err := sc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleCommunity header. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleCommunity header. %s", err.Error())
 	}
 
 	if err := sc.GatheringID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleCommunity.GatheringID. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleCommunity.GatheringID. %s", err.Error())
 	}
 
 	if err := sc.MatchmakeSessionCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract SimpleCommunity.MatchmakeSessionCount. %s", err.Error())
+		return fmt.Errorf("failed to extract SimpleCommunity.MatchmakeSessionCount. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (sc SimpleCommunity) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("SimpleCommunity{\n")
-	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, sc.GatheringID))
-	b.WriteString(fmt.Sprintf("%sMatchmakeSessionCount: %s,\n", indentationValues, sc.MatchmakeSessionCount))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sGatheringID: %s,\n", indentationValues, sc.GatheringID)
+	fmt.Fprintf(&b, "%sMatchmakeSessionCount: %s,\n", indentationValues, sc.MatchmakeSessionCount)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

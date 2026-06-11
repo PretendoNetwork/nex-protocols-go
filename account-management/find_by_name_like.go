@@ -33,7 +33,7 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 
 	err = uiGroups.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByNameLike(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, uiGroups, strLike, resultRange)
+		_, rmcError := protocol.FindByNameLike(fmt.Errorf("failed to read uiGroups from parameters. %s", err.Error()), packet, callID, uiGroups, strLike, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 
 	err = strLike.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByNameLike(fmt.Errorf("Failed to read strLike from parameters. %s", err.Error()), packet, callID, uiGroups, strLike, resultRange)
+		_, rmcError := protocol.FindByNameLike(fmt.Errorf("failed to read strLike from parameters. %s", err.Error()), packet, callID, uiGroups, strLike, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.FindByNameLike(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, uiGroups, strLike, resultRange)
+		_, rmcError := protocol.FindByNameLike(fmt.Errorf("failed to read resultRange from parameters. %s", err.Error()), packet, callID, uiGroups, strLike, resultRange)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

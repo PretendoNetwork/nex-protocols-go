@@ -29,7 +29,7 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 
 	err := gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CloseParticipation(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, gid)
+		_, rmcError := protocol.CloseParticipation(fmt.Errorf("failed to read gid from parameters. %s", err.Error()), packet, callID, gid)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

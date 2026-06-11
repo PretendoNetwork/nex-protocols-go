@@ -32,7 +32,7 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID, key)
+		_, rmcError := protocol.DeleteApplicationConfig(fmt.Errorf("failed to read applicationID from parameters. %s", err.Error()), packet, callID, applicationID, key)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 
 	err = key.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, applicationID, key)
+		_, rmcError := protocol.DeleteApplicationConfig(fmt.Errorf("failed to read key from parameters. %s", err.Error()), packet, callID, applicationID, key)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

@@ -32,15 +32,15 @@ func (dsgnanp DataStoreGetNewArrivedNotificationsParam) WriteTo(writable types.W
 // ExtractFrom extracts the DataStoreGetNewArrivedNotificationsParam from the given readable
 func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) ExtractFrom(readable types.Readable) error {
 	if err := dsgnanp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetNewArrivedNotificationsParam header. %s", err.Error())
 	}
 
 	if err := dsgnanp.LastNotificationID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam.LastNotificationID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetNewArrivedNotificationsParam.LastNotificationID. %s", err.Error())
 	}
 
 	if err := dsgnanp.Limit.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam.Limit. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreGetNewArrivedNotificationsParam.Limit. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dsgnanp DataStoreGetNewArrivedNotificationsParam) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetNewArrivedNotificationsParam{\n")
-	b.WriteString(fmt.Sprintf("%sLastNotificationID: %s,\n", indentationValues, dsgnanp.LastNotificationID))
-	b.WriteString(fmt.Sprintf("%sLimit: %s,\n", indentationValues, dsgnanp.Limit))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLastNotificationID: %s,\n", indentationValues, dsgnanp.LastNotificationID)
+	fmt.Fprintf(&b, "%sLimit: %s,\n", indentationValues, dsgnanp.Limit)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

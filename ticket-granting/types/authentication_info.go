@@ -60,28 +60,28 @@ func (ai *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.Main
 
 	if err := ai.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract AuthenticationInfo.Data. %s", err.Error())
 	}
 
 	if err := ai.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract AuthenticationInfo header. %s", err.Error())
 	}
 
 	if err := ai.Token.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo.Token. %s", err.Error())
+		return fmt.Errorf("failed to extract AuthenticationInfo.Token. %s", err.Error())
 	}
 
 	if err := ai.NGSVersion.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo.NGSVersion. %s", err.Error())
+		return fmt.Errorf("failed to extract AuthenticationInfo.NGSVersion. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := ai.TokenType.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract AuthenticationInfo.TokenType. %s", err.Error())
+			return fmt.Errorf("failed to extract AuthenticationInfo.TokenType. %s", err.Error())
 		}
 
 		if err := ai.ServerVersion.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract AuthenticationInfo.ServerVersion. %s", err.Error())
+			return fmt.Errorf("failed to extract AuthenticationInfo.ServerVersion. %s", err.Error())
 		}
 	}
 
@@ -160,12 +160,12 @@ func (ai AuthenticationInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("AuthenticationInfo{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, ai.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, ai.Token))
-	b.WriteString(fmt.Sprintf("%sNGSVersion: %s,\n", indentationValues, ai.NGSVersion))
-	b.WriteString(fmt.Sprintf("%sTokenType: %s,\n", indentationValues, ai.TokenType))
-	b.WriteString(fmt.Sprintf("%sServerVersion: %s,\n", indentationValues, ai.ServerVersion))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, ai.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sToken: %s,\n", indentationValues, ai.Token)
+	fmt.Fprintf(&b, "%sNGSVersion: %s,\n", indentationValues, ai.NGSVersion)
+	fmt.Fprintf(&b, "%sTokenType: %s,\n", indentationValues, ai.TokenType)
+	fmt.Fprintf(&b, "%sServerVersion: %s,\n", indentationValues, ai.ServerVersion)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

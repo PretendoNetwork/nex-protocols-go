@@ -48,28 +48,28 @@ func (dsrgi *DataStoreReqGetInfo) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dsrgi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfo header. %s", err.Error())
 	}
 
 	if err := dsrgi.URL.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.URL. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfo.URL. %s", err.Error())
 	}
 
 	if err := dsrgi.RequestHeaders.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.RequestHeaders. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfo.RequestHeaders. %s", err.Error())
 	}
 
 	if err := dsrgi.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfo.Size. %s", err.Error())
 	}
 
 	if err := dsrgi.RootCACert.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.RootCACert. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReqGetInfo.RootCACert. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
 		if err := dsrgi.DataID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreReqGetInfo.DataID. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreReqGetInfo.DataID. %s", err.Error())
 		}
 	}
 
@@ -148,12 +148,12 @@ func (dsrgi DataStoreReqGetInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetInfo{\n")
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrgi.URL))
-	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrgi.RequestHeaders))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsrgi.Size))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrgi.RootCACert))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrgi.DataID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sURL: %s,\n", indentationValues, dsrgi.URL)
+	fmt.Fprintf(&b, "%sRequestHeaders: %s,\n", indentationValues, dsrgi.RequestHeaders)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, dsrgi.Size)
+	fmt.Fprintf(&b, "%sRootCACert: %s,\n", indentationValues, dsrgi.RootCACert)
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsrgi.DataID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

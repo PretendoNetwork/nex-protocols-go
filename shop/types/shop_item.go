@@ -36,23 +36,23 @@ func (si ShopItem) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ShopItem from the given readable
 func (si *ShopItem) ExtractFrom(readable types.Readable) error {
 	if err := si.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItem header. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItem header. %s", err.Error())
 	}
 
 	if err := si.ItemID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItem.ItemID. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItem.ItemID. %s", err.Error())
 	}
 
 	if err := si.ReferenceID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItem.ReferenceID. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItem.ReferenceID. %s", err.Error())
 	}
 
 	if err := si.ServiceName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItem.ServiceName. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItem.ServiceName. %s", err.Error())
 	}
 
 	if err := si.ItemCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ShopItem.ItemCode. %s", err.Error())
+		return fmt.Errorf("failed to extract ShopItem.ItemCode. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (si ShopItem) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ShopItem{\n")
-	b.WriteString(fmt.Sprintf("%sItemID: %s,\n", indentationValues, si.ItemID))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, si.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sServiceName: %s,\n", indentationValues, si.ServiceName))
-	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, si.ItemCode))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sItemID: %s,\n", indentationValues, si.ItemID)
+	fmt.Fprintf(&b, "%sReferenceID: %s,\n", indentationValues, si.ReferenceID)
+	fmt.Fprintf(&b, "%sServiceName: %s,\n", indentationValues, si.ServiceName)
+	fmt.Fprintf(&b, "%sItemCode: %s,\n", indentationValues, si.ItemCode)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

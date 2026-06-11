@@ -33,7 +33,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	err = dtEffectiveFrom.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	err = strNotEffectiveMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

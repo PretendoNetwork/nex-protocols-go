@@ -29,7 +29,7 @@ func (g Gathering) ObjectID() types.RVType {
 	return g.GatheringObjectID()
 }
 
-// DataObjectID returns the object identifier of the type embedding Gathering
+// GatheringObjectID returns the object identifier of the type embedding Gathering
 func (g Gathering) GatheringObjectID() types.RVType {
 	return types.NewString("Gathering")
 }
@@ -59,47 +59,47 @@ func (g Gathering) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Gathering from the given readable
 func (g *Gathering) ExtractFrom(readable types.Readable) error {
 	if err := g.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering header. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering header. %s", err.Error())
 	}
 
 	if err := g.ID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.ID. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.ID. %s", err.Error())
 	}
 
 	if err := g.OwnerPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.OwnerPID. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.OwnerPID. %s", err.Error())
 	}
 
 	if err := g.HostPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.HostPID. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.HostPID. %s", err.Error())
 	}
 
 	if err := g.MinimumParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.MinimumParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.MinimumParticipants. %s", err.Error())
 	}
 
 	if err := g.MaximumParticipants.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.MaximumParticipants. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.MaximumParticipants. %s", err.Error())
 	}
 
 	if err := g.ParticipationPolicy.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.ParticipationPolicy. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.ParticipationPolicy. %s", err.Error())
 	}
 
 	if err := g.PolicyArgument.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.PolicyArgument. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.PolicyArgument. %s", err.Error())
 	}
 
 	if err := g.Flags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.Flags. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.Flags. %s", err.Error())
 	}
 
 	if err := g.State.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.State. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.State. %s", err.Error())
 	}
 
 	if err := g.Description.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Gathering.Description. %s", err.Error())
+		return fmt.Errorf("failed to extract Gathering.Description. %s", err.Error())
 	}
 
 	return nil
@@ -202,24 +202,24 @@ func (g Gathering) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Gathering{\n")
-	b.WriteString(fmt.Sprintf("%sID: %s,\n", indentationValues, g.ID))
-	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, g.OwnerPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sHostPID: %s,\n", indentationValues, g.HostPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sMinimumParticipants: %s,\n", indentationValues, g.MinimumParticipants))
-	b.WriteString(fmt.Sprintf("%sMaximumParticipants: %s,\n", indentationValues, g.MaximumParticipants))
-	b.WriteString(fmt.Sprintf("%sParticipationPolicy: %s,\n", indentationValues, g.ParticipationPolicy))
+	fmt.Fprintf(&b, "%sID: %s,\n", indentationValues, g.ID)
+	fmt.Fprintf(&b, "%sOwnerPID: %s,\n", indentationValues, g.OwnerPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sHostPID: %s,\n", indentationValues, g.HostPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sMinimumParticipants: %s,\n", indentationValues, g.MinimumParticipants)
+	fmt.Fprintf(&b, "%sMaximumParticipants: %s,\n", indentationValues, g.MaximumParticipants)
+	fmt.Fprintf(&b, "%sParticipationPolicy: %s,\n", indentationValues, g.ParticipationPolicy)
 	switch g.ParticipationPolicy {
 	case constants.ParticipationPolicyAnybody:
-		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringAnybodyParticipationPolicyArgument()))
+		fmt.Fprintf(&b, "%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringAnybodyParticipationPolicyArgument())
 	case constants.ParticipationPolicyFriendsOnly:
-		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringFriendsOnlyParticipationPolicyArgument()))
+		fmt.Fprintf(&b, "%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument.StringFriendsOnlyParticipationPolicyArgument())
 	default:
-		b.WriteString(fmt.Sprintf("%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument))
+		fmt.Fprintf(&b, "%sPolicyArgument: %s,\n", indentationValues, g.PolicyArgument)
 	}
-	b.WriteString(fmt.Sprintf("%sFlags: %s,\n", indentationValues, g.Flags))
-	b.WriteString(fmt.Sprintf("%sState: %s,\n", indentationValues, g.State))
-	b.WriteString(fmt.Sprintf("%sDescription: %s,\n", indentationValues, g.Description))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sFlags: %s,\n", indentationValues, g.Flags)
+	fmt.Fprintf(&b, "%sState: %s,\n", indentationValues, g.State)
+	fmt.Fprintf(&b, "%sDescription: %s,\n", indentationValues, g.Description)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

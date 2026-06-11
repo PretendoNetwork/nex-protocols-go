@@ -35,19 +35,19 @@ func (dssr DataStoreSearchResult) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreSearchResult from the given readable
 func (dssr *DataStoreSearchResult) ExtractFrom(readable types.Readable) error {
 	if err := dssr.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchResult header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchResult header. %s", err.Error())
 	}
 
 	if err := dssr.TotalCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCount. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchResult.TotalCount. %s", err.Error())
 	}
 
 	if err := dssr.Result.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchResult.Result. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchResult.Result. %s", err.Error())
 	}
 
 	if err := dssr.TotalCountType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCountType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchResult.TotalCountType. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (dssr DataStoreSearchResult) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchResult{\n")
-	b.WriteString(fmt.Sprintf("%sTotalCount: %s,\n", indentationValues, dssr.TotalCount))
-	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, dssr.Result))
-	b.WriteString(fmt.Sprintf("%sTotalCountType: %s,\n", indentationValues, dssr.TotalCountType))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sTotalCount: %s,\n", indentationValues, dssr.TotalCount)
+	fmt.Fprintf(&b, "%sResult: %s,\n", indentationValues, dssr.Result)
+	fmt.Fprintf(&b, "%sTotalCountType: %s,\n", indentationValues, dssr.TotalCountType)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

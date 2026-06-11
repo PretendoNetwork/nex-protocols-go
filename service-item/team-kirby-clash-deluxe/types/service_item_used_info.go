@@ -32,15 +32,15 @@ func (siui ServiceItemUsedInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the ServiceItemUsedInfo from the given readable
 func (siui *ServiceItemUsedInfo) ExtractFrom(readable types.Readable) error {
 	if err := siui.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUsedInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUsedInfo header. %s", err.Error())
 	}
 
 	if err := siui.AcquiredCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUsedInfo.AcquiredCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUsedInfo.AcquiredCount. %s", err.Error())
 	}
 
 	if err := siui.UsedCount.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUsedInfo.UsedCount. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemUsedInfo.UsedCount. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (siui ServiceItemUsedInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUsedInfo{\n")
-	b.WriteString(fmt.Sprintf("%sAcquiredCount: %s,\n", indentationValues, siui.AcquiredCount))
-	b.WriteString(fmt.Sprintf("%sUsedCount: %s,\n", indentationValues, siui.UsedCount))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sAcquiredCount: %s,\n", indentationValues, siui.AcquiredCount)
+	fmt.Fprintf(&b, "%sUsedCount: %s,\n", indentationValues, siui.UsedCount)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

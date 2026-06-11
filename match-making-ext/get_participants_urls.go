@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) 
 
 	err := lstGatherings.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetParticipantsURLs(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, lstGatherings)
+		_, rmcError := protocol.GetParticipantsURLs(fmt.Errorf("failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, lstGatherings)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

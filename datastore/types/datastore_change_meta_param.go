@@ -60,64 +60,64 @@ func (dscmp DataStoreChangeMetaParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreChangeMetaParam from the given readable
 func (dscmp *DataStoreChangeMetaParam) ExtractFrom(readable types.Readable) error {
 	if err := dscmp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam header. %s", err.Error())
 	}
 
 	if err := dscmp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.DataID. %s", err.Error())
 	}
 
 	if err := dscmp.ModifiesFlag.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.ModifiesFlag. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.ModifiesFlag. %s", err.Error())
 	}
 
 	if err := dscmp.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Name. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Name. %s", err.Error())
 	}
 
 	if err := dscmp.Permission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Permission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Permission. %s", err.Error())
 	}
 
 	if err := dscmp.DelPermission.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DelPermission. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.DelPermission. %s", err.Error())
 	}
 
 	if err := dscmp.Period.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Period. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Period. %s", err.Error())
 	}
 
 	if err := dscmp.MetaBinary.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.MetaBinary. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.MetaBinary. %s", err.Error())
 	}
 
 	if err := dscmp.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Tags. %s", err.Error())
 	}
 
 	if err := dscmp.UpdatePassword.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.UpdatePassword. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.UpdatePassword. %s", err.Error())
 	}
 
 	if err := dscmp.ReferredCnt.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.ReferredCnt. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.ReferredCnt. %s", err.Error())
 	}
 
 	if err := dscmp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.DataType. %s", err.Error())
 	}
 
 	if err := dscmp.Status.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Status. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.Status. %s", err.Error())
 	}
 
 	if err := dscmp.CompareParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.CompareParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreChangeMetaParam.CompareParam. %s", err.Error())
 	}
 
 	if dscmp.StructureVersion >= 1 {
 		if err := dscmp.PersistenceTarget.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
 		}
 	}
 
@@ -241,21 +241,21 @@ func (dscmp DataStoreChangeMetaParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangeMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscmp.DataID))
-	b.WriteString(fmt.Sprintf("%sModifiesFlag: %s,\n", indentationValues, dscmp.ModifiesFlag))
-	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dscmp.Name))
-	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dscmp.Permission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dscmp.DelPermission.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dscmp.Period))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dscmp.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dscmp.Tags))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dscmp.UpdatePassword))
-	b.WriteString(fmt.Sprintf("%sReferredCnt: %s,\n", indentationValues, dscmp.ReferredCnt))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dscmp.DataType))
-	b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, dscmp.Status))
-	b.WriteString(fmt.Sprintf("%sCompareParam: %s,\n", indentationValues, dscmp.CompareParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dscmp.PersistenceTarget.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscmp.DataID)
+	fmt.Fprintf(&b, "%sModifiesFlag: %s,\n", indentationValues, dscmp.ModifiesFlag)
+	fmt.Fprintf(&b, "%sName: %s,\n", indentationValues, dscmp.Name)
+	fmt.Fprintf(&b, "%sPermission: %s,\n", indentationValues, dscmp.Permission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDelPermission: %s,\n", indentationValues, dscmp.DelPermission.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPeriod: %s,\n", indentationValues, dscmp.Period)
+	fmt.Fprintf(&b, "%sMetaBinary: %s,\n", indentationValues, dscmp.MetaBinary)
+	fmt.Fprintf(&b, "%sTags: %s,\n", indentationValues, dscmp.Tags)
+	fmt.Fprintf(&b, "%sUpdatePassword: %s,\n", indentationValues, dscmp.UpdatePassword)
+	fmt.Fprintf(&b, "%sReferredCnt: %s,\n", indentationValues, dscmp.ReferredCnt)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dscmp.DataType)
+	fmt.Fprintf(&b, "%sStatus: %s,\n", indentationValues, dscmp.Status)
+	fmt.Fprintf(&b, "%sCompareParam: %s,\n", indentationValues, dscmp.CompareParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPersistenceTarget: %s,\n", indentationValues, dscmp.PersistenceTarget.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

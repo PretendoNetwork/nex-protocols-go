@@ -47,43 +47,43 @@ func (rcs Ranking2CategorySetting) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2CategorySetting from the given readable
 func (rcs *Ranking2CategorySetting) ExtractFrom(readable types.Readable) error {
 	if err := rcs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting header. %s", err.Error())
 	}
 
 	if err := rcs.MinScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MinScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.MinScore. %s", err.Error())
 	}
 
 	if err := rcs.MaxScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.MaxScore. %s", err.Error())
 	}
 
 	if err := rcs.LowestRank.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.LowestRank. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.LowestRank. %s", err.Error())
 	}
 
 	if err := rcs.ResetMonth.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMonth. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ResetMonth. %s", err.Error())
 	}
 
 	if err := rcs.ResetDay.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetDay. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ResetDay. %s", err.Error())
 	}
 
 	if err := rcs.ResetHour.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetHour. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ResetHour. %s", err.Error())
 	}
 
 	if err := rcs.ResetMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMode. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ResetMode. %s", err.Error())
 	}
 
 	if err := rcs.MaxSeasonsToGoBack.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxSeasonsToGoBack. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.MaxSeasonsToGoBack. %s", err.Error())
 	}
 
 	if err := rcs.ScoreOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ScoreOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2CategorySetting.ScoreOrder. %s", err.Error())
 	}
 
 	return nil
@@ -181,25 +181,25 @@ func (rcs Ranking2CategorySetting) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2CategorySetting{\n")
-	b.WriteString(fmt.Sprintf("%sMinScore: %s,\n", indentationValues, rcs.MinScore))
-	b.WriteString(fmt.Sprintf("%sMaxScore: %s,\n", indentationValues, rcs.MaxScore))
-	b.WriteString(fmt.Sprintf("%sLowestRank: %s,\n", indentationValues, rcs.LowestRank))
-	b.WriteString(fmt.Sprintf("%sResetMonth: %s,\n", indentationValues, rcs.ResetMonth))
+	fmt.Fprintf(&b, "%sMinScore: %s,\n", indentationValues, rcs.MinScore)
+	fmt.Fprintf(&b, "%sMaxScore: %s,\n", indentationValues, rcs.MaxScore)
+	fmt.Fprintf(&b, "%sLowestRank: %s,\n", indentationValues, rcs.LowestRank)
+	fmt.Fprintf(&b, "%sResetMonth: %s,\n", indentationValues, rcs.ResetMonth)
 	switch rcs.ResetMode {
 	case constants.Ranking2ResetModeEveryWeek:
 		fallthrough
 	case constants.Ranking2ResetModeMultiMonthWeekday:
-		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringWeekday()))
+		fmt.Fprintf(&b, "%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringWeekday())
 	case constants.Ranking2ResetModeMultiMonth:
-		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringMonthly()))
+		fmt.Fprintf(&b, "%sResetDay: %s,\n", indentationValues, rcs.ResetDay.StringMonthly())
 	default:
-		b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay))
+		fmt.Fprintf(&b, "%sResetDay: %s,\n", indentationValues, rcs.ResetDay)
 	}
-	b.WriteString(fmt.Sprintf("%sResetHour: %s,\n", indentationValues, rcs.ResetHour))
-	b.WriteString(fmt.Sprintf("%sResetMode: %s,\n", indentationValues, rcs.ResetMode))
-	b.WriteString(fmt.Sprintf("%sMaxSeasonsToGoBack: %s,\n", indentationValues, rcs.MaxSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%sScoreOrder: %s,\n", indentationValues, rcs.ScoreOrder))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sResetHour: %s,\n", indentationValues, rcs.ResetHour)
+	fmt.Fprintf(&b, "%sResetMode: %s,\n", indentationValues, rcs.ResetMode)
+	fmt.Fprintf(&b, "%sMaxSeasonsToGoBack: %s,\n", indentationValues, rcs.MaxSeasonsToGoBack)
+	fmt.Fprintf(&b, "%sScoreOrder: %s,\n", indentationValues, rcs.ScoreOrder)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

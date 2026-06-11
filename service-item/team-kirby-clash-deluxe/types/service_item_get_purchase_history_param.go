@@ -38,27 +38,27 @@ func (sigphp ServiceItemGetPurchaseHistoryParam) WriteTo(writable types.Writable
 // ExtractFrom extracts the ServiceItemGetPurchaseHistoryParam from the given readable
 func (sigphp *ServiceItemGetPurchaseHistoryParam) ExtractFrom(readable types.Readable) error {
 	if err := sigphp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam header. %s", err.Error())
 	}
 
 	if err := sigphp.Language.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Language. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.Language. %s", err.Error())
 	}
 
 	if err := sigphp.Offset.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Offset. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.Offset. %s", err.Error())
 	}
 
 	if err := sigphp.Size.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Size. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.Size. %s", err.Error())
 	}
 
 	if err := sigphp.UniqueID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.UniqueID. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.UniqueID. %s", err.Error())
 	}
 
 	if err := sigphp.Platform.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Platform. %s", err.Error())
+		return fmt.Errorf("failed to extract ServiceItemGetPurchaseHistoryParam.Platform. %s", err.Error())
 	}
 
 	return nil
@@ -136,12 +136,12 @@ func (sigphp ServiceItemGetPurchaseHistoryParam) FormatToString(indentationLevel
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetPurchaseHistoryParam{\n")
-	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sigphp.Language))
-	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, sigphp.Offset))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, sigphp.Size))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigphp.UniqueID))
-	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sigphp.Platform))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sLanguage: %s,\n", indentationValues, sigphp.Language)
+	fmt.Fprintf(&b, "%sOffset: %s,\n", indentationValues, sigphp.Offset)
+	fmt.Fprintf(&b, "%sSize: %s,\n", indentationValues, sigphp.Size)
+	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, sigphp.UniqueID)
+	fmt.Fprintf(&b, "%sPlatform: %s,\n", indentationValues, sigphp.Platform)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

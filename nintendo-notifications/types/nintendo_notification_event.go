@@ -35,19 +35,19 @@ func (nne NintendoNotificationEvent) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the NintendoNotificationEvent from the given readable
 func (nne *NintendoNotificationEvent) ExtractFrom(readable types.Readable) error {
 	if err := nne.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEvent header. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEvent header. %s", err.Error())
 	}
 
 	if err := nne.Type.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEvent.Type. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEvent.Type. %s", err.Error())
 	}
 
 	if err := nne.SenderPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEvent.SenderPID. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEvent.SenderPID. %s", err.Error())
 	}
 
 	if err := nne.DataHolder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract NintendoNotificationEvent.DataHolder. %s", err.Error())
+		return fmt.Errorf("failed to extract NintendoNotificationEvent.DataHolder. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (nne NintendoNotificationEvent) FormatToString(indentationLevel int) string
 	var b strings.Builder
 
 	b.WriteString("NintendoNotificationEvent{\n")
-	b.WriteString(fmt.Sprintf("%sType: %s,\n", indentationValues, nne.Type))
-	b.WriteString(fmt.Sprintf("%sSenderPID: %s,\n", indentationValues, nne.SenderPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sDataHolder: %s,\n", indentationValues, nne.DataHolder.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sType: %s,\n", indentationValues, nne.Type)
+	fmt.Fprintf(&b, "%sSenderPID: %s,\n", indentationValues, nne.SenderPID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sDataHolder: %s,\n", indentationValues, nne.DataHolder.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

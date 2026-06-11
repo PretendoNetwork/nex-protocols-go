@@ -99,90 +99,90 @@ func (mssc *MatchmakeSessionSearchCriteria) ExtractFrom(readable types.Readable)
 	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	if err := mssc.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria header. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria header. %s", err.Error())
 	}
 
 	if err := mssc.Attribs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.Attribs. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.Attribs. %s", err.Error())
 	}
 
 	if err := mssc.GameMode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.GameMode. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.GameMode. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("2.0.0") {
 		if err := mssc.MinParticipants.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MinParticipants. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.MinParticipants. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("2.0.0") {
 		if err := mssc.MaxParticipants.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MaxParticipants. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.MaxParticipants. %s", err.Error())
 		}
 	}
 
 	if err := mssc.MatchmakeSystemType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeSystemType. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.MatchmakeSystemType. %s", err.Error())
 	}
 
 	if err := mssc.VacantOnly.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantOnly. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.VacantOnly. %s", err.Error())
 	}
 
 	if err := mssc.ExcludeLocked.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeLocked. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ExcludeLocked. %s", err.Error())
 	}
 
 	if err := mssc.ExcludeNonHostPID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPID. %s", err.Error())
+		return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPID. %s", err.Error())
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
 		if err := mssc.SelectionMethod.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.4.0") {
 		if err := mssc.VacantParticipants.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantParticipants. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.VacantParticipants. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
 		if err := mssc.MatchmakeParam.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeParam. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.MatchmakeParam. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
 		if err := mssc.ExcludeUserPasswordSet.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeUserPasswordSet. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ExcludeUserPasswordSet. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
 		if err := mssc.ExcludeSystemPasswordSet.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeSystemPasswordSet. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ExcludeSystemPasswordSet. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
 		if err := mssc.ReferGID.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ReferGID. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ReferGID. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := mssc.CodeWord.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.CodeWord. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.CodeWord. %s", err.Error())
 		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := mssc.ResultRange.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ResultRange. %s", err.Error())
+			return fmt.Errorf("failed to extract MatchmakeSessionSearchCriteria.ResultRange. %s", err.Error())
 		}
 	}
 
@@ -316,23 +316,23 @@ func (mssc MatchmakeSessionSearchCriteria) FormatToString(indentationLevel int) 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeSessionSearchCriteria{\n")
-	b.WriteString(fmt.Sprintf("%sAttribs: %s,\n", indentationValues, mssc.Attribs))
-	b.WriteString(fmt.Sprintf("%sGameMode: %s,\n", indentationValues, mssc.GameMode))
-	b.WriteString(fmt.Sprintf("%sMinParticipants: %s,\n", indentationValues, mssc.MinParticipants))
-	b.WriteString(fmt.Sprintf("%sMaxParticipants: %s,\n", indentationValues, mssc.MaxParticipants))
-	b.WriteString(fmt.Sprintf("%sMatchmakeSystemType: %s,\n", indentationValues, mssc.MatchmakeSystemType))
-	b.WriteString(fmt.Sprintf("%sVacantOnly: %s,\n", indentationValues, mssc.VacantOnly))
-	b.WriteString(fmt.Sprintf("%sExcludeLocked: %s,\n", indentationValues, mssc.ExcludeLocked))
-	b.WriteString(fmt.Sprintf("%sExcludeNonHostPID: %s,\n", indentationValues, mssc.ExcludeNonHostPID))
-	b.WriteString(fmt.Sprintf("%sSelectionMethod: %s,\n", indentationValues, mssc.SelectionMethod))
-	b.WriteString(fmt.Sprintf("%sVacantParticipants: %s,\n", indentationValues, mssc.VacantParticipants))
-	b.WriteString(fmt.Sprintf("%sMatchmakeParam: %s,\n", indentationValues, mssc.MatchmakeParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sExcludeUserPasswordSet: %s,\n", indentationValues, mssc.ExcludeUserPasswordSet))
-	b.WriteString(fmt.Sprintf("%sExcludeSystemPasswordSet: %s,\n", indentationValues, mssc.ExcludeSystemPasswordSet))
-	b.WriteString(fmt.Sprintf("%sReferGID: %s,\n", indentationValues, mssc.ReferGID))
-	b.WriteString(fmt.Sprintf("%sCodeWord: %s,\n", indentationValues, mssc.CodeWord))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, mssc.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sAttribs: %s,\n", indentationValues, mssc.Attribs)
+	fmt.Fprintf(&b, "%sGameMode: %s,\n", indentationValues, mssc.GameMode)
+	fmt.Fprintf(&b, "%sMinParticipants: %s,\n", indentationValues, mssc.MinParticipants)
+	fmt.Fprintf(&b, "%sMaxParticipants: %s,\n", indentationValues, mssc.MaxParticipants)
+	fmt.Fprintf(&b, "%sMatchmakeSystemType: %s,\n", indentationValues, mssc.MatchmakeSystemType)
+	fmt.Fprintf(&b, "%sVacantOnly: %s,\n", indentationValues, mssc.VacantOnly)
+	fmt.Fprintf(&b, "%sExcludeLocked: %s,\n", indentationValues, mssc.ExcludeLocked)
+	fmt.Fprintf(&b, "%sExcludeNonHostPID: %s,\n", indentationValues, mssc.ExcludeNonHostPID)
+	fmt.Fprintf(&b, "%sSelectionMethod: %s,\n", indentationValues, mssc.SelectionMethod)
+	fmt.Fprintf(&b, "%sVacantParticipants: %s,\n", indentationValues, mssc.VacantParticipants)
+	fmt.Fprintf(&b, "%sMatchmakeParam: %s,\n", indentationValues, mssc.MatchmakeParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sExcludeUserPasswordSet: %s,\n", indentationValues, mssc.ExcludeUserPasswordSet)
+	fmt.Fprintf(&b, "%sExcludeSystemPasswordSet: %s,\n", indentationValues, mssc.ExcludeSystemPasswordSet)
+	fmt.Fprintf(&b, "%sReferGID: %s,\n", indentationValues, mssc.ReferGID)
+	fmt.Fprintf(&b, "%sCodeWord: %s,\n", indentationValues, mssc.CodeWord)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, mssc.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

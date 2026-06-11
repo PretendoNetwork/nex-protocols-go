@@ -64,79 +64,79 @@ func (rci Ranking2ChartInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the Ranking2ChartInfo from the given readable
 func (rci *Ranking2ChartInfo) ExtractFrom(readable types.Readable) error {
 	if err := rci.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo header. %s", err.Error())
 	}
 
 	if err := rci.CreateTime.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.CreateTime. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.CreateTime. %s", err.Error())
 	}
 
 	if err := rci.Index.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Index. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.Index. %s", err.Error())
 	}
 
 	if err := rci.Category.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Category. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.Category. %s", err.Error())
 	}
 
 	if err := rci.Season.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Season. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.Season. %s", err.Error())
 	}
 
 	if err := rci.BinsSize.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsSize. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.BinsSize. %s", err.Error())
 	}
 
 	if err := rci.SamplingRate.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.SamplingRate. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.SamplingRate. %s", err.Error())
 	}
 
 	if err := rci.ScoreOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.ScoreOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.ScoreOrder. %s", err.Error())
 	}
 
 	if err := rci.EstimateLength.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLength. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.EstimateLength. %s", err.Error())
 	}
 
 	if err := rci.EstimateHighestScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateHighestScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.EstimateHighestScore. %s", err.Error())
 	}
 
 	if err := rci.EstimateLowestScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLowestScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.EstimateLowestScore. %s", err.Error())
 	}
 
 	if err := rci.EstimateMedianScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateMedianScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.EstimateMedianScore. %s", err.Error())
 	}
 
 	if err := rci.EstimateAverageScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateAverageScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.EstimateAverageScore. %s", err.Error())
 	}
 
 	if err := rci.HighestBinsScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.HighestBinsScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.HighestBinsScore. %s", err.Error())
 	}
 
 	if err := rci.LowestBinsScore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.LowestBinsScore. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.LowestBinsScore. %s", err.Error())
 	}
 
 	if err := rci.BinsWidth.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsWidth. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.BinsWidth. %s", err.Error())
 	}
 
 	if err := rci.Attribute1.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute1. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.Attribute1. %s", err.Error())
 	}
 
 	if err := rci.Attribute2.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute2. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.Attribute2. %s", err.Error())
 	}
 
 	if err := rci.Quantities.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Quantities. %s", err.Error())
+		return fmt.Errorf("failed to extract Ranking2ChartInfo.Quantities. %s", err.Error())
 	}
 
 	return nil
@@ -279,25 +279,25 @@ func (rci Ranking2ChartInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2ChartInfo{\n")
-	b.WriteString(fmt.Sprintf("%sCreateTime: %s,\n", indentationValues, rci.CreateTime.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sIndex: %s,\n", indentationValues, rci.Index))
-	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rci.Category))
-	b.WriteString(fmt.Sprintf("%sSeason: %s,\n", indentationValues, rci.Season))
-	b.WriteString(fmt.Sprintf("%sBinsSize: %s,\n", indentationValues, rci.BinsSize))
-	b.WriteString(fmt.Sprintf("%sSamplingRate: %s,\n", indentationValues, rci.SamplingRate))
-	b.WriteString(fmt.Sprintf("%sScoreOrder: %s,\n", indentationValues, rci.ScoreOrder))
-	b.WriteString(fmt.Sprintf("%sEstimateLength: %s,\n", indentationValues, rci.EstimateLength))
-	b.WriteString(fmt.Sprintf("%sEstimateHighestScore: %s,\n", indentationValues, rci.EstimateHighestScore))
-	b.WriteString(fmt.Sprintf("%sEstimateLowestScore: %s,\n", indentationValues, rci.EstimateLowestScore))
-	b.WriteString(fmt.Sprintf("%sEstimateMedianScore: %s,\n", indentationValues, rci.EstimateMedianScore))
-	b.WriteString(fmt.Sprintf("%sEstimateAverageScore: %s,\n", indentationValues, rci.EstimateAverageScore))
-	b.WriteString(fmt.Sprintf("%sHighestBinsScore: %s,\n", indentationValues, rci.HighestBinsScore))
-	b.WriteString(fmt.Sprintf("%sLowestBinsScore: %s,\n", indentationValues, rci.LowestBinsScore))
-	b.WriteString(fmt.Sprintf("%sBinsWidth: %s,\n", indentationValues, rci.BinsWidth))
-	b.WriteString(fmt.Sprintf("%sAttribute1: %s,\n", indentationValues, rci.Attribute1))
-	b.WriteString(fmt.Sprintf("%sAttribute2: %s,\n", indentationValues, rci.Attribute2))
-	b.WriteString(fmt.Sprintf("%sQuantities: %s,\n", indentationValues, rci.Quantities))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sCreateTime: %s,\n", indentationValues, rci.CreateTime.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sIndex: %s,\n", indentationValues, rci.Index)
+	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, rci.Category)
+	fmt.Fprintf(&b, "%sSeason: %s,\n", indentationValues, rci.Season)
+	fmt.Fprintf(&b, "%sBinsSize: %s,\n", indentationValues, rci.BinsSize)
+	fmt.Fprintf(&b, "%sSamplingRate: %s,\n", indentationValues, rci.SamplingRate)
+	fmt.Fprintf(&b, "%sScoreOrder: %s,\n", indentationValues, rci.ScoreOrder)
+	fmt.Fprintf(&b, "%sEstimateLength: %s,\n", indentationValues, rci.EstimateLength)
+	fmt.Fprintf(&b, "%sEstimateHighestScore: %s,\n", indentationValues, rci.EstimateHighestScore)
+	fmt.Fprintf(&b, "%sEstimateLowestScore: %s,\n", indentationValues, rci.EstimateLowestScore)
+	fmt.Fprintf(&b, "%sEstimateMedianScore: %s,\n", indentationValues, rci.EstimateMedianScore)
+	fmt.Fprintf(&b, "%sEstimateAverageScore: %s,\n", indentationValues, rci.EstimateAverageScore)
+	fmt.Fprintf(&b, "%sHighestBinsScore: %s,\n", indentationValues, rci.HighestBinsScore)
+	fmt.Fprintf(&b, "%sLowestBinsScore: %s,\n", indentationValues, rci.LowestBinsScore)
+	fmt.Fprintf(&b, "%sBinsWidth: %s,\n", indentationValues, rci.BinsWidth)
+	fmt.Fprintf(&b, "%sAttribute1: %s,\n", indentationValues, rci.Attribute1)
+	fmt.Fprintf(&b, "%sAttribute2: %s,\n", indentationValues, rci.Attribute2)
+	fmt.Fprintf(&b, "%sQuantities: %s,\n", indentationValues, rci.Quantities)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -32,15 +32,15 @@ func (dspt DataStorePersistenceTarget) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePersistenceTarget from the given readable
 func (dspt *DataStorePersistenceTarget) ExtractFrom(readable types.Readable) error {
 	if err := dspt.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceTarget header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceTarget header. %s", err.Error())
 	}
 
 	if err := dspt.OwnerID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.OwnerID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceTarget.OwnerID. %s", err.Error())
 	}
 
 	if err := dspt.PersistenceSlotID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.PersistenceSlotID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStorePersistenceTarget.PersistenceSlotID. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dspt DataStorePersistenceTarget) FormatToString(indentationLevel int) stri
 	var b strings.Builder
 
 	b.WriteString("DataStorePersistenceTarget{\n")
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dspt.OwnerID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %s,\n", indentationValues, dspt.PersistenceSlotID))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sOwnerID: %s,\n", indentationValues, dspt.OwnerID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPersistenceSlotID: %s,\n", indentationValues, dspt.PersistenceSlotID)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

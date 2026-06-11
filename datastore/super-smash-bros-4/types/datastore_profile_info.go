@@ -32,15 +32,15 @@ func (dspi DataStoreProfileInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreProfileInfo from the given readable
 func (dspi *DataStoreProfileInfo) ExtractFrom(readable types.Readable) error {
 	if err := dspi.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreProfileInfo header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreProfileInfo header. %s", err.Error())
 	}
 
 	if err := dspi.PID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreProfileInfo.PID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreProfileInfo.PID. %s", err.Error())
 	}
 
 	if err := dspi.Profile.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreProfileInfo.Profile. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreProfileInfo.Profile. %s", err.Error())
 	}
 
 	return nil
@@ -103,9 +103,9 @@ func (dspi DataStoreProfileInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreProfileInfo{\n")
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, dspi.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sProfile: %s,\n", indentationValues, dspi.Profile))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, dspi.PID.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sProfile: %s,\n", indentationValues, dspi.Profile)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -35,19 +35,19 @@ func (dscpsdp DataStoreCompletePostSharedDataParam) WriteTo(writable types.Writa
 // ExtractFrom extracts the DataStoreCompletePostSharedDataParam from the given readable
 func (dscpsdp *DataStoreCompletePostSharedDataParam) ExtractFrom(readable types.Readable) error {
 	if err := dscpsdp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostSharedDataParam header. %s", err.Error())
 	}
 
 	if err := dscpsdp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostSharedDataParam.DataID. %s", err.Error())
 	}
 
 	if err := dscpsdp.CompleteParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.CompleteParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostSharedDataParam.CompleteParam. %s", err.Error())
 	}
 
 	if err := dscpsdp.PrepareParam.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.PrepareParam. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreCompletePostSharedDataParam.PrepareParam. %s", err.Error())
 	}
 
 	return nil
@@ -115,10 +115,10 @@ func (dscpsdp DataStoreCompletePostSharedDataParam) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscpsdp.DataID))
-	b.WriteString(fmt.Sprintf("%sCompleteParam: %s,\n", indentationValues, dscpsdp.CompleteParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareParam: %s,\n", indentationValues, dscpsdp.PrepareParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dscpsdp.DataID)
+	fmt.Fprintf(&b, "%sCompleteParam: %s,\n", indentationValues, dscpsdp.CompleteParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sPrepareParam: %s,\n", indentationValues, dscpsdp.PrepareParam.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

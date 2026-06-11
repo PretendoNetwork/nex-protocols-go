@@ -83,88 +83,88 @@ func (dssp *DataStoreSearchParam) ExtractFrom(readable types.Readable) error {
 	libraryVersion := stream.LibraryVersions.DataStore
 
 	if err := dssp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam header. %s", err.Error())
 	}
 
 	if err := dssp.SearchTarget.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.SearchTarget. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.SearchTarget. %s", err.Error())
 	}
 
 	if err := dssp.OwnerIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.OwnerIDs. %s", err.Error())
 	}
 
 	if err := dssp.OwnerType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.OwnerType. %s", err.Error())
 	}
 
 	if err := dssp.DestinationIDs.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.DestinationIDs. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.DestinationIDs. %s", err.Error())
 	}
 
 	if err := dssp.DataType.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.DataType. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.DataType. %s", err.Error())
 	}
 
 	if err := dssp.CreatedAfter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedAfter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.CreatedAfter. %s", err.Error())
 	}
 
 	if err := dssp.CreatedBefore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedBefore. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.CreatedBefore. %s", err.Error())
 	}
 
 	if err := dssp.UpdatedAfter.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedAfter. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.UpdatedAfter. %s", err.Error())
 	}
 
 	if err := dssp.UpdatedBefore.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedBefore. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.UpdatedBefore. %s", err.Error())
 	}
 
 	if err := dssp.ReferDataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ReferDataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ReferDataID. %s", err.Error())
 	}
 
 	if err := dssp.Tags.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.Tags. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.Tags. %s", err.Error())
 	}
 
 	if err := dssp.ResultOrderColumn.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrderColumn. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ResultOrderColumn. %s", err.Error())
 	}
 
 	if err := dssp.ResultOrder.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrder. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ResultOrder. %s", err.Error())
 	}
 
 	if err := dssp.ResultRange.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ResultRange. %s", err.Error())
 	}
 
 	if err := dssp.ResultOption.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.ResultOption. %s", err.Error())
 	}
 
 	if err := dssp.MinimalRatingFrequency.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
 	}
 
 	if dssp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := dssp.UseCache.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
 		}
 	}
 
 	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := dssp.TotalCountEnabled.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
 		}
 	}
 
 	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := dssp.DataTypes.ExtractFrom(readable); err != nil {
-			return fmt.Errorf("Failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
+			return fmt.Errorf("failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
 		}
 	}
 
@@ -313,26 +313,26 @@ func (dssp DataStoreSearchParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchParam{\n")
-	b.WriteString(fmt.Sprintf("%sSearchTarget: %s,\n", indentationValues, dssp.SearchTarget))
-	b.WriteString(fmt.Sprintf("%sOwnerIDs: %s,\n", indentationValues, dssp.OwnerIDs))
-	b.WriteString(fmt.Sprintf("%sOwnerType: %s,\n", indentationValues, dssp.OwnerType))
-	b.WriteString(fmt.Sprintf("%sDestinationIDs: %s,\n", indentationValues, dssp.DestinationIDs))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dssp.DataType))
-	b.WriteString(fmt.Sprintf("%sCreatedAfter: %s,\n", indentationValues, dssp.CreatedAfter.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCreatedBefore: %s,\n", indentationValues, dssp.CreatedBefore.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUpdatedAfter: %s,\n", indentationValues, dssp.UpdatedAfter.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUpdatedBefore: %s,\n", indentationValues, dssp.UpdatedBefore.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dssp.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dssp.Tags))
-	b.WriteString(fmt.Sprintf("%sResultOrderColumn: %s,\n", indentationValues, dssp.ResultOrderColumn))
-	b.WriteString(fmt.Sprintf("%sResultOrder: %s,\n", indentationValues, dssp.ResultOrder))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dssp.ResultRange.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dssp.ResultOption))
-	b.WriteString(fmt.Sprintf("%sMinimalRatingFrequency: %s,\n", indentationValues, dssp.MinimalRatingFrequency))
-	b.WriteString(fmt.Sprintf("%sUseCache: %s,\n", indentationValues, dssp.UseCache))
-	b.WriteString(fmt.Sprintf("%sTotalCountEnabled: %s,\n", indentationValues, dssp.TotalCountEnabled))
-	b.WriteString(fmt.Sprintf("%sDataTypes: %s,\n", indentationValues, dssp.DataTypes))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sSearchTarget: %s,\n", indentationValues, dssp.SearchTarget)
+	fmt.Fprintf(&b, "%sOwnerIDs: %s,\n", indentationValues, dssp.OwnerIDs)
+	fmt.Fprintf(&b, "%sOwnerType: %s,\n", indentationValues, dssp.OwnerType)
+	fmt.Fprintf(&b, "%sDestinationIDs: %s,\n", indentationValues, dssp.DestinationIDs)
+	fmt.Fprintf(&b, "%sDataType: %s,\n", indentationValues, dssp.DataType)
+	fmt.Fprintf(&b, "%sCreatedAfter: %s,\n", indentationValues, dssp.CreatedAfter.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sCreatedBefore: %s,\n", indentationValues, dssp.CreatedBefore.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUpdatedAfter: %s,\n", indentationValues, dssp.UpdatedAfter.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sUpdatedBefore: %s,\n", indentationValues, dssp.UpdatedBefore.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sReferDataID: %s,\n", indentationValues, dssp.ReferDataID)
+	fmt.Fprintf(&b, "%sTags: %s,\n", indentationValues, dssp.Tags)
+	fmt.Fprintf(&b, "%sResultOrderColumn: %s,\n", indentationValues, dssp.ResultOrderColumn)
+	fmt.Fprintf(&b, "%sResultOrder: %s,\n", indentationValues, dssp.ResultOrder)
+	fmt.Fprintf(&b, "%sResultRange: %s,\n", indentationValues, dssp.ResultRange.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sResultOption: %s,\n", indentationValues, dssp.ResultOption)
+	fmt.Fprintf(&b, "%sMinimalRatingFrequency: %s,\n", indentationValues, dssp.MinimalRatingFrequency)
+	fmt.Fprintf(&b, "%sUseCache: %s,\n", indentationValues, dssp.UseCache)
+	fmt.Fprintf(&b, "%sTotalCountEnabled: %s,\n", indentationValues, dssp.TotalCountEnabled)
+	fmt.Fprintf(&b, "%sDataTypes: %s,\n", indentationValues, dssp.DataTypes)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, strURL)
+		_, rmcError := protocol.UpdateSessionURL(fmt.Errorf("failed to read idGathering from parameters. %s", err.Error()), packet, callID, idGathering, strURL)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 
 	err = strURL.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.UpdateSessionURL(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, idGathering, strURL)
+		_, rmcError := protocol.UpdateSessionURL(fmt.Errorf("failed to read strURL from parameters. %s", err.Error()), packet, callID, idGathering, strURL)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

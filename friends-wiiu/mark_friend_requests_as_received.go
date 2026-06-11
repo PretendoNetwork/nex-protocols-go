@@ -29,7 +29,7 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 
 	err := ids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.MarkFriendRequestsAsReceived(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, ids)
+		_, rmcError := protocol.MarkFriendRequestsAsReceived(fmt.Errorf("failed to read ids from parameters. %s", err.Error()), packet, callID, ids)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

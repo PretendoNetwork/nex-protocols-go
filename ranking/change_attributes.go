@@ -34,7 +34,7 @@ func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangeAttributes(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, category, changeParam, uniqueID)
+		_, rmcError := protocol.ChangeAttributes(fmt.Errorf("failed to read category from parameters. %s", err.Error()), packet, callID, category, changeParam, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 
 	err = changeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangeAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, category, changeParam, uniqueID)
+		_, rmcError := protocol.ChangeAttributes(fmt.Errorf("failed to read changeParam from parameters. %s", err.Error()), packet, callID, category, changeParam, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.ChangeAttributes(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, category, changeParam, uniqueID)
+		_, rmcError := protocol.ChangeAttributes(fmt.Errorf("failed to read uniqueID from parameters. %s", err.Error()), packet, callID, category, changeParam, uniqueID)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

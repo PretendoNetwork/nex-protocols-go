@@ -43,15 +43,15 @@ func (bm BinaryMessage) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the BinaryMessage from the given readable
 func (bm *BinaryMessage) ExtractFrom(readable types.Readable) error {
 	if err := bm.UserMessage.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BinaryMessage.UserMessage. %s", err.Error())
+		return fmt.Errorf("failed to extract BinaryMessage.UserMessage. %s", err.Error())
 	}
 
 	if err := bm.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BinaryMessage header. %s", err.Error())
+		return fmt.Errorf("failed to extract BinaryMessage header. %s", err.Error())
 	}
 
 	if err := bm.BinaryBody.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract BinaryMessage.BinaryBody. %s", err.Error())
+		return fmt.Errorf("failed to extract BinaryMessage.BinaryBody. %s", err.Error())
 	}
 
 	return nil
@@ -114,9 +114,9 @@ func (bm BinaryMessage) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BinaryMessage{\n")
-	b.WriteString(fmt.Sprintf("%sUserMessage (parent): %s,\n", indentationValues, bm.UserMessage.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sBinaryBody: %s,\n", indentationValues, bm.BinaryBody))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sUserMessage (parent): %s,\n", indentationValues, bm.UserMessage.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sBinaryBody: %s,\n", indentationValues, bm.BinaryBody)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

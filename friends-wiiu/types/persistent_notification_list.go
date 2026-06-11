@@ -43,15 +43,15 @@ func (pnl PersistentNotificationList) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the PersistentNotificationList from the given readable
 func (pnl *PersistentNotificationList) ExtractFrom(readable types.Readable) error {
 	if err := pnl.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotificationList.Data. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotificationList.Data. %s", err.Error())
 	}
 
 	if err := pnl.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotificationList header. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotificationList header. %s", err.Error())
 	}
 
 	if err := pnl.Notifications.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract PersistentNotificationList.Notifications. %s", err.Error())
+		return fmt.Errorf("failed to extract PersistentNotificationList.Notifications. %s", err.Error())
 	}
 
 	return nil
@@ -114,9 +114,9 @@ func (pnl PersistentNotificationList) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("PersistentNotificationList{\n")
-	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pnl.Data.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sNotifications: %s,\n", indentationValues, pnl.Notifications))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, pnl.Data.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%sNotifications: %s,\n", indentationValues, pnl.Notifications)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

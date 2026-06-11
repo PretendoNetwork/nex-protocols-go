@@ -36,23 +36,23 @@ func (dsrcp DataStoreReportCourseParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReportCourseParam from the given readable
 func (dsrcp *DataStoreReportCourseParam) ExtractFrom(readable types.Readable) error {
 	if err := dsrcp.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam header. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReportCourseParam header. %s", err.Error())
 	}
 
 	if err := dsrcp.DataID.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.DataID. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReportCourseParam.DataID. %s", err.Error())
 	}
 
 	if err := dsrcp.MiiName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.MiiName. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReportCourseParam.MiiName. %s", err.Error())
 	}
 
 	if err := dsrcp.ReportCategory.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportCategory. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReportCourseParam.ReportCategory. %s", err.Error())
 	}
 
 	if err := dsrcp.ReportReason.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportReason. %s", err.Error())
+		return fmt.Errorf("failed to extract DataStoreReportCourseParam.ReportReason. %s", err.Error())
 	}
 
 	return nil
@@ -125,11 +125,11 @@ func (dsrcp DataStoreReportCourseParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("DataStoreReportCourseParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrcp.DataID))
-	b.WriteString(fmt.Sprintf("%sMiiName: %s,\n", indentationValues, dsrcp.MiiName))
-	b.WriteString(fmt.Sprintf("%sReportCategory: %s,\n", indentationValues, dsrcp.ReportCategory))
-	b.WriteString(fmt.Sprintf("%sReportReason: %s,\n", indentationValues, dsrcp.ReportReason))
-	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+	fmt.Fprintf(&b, "%sDataID: %s,\n", indentationValues, dsrcp.DataID)
+	fmt.Fprintf(&b, "%sMiiName: %s,\n", indentationValues, dsrcp.MiiName)
+	fmt.Fprintf(&b, "%sReportCategory: %s,\n", indentationValues, dsrcp.ReportCategory)
+	fmt.Fprintf(&b, "%sReportReason: %s,\n", indentationValues, dsrcp.ReportReason)
+	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
 }

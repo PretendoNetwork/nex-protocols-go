@@ -7,16 +7,16 @@ import (
 )
 
 // GatheringFlags indicates the flags set on a gathering
-type GatheringFlags uint16
+type GatheringFlags uint32
 
 // WriteTo writes the GatheringFlags to the given writable
 func (gf GatheringFlags) WriteTo(writable types.Writable) {
-	writable.WriteUInt16LE(uint16(gf))
+	writable.WriteUInt32LE(uint32(gf))
 }
 
 // ExtractFrom extracts the GatheringFlags value from the given readable
 func (gf *GatheringFlags) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt16LE()
+	value, err := readable.ReadUInt32LE()
 	if err != nil {
 		return err
 	}

@@ -19,8 +19,6 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 		return
 	}
 
-	globals.Logger.Warning("RankingSplatoon::UploadCompetitionRankingScore STUBBED")
-
 	request := packet.RMCMessage()
 	callID := request.CallID
 	endpoint := request.Endpoint

@@ -7,6 +7,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	ranking "github.com/PretendoNetwork/nex-protocols-go/v2/ranking"
+	ranking_splatoon_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/splatoon/types"
 	"golang.org/x/exp/slices"
 )
 
@@ -41,9 +42,9 @@ type rankingProtocol = ranking.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	rankingProtocol
-	GetCompetitionRankingScore             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetCompetitionRankingScore             func(err error, packet nex.PacketInterface, callID uint32, param ranking_splatoon_types.CompetitionRankingGetParam) (*nex.RMCMessage, *nex.Error)
 	GetcompetitionRankingScoreByPeriodList func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
-	UploadCompetitionRankingScore          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	UploadCompetitionRankingScore          func(err error, packet nex.PacketInterface, callID uint32, param ranking_splatoon_types.CompetitionRankingUploadScoreParam) (*nex.RMCMessage, *nex.Error)
 	DeleteCompetitionRankingScore          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
 }
 

@@ -8,16 +8,16 @@ import (
 
 // DataFlag sets different configuration flags for uploaded objects.
 // Stored in the objects DataStoreMetaInfo.flag field
-type DataFlag uint8
+type DataFlag uint32
 
 // WriteTo writes the DataFlag to the given writable
 func (df DataFlag) WriteTo(writable types.Writable) {
-	writable.WriteUInt8(uint8(df))
+	writable.WriteUInt32LE(uint32(df))
 }
 
 // ExtractFrom extracts the DataFlag value from the given readable
 func (df *DataFlag) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt8()
+	value, err := readable.ReadUInt32LE()
 	if err != nil {
 		return err
 	}

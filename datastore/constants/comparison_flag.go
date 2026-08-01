@@ -9,16 +9,16 @@ import (
 // ComparisonFlag indicates the flags set on comparisonFlag of DataStoreChangeMetaCompareParam.
 // These flags tell the server what values to use when comparing
 // objects during search
-type ComparisonFlag uint16
+type ComparisonFlag uint32
 
 // WriteTo writes the ComparisonFlag to the given writable
 func (cf ComparisonFlag) WriteTo(writable types.Writable) {
-	writable.WriteUInt16LE(uint16(cf))
+	writable.WriteUInt32LE(uint32(cf))
 }
 
 // ExtractFrom extracts the ComparisonFlag value from the given readable
 func (cf *ComparisonFlag) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt16LE()
+	value, err := readable.ReadUInt32LE()
 	if err != nil {
 		return err
 	}

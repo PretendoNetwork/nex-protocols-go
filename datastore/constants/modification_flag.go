@@ -7,16 +7,16 @@ import (
 )
 
 // ModificationFlag indicates what fields of an object have been modified
-type ModificationFlag uint16
+type ModificationFlag uint32
 
 // WriteTo writes the ModificationFlag to the given writable
 func (mf ModificationFlag) WriteTo(writable types.Writable) {
-	writable.WriteUInt16LE(uint16(mf))
+	writable.WriteUInt32LE(uint32(mf))
 }
 
 // ExtractFrom extracts the ModificationFlag value from the given readable
 func (mf *ModificationFlag) ExtractFrom(readable types.Readable) error {
-	value, err := readable.ReadUInt16LE()
+	value, err := readable.ReadUInt32LE()
 	if err != nil {
 		return err
 	}

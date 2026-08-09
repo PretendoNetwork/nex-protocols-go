@@ -11,15 +11,12 @@ import (
 // MatchmakeRefereeStatsTarget is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStatsTarget struct {
 	types.Structure
-	types.Data
 	PID      types.PID
 	Category types.UInt32
 }
 
 // WriteTo writes the MatchmakeRefereeStatsTarget to the given writable
 func (mrst MatchmakeRefereeStatsTarget) WriteTo(writable types.Writable) {
-	mrst.Data.WriteTo(writable)
-
 	contentWritable := writable.CopyNew()
 
 	mrst.PID.WriteTo(contentWritable)
@@ -34,10 +31,6 @@ func (mrst MatchmakeRefereeStatsTarget) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeStatsTarget from the given readable
 func (mrst *MatchmakeRefereeStatsTarget) ExtractFrom(readable types.Readable) error {
-	if err := mrst.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract MatchmakeRefereeStatsTarget.Data. %s", err.Error())
-	}
-
 	if err := mrst.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract MatchmakeRefereeStatsTarget header. %s", err.Error())
 	}
@@ -58,7 +51,6 @@ func (mrst MatchmakeRefereeStatsTarget) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStatsTarget()
 
 	copied.StructureVersion = mrst.StructureVersion
-	copied.Data = mrst.Data.Copy().(types.Data)
 	copied.PID = mrst.PID.Copy().(types.PID)
 	copied.Category = mrst.Category.Copy().(types.UInt32)
 
@@ -74,10 +66,6 @@ func (mrst MatchmakeRefereeStatsTarget) Equals(o types.RVType) bool {
 	other := o.(MatchmakeRefereeStatsTarget)
 
 	if mrst.StructureVersion != other.StructureVersion {
-		return false
-	}
-
-	if !mrst.Data.Equals(other.Data) {
 		return false
 	}
 
@@ -115,7 +103,6 @@ func (mrst MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStatsTarget{\n")
-	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrst.Data.FormatToString(indentationLevel+1))
 	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, mrst.PID.FormatToString(indentationLevel+1))
 	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mrst.Category)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
@@ -126,7 +113,6 @@ func (mrst MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) str
 // NewMatchmakeRefereeStatsTarget returns a new MatchmakeRefereeStatsTarget
 func NewMatchmakeRefereeStatsTarget() MatchmakeRefereeStatsTarget {
 	return MatchmakeRefereeStatsTarget{
-		Data:     types.NewData(),
 		PID:      types.NewPID(0),
 		Category: types.NewUInt32(0),
 	}

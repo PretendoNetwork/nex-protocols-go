@@ -11,15 +11,12 @@ import (
 // MatchmakeRefereeStatsInitParam is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStatsInitParam struct {
 	types.Structure
-	types.Data
 	Category           types.UInt32
 	InitialRatingValue types.UInt32
 }
 
 // WriteTo writes the MatchmakeRefereeStatsInitParam to the given writable
 func (mrsip MatchmakeRefereeStatsInitParam) WriteTo(writable types.Writable) {
-	mrsip.Data.WriteTo(writable)
-
 	contentWritable := writable.CopyNew()
 
 	mrsip.Category.WriteTo(contentWritable)
@@ -34,10 +31,6 @@ func (mrsip MatchmakeRefereeStatsInitParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeStatsInitParam from the given readable
 func (mrsip *MatchmakeRefereeStatsInitParam) ExtractFrom(readable types.Readable) error {
-	if err := mrsip.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract MatchmakeRefereeStatsInitParam.Data. %s", err.Error())
-	}
-
 	if err := mrsip.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract MatchmakeRefereeStatsInitParam header. %s", err.Error())
 	}
@@ -58,7 +51,6 @@ func (mrsip MatchmakeRefereeStatsInitParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStatsInitParam()
 
 	copied.StructureVersion = mrsip.StructureVersion
-	copied.Data = mrsip.Data.Copy().(types.Data)
 	copied.Category = mrsip.Category.Copy().(types.UInt32)
 	copied.InitialRatingValue = mrsip.InitialRatingValue.Copy().(types.UInt32)
 
@@ -74,10 +66,6 @@ func (mrsip MatchmakeRefereeStatsInitParam) Equals(o types.RVType) bool {
 	other := o.(MatchmakeRefereeStatsInitParam)
 
 	if mrsip.StructureVersion != other.StructureVersion {
-		return false
-	}
-
-	if !mrsip.Data.Equals(other.Data) {
 		return false
 	}
 
@@ -115,7 +103,6 @@ func (mrsip MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStatsInitParam{\n")
-	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrsip.Data.FormatToString(indentationLevel+1))
 	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mrsip.Category)
 	fmt.Fprintf(&b, "%sInitialRatingValue: %s,\n", indentationValues, mrsip.InitialRatingValue)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
@@ -126,7 +113,6 @@ func (mrsip MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int)
 // NewMatchmakeRefereeStatsInitParam returns a new MatchmakeRefereeStatsInitParam
 func NewMatchmakeRefereeStatsInitParam() MatchmakeRefereeStatsInitParam {
 	return MatchmakeRefereeStatsInitParam{
-		Data:               types.NewData(),
 		Category:           types.NewUInt32(0),
 		InitialRatingValue: types.NewUInt32(0),
 	}

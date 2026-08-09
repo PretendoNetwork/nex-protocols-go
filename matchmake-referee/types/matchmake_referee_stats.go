@@ -11,7 +11,6 @@ import (
 // MatchmakeRefereeStats is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStats struct {
 	types.Structure
-	types.Data
 	UniqueID            types.UInt64
 	Category            types.UInt32
 	PID                 types.PID
@@ -32,8 +31,6 @@ type MatchmakeRefereeStats struct {
 
 // WriteTo writes the MatchmakeRefereeStats to the given writable
 func (mrs MatchmakeRefereeStats) WriteTo(writable types.Writable) {
-	mrs.Data.WriteTo(writable)
-
 	contentWritable := writable.CopyNew()
 
 	mrs.UniqueID.WriteTo(contentWritable)
@@ -62,10 +59,6 @@ func (mrs MatchmakeRefereeStats) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeStats from the given readable
 func (mrs *MatchmakeRefereeStats) ExtractFrom(readable types.Readable) error {
-	if err := mrs.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract MatchmakeRefereeStats.Data. %s", err.Error())
-	}
-
 	if err := mrs.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract MatchmakeRefereeStats header. %s", err.Error())
 	}
@@ -142,7 +135,6 @@ func (mrs MatchmakeRefereeStats) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStats()
 
 	copied.StructureVersion = mrs.StructureVersion
-	copied.Data = mrs.Data.Copy().(types.Data)
 	copied.UniqueID = mrs.UniqueID.Copy().(types.UInt64)
 	copied.Category = mrs.Category.Copy().(types.UInt32)
 	copied.PID = mrs.PID.Copy().(types.PID)
@@ -172,10 +164,6 @@ func (mrs MatchmakeRefereeStats) Equals(o types.RVType) bool {
 	other := o.(MatchmakeRefereeStats)
 
 	if mrs.StructureVersion != other.StructureVersion {
-		return false
-	}
-
-	if !mrs.Data.Equals(other.Data) {
 		return false
 	}
 
@@ -269,7 +257,6 @@ func (mrs MatchmakeRefereeStats) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStats{\n")
-	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrs.Data.FormatToString(indentationLevel+1))
 	fmt.Fprintf(&b, "%sUniqueID: %s,\n", indentationValues, mrs.UniqueID)
 	fmt.Fprintf(&b, "%sCategory: %s,\n", indentationValues, mrs.Category)
 	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, mrs.PID.FormatToString(indentationLevel+1))
@@ -294,7 +281,6 @@ func (mrs MatchmakeRefereeStats) FormatToString(indentationLevel int) string {
 // NewMatchmakeRefereeStats returns a new MatchmakeRefereeStats
 func NewMatchmakeRefereeStats() MatchmakeRefereeStats {
 	return MatchmakeRefereeStats{
-		Data:                types.NewData(),
 		UniqueID:            types.NewUInt64(0),
 		Category:            types.NewUInt32(0),
 		PID:                 types.NewPID(0),

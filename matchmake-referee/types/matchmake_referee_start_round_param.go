@@ -11,7 +11,6 @@ import (
 // MatchmakeRefereeStartRoundParam is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStartRoundParam struct {
 	types.Structure
-	types.Data
 	PersonalDataCategory types.UInt32
 	GID                  types.UInt32
 	PIDs                 types.List[types.PID]
@@ -19,8 +18,6 @@ type MatchmakeRefereeStartRoundParam struct {
 
 // WriteTo writes the MatchmakeRefereeStartRoundParam to the given writable
 func (mrsrp MatchmakeRefereeStartRoundParam) WriteTo(writable types.Writable) {
-	mrsrp.Data.WriteTo(writable)
-
 	contentWritable := writable.CopyNew()
 
 	mrsrp.PersonalDataCategory.WriteTo(contentWritable)
@@ -36,10 +33,6 @@ func (mrsrp MatchmakeRefereeStartRoundParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeStartRoundParam from the given readable
 func (mrsrp *MatchmakeRefereeStartRoundParam) ExtractFrom(readable types.Readable) error {
-	if err := mrsrp.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract MatchmakeRefereeStartRoundParam.Data. %s", err.Error())
-	}
-
 	if err := mrsrp.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract MatchmakeRefereeStartRoundParam header. %s", err.Error())
 	}
@@ -64,7 +57,6 @@ func (mrsrp MatchmakeRefereeStartRoundParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStartRoundParam()
 
 	copied.StructureVersion = mrsrp.StructureVersion
-	copied.Data = mrsrp.Data.Copy().(types.Data)
 	copied.PersonalDataCategory = mrsrp.PersonalDataCategory.Copy().(types.UInt32)
 	copied.GID = mrsrp.GID.Copy().(types.UInt32)
 	copied.PIDs = mrsrp.PIDs.Copy().(types.List[types.PID])
@@ -81,10 +73,6 @@ func (mrsrp MatchmakeRefereeStartRoundParam) Equals(o types.RVType) bool {
 	other := o.(MatchmakeRefereeStartRoundParam)
 
 	if mrsrp.StructureVersion != other.StructureVersion {
-		return false
-	}
-
-	if !mrsrp.Data.Equals(other.Data) {
 		return false
 	}
 
@@ -126,7 +114,6 @@ func (mrsrp MatchmakeRefereeStartRoundParam) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStartRoundParam{\n")
-	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrsrp.Data.FormatToString(indentationLevel+1))
 	fmt.Fprintf(&b, "%sPersonalDataCategory: %s,\n", indentationValues, mrsrp.PersonalDataCategory)
 	fmt.Fprintf(&b, "%sGID: %s,\n", indentationValues, mrsrp.GID)
 	fmt.Fprintf(&b, "%sPIDs: %s,\n", indentationValues, mrsrp.PIDs)
@@ -138,7 +125,6 @@ func (mrsrp MatchmakeRefereeStartRoundParam) FormatToString(indentationLevel int
 // NewMatchmakeRefereeStartRoundParam returns a new MatchmakeRefereeStartRoundParam
 func NewMatchmakeRefereeStartRoundParam() MatchmakeRefereeStartRoundParam {
 	return MatchmakeRefereeStartRoundParam{
-		Data:                 types.NewData(),
 		PersonalDataCategory: types.NewUInt32(0),
 		GID:                  types.NewUInt32(0),
 		PIDs:                 types.NewList[types.PID](),

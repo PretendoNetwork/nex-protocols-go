@@ -11,7 +11,6 @@ import (
 // MatchmakeRefereeRound is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeRound struct {
 	types.Structure
-	types.Data
 	RoundID                        types.UInt64
 	GID                            types.UInt32
 	State                          types.UInt32
@@ -21,8 +20,6 @@ type MatchmakeRefereeRound struct {
 
 // WriteTo writes the MatchmakeRefereeRound to the given writable
 func (mrr MatchmakeRefereeRound) WriteTo(writable types.Writable) {
-	mrr.Data.WriteTo(writable)
-
 	contentWritable := writable.CopyNew()
 
 	mrr.RoundID.WriteTo(contentWritable)
@@ -40,10 +37,6 @@ func (mrr MatchmakeRefereeRound) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the MatchmakeRefereeRound from the given readable
 func (mrr *MatchmakeRefereeRound) ExtractFrom(readable types.Readable) error {
-	if err := mrr.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract MatchmakeRefereeRound.Data. %s", err.Error())
-	}
-
 	if err := mrr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract MatchmakeRefereeRound header. %s", err.Error())
 	}
@@ -76,7 +69,6 @@ func (mrr MatchmakeRefereeRound) Copy() types.RVType {
 	copied := NewMatchmakeRefereeRound()
 
 	copied.StructureVersion = mrr.StructureVersion
-	copied.Data = mrr.Data.Copy().(types.Data)
 	copied.RoundID = mrr.RoundID.Copy().(types.UInt64)
 	copied.GID = mrr.GID.Copy().(types.UInt32)
 	copied.State = mrr.State.Copy().(types.UInt32)
@@ -95,10 +87,6 @@ func (mrr MatchmakeRefereeRound) Equals(o types.RVType) bool {
 	other := o.(MatchmakeRefereeRound)
 
 	if mrr.StructureVersion != other.StructureVersion {
-		return false
-	}
-
-	if !mrr.Data.Equals(other.Data) {
 		return false
 	}
 
@@ -148,7 +136,6 @@ func (mrr MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeRound{\n")
-	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrr.Data.FormatToString(indentationLevel+1))
 	fmt.Fprintf(&b, "%sRoundID: %s,\n", indentationValues, mrr.RoundID)
 	fmt.Fprintf(&b, "%sGID: %s,\n", indentationValues, mrr.GID)
 	fmt.Fprintf(&b, "%sState: %s,\n", indentationValues, mrr.State)
@@ -162,7 +149,6 @@ func (mrr MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
 // NewMatchmakeRefereeRound returns a new MatchmakeRefereeRound
 func NewMatchmakeRefereeRound() MatchmakeRefereeRound {
 	return MatchmakeRefereeRound{
-		Data:                           types.NewData(),
 		RoundID:                        types.NewUInt64(0),
 		GID:                            types.NewUInt32(0),
 		State:                          types.NewUInt32(0),

@@ -11,7 +11,6 @@ import (
 // MatchmakeRefereePersonalRoundResult is a type within the MatchmakeReferee protocol
 type MatchmakeRefereePersonalRoundResult struct {
 	types.Structure
-	types.Data
 	PID                     types.PID
 	PersonalRoundResultFlag types.UInt32
 	RoundWinLoss            types.UInt32
@@ -21,8 +20,6 @@ type MatchmakeRefereePersonalRoundResult struct {
 
 // WriteTo writes the MatchmakeRefereePersonalRoundResult to the given writable
 func (mrprr MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writable) {
-	mrprr.Data.WriteTo(writable)
-
 	contentWritable := writable.CopyNew()
 
 	mrprr.PID.WriteTo(contentWritable)
@@ -40,10 +37,6 @@ func (mrprr MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writable
 
 // ExtractFrom extracts the MatchmakeRefereePersonalRoundResult from the given readable
 func (mrprr *MatchmakeRefereePersonalRoundResult) ExtractFrom(readable types.Readable) error {
-	if err := mrprr.Data.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult.Data. %s", err.Error())
-	}
-
 	if err := mrprr.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract MatchmakeRefereePersonalRoundResult header. %s", err.Error())
 	}
@@ -76,7 +69,6 @@ func (mrprr MatchmakeRefereePersonalRoundResult) Copy() types.RVType {
 	copied := NewMatchmakeRefereePersonalRoundResult()
 
 	copied.StructureVersion = mrprr.StructureVersion
-	copied.Data = mrprr.Data.Copy().(types.Data)
 	copied.PID = mrprr.PID.Copy().(types.PID)
 	copied.PersonalRoundResultFlag = mrprr.PersonalRoundResultFlag.Copy().(types.UInt32)
 	copied.RoundWinLoss = mrprr.RoundWinLoss.Copy().(types.UInt32)
@@ -95,10 +87,6 @@ func (mrprr MatchmakeRefereePersonalRoundResult) Equals(o types.RVType) bool {
 	other := o.(MatchmakeRefereePersonalRoundResult)
 
 	if mrprr.StructureVersion != other.StructureVersion {
-		return false
-	}
-
-	if !mrprr.Data.Equals(other.Data) {
 		return false
 	}
 
@@ -148,7 +136,6 @@ func (mrprr MatchmakeRefereePersonalRoundResult) FormatToString(indentationLevel
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereePersonalRoundResult{\n")
-	fmt.Fprintf(&b, "%sData (parent): %s,\n", indentationValues, mrprr.Data.FormatToString(indentationLevel+1))
 	fmt.Fprintf(&b, "%sPID: %s,\n", indentationValues, mrprr.PID.FormatToString(indentationLevel+1))
 	fmt.Fprintf(&b, "%sPersonalRoundResultFlag: %s,\n", indentationValues, mrprr.PersonalRoundResultFlag)
 	fmt.Fprintf(&b, "%sRoundWinLoss: %s,\n", indentationValues, mrprr.RoundWinLoss)
@@ -162,7 +149,6 @@ func (mrprr MatchmakeRefereePersonalRoundResult) FormatToString(indentationLevel
 // NewMatchmakeRefereePersonalRoundResult returns a new MatchmakeRefereePersonalRoundResult
 func NewMatchmakeRefereePersonalRoundResult() MatchmakeRefereePersonalRoundResult {
 	return MatchmakeRefereePersonalRoundResult{
-		Data:                    types.NewData(),
 		PID:                     types.NewPID(0),
 		PersonalRoundResultFlag: types.NewUInt32(0),
 		RoundWinLoss:            types.NewUInt32(0),

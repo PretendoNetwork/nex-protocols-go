@@ -22,6 +22,16 @@ type PersistentGathering struct {
 	ParticipationCount     types.UInt32
 }
 
+// ObjectID returns the object identifier of the type
+func (pg PersistentGathering) ObjectID() types.RVType {
+	return pg.GatheringObjectID()
+}
+
+// GatheringObjectID returns the object identifier of the type embedding Gathering
+func (pg PersistentGathering) GatheringObjectID() types.RVType {
+	return types.NewString("PersistentGathering")
+}
+
 // WriteTo writes the PersistentGathering to the given writable
 func (pg PersistentGathering) WriteTo(writable types.Writable) {
 	pg.Gathering.WriteTo(writable)

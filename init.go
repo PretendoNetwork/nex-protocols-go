@@ -28,6 +28,7 @@ func init() {
 	types.RegisterObjectHolderType(friends_wiiu_types.NewPrincipalPreference())
 	types.RegisterObjectHolderType(match_making_types.NewGathering())
 	types.RegisterObjectHolderType(match_making_types.NewMatchmakeSession())
+	types.RegisterObjectHolderType(match_making_types.NewPersistentGathering())
 	types.RegisterObjectHolderType(messaging_types.NewUserMessage())
 	types.RegisterObjectHolderType(messaging_types.NewTextMessage())
 	types.RegisterObjectHolderType(messaging_types.NewBinaryMessage())

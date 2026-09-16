@@ -22,6 +22,17 @@ type PersistentGathering struct {
 	ParticipationCount     types.UInt32
 }
 
+// ObjectID returns the object identifier of the type
+func (pg PersistentGathering) ObjectID() types.RVType {
+	return pg.GatheringObjectID()
+}
+
+// GatheringObjectID returns the object identifier of the type embedding Gathering
+func (pg PersistentGathering) GatheringObjectID() types.RVType {
+	// TODO - This breaks on older titles. Originally this class was called "Community" before Nintendo changed it to "PersistentGathering". Modern games handle both class names transparently, but older games still expect "Community"
+	return types.NewString("PersistentGathering")
+}
+
 // WriteTo writes the PersistentGathering to the given writable
 func (pg PersistentGathering) WriteTo(writable types.Writable) {
 	pg.Gathering.WriteTo(writable)

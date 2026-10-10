@@ -64,6 +64,9 @@ func (dssp DataStoreSearchParam) WriteTo(writable types.Writable) {
 
 	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
 		dssp.TotalCountEnabled.WriteTo(contentWritable)
+	} else {
+		// * Prior to this being added, the total count always came back
+		dssp.TotalCountEnabled = true
 	}
 
 	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {

@@ -133,6 +133,9 @@ const (
 
 	// SearchSortColumnUpdatedTime means the objects should be sorted based on the objects update times
 	SearchSortColumnUpdatedTime
+
+	// SearchSortColumnOwnerID means the objects should be sorted based on the objects owner PID
+	SearchSortColumnOwnerID // * Real name not known, guess
 )
 
 const (

@@ -30,8 +30,8 @@ type DataStoreSearchParam struct {
 	ResultOption           constants.ResultFlag
 	MinimalRatingFrequency types.UInt32
 	UseCache               types.Bool               // * Revision 1 or NEX 4.0
-	TotalCountEnabled      types.Bool               // * Revision 3 or NEX 4.0
-	DataTypes              types.List[types.UInt16] // * Revision 2 or NEX 4.0
+	TotalCountEnabled      types.Bool               // * Revision 2 or NEX 4.0
+	DataTypes              types.List[types.UInt16] // * Revision 3 or NEX 4.0
 }
 
 // WriteTo writes the DataStoreSearchParam to the given writable
@@ -62,11 +62,14 @@ func (dssp DataStoreSearchParam) WriteTo(writable types.Writable) {
 		dssp.UseCache.WriteTo(contentWritable)
 	}
 
-	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
+	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
 		dssp.TotalCountEnabled.WriteTo(contentWritable)
+	} else {
+		// * Prior to this being added, the total count always came back
+		dssp.TotalCountEnabled = true
 	}
 
-	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
+	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
 		dssp.DataTypes.WriteTo(contentWritable)
 	}
 
@@ -156,13 +159,13 @@ func (dssp *DataStoreSearchParam) ExtractFrom(readable types.Readable) error {
 		}
 	}
 
-	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
+	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := dssp.TotalCountEnabled.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
 		}
 	}
 
-	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
+	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
 		if err := dssp.DataTypes.ExtractFrom(readable); err != nil {
 			return fmt.Errorf("failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
 		}

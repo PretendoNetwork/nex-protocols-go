@@ -10,13 +10,13 @@ import (
 // UplaySection is a type within the Uplay Win protocol
 type UplaySection struct {
 	types.Structure
-	Key          types.String
-	Name         types.String
-	TypeName     types.String
-	MenuTypeName types.String
-	ContentList  types.List[UplaySectionContent]
-	GameCode     types.String
-	PlatformCode types.String
+	m_key          types.String
+	m_name         types.String
+	m_typeName     types.String
+	m_menuTypeName types.String
+	m_contentList  types.List[UplaySectionContent]
+	m_gameCode     types.String
+	m_platformCode types.String
 }
 
 // ObjectID returns the object identifier of the type
@@ -33,13 +33,13 @@ func (us UplaySection) DataObjectID() types.RVType {
 func (us UplaySection) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	us.Key.WriteTo(contentWritable)
-	us.Name.WriteTo(contentWritable)
-	us.TypeName.WriteTo(contentWritable)
-	us.MenuTypeName.WriteTo(contentWritable)
-	us.ContentList.WriteTo(contentWritable)
-	us.GameCode.WriteTo(contentWritable)
-	us.PlatformCode.WriteTo(contentWritable)
+	us.m_key.WriteTo(contentWritable)
+	us.m_name.WriteTo(contentWritable)
+	us.m_typeName.WriteTo(contentWritable)
+	us.m_menuTypeName.WriteTo(contentWritable)
+	us.m_contentList.WriteTo(contentWritable)
+	us.m_gameCode.WriteTo(contentWritable)
+	us.m_platformCode.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 	us.WriteHeaderTo(writable, uint32(len(content)))
@@ -53,32 +53,32 @@ func (us *UplaySection) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("failed to extract UplaySection Header. %s", err.Error())
 	}
 
-	if err := us.Key.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySection.Key. %s", err.Error())
+	if err := us.m_key.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySection.m_key. %s", err.Error())
 	}
 
-	if err := us.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySection.Name. %s", err.Error())
+	if err := us.m_name.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySection.m_name. %s", err.Error())
 	}
 
-	if err := us.TypeName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySection.TypeName. %s", err.Error())
+	if err := us.m_typeName.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySection.m_typeName. %s", err.Error())
 	}
 
-	if err := us.MenuTypeName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySection.MenuTypeName. %s", err.Error())
+	if err := us.m_menuTypeName.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySection.m_menuTypeName. %s", err.Error())
 	}
 
-	if err := us.ContentList.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySection.ContentList. %s", err.Error())
+	if err := us.m_contentList.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySection.m_contentList. %s", err.Error())
 	}
 
-	if err := us.GameCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySection.GameCode. %s", err.Error())
+	if err := us.m_gameCode.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySection.m_gameCode. %s", err.Error())
 	}
 
-	if err := us.PlatformCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySection.PlatformCode. %s", err.Error())
+	if err := us.m_platformCode.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySection.m_platformCode. %s", err.Error())
 	}
 
 	return nil
@@ -89,13 +89,13 @@ func (us UplaySection) Copy() types.RVType {
 	copied := NewUplaySection()
 
 	copied.StructureVersion = us.StructureVersion
-	copied.Key = us.Key
-	copied.Name = us.Name
-	copied.TypeName = us.TypeName
-	copied.MenuTypeName = us.MenuTypeName
-	copied.ContentList = us.ContentList
-	copied.GameCode = us.GameCode
-	copied.PlatformCode = us.PlatformCode
+	copied.m_key = us.m_key
+	copied.m_name = us.m_name
+	copied.m_typeName = us.m_typeName
+	copied.m_menuTypeName = us.m_menuTypeName
+	copied.m_contentList = us.m_contentList
+	copied.m_gameCode = us.m_gameCode
+	copied.m_platformCode = us.m_platformCode
 
 	return copied
 }
@@ -112,31 +112,31 @@ func (us UplaySection) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !us.Key.Equals(other.Key) {
+	if !us.m_key.Equals(other.m_key) {
 		return false
 	}
 
-	if !us.Name.Equals(other.Name) {
+	if !us.m_name.Equals(other.m_name) {
 		return false
 	}
 
-	if !us.TypeName.Equals(other.TypeName) {
+	if !us.m_typeName.Equals(other.m_typeName) {
 		return false
 	}
 
-	if !us.MenuTypeName.Equals(other.MenuTypeName) {
+	if !us.m_menuTypeName.Equals(other.m_menuTypeName) {
 		return false
 	}
 
-	if !us.ContentList.Equals(other.ContentList) {
+	if !us.m_contentList.Equals(other.m_contentList) {
 		return false
 	}
 
-	if !us.GameCode.Equals(other.GameCode) {
+	if !us.m_gameCode.Equals(other.m_gameCode) {
 		return false
 	}
 
-	return us.PlatformCode.Equals(other.PlatformCode)
+	return us.m_platformCode.Equals(other.m_platformCode)
 }
 
 // CopyRef copies the current value of the UplaySection
@@ -165,13 +165,13 @@ func (us UplaySection) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UplaySection{\n")
-	fmt.Fprintf(&b, "%sm_key: %v,\n", indentationValues, us.Key)
-	fmt.Fprintf(&b, "%sm_name: %v,\n", indentationValues, us.Name)
-	fmt.Fprintf(&b, "%sm_typeName: %v,\n", indentationValues, us.TypeName)
-	fmt.Fprintf(&b, "%sm_menuTypeName: %v,\n", indentationValues, us.MenuTypeName)
-	fmt.Fprintf(&b, "%sm_contentList: %v,\n", indentationValues, us.ContentList)
-	fmt.Fprintf(&b, "%sm_gameCode: %v,\n", indentationValues, us.GameCode)
-	fmt.Fprintf(&b, "%sm_platformCode: %v,\n", indentationValues, us.PlatformCode)
+	fmt.Fprintf(&b, "%sm_key: %v,\n", indentationValues, us.m_key)
+	fmt.Fprintf(&b, "%sm_name: %v,\n", indentationValues, us.m_name)
+	fmt.Fprintf(&b, "%sm_typeName: %v,\n", indentationValues, us.m_typeName)
+	fmt.Fprintf(&b, "%sm_menuTypeName: %v,\n", indentationValues, us.m_menuTypeName)
+	fmt.Fprintf(&b, "%sm_contentList: %v,\n", indentationValues, us.m_contentList)
+	fmt.Fprintf(&b, "%sm_gameCode: %v,\n", indentationValues, us.m_gameCode)
+	fmt.Fprintf(&b, "%sm_platformCode: %v,\n", indentationValues, us.m_platformCode)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
@@ -180,12 +180,12 @@ func (us UplaySection) FormatToString(indentationLevel int) string {
 // NewUplaySection returns a new UplaySection
 func NewUplaySection() UplaySection {
 	return UplaySection{
-		Key:          "key",
-		Name:         "name",
-		TypeName:     "type",
-		MenuTypeName: "menu",
-		ContentList:  types.NewList[UplaySectionContent](),
-		GameCode:     "Uplay",
-		PlatformCode: "PC",
+		m_key:          "key",
+		m_name:         "name",
+		m_typeName:     "type",
+		m_menuTypeName: "menu",
+		m_contentList:  types.NewList[UplaySectionContent](),
+		m_gameCode:     "Uplay",
+		m_platformCode: "PC",
 	}
 }

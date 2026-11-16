@@ -10,13 +10,13 @@ import (
 // UplayReward is a type within the Uplay Win protocol
 type UplayReward struct {
 	types.Structure
-	Code           types.String
-	Name           types.String
-	Description    types.String
-	Value          types.Int32
-	RewardTypeName types.String
-	GameCode       types.String
-	Platforms      types.List[UplayRewardPlatform]
+	m_code           types.String
+	m_name           types.String
+	m_description    types.String
+	m_value          types.Int32
+	m_rewardTypeName types.String
+	m_gameCode       types.String
+	m_platforms      types.List[UplayRewardPlatform]
 }
 
 // ObjectID returns the object identifier of the type
@@ -33,13 +33,13 @@ func (upr UplayReward) DataObjectID() types.RVType {
 func (upr UplayReward) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	upr.Code.WriteTo(contentWritable)
-	upr.Name.WriteTo(contentWritable)
-	upr.Description.WriteTo(contentWritable)
-	upr.Value.WriteTo(contentWritable)
-	upr.RewardTypeName.WriteTo(contentWritable)
-	upr.GameCode.WriteTo(contentWritable)
-	upr.Platforms.WriteTo(contentWritable)
+	upr.m_code.WriteTo(contentWritable)
+	upr.m_name.WriteTo(contentWritable)
+	upr.m_description.WriteTo(contentWritable)
+	upr.m_value.WriteTo(contentWritable)
+	upr.m_rewardTypeName.WriteTo(contentWritable)
+	upr.m_gameCode.WriteTo(contentWritable)
+	upr.m_platforms.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 	upr.WriteHeaderTo(writable, uint32(len(content)))
@@ -53,32 +53,32 @@ func (upr *UplayReward) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("failed to extract UplayReward Header. %s", err.Error())
 	}
 
-	if err := upr.Code.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayReward.Code. %s", err.Error())
+	if err := upr.m_code.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayReward.m_code. %s", err.Error())
 	}
 
-	if err := upr.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayReward.Name. %s", err.Error())
+	if err := upr.m_name.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayReward.m_name. %s", err.Error())
 	}
 
-	if err := upr.Description.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayReward.Description. %s", err.Error())
+	if err := upr.m_description.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayReward.m_description. %s", err.Error())
 	}
 
-	if err := upr.Value.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayReward.Value. %s", err.Error())
+	if err := upr.m_value.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayReward.m_value. %s", err.Error())
 	}
 
-	if err := upr.RewardTypeName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayReward.RewardTypeName. %s", err.Error())
+	if err := upr.m_rewardTypeName.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayReward.m_rewardTypeName. %s", err.Error())
 	}
 
-	if err := upr.GameCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayReward.GameCode. %s", err.Error())
+	if err := upr.m_gameCode.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayReward.m_gameCode. %s", err.Error())
 	}
 
-	if err := upr.Platforms.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayReward.Platforms. %s", err.Error())
+	if err := upr.m_platforms.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayReward.m_platforms. %s", err.Error())
 	}
 
 	return nil
@@ -89,13 +89,13 @@ func (upr UplayReward) Copy() types.RVType {
 	copied := NewUplayReward()
 
 	copied.StructureVersion = upr.StructureVersion
-	copied.Code = upr.Code
-	copied.Name = upr.Name
-	copied.Description = upr.Description
-	copied.Value = upr.Value
-	copied.RewardTypeName = upr.RewardTypeName
-	copied.GameCode = upr.GameCode
-	copied.Platforms = upr.Platforms
+	copied.m_code = upr.m_code
+	copied.m_name = upr.m_name
+	copied.m_description = upr.m_description
+	copied.m_value = upr.m_value
+	copied.m_rewardTypeName = upr.m_rewardTypeName
+	copied.m_gameCode = upr.m_gameCode
+	copied.m_platforms = upr.m_platforms
 
 	return copied
 }
@@ -112,31 +112,31 @@ func (upr UplayReward) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !upr.Code.Equals(other.Code) {
+	if !upr.m_code.Equals(other.m_code) {
 		return false
 	}
 
-	if !upr.Name.Equals(other.Name) {
+	if !upr.m_name.Equals(other.m_name) {
 		return false
 	}
 
-	if !upr.Description.Equals(other.Description) {
+	if !upr.m_description.Equals(other.m_description) {
 		return false
 	}
 
-	if !upr.Value.Equals(other.Value) {
+	if !upr.m_value.Equals(other.m_value) {
 		return false
 	}
 
-	if !upr.RewardTypeName.Equals(other.RewardTypeName) {
+	if !upr.m_rewardTypeName.Equals(other.m_rewardTypeName) {
 		return false
 	}
 
-	if !upr.GameCode.Equals(other.GameCode) {
+	if !upr.m_gameCode.Equals(other.m_gameCode) {
 		return false
 	}
 
-	return upr.Platforms.Equals(other.Platforms)
+	return upr.m_platforms.Equals(other.m_platforms)
 }
 
 // CopyRef copies the current value of the UplayReward
@@ -166,13 +166,13 @@ func (upr UplayReward) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UplayReward{\n")
-	fmt.Fprintf(&b, "%sm_code: %v,\n", indentationValues, upr.Code)
-	fmt.Fprintf(&b, "%sm_name: %v,\n", indentationValues, upr.Name)
-	fmt.Fprintf(&b, "%sm_description: %v,\n", indentationValues, upr.Description)
-	fmt.Fprintf(&b, "%sm_value: %v,\n", indentationValues, upr.Value)
-	fmt.Fprintf(&b, "%sm_rewardTypeName: %v,\n", indentationValues, upr.RewardTypeName)
-	fmt.Fprintf(&b, "%sm_gameCode: %v,\n", indentationValues, upr.GameCode)
-	fmt.Fprintf(&b, "%sm_platforms: %v,\n", indentationValues, upr.Platforms)
+	fmt.Fprintf(&b, "%sm_code: %v,\n", indentationValues, upr.m_code)
+	fmt.Fprintf(&b, "%sm_name: %v,\n", indentationValues, upr.m_name)
+	fmt.Fprintf(&b, "%sm_description: %v,\n", indentationValues, upr.m_description)
+	fmt.Fprintf(&b, "%sm_value: %v,\n", indentationValues, upr.m_value)
+	fmt.Fprintf(&b, "%sm_rewardTypeName: %v,\n", indentationValues, upr.m_rewardTypeName)
+	fmt.Fprintf(&b, "%sm_gameCode: %v,\n", indentationValues, upr.m_gameCode)
+	fmt.Fprintf(&b, "%sm_platforms: %v,\n", indentationValues, upr.m_platforms)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
@@ -181,12 +181,12 @@ func (upr UplayReward) FormatToString(indentationLevel int) string {
 // NewUplayReward returns a new UplayReward
 func NewUplayReward() UplayReward {
 	return UplayReward{
-		Code:           "code",
-		Name:           "name",
-		Description:    "desc",
-		Value:          0,
-		RewardTypeName: "Reward",
-		GameCode:       "Uplay",
-		Platforms:      types.NewList[UplayRewardPlatform](),
+		m_code:           "code",
+		m_name:           "name",
+		m_description:    "desc",
+		m_value:          0,
+		m_rewardTypeName: "Reward",
+		m_gameCode:       "Uplay",
+		m_platforms:      types.NewList[UplayRewardPlatform](),
 	}
 }

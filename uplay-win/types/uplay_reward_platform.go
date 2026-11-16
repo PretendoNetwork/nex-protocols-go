@@ -10,8 +10,8 @@ import (
 // UplayRewardPlatform is a type within the Uplay Win protocol
 type UplayRewardPlatform struct {
 	types.Structure
-	PlatformCode types.String
-	Purchased    types.Bool
+	m_platformCode types.String
+	m_purchased    types.Bool
 }
 
 // ObjectID returns the object identifier of the type
@@ -28,8 +28,8 @@ func (urp UplayRewardPlatform) DataObjectID() types.RVType {
 func (urp UplayRewardPlatform) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	urp.PlatformCode.WriteTo(contentWritable)
-	urp.Purchased.WriteTo(contentWritable)
+	urp.m_platformCode.WriteTo(contentWritable)
+	urp.m_purchased.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 	urp.WriteHeaderTo(writable, uint32(len(content)))
@@ -43,12 +43,12 @@ func (urp *UplayRewardPlatform) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("failed to extract UplayRewardPlatform Header. %s", err.Error())
 	}
 
-	if err := urp.PlatformCode.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayRewardPlatform.PlatformCode. %s", err.Error())
+	if err := urp.m_platformCode.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayRewardPlatform.m_platformCode. %s", err.Error())
 	}
 
-	if err := urp.Purchased.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplayRewardPlatform.Purchased. %s", err.Error())
+	if err := urp.m_purchased.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplayRewardPlatform.m_purchased. %s", err.Error())
 	}
 
 	return nil
@@ -59,8 +59,8 @@ func (urp UplayRewardPlatform) Copy() types.RVType {
 	copied := NewUplayRewardPlatform()
 
 	copied.StructureVersion = urp.StructureVersion
-	copied.PlatformCode = urp.PlatformCode
-	copied.Purchased = urp.Purchased
+	copied.m_platformCode = urp.m_platformCode
+	copied.m_purchased = urp.m_purchased
 
 	return copied
 }
@@ -77,11 +77,11 @@ func (urp UplayRewardPlatform) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !urp.PlatformCode.Equals(other.PlatformCode) {
+	if !urp.m_platformCode.Equals(other.m_platformCode) {
 		return false
 	}
 
-	return urp.Purchased.Equals(other.Purchased)
+	return urp.m_purchased.Equals(other.m_purchased)
 }
 
 // CopyRef copies the current value of the UplayRewardPlatform
@@ -111,8 +111,8 @@ func (urp UplayRewardPlatform) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UplayRewardPlatform{\n")
-	fmt.Fprintf(&b, "%sm_platformCode: %v,\n", indentationValues, urp.PlatformCode)
-	fmt.Fprintf(&b, "%sm_purchased: %v,\n", indentationValues, urp.Purchased)
+	fmt.Fprintf(&b, "%sm_platformCode: %v,\n", indentationValues, urp.m_platformCode)
+	fmt.Fprintf(&b, "%sm_purchased: %v,\n", indentationValues, urp.m_purchased)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
@@ -121,7 +121,7 @@ func (urp UplayRewardPlatform) FormatToString(indentationLevel int) string {
 // NewUplayRewardPlatform returns a new UplayRewardPlatform
 func NewUplayRewardPlatform() UplayRewardPlatform {
 	return UplayRewardPlatform{
-		PlatformCode: "PC",
-		Purchased:    false,
+		m_platformCode: "PC",
+		m_purchased:    false,
 	}
 }

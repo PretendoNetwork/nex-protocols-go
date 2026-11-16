@@ -10,11 +10,11 @@ import (
 // UplaySectionContent is a type within the Uplay Win protocol
 type UplaySectionContent struct {
 	types.Structure
-	Key           types.String
-	Name          types.String
-	Order         types.Int16
-	TypeName      types.String
-	LocalizedInfo UplaySectionContentLocalized
+	m_key           types.String
+	m_name          types.String
+	m_order         types.Int16
+	m_typeName      types.String
+	m_localizedInfo UplaySectionContentLocalized
 }
 
 // ObjectID returns the object identifier of the type
@@ -31,11 +31,11 @@ func (usc UplaySectionContent) DataObjectID() types.RVType {
 func (usc UplaySectionContent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	usc.Key.WriteTo(contentWritable)
-	usc.Name.WriteTo(contentWritable)
-	usc.Order.WriteTo(contentWritable)
-	usc.TypeName.WriteTo(contentWritable)
-	usc.LocalizedInfo.WriteTo(contentWritable)
+	usc.m_key.WriteTo(contentWritable)
+	usc.m_name.WriteTo(contentWritable)
+	usc.m_order.WriteTo(contentWritable)
+	usc.m_typeName.WriteTo(contentWritable)
+	usc.m_localizedInfo.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 	usc.WriteHeaderTo(writable, uint32(len(content)))
@@ -49,24 +49,24 @@ func (usc *UplaySectionContent) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("failed to extract UplaySectionContent Header. %s", err.Error())
 	}
 
-	if err := usc.Key.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySectionContent.Key. %s", err.Error())
+	if err := usc.m_key.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySectionContent.m_key. %s", err.Error())
 	}
 
-	if err := usc.Name.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySectionContent.Name. %s", err.Error())
+	if err := usc.m_name.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySectionContent.m_name. %s", err.Error())
 	}
 
-	if err := usc.Order.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySectionContent.Order. %s", err.Error())
+	if err := usc.m_order.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySectionContent.m_order. %s", err.Error())
 	}
 
-	if err := usc.TypeName.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySectionContent.TypeName. %s", err.Error())
+	if err := usc.m_typeName.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySectionContent.m_typeName. %s", err.Error())
 	}
 
-	if err := usc.LocalizedInfo.ExtractFrom(readable); err != nil {
-		return fmt.Errorf("failed to extract UplaySectionContent.LocalizedInfo. %s", err.Error())
+	if err := usc.m_localizedInfo.ExtractFrom(readable); err != nil {
+		return fmt.Errorf("failed to extract UplaySectionContent.m_localizedInfo. %s", err.Error())
 	}
 
 	return nil
@@ -77,11 +77,11 @@ func (usc UplaySectionContent) Copy() types.RVType {
 	copied := NewUplaySectionContent()
 
 	copied.StructureVersion = usc.StructureVersion
-	copied.Key = usc.Key
-	copied.Name = usc.Name
-	copied.Order = usc.Order
-	copied.TypeName = usc.TypeName
-	copied.LocalizedInfo = usc.LocalizedInfo
+	copied.m_key = usc.m_key
+	copied.m_name = usc.m_name
+	copied.m_order = usc.m_order
+	copied.m_typeName = usc.m_typeName
+	copied.m_localizedInfo = usc.m_localizedInfo
 
 	return copied
 }
@@ -98,23 +98,23 @@ func (usc UplaySectionContent) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !usc.Key.Equals(other.Key) {
+	if !usc.m_key.Equals(other.m_key) {
 		return false
 	}
 
-	if !usc.Name.Equals(other.Name) {
+	if !usc.m_name.Equals(other.m_name) {
 		return false
 	}
 
-	if !usc.Order.Equals(other.Order) {
+	if !usc.m_order.Equals(other.m_order) {
 		return false
 	}
 
-	if !usc.TypeName.Equals(other.TypeName) {
+	if !usc.m_typeName.Equals(other.m_typeName) {
 		return false
 	}
 
-	return usc.LocalizedInfo.Equals(other.LocalizedInfo)
+	return usc.m_localizedInfo.Equals(other.m_localizedInfo)
 }
 
 // CopyRef copies the current value of the UplaySectionContent
@@ -143,11 +143,11 @@ func (usc UplaySectionContent) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UplaySectionContent{\n")
-	fmt.Fprintf(&b, "%sm_key: %v,\n", indentationValues, usc.Key)
-	fmt.Fprintf(&b, "%sm_name: %v,\n", indentationValues, usc.Name)
-	fmt.Fprintf(&b, "%sm_order: %v,\n", indentationValues, usc.Order)
-	fmt.Fprintf(&b, "%sm_typeName: %v,\n", indentationValues, usc.TypeName)
-	fmt.Fprintf(&b, "%sm_localizedInfo: %v,\n", indentationValues, usc.LocalizedInfo)
+	fmt.Fprintf(&b, "%sm_key: %v,\n", indentationValues, usc.m_key)
+	fmt.Fprintf(&b, "%sm_name: %v,\n", indentationValues, usc.m_name)
+	fmt.Fprintf(&b, "%sm_order: %v,\n", indentationValues, usc.m_order)
+	fmt.Fprintf(&b, "%sm_typeName: %v,\n", indentationValues, usc.m_typeName)
+	fmt.Fprintf(&b, "%sm_localizedInfo: %v,\n", indentationValues, usc.m_localizedInfo)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
@@ -156,10 +156,10 @@ func (usc UplaySectionContent) FormatToString(indentationLevel int) string {
 // NewUplaySectionContent returns a new UplaySectionContent
 func NewUplaySectionContent() UplaySectionContent {
 	return UplaySectionContent{
-		Key:           "key",
-		Name:          "name",
-		Order:         0,
-		TypeName:      "type",
-		LocalizedInfo: NewUplaySectionContentLocalized(),
+		m_key:           "key",
+		m_name:          "name",
+		m_order:         0,
+		m_typeName:      "type",
+		m_localizedInfo: NewUplaySectionContentLocalized(),
 	}
 }

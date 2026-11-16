@@ -11,7 +11,7 @@ import (
 
 func (protocol *Protocol) handleUplayWelcome(packet nex.PacketInterface) {
 	if protocol.UplayWelcome == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWinProtocol::UplayWelcome not implemented")
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWin::UplayWelcome not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)

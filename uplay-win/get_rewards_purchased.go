@@ -11,7 +11,7 @@ import (
 
 func (protocol *Protocol) handleGetRewardsPurchased(packet nex.PacketInterface) {
 	if protocol.GetRewardsPurchased == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWinProtocol::GetRewardsPurchased not implemented")
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWin::GetRewardsPurchased not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)

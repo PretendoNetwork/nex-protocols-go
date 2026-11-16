@@ -11,7 +11,7 @@ import (
 
 func (protocol *Protocol) handleGetActionsCompletedCount(packet nex.PacketInterface) {
 	if protocol.GetActionsCompletedCount == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWinProtocol::GetActionsCompletedCount not implemented")
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWin::GetActionsCompletedCount not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)

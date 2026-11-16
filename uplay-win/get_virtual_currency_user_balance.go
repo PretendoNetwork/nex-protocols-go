@@ -11,7 +11,7 @@ import (
 
 func (protocol *Protocol) handleGetVirtualCurrencyUserBalance(packet nex.PacketInterface) {
 	if protocol.GetVirtualCurrencyUserBalance == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWinProtocol::GetVirtualCurrencyUserBalance not implemented")
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWin::GetVirtualCurrencyUserBalance not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)

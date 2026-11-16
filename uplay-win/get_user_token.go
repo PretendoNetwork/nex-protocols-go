@@ -8,7 +8,7 @@ import (
 
 func (protocol *Protocol) handleGetUserToken(packet nex.PacketInterface) {
 	if protocol.GetUserToken == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWinProtocol::GetUserToken not implemented")
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWin::GetUserToken not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)

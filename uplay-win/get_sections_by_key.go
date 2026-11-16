@@ -11,7 +11,7 @@ import (
 
 func (protocol *Protocol) handleGetSectionsByKey(packet nex.PacketInterface) {
 	if protocol.GetSectionsByKey == nil {
-		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWinProtocol::GetSectionsByKey not implemented")
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "UplayWin::GetSectionsByKey not implemented")
 
 		globals.Logger.Warning(err.Message)
 		globals.RespondError(packet, ProtocolID, err)

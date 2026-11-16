@@ -29,7 +29,7 @@ const (
 	// MethodLoginWithSubAccount is the method ID for the method LoginWithSubAccount
 	MethodLoginWithSubAccount = 0x5
 
-	// MethodRegisterEx is the method ID for the method RegisterEx
+	// MethodRegister is the method ID for the method RegisterEx
 	MethodRegister = 0x6
 
 	// MethodRegisterEx is the method ID for the method RegisterEx
@@ -59,7 +59,6 @@ type Protocol struct {
 }
 
 // Interface implements the methods present on the Simple Authentication protocol struct
-
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)

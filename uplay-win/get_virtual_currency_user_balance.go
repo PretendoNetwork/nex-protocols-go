@@ -25,10 +25,10 @@ func (protocol *Protocol) handleGetVirtualCurrencyUserBalance(packet nex.PacketI
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var gameCode types.String
+	var platformCode types.String
 
-	if err := gameCode.ExtractFrom(parametersStream); err != nil {
-		_, rmcError := protocol.GetVirtualCurrencyUserBalance(fmt.Errorf("failed to read gameCode from parameters. %s", err.Error()), packet, callID, gameCode)
+	if err := platformCode.ExtractFrom(parametersStream); err != nil {
+		_, rmcError := protocol.GetVirtualCurrencyUserBalance(fmt.Errorf("failed to read platformCode from parameters. %s", err.Error()), packet, callID, platformCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleGetVirtualCurrencyUserBalance(packet nex.PacketI
 		return
 	}
 
-	rmcMessage, rmcError := protocol.GetVirtualCurrencyUserBalance(nil, packet, callID, gameCode)
+	rmcMessage, rmcError := protocol.GetVirtualCurrencyUserBalance(nil, packet, callID, platformCode)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

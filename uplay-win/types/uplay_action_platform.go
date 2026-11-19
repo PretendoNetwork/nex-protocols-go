@@ -10,9 +10,9 @@ import (
 // UplayActionPlatform is a type within the Uplay Win protocol
 type UplayActionPlatform struct {
 	types.Structure
-	m_platformCode types.String
-	m_completed    types.Bool
-	m_specificKey  types.String
+	PlatformCode types.String
+	Completed    types.Bool
+	SpecificKey  types.String
 }
 
 // ObjectID returns the object identifier of the type
@@ -29,9 +29,9 @@ func (uap UplayActionPlatform) DataObjectID() types.RVType {
 func (uap UplayActionPlatform) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	uap.m_platformCode.WriteTo(contentWritable)
-	uap.m_completed.WriteTo(contentWritable)
-	uap.m_specificKey.WriteTo(contentWritable)
+	uap.PlatformCode.WriteTo(contentWritable)
+	uap.Completed.WriteTo(contentWritable)
+	uap.SpecificKey.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 	uap.WriteHeaderTo(writable, uint32(len(content)))
@@ -45,15 +45,15 @@ func (uap *UplayActionPlatform) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("failed to extract UplayActionPlatform Header. %s", err.Error())
 	}
 
-	if err := uap.m_platformCode.ExtractFrom(readable); err != nil {
+	if err := uap.PlatformCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayActionPlatform.m_platformCode. %s", err.Error())
 	}
 
-	if err := uap.m_completed.ExtractFrom(readable); err != nil {
+	if err := uap.Completed.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayActionPlatform.m_completed. %s", err.Error())
 	}
 
-	if err := uap.m_specificKey.ExtractFrom(readable); err != nil {
+	if err := uap.SpecificKey.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayActionPlatform.m_specificKey. %s", err.Error())
 	}
 
@@ -65,9 +65,9 @@ func (uap UplayActionPlatform) Copy() types.RVType {
 	copied := NewUplayActionPlatform()
 
 	copied.StructureVersion = uap.StructureVersion
-	copied.m_platformCode = uap.m_platformCode
-	copied.m_completed = uap.m_completed
-	copied.m_specificKey = uap.m_specificKey
+	copied.PlatformCode = uap.PlatformCode
+	copied.Completed = uap.Completed
+	copied.SpecificKey = uap.SpecificKey
 
 	return copied
 }
@@ -84,15 +84,15 @@ func (uap UplayActionPlatform) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !uap.m_platformCode.Equals(other.m_platformCode) {
+	if !uap.PlatformCode.Equals(other.PlatformCode) {
 		return false
 	}
 
-	if !uap.m_completed.Equals(other.m_completed) {
+	if !uap.Completed.Equals(other.Completed) {
 		return false
 	}
 
-	return uap.m_specificKey.Equals(other.m_specificKey)
+	return uap.SpecificKey.Equals(other.SpecificKey)
 }
 
 // CopyRef copies the current value of the UplayActionPlatform
@@ -122,9 +122,9 @@ func (uap UplayActionPlatform) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UplayActionPlatform{\n")
-	fmt.Fprintf(&b, "%sm_platformCode: %v,\n", indentationValues, uap.m_platformCode)
-	fmt.Fprintf(&b, "%sm_completed: %v,\n", indentationValues, uap.m_completed)
-	fmt.Fprintf(&b, "%sm_specificKey: %v,\n", indentationValues, uap.m_specificKey)
+	fmt.Fprintf(&b, "%sPlatformCode: %v,\n", indentationValues, uap.PlatformCode)
+	fmt.Fprintf(&b, "%sCompleted: %v,\n", indentationValues, uap.Completed)
+	fmt.Fprintf(&b, "%sSpecificKey: %v,\n", indentationValues, uap.SpecificKey)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
@@ -133,8 +133,8 @@ func (uap UplayActionPlatform) FormatToString(indentationLevel int) string {
 // NewUplayActionPlatform returns a new UplayActionPlatform
 func NewUplayActionPlatform() UplayActionPlatform {
 	return UplayActionPlatform{
-		m_platformCode: "PC",
-		m_completed:    false,
-		m_specificKey:  "",
+		PlatformCode: types.NewString(""),
+		Completed:    types.NewBool(false),
+		SpecificKey:  types.NewString(""),
 	}
 }

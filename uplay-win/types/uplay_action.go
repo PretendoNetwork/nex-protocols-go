@@ -10,12 +10,12 @@ import (
 // UplayAction is a type within the Uplay Win protocol
 type UplayAction struct {
 	types.Structure
-	m_code        types.String
-	m_name        types.String
-	m_description types.String
-	m_value       types.Int32
-	m_gameCode    types.String
-	m_platforms   types.List[UplayActionPlatform]
+	Code        types.String
+	Name        types.String
+	Description types.String
+	Value       types.Int32
+	GameCode    types.String
+	Platforms   types.List[UplayActionPlatform]
 }
 
 // ObjectID returns the object identifier of the type
@@ -32,12 +32,12 @@ func (upa UplayAction) DataObjectID() types.RVType {
 func (upa UplayAction) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	upa.m_code.WriteTo(contentWritable)
-	upa.m_name.WriteTo(contentWritable)
-	upa.m_description.WriteTo(contentWritable)
-	upa.m_value.WriteTo(contentWritable)
-	upa.m_gameCode.WriteTo(contentWritable)
-	upa.m_platforms.WriteTo(contentWritable)
+	upa.Code.WriteTo(contentWritable)
+	upa.Name.WriteTo(contentWritable)
+	upa.Description.WriteTo(contentWritable)
+	upa.Value.WriteTo(contentWritable)
+	upa.GameCode.WriteTo(contentWritable)
+	upa.Platforms.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 	upa.WriteHeaderTo(writable, uint32(len(content)))
@@ -51,27 +51,27 @@ func (upa *UplayAction) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("failed to extract UplayAction Header. %s", err.Error())
 	}
 
-	if err := upa.m_code.ExtractFrom(readable); err != nil {
+	if err := upa.Code.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayAction.m_code. %s", err.Error())
 	}
 
-	if err := upa.m_name.ExtractFrom(readable); err != nil {
+	if err := upa.Name.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayAction.m_name. %s", err.Error())
 	}
 
-	if err := upa.m_description.ExtractFrom(readable); err != nil {
+	if err := upa.Description.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayAction.m_description. %s", err.Error())
 	}
 
-	if err := upa.m_value.ExtractFrom(readable); err != nil {
+	if err := upa.Value.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayAction.m_value. %s", err.Error())
 	}
 
-	if err := upa.m_gameCode.ExtractFrom(readable); err != nil {
+	if err := upa.GameCode.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayAction.m_gameCode. %s", err.Error())
 	}
 
-	if err := upa.m_platforms.ExtractFrom(readable); err != nil {
+	if err := upa.Platforms.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplayAction.m_platforms. %s", err.Error())
 	}
 
@@ -83,12 +83,12 @@ func (upa UplayAction) Copy() types.RVType {
 	copied := NewUplayAction()
 
 	copied.StructureVersion = upa.StructureVersion
-	copied.m_code = upa.m_code
-	copied.m_name = upa.m_name
-	copied.m_description = upa.m_description
-	copied.m_value = upa.m_value
-	copied.m_gameCode = upa.m_gameCode
-	copied.m_platforms = upa.m_platforms
+	copied.Code = upa.Code
+	copied.Name = upa.Name
+	copied.Description = upa.Description
+	copied.Value = upa.Value
+	copied.GameCode = upa.GameCode
+	copied.Platforms = upa.Platforms
 
 	return copied
 }
@@ -105,27 +105,27 @@ func (upa UplayAction) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !upa.m_code.Equals(other.m_code) {
+	if !upa.Code.Equals(other.Code) {
 		return false
 	}
 
-	if !upa.m_name.Equals(other.m_name) {
+	if !upa.Name.Equals(other.Name) {
 		return false
 	}
 
-	if !upa.m_description.Equals(other.m_description) {
+	if !upa.Description.Equals(other.Description) {
 		return false
 	}
 
-	if !upa.m_value.Equals(other.m_value) {
+	if !upa.Value.Equals(other.Value) {
 		return false
 	}
 
-	if !upa.m_gameCode.Equals(other.m_gameCode) {
+	if !upa.GameCode.Equals(other.GameCode) {
 		return false
 	}
 
-	return upa.m_platforms.Equals(other.m_platforms)
+	return upa.Platforms.Equals(other.Platforms)
 }
 
 // CopyRef copies the current value of the UplayAction
@@ -155,12 +155,12 @@ func (upa UplayAction) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UplayAction{\n")
-	fmt.Fprintf(&b, "%sm_code: %v,\n", indentationValues, upa.m_code)
-	fmt.Fprintf(&b, "%sm_name: %v,\n", indentationValues, upa.m_name)
-	fmt.Fprintf(&b, "%sm_description: %v,\n", indentationValues, upa.m_description)
-	fmt.Fprintf(&b, "%sm_value: %v,\n", indentationValues, upa.m_value)
-	fmt.Fprintf(&b, "%sm_gameCode: %v,\n", indentationValues, upa.m_gameCode)
-	fmt.Fprintf(&b, "%sm_platforms: %v,\n", indentationValues, upa.m_platforms)
+	fmt.Fprintf(&b, "%sCode: %v,\n", indentationValues, upa.Code)
+	fmt.Fprintf(&b, "%sName: %v,\n", indentationValues, upa.Name)
+	fmt.Fprintf(&b, "%sDescription: %v,\n", indentationValues, upa.Description)
+	fmt.Fprintf(&b, "%sValue: %v,\n", indentationValues, upa.Value)
+	fmt.Fprintf(&b, "%sGameCode: %v,\n", indentationValues, upa.GameCode)
+	fmt.Fprintf(&b, "%sPlatforms: %v,\n", indentationValues, upa.Platforms)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
@@ -169,11 +169,11 @@ func (upa UplayAction) FormatToString(indentationLevel int) string {
 // NewUplayAction returns a new UplayAction
 func NewUplayAction() UplayAction {
 	return UplayAction{
-		m_code:        "code",
-		m_name:        "name",
-		m_description: "desc",
-		m_value:       0,
-		m_gameCode:    "Uplay",
-		m_platforms:   types.NewList[UplayActionPlatform](),
+		Code:        types.NewString(""),
+		Name:        types.NewString(""),
+		Description: types.NewString(""),
+		Value:       types.NewInt32(0),
+		GameCode:    types.NewString(""),
+		Platforms:   types.NewList[UplayActionPlatform](),
 	}
 }

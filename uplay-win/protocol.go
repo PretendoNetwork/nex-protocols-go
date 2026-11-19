@@ -61,11 +61,11 @@ type Protocol struct {
 	GetRewards                    func(err error, packet nex.PacketInterface, callID uint32, startRowIndex types.Int32, maximumRows types.Int32, sortExpression types.String, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
 	GetRewardsPurchased           func(err error, packet nex.PacketInterface, callID uint32, startRowIndex types.Int32, maximumRows types.Int32, sortExpression types.String, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
 	UplayWelcome                  func(err error, packet nex.PacketInterface, callID uint32, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
-	SetActionCompleted            func(err error, packet nex.PacketInterface, callID uint32, actionCode types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
-	SetActionsCompleted           func(err error, packet nex.PacketInterface, callID uint32, actionCodes types.List[types.String], platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
+	SetActionCompleted            func(err error, packet nex.PacketInterface, callID uint32, actionCode types.String, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
+	SetActionsCompleted           func(err error, packet nex.PacketInterface, callID uint32, actionCodeList types.List[types.String], cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
 	GetUserToken                  func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
-	GetVirtualCurrencyUserBalance func(err error, packet nex.PacketInterface, callID uint32, gameCode types.String) (*nex.RMCMessage, *nex.Error)
-	GetSectionsByKey              func(err error, packet nex.PacketInterface, callID uint32, sectionKeys types.List[types.String], cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
+	GetVirtualCurrencyUserBalance func(err error, packet nex.PacketInterface, callID uint32, platformCode types.String) (*nex.RMCMessage, *nex.Error)
+	GetSectionsByKey              func(err error, packet nex.PacketInterface, callID uint32, cultureName types.String, sectionKey types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)
 	Patches                       nex.ServiceProtocol
 	PatchedMethods                []uint32
 }
@@ -81,11 +81,11 @@ type Interface interface {
 	SetHandlerGetRewards(handler func(err error, packet nex.PacketInterface, callID uint32, startRowIndex types.Int32, maximumRows types.Int32, sortExpression types.String, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetRewardsPurchased(handler func(err error, packet nex.PacketInterface, callID uint32, startRowIndex types.Int32, maximumRows types.Int32, sortExpression types.String, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUplayWelcome(handler func(err error, packet nex.PacketInterface, callID uint32, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerSetActionCompleted(handler func(err error, packet nex.PacketInterface, callID uint32, actionCode types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerSetActionsCompleted(handler func(err error, packet nex.PacketInterface, callID uint32, actionCodes types.List[types.String], platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerSetActionCompleted(handler func(err error, packet nex.PacketInterface, callID uint32, actionCode types.String, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerSetActionsCompleted(handler func(err error, packet nex.PacketInterface, callID uint32, actionCodeList types.List[types.String], cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetUserToken(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetVirtualCurrencyUserBalance(handler func(err error, packet nex.PacketInterface, callID uint32, gameCode types.String) (*nex.RMCMessage, *nex.Error))
-	SetHandlerGetSectionsByKey(handler func(err error, packet nex.PacketInterface, callID uint32, sectionKeys types.List[types.String], cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetVirtualCurrencyUserBalance(handler func(err error, packet nex.PacketInterface, callID uint32, platformCode types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetSectionsByKey(handler func(err error, packet nex.PacketInterface, callID uint32, cultureName types.String, sectionKey types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error))
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -134,12 +134,12 @@ func (protocol *Protocol) SetHandlerUplayWelcome(handler func(err error, packet 
 }
 
 // SetHandlerSetActionCompleted sets the handler for the SetActionCompleted method
-func (protocol *Protocol) SetHandlerSetActionCompleted(handler func(err error, packet nex.PacketInterface, callID uint32, actionCode types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerSetActionCompleted(handler func(err error, packet nex.PacketInterface, callID uint32, actionCode types.String, cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.SetActionCompleted = handler
 }
 
 // SetHandlerSetActionsCompleted sets the handler for the SetActionsCompleted method
-func (protocol *Protocol) SetHandlerSetActionsCompleted(handler func(err error, packet nex.PacketInterface, callID uint32, actionCodes types.List[types.String], platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerSetActionsCompleted(handler func(err error, packet nex.PacketInterface, callID uint32, actionCodeList types.List[types.String], cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.SetActionsCompleted = handler
 }
 
@@ -149,12 +149,12 @@ func (protocol *Protocol) SetHandlerGetUserToken(handler func(err error, packet 
 }
 
 // SetHandlerGetVirtualCurrencyUserBalance sets the handler for the GetVirtualCurrencyUserBalance method
-func (protocol *Protocol) SetHandlerGetVirtualCurrencyUserBalance(handler func(err error, packet nex.PacketInterface, callID uint32, gameCode types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetVirtualCurrencyUserBalance(handler func(err error, packet nex.PacketInterface, callID uint32, platformCode types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetVirtualCurrencyUserBalance = handler
 }
 
 // SetHandlerGetSectionsByKey sets the handler for the GetSectionsByKey method
-func (protocol *Protocol) SetHandlerGetSectionsByKey(handler func(err error, packet nex.PacketInterface, callID uint32, sectionKeys types.List[types.String], cultureName types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)) {
+func (protocol *Protocol) SetHandlerGetSectionsByKey(handler func(err error, packet nex.PacketInterface, callID uint32, cultureName types.String, sectionKey types.String, platformCode types.String, gameCode types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetSectionsByKey = handler
 }
 

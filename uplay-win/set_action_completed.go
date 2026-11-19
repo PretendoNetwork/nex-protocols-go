@@ -26,11 +26,21 @@ func (protocol *Protocol) handleSetActionCompleted(packet nex.PacketInterface) {
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	var actionCode types.String
+	var cultureName types.String
 	var platformCode types.String
 	var gameCode types.String
 
 	if err := actionCode.ExtractFrom(parametersStream); err != nil {
-		_, rmcError := protocol.SetActionCompleted(fmt.Errorf("failed to read actionCode from parameters. %s", err.Error()), packet, callID, actionCode, platformCode, gameCode)
+		_, rmcError := protocol.SetActionCompleted(fmt.Errorf("failed to read actionCode from parameters. %s", err.Error()), packet, callID, actionCode, cultureName, platformCode, gameCode)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
+	if err := cultureName.ExtractFrom(parametersStream); err != nil {
+		_, rmcError := protocol.SetActionCompleted(fmt.Errorf("failed to read cultureName from parameters. %s", err.Error()), packet, callID, actionCode, cultureName, platformCode, gameCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -39,7 +49,7 @@ func (protocol *Protocol) handleSetActionCompleted(packet nex.PacketInterface) {
 	}
 
 	if err := platformCode.ExtractFrom(parametersStream); err != nil {
-		_, rmcError := protocol.SetActionCompleted(fmt.Errorf("failed to read platformCode from parameters. %s", err.Error()), packet, callID, actionCode, platformCode, gameCode)
+		_, rmcError := protocol.SetActionCompleted(fmt.Errorf("failed to read platformCode from parameters. %s", err.Error()), packet, callID, actionCode, cultureName, platformCode, gameCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -48,7 +58,7 @@ func (protocol *Protocol) handleSetActionCompleted(packet nex.PacketInterface) {
 	}
 
 	if err := gameCode.ExtractFrom(parametersStream); err != nil {
-		_, rmcError := protocol.SetActionCompleted(fmt.Errorf("failed to read gameCode from parameters. %s", err.Error()), packet, callID, actionCode, platformCode, gameCode)
+		_, rmcError := protocol.SetActionCompleted(fmt.Errorf("failed to read gameCode from parameters. %s", err.Error()), packet, callID, actionCode, cultureName, platformCode, gameCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -56,7 +66,7 @@ func (protocol *Protocol) handleSetActionCompleted(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.SetActionCompleted(nil, packet, callID, actionCode, platformCode, gameCode)
+	rmcMessage, rmcError := protocol.SetActionCompleted(nil, packet, callID, actionCode, cultureName, platformCode, gameCode)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

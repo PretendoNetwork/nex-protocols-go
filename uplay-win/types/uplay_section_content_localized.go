@@ -10,14 +10,14 @@ import (
 // UplaySectionContentLocalized is a type within the Uplay Win protocol
 type UplaySectionContentLocalized struct {
 	types.Structure
-	m_key      types.String
-	m_culture  types.String
-	m_text     types.String
-	m_url      types.String
-	m_duration types.Int32
-	m_size     types.String
-	m_width    types.String
-	m_height   types.String
+	Key      types.String
+	Culture  types.String
+	Text     types.String
+	URL      types.String
+	Duration types.Int32
+	Size     types.String
+	Width    types.String
+	Height   types.String
 }
 
 // ObjectID returns the object identifier of the type
@@ -34,14 +34,14 @@ func (uscl UplaySectionContentLocalized) DataObjectID() types.RVType {
 func (uscl UplaySectionContentLocalized) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	uscl.m_key.WriteTo(contentWritable)
-	uscl.m_culture.WriteTo(contentWritable)
-	uscl.m_text.WriteTo(contentWritable)
-	uscl.m_url.WriteTo(contentWritable)
-	uscl.m_duration.WriteTo(contentWritable)
-	uscl.m_size.WriteTo(contentWritable)
-	uscl.m_width.WriteTo(contentWritable)
-	uscl.m_height.WriteTo(contentWritable)
+	uscl.Key.WriteTo(contentWritable)
+	uscl.Culture.WriteTo(contentWritable)
+	uscl.Text.WriteTo(contentWritable)
+	uscl.URL.WriteTo(contentWritable)
+	uscl.Duration.WriteTo(contentWritable)
+	uscl.Size.WriteTo(contentWritable)
+	uscl.Width.WriteTo(contentWritable)
+	uscl.Height.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 	uscl.WriteHeaderTo(writable, uint32(len(content)))
@@ -55,35 +55,35 @@ func (uscl *UplaySectionContentLocalized) ExtractFrom(readable types.Readable) e
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized Header. %s", err.Error())
 	}
 
-	if err := uscl.m_key.ExtractFrom(readable); err != nil {
+	if err := uscl.Key.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized.m_key. %s", err.Error())
 	}
 
-	if err := uscl.m_culture.ExtractFrom(readable); err != nil {
+	if err := uscl.Culture.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized.m_culture. %s", err.Error())
 	}
 
-	if err := uscl.m_text.ExtractFrom(readable); err != nil {
+	if err := uscl.Text.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized.m_text. %s", err.Error())
 	}
 
-	if err := uscl.m_url.ExtractFrom(readable); err != nil {
+	if err := uscl.URL.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized.m_url. %s", err.Error())
 	}
 
-	if err := uscl.m_duration.ExtractFrom(readable); err != nil {
+	if err := uscl.Duration.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized.m_duration. %s", err.Error())
 	}
 
-	if err := uscl.m_size.ExtractFrom(readable); err != nil {
+	if err := uscl.Size.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized.m_size. %s", err.Error())
 	}
 
-	if err := uscl.m_width.ExtractFrom(readable); err != nil {
+	if err := uscl.Width.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized.m_width. %s", err.Error())
 	}
 
-	if err := uscl.m_height.ExtractFrom(readable); err != nil {
+	if err := uscl.Height.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract UplaySectionContentLocalized.m_height. %s", err.Error())
 	}
 
@@ -95,14 +95,14 @@ func (uscl UplaySectionContentLocalized) Copy() types.RVType {
 	copied := NewUplaySectionContentLocalized()
 
 	copied.StructureVersion = uscl.StructureVersion
-	copied.m_key = uscl.m_key
-	copied.m_culture = uscl.m_culture
-	copied.m_text = uscl.m_text
-	copied.m_url = uscl.m_url
-	copied.m_duration = uscl.m_duration
-	copied.m_size = uscl.m_size
-	copied.m_width = uscl.m_width
-	copied.m_height = uscl.m_height
+	copied.Key = uscl.Key
+	copied.Culture = uscl.Culture
+	copied.Text = uscl.Text
+	copied.URL = uscl.URL
+	copied.Duration = uscl.Duration
+	copied.Size = uscl.Size
+	copied.Width = uscl.Width
+	copied.Height = uscl.Height
 
 	return copied
 }
@@ -119,35 +119,35 @@ func (uscl UplaySectionContentLocalized) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !uscl.m_key.Equals(other.m_key) {
+	if !uscl.Key.Equals(other.Key) {
 		return false
 	}
 
-	if !uscl.m_culture.Equals(other.m_culture) {
+	if !uscl.Culture.Equals(other.Culture) {
 		return false
 	}
 
-	if !uscl.m_text.Equals(other.m_text) {
+	if !uscl.Text.Equals(other.Text) {
 		return false
 	}
 
-	if !uscl.m_url.Equals(other.m_url) {
+	if !uscl.URL.Equals(other.URL) {
 		return false
 	}
 
-	if !uscl.m_duration.Equals(other.m_duration) {
+	if !uscl.Duration.Equals(other.Duration) {
 		return false
 	}
 
-	if !uscl.m_size.Equals(other.m_size) {
+	if !uscl.Size.Equals(other.Size) {
 		return false
 	}
 
-	if !uscl.m_width.Equals(other.m_width) {
+	if !uscl.Width.Equals(other.Width) {
 		return false
 	}
 
-	return uscl.m_height.Equals(other.m_height)
+	return uscl.Height.Equals(other.Height)
 }
 
 // CopyRef copies the current value of the UplaySectionContentLocalized
@@ -176,14 +176,14 @@ func (uscl UplaySectionContentLocalized) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("UplaySectionContentLocalized{\n")
-	fmt.Fprintf(&b, "%sm_key: %v,\n", indentationValues, uscl.m_key)
-	fmt.Fprintf(&b, "%sm_culture: %v,\n", indentationValues, uscl.m_culture)
-	fmt.Fprintf(&b, "%sm_text: %v,\n", indentationValues, uscl.m_text)
-	fmt.Fprintf(&b, "%sm_url: %v,\n", indentationValues, uscl.m_url)
-	fmt.Fprintf(&b, "%sm_duration: %v,\n", indentationValues, uscl.m_duration)
-	fmt.Fprintf(&b, "%sm_size: %v,\n", indentationValues, uscl.m_size)
-	fmt.Fprintf(&b, "%sm_width: %v,\n", indentationValues, uscl.m_width)
-	fmt.Fprintf(&b, "%sm_height: %v,\n", indentationValues, uscl.m_height)
+	fmt.Fprintf(&b, "%sKey: %v,\n", indentationValues, uscl.Key)
+	fmt.Fprintf(&b, "%sCulture: %v,\n", indentationValues, uscl.Culture)
+	fmt.Fprintf(&b, "%sText: %v,\n", indentationValues, uscl.Text)
+	fmt.Fprintf(&b, "%sURL: %v,\n", indentationValues, uscl.URL)
+	fmt.Fprintf(&b, "%sDuration: %v,\n", indentationValues, uscl.Duration)
+	fmt.Fprintf(&b, "%sSize: %v,\n", indentationValues, uscl.Size)
+	fmt.Fprintf(&b, "%sWidth: %v,\n", indentationValues, uscl.Width)
+	fmt.Fprintf(&b, "%sHeight: %v,\n", indentationValues, uscl.Height)
 	fmt.Fprintf(&b, "%s}", indentationEnd)
 
 	return b.String()
@@ -192,13 +192,13 @@ func (uscl UplaySectionContentLocalized) FormatToString(indentationLevel int) st
 // NewUplaySectionContentLocalized returns a new UplaySectionContentLocalized
 func NewUplaySectionContentLocalized() UplaySectionContentLocalized {
 	return UplaySectionContentLocalized{
-		m_key:      "key",
-		m_culture:  "en",
-		m_text:     "text",
-		m_url:      "url",
-		m_duration: 0,
-		m_size:     "size",
-		m_width:    "width",
-		m_height:   "height",
+		Key:      types.NewString(""),
+		Culture:  types.NewString(""),
+		Text:     types.NewString(""),
+		URL:      types.NewString(""),
+		Duration: types.NewInt32(0),
+		Size:     types.NewString(""),
+		Width:    types.NewString(""),
+		Height:   types.NewString(""),
 	}
 }

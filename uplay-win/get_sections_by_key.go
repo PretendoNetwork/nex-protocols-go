@@ -25,13 +25,13 @@ func (protocol *Protocol) handleGetSectionsByKey(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	var sectionKeys types.List[types.String]
 	var cultureName types.String
+	var sectionKey types.String
 	var platformCode types.String
 	var gameCode types.String
 
-	if err := sectionKeys.ExtractFrom(parametersStream); err != nil {
-		_, rmcError := protocol.GetSectionsByKey(fmt.Errorf("failed to read sectionKeys from parameters. %s", err.Error()), packet, callID, sectionKeys, cultureName, platformCode, gameCode)
+	if err := cultureName.ExtractFrom(parametersStream); err != nil {
+		_, rmcError := protocol.GetSectionsByKey(fmt.Errorf("failed to read cultureName from parameters. %s", err.Error()), packet, callID, cultureName, sectionKey, platformCode, gameCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -39,8 +39,8 @@ func (protocol *Protocol) handleGetSectionsByKey(packet nex.PacketInterface) {
 		return
 	}
 
-	if err := cultureName.ExtractFrom(parametersStream); err != nil {
-		_, rmcError := protocol.GetSectionsByKey(fmt.Errorf("failed to read cultureName from parameters. %s", err.Error()), packet, callID, sectionKeys, cultureName, platformCode, gameCode)
+	if err := sectionKey.ExtractFrom(parametersStream); err != nil {
+		_, rmcError := protocol.GetSectionsByKey(fmt.Errorf("failed to read sectionKey from parameters. %s", err.Error()), packet, callID, cultureName, sectionKey, platformCode, gameCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -49,7 +49,7 @@ func (protocol *Protocol) handleGetSectionsByKey(packet nex.PacketInterface) {
 	}
 
 	if err := platformCode.ExtractFrom(parametersStream); err != nil {
-		_, rmcError := protocol.GetSectionsByKey(fmt.Errorf("failed to read platformCode from parameters. %s", err.Error()), packet, callID, sectionKeys, cultureName, platformCode, gameCode)
+		_, rmcError := protocol.GetSectionsByKey(fmt.Errorf("failed to read platformCode from parameters. %s", err.Error()), packet, callID, cultureName, sectionKey, platformCode, gameCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -58,7 +58,7 @@ func (protocol *Protocol) handleGetSectionsByKey(packet nex.PacketInterface) {
 	}
 
 	if err := gameCode.ExtractFrom(parametersStream); err != nil {
-		_, rmcError := protocol.GetSectionsByKey(fmt.Errorf("failed to read gameCode from parameters. %s", err.Error()), packet, callID, sectionKeys, cultureName, platformCode, gameCode)
+		_, rmcError := protocol.GetSectionsByKey(fmt.Errorf("failed to read gameCode from parameters. %s", err.Error()), packet, callID, cultureName, sectionKey, platformCode, gameCode)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -66,7 +66,7 @@ func (protocol *Protocol) handleGetSectionsByKey(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.GetSectionsByKey(nil, packet, callID, sectionKeys, cultureName, platformCode, gameCode)
+	rmcMessage, rmcError := protocol.GetSectionsByKey(nil, packet, callID, cultureName, sectionKey, platformCode, gameCode)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

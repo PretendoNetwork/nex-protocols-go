@@ -34,7 +34,7 @@ type Protocol struct {
 	PatchedMethods                   []uint32
 }
 
-// Interface implements the methods present on the Ticket Granting protocol struct
+// Interface implements the methods present on the OfflineGameNotifications protocol struct
 type Interface interface {
 	Endpoint() nex.EndpointInterface
 	SetEndpoint(endpoint nex.EndpointInterface)

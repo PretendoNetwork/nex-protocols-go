@@ -30,6 +30,7 @@ func (nm NewsMessage) WriteTo(writable types.Writable) {
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the NewsMessage from the given readable
 func (nm *NewsMessage) ExtractFrom(readable types.Readable) error {
 	if err := nm.NewsHeader.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract NewsMessage.NewsHeader. %s", err.Error())
@@ -57,7 +58,7 @@ func (nm NewsMessage) Copy() types.RVType {
 	return copied
 }
 
-// Equal checks if the given NewsMessage contains the same data as the current NewsMessage
+// Equals checks if the given NewsMessage contains the same data as the current NewsMessage
 func (nm NewsMessage) Equals(o types.RVType) bool {
 	if _, ok := o.(NewsMessage); !ok {
 		return false
@@ -95,6 +96,7 @@ func (nm NewsMessage) String() string {
 	return nm.FormatToString(0)
 }
 
+// FormatToString pretty-prints the NewsMessage using the provided indentation level
 func (nm NewsMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)

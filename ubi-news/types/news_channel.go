@@ -43,6 +43,7 @@ func (nc NewsChannel) WriteTo(writable types.Writable) {
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the NewsChannel from the given readable
 func (nc *NewsChannel) ExtractFrom(readable types.Readable) error {
 	if err := nc.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract NewsChannel header. %s", err.Error())
@@ -105,7 +106,7 @@ func (nc NewsChannel) Copy() types.RVType {
 	return copied
 }
 
-// Equal checks if the given NewsChannel contains the same data as the current NewsChannel
+// Equals checks if the given NewsChannel contains the same data as the current NewsChannel
 func (nc NewsChannel) Equals(o types.RVType) bool {
 	if _, ok := o.(NewsChannel); !ok {
 		return false
@@ -171,6 +172,7 @@ func (nc NewsChannel) String() string {
 	return nc.FormatToString(0)
 }
 
+// FormatToString pretty-prints the NewsChannel using the provided indentation level
 func (nc NewsChannel) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)

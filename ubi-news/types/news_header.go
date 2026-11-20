@@ -45,6 +45,7 @@ func (nh NewsHeader) WriteTo(writable types.Writable) {
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the NewsHeader from the given readable
 func (nh *NewsHeader) ExtractFrom(readable types.Readable) error {
 	if err := nh.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract NewsHeader header. %s", err.Error())
@@ -182,6 +183,7 @@ func (nh NewsHeader) String() string {
 	return nh.FormatToString(0)
 }
 
+// FormatToString pretty-prints the NewsHeader using the provided indentation level
 func (nh NewsHeader) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)

@@ -30,6 +30,7 @@ func (tn TimedNotification) WriteTo(writable types.Writable) {
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the TimedNotificatoin from the given readable
 func (tn *TimedNotification) ExtractFrom(readable types.Readable) error {
 	if err := tn.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract TimedNotification header. %s", err.Error())
@@ -57,7 +58,7 @@ func (tn TimedNotification) Copy() types.RVType {
 	return copied
 }
 
-// Equal checks if the given TimedNotification contains the same data as the current TimedNotification
+// Equals checks if the given TimedNotification contains the same data as the current TimedNotification
 func (tn TimedNotification) Equals(o types.RVType) bool {
 	if _, ok := o.(TimedNotification); !ok {
 		return false
@@ -95,6 +96,7 @@ func (tn TimedNotification) String() string {
 	return tn.FormatToString(0)
 }
 
+// FormatToString pretty-prints the TimedNotification using the provided indentation level
 func (tn TimedNotification) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)

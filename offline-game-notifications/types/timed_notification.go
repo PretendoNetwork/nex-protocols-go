@@ -12,16 +12,16 @@ import (
 // TimedNotification is a type with the OfflineGameNotifications protocol
 type TimedNotification struct {
 	types.Structure
-	timestamp    types.DateTime
-	notification notification_types.NotificationEvent
+	Timestamp    types.DateTime
+	Notification notification_types.NotificationEvent
 }
 
 // WriteTo writes the TimdeNotification to the given writable
 func (tn TimedNotification) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	tn.timestamp.WriteTo(contentWritable)
-	tn.notification.WriteTo(contentWritable)
+	tn.Timestamp.WriteTo(contentWritable)
+	tn.Notification.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 
@@ -36,11 +36,11 @@ func (tn *TimedNotification) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("failed to extract TimedNotification header. %s", err.Error())
 	}
 
-	if err := tn.timestamp.ExtractFrom(readable); err != nil {
+	if err := tn.Timestamp.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract TimedNotification.timestamp. %s", err.Error())
 	}
 
-	if err := tn.notification.ExtractFrom(readable); err != nil {
+	if err := tn.Notification.ExtractFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract TimedNotification.notification. %s", err.Error())
 	}
 
@@ -52,8 +52,8 @@ func (tn TimedNotification) Copy() types.RVType {
 	copied := NewTimedNotification()
 
 	copied.StructureVersion = tn.StructureVersion
-	copied.timestamp = tn.timestamp
-	copied.notification = tn.Copy().(notification_types.NotificationEvent)
+	copied.Timestamp = tn.Timestamp
+	copied.Notification = tn.Notification.Copy().(notification_types.NotificationEvent)
 
 	return copied
 }
@@ -70,11 +70,11 @@ func (tn TimedNotification) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if tn.timestamp != other.timestamp {
+	if tn.Timestamp != other.Timestamp {
 		return false
 	}
 
-	return tn.notification.Equals(other.notification)
+	return tn.Notification.Equals(other.Notification)
 }
 
 // CopyRef copies the current value of the TimedNotification
@@ -104,8 +104,8 @@ func (tn TimedNotification) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("TimeNotification{\n}")
-	fmt.Fprintf(&b, "%stimestamp: %s,\n", indentationValues, tn.timestamp)
-	fmt.Fprintf(&b, "%sNotification: %s,\n", indentationValues, tn.notification.FormatToString(indentationLevel+1))
+	fmt.Fprintf(&b, "%stimestamp: %s,\n", indentationValues, tn.Timestamp)
+	fmt.Fprintf(&b, "%sNotification: %s,\n", indentationValues, tn.Notification.FormatToString(indentationLevel+1))
 
 	fmt.Fprintf(&b, "%s}", indentationEnd)
 
@@ -115,8 +115,8 @@ func (tn TimedNotification) FormatToString(indentationLevel int) string {
 // NewTimedNotification returns a new TimedNotification
 func NewTimedNotification() TimedNotification {
 	return TimedNotification{
-		timestamp:    types.NewDateTime(0),
-		notification: notification_types.NewNotificationEvent(),
+		Timestamp:    types.NewDateTime(0),
+		Notification: notification_types.NewNotificationEvent(),
 	}
 
 }

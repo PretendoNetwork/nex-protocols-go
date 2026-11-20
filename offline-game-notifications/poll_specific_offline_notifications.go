@@ -29,7 +29,7 @@ func (protocol *Protocol) handlePollSpecificOfflineNotifications(packet nex.Pack
 
 	err := majorTypes.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.PollSpecificOfflineNotifications(fmt.Errorf("Failed to read majortypes from parameters. %s", err.Error()), packet, callID, majorTypes)
+		_, rmcError := protocol.PollSpecificOfflineNotifications(fmt.Errorf("failed to read majortypes from parameters. %s", err.Error()), packet, callID, majorTypes)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

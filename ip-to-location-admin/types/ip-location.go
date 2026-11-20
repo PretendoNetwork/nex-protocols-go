@@ -47,6 +47,7 @@ func (ipl IPLocation) WriteTo(writable types.Writable) {
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the IPLocation from the given readable
 func (ipl *IPLocation) ExtractFrom(readable types.Readable) error {
 	if err := ipl.ExtractHeaderFrom(readable); err != nil {
 		return fmt.Errorf("failed to extract IPLocation header. %s", err.Error())
@@ -115,7 +116,7 @@ func (ipl IPLocation) Copy() types.RVType {
 	return copied
 }
 
-// Equal checks if the given IPLocation contains the same data as the current IPLocation
+// Equals checks if the given IPLocation contains the same data as the current IPLocation
 func (ipl IPLocation) Equals(o types.RVType) bool {
 	if _, ok := o.(IPLocation); !ok {
 		return false
@@ -185,6 +186,7 @@ func (ipl IPLocation) String() string {
 	return ipl.FormatToString(0)
 }
 
+// FormatToString pretty-prints the IPLocation using the provided indentation level
 func (ipl IPLocation) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)

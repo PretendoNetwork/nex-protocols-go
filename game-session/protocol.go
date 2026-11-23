@@ -215,7 +215,7 @@ func (protocol *Protocol) SetHandlerLeaveSession(handler func(err error, packet 
 	protocol.LeaveSession = handler
 }
 
-// SetHandleGetSession sets the handler for the GetSession method
+// SetHandlerGetSession sets the handler for the GetSession method
 func (protocol *Protocol) SetHandlerGetSession(handler func(err error, packet nex.PacketInterface, callID uint32, gameSessionKey game_session_types.GameSessionKey) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetSession = handler
 }
